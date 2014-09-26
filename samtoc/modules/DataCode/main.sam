@@ -158,6 +158,11 @@ fn Map_convert(value) {
     return genCall("mapFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
 };
 
+## Converts a record.
+fn Record_convert(value) {
+    return genCall("makeRecord", convert(value.name), convert(value.dataOf()))
+};
+
 ## Converts a string.
 fn String_convert(value) {
     ## Each `stringChar()` call returns a list (each list element representing
@@ -196,13 +201,10 @@ fn SymbolTable_convert(value) {
     return genCall("symbolTableFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
 };
 
-## Converts a record or an opaque core value.
+## Converts an opaque value. Or rather, always complains that it can't
+## actually do that.
 fn Value_convert(value) {
-    if (!hasClass(value, Record)) {
-        die("Cannot convert value: \%q(value)")
-    };
-
-    return genCall("makeRecord", convert(value.name), convert(value.dataOf()))
+    die("Cannot convert value: \%q(value)")
 };
 
 ## Converts a value into C code to construct that value. This function
@@ -216,6 +218,7 @@ export fn convert(value) {
             (Int):         { Int_convert(value)         };
             (List):        { List_convert(value)        };
             (Map):         { Map_convert(value)         };
+            (Record):      { Record_convert(value)      };
             (String):      { String_convert(value)      };
             (Symbol):      { Symbol_convert(value)      };
             (SymbolTable): { SymbolTable_convert(value) };
