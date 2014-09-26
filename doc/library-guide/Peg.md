@@ -15,14 +15,14 @@ higher-level tokens with either simply a tree-like rule invocation or
 to produce tree structures per se).
 
 When building tokenizers, the input elements are taken to be in the form
-of character-as-token items. Each element is a token whose class tag is
+of character-as-token items. Each element is a token whose name (tag) is
 a single-string character (and whose value if any is irrelevant for the
 parsing mechanism). There are helper functions which take strings and
 automatically convert them into this form.
 
 When building tree parsers, the input elements are expected to be
-tokens per se, that is, tokens whose class tag is taken to indicate a
-token class.
+tokens per se, that is, records whose name tag is taken to indicate a
+token type.
 
 The output of the functions named `$Peg::make*` are all parsing rules. These
 are all objects with a class that binds the `parse` method. A `parse` method
@@ -220,54 +220,52 @@ This is equivalent to the syntactic form `{: ... (rule1 rule2 etc) ... :}`.
 
 Makes and returns a parser rule which matches a sequence of characters
 exactly, consuming them from the input upon success. `string` must be a
-string. The result of successful parsing is a valueless token with
-`string` as its class tag.
+string. The result of successful parsing is an empty-payload token with
+`@string` as its name.
 
 This is equivalent to the syntactic form `{: "string" :}`.
 
-#### `makeToken(cls) -> rule`
+#### `makeToken(name) -> rule`
 
 Makes and returns a parser rule which matches any token with the same
-class as given. `cls` is an arbitrary class, which is typically (but not
-necessarily) a record class. Upon success, the rule consumes and yields the
-matched token.
+name as given. `name` must be a symbol. Upon success, the rule consumes and
+yields the matched token.
 
 This is also used to match single characters in tokenizers.
 
 This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 (where `ch` represents a single character).
 
-#### `makeTokenSet(clses*) -> rule`
+#### `makeTokenSet(names*) -> rule`
 
-Makes and returns a parser rule which matches a token whose class
-matches that of any of the given classes, consuming it upon success.
-Each argument is taken to be a token class, which is typically
-(but not necessarily) a record class. The result of successful parsing is
-whatever token was matched.
+Makes and returns a parser rule which matches a token whose name
+matches that of any of the given ones, consuming it upon success.
+Each argument is taken to be a token name, which must be a symbol.
+The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 
-#### `makeTokenSetComplement(clses*) -> rule`
+#### `makeTokenSetComplement(names*) -> rule`
 
-Makes and returns a parser rule which matches a token whose class
+Makes and returns a parser rule which matches a token whose name
 matches none of any of the given tokens, consuming it upon success.
-Each argument is taken to be a token class, which is typically
-(but not necessarily) a record class. The result of successful parsing is
-whatever token was matched.
+Each argument is taken to be a token name, which must be a symbol.
+The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
 #### `stringFromTokenList(tokens) -> string`
 
-Takes a list of tokenizer-style character tokens (that is, records whose class
-names are each a single character long), returning the result of concatenating
-all the characters together in order.
+Takes a list of tokenizer-style character tokens (that is, records whose
+names are each a single-character-long symbols), returning the result of
+concatenating all the characters together in order, as a string.
 
 This function is intended to aid in the building of tokenizers.
 
 #### `symbolFromTokenList(tokens) -> symbol`
 
-Like `stringFromTokenList`, except returns an interned symbol.
+Like `stringFromTokenList`, except returns an interned symbol instead of
+a string.
 
 #### Rule: `any`
 

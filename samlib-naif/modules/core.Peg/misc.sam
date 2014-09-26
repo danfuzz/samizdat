@@ -20,10 +20,10 @@ import ./PegTokenSetComplement :: makeTokenSetComplement;
 ## Private Definitions
 ##
 
-## Helper for `makeCharSet*`, which takes a string and produces a
-## list of token classes for the characters.
-fn classListFromString(string) {
-    return string.collect({ ch -> @@(ch.toSymbol()) })
+## Helper for `makeCharSet*` and `makeString`, which takes a string and
+## produces a list of token names for the characters.
+fn nameListFromString(string) {
+    return string.collect { ch -> ch.toSymbol() }
 };
 
 
@@ -50,18 +50,18 @@ export fn apply(rule, input) {
 export fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
-    return makeTokenSet(classListFromString("".cat(strings*))*)
+    return makeTokenSet(nameListFromString("".cat(strings*))*)
 };
 
 ## Documented in spec.
 export fn makeCharSetComplement(strings*) {
     ## See comment in `makeCharSet`.
-    return makeTokenSetComplement(classListFromString("".cat(strings*))*)
+    return makeTokenSetComplement(nameListFromString("".cat(strings*))*)
 };
 
 ## Documented in spec.
 export fn makeString(string) {
-    def resultType = @@(string.toSymbol());
+    def resultType = string.toSymbol();
 
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }
@@ -75,8 +75,8 @@ export fn makeString(string) {
     ## which allows us to minimize code duplication.
 
     ## Make a list of rules per character.
-    def clses = classListFromString(string);
-    def chars = clses.collect(makeToken);
+    def names = nameListFromString(string);
+    def chars = names.collect(makeToken);
 
     return makeSequence(chars*, makeResult(@(resultType){}))
 };

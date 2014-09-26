@@ -28,11 +28,10 @@ static zvalue lookup(zvalue env, const char *name) {
 }
 
 static zvalue externalSource(const char *name) {
-    zvalue cls = makeRecordClass(symbolFromUtf8(-1, "external"));
     zvalue data = symbolTableFromArgs(
         symbolFromUtf8(-1, "name"), stringFromUtf8(-1, name),
         NULL);
-    return makeRecord(cls, data);
+    return makeRecord(symbolFromUtf8(-1, "external"), data);
 }
 
 zvalue eval(zvalue env) {
