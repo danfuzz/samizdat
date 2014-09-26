@@ -128,8 +128,11 @@ METH_IMPL_1(Record, totalEq, other) {
     RecordInfo *info1 = getInfo(ths);
     RecordInfo *info2 = getInfo(other);
 
-    return (info1->nameIndex == info2->nameIndex)
-        && valEq(info1->data, info2->data);
+    if (info1->nameIndex != info2->nameIndex) {
+        return NULL;
+    } else {
+        return valEq(info1->data, info2->data);
+    }
 }
 
 // Documented in header.
