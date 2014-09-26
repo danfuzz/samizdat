@@ -73,13 +73,13 @@ zvalue mustNotYield(zvalue value)
  * `METH_APPLY(name, args)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed as a list.
  */
-#define METH_APPLY(name, args) funApply(SYM_NAME(name), args)
+#define METH_APPLY(name, args) funApply(SYM(name), args)
 
 /**
  * `METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed in the usual C style.
  */
-#define METH_CALL(name, ...) FUN_CALL(SYM_NAME(name), __VA_ARGS__)
+#define METH_CALL(name, ...) FUN_CALL(SYM(name), __VA_ARGS__)
 
 
 //
