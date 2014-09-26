@@ -57,7 +57,7 @@ MOD_INIT(lang_const) {
     #define DEF_TOKEN(name, str) \
         DEF_RECORD(name, str); \
         TOK_##name = datImmortalize( \
-            makeRecord(RECCLS_##name, EMPTY_SYMBOL_TABLE));
+            makeRecord(RECNAME_##name, EMPTY_SYMBOL_TABLE));
 
     #include "const-def.h"
 
