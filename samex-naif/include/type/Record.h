@@ -42,6 +42,11 @@ zvalue makeRecord(zvalue clsOrName, zvalue data);
 zvalue makeRecordClass(zvalue name);
 
 /**
+ * Returns whether the given `record` has the given `name`.
+ */
+bool recHasName(zvalue record, zvalue name);
+
+/**
  * Get the symbol index of the given `record`'s name.
  */
 zint recNameIndex(zvalue record);
