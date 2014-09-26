@@ -138,9 +138,9 @@ fn Bool_convert(value) {
     return value** & CODE_TRUE | CODE_FALSE;
 };
 
-## Converts a class. Only works on record classes.
+## Converts a class. Or rather, consistently fails to convert a class.
 fn Class_convert(value) {
-    return genCall("makeRecordClass", convert(value.get_name()))
+    die("Cannot convert class: \%q(value)")
 };
 
 ## Converts an int.
