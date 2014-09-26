@@ -37,6 +37,22 @@ def CODE_NULL = genCodeString("THE_NULL");
 ## Conversion of `true`.
 def CODE_TRUE = genCodeString("BOOL_TRUE");
 
+## Map of classes that can be converted, to their converted forms.
+def CLASS_MAP = {
+    (Bool) :       genCodeString("CLS_Bool"),
+    (Class):       genCodeString("CLS_Class"),
+    (Data):        genCodeString("CLS_Data"),
+    (Int):         genCodeString("CLS_Int"),
+    (List):        genCodeString("CLS_List"),
+    (Map):         genCodeString("CLS_Map"),
+    (Null):        genCodeString("CLS_Null"),
+    (Record):      genCodeString("CLS_Record"),
+    (String):      genCodeString("CLS_String"),
+    (Symbol):      genCodeString("CLS_Symbol"),
+    (SymbolTable): genCodeString("CLS_SymbolTable"),
+    (Value):       genCodeString("CLS_Value")
+};
+
 ## Encode the given values as a list of C-style `\xNN` escapes.
 fn hexEscape(values*) {
     return [ value in values ->
@@ -138,9 +154,10 @@ fn Bool_convert(value) {
     return value** & CODE_TRUE | CODE_FALSE;
 };
 
-## Converts a class. Or rather, consistently fails to convert a class.
+## Converts a class. Fails for anything but certain known core classes.
 fn Class_convert(value) {
-    die("Cannot convert class: \%q(value)")
+    return CLASS_MAP[value]
+        | die("Cannot convert class: \%q(value)")
 };
 
 ## Converts an int.
@@ -224,14 +241,11 @@ fn SymbolTable_convert(value) {
 
 ## Converts a record or an opaque core value.
 fn Value_convert(value) {
-    def data = (def dval = value.dataOf()) & convert(dval) | CODE_C_NULL;
-    def cls = get_class(value);
-
     if (!hasClass(value, Record)) {
         die("Cannot convert opaque non-data value: \%q(value)")
     };
 
-    return genCall("makeRecord", convert(cls), data)
+    return genCall("makeRecord", convert(value.name), convert(value.dataOf()))
 };
 
 ## Converts a value into C code to construct that value. This function
