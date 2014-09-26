@@ -22,34 +22,24 @@ Returns `this` if its name is as given, or void if not.
 
 ### Primitive Definitions
 
-#### `makeRecord(clsOrName, value?) -> .`
+#### `makeRecord(name, value?) -> .`
 
-Returns a record with the given class (a value of class `Class`) or name
-(a symbol), and optional data payload value (which must be a symbol table if
-present). If `value` is not specified, it defaults to `@{}` (the empty symbol
-table). These equivalences hold for Samizdat source code:
+Returns a record with the given name (a symbol) and optional data payload
+value (which must be a symbol table if present). If `value` is not specified,
+it defaults to `@{}` (the empty symbol table). These equivalences hold for
+Samizdat source code:
 
 ```
-@x(value)    is equivalent to  makeRecord(@x, value)
-@(x)(value)  is equivalent to  makeRecord(x, value)
+@x(value)       is equivalent to  makeRecord(@x, value)
+@(expr)(value)  is equivalent to  makeRecord(expr, value)
+@x{key: value}  is equivalent to  makeRecord(@x, @{key: value})
 ```
 
-It is a fatal error (terminating the runtime) to pass for `clsOrName`
-anything other than a record class or a symbol. It is also a fatal error
-to pass for `value` anything other than a symbol table.
+It is a fatal error (terminating the runtime) to pass for `name` anything
+other than a symbol. It is also a fatal error to pass for `value`
+anything other than a symbol table.
 
 **Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
-
-#### `makeRecordClass(name) -> class`
-
-Returns a `Class` instance which represents a record class
-with the given `name`. `name` is an arbitrary symbol.
-
-Two different calls to this function are guaranteed to return the same exact
-class when given identical `name` arguments.
-
-**Note:** This function is vestigial and will be removed in an upcoming
-patch.
 
 
 <br><br>
