@@ -24,11 +24,7 @@
     // No semicolon here, so that use sites require it.
 
 #define DEF_RECORD(name, str) \
-    extern zvalue RECNAME_##name \
-    // No semicolon here, so that use sites require it.
-
-#define DEF_TOKEN(name, str) \
-    DEF_RECORD(name, str); \
+    extern zvalue RECNAME_##name; \
     extern zvalue TOK_##name \
     // No semicolon here, so that use sites require it.
 
@@ -37,7 +33,6 @@
 #undef DEF_STRING
 #undef DEF_SYMBOL
 #undef DEF_RECORD
-#undef DEF_TOKEN
 
 
 #endif

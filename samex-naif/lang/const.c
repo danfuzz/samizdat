@@ -19,10 +19,7 @@
     SYM_DEF(name)
 
 #define DEF_RECORD(name, str) \
-    zvalue RECNAME_##name = NULL
-
-#define DEF_TOKEN(name, str) \
-    DEF_RECORD(name, str); \
+    zvalue RECNAME_##name = NULL; \
     zvalue TOK_##name = NULL
 
 #include "const-def.h"
@@ -30,7 +27,6 @@
 #undef DEF_STRING
 #undef DEF_SYMBOL
 #undef DEF_RECORD
-#undef DEF_TOKEN
 
 
 //
@@ -50,10 +46,7 @@ MOD_INIT(lang_const) {
         SYM_INIT_WITH(name, str)
 
     #define DEF_RECORD(name, str) \
-        RECNAME_##name = symbolFromUtf8(-1, str)
-
-    #define DEF_TOKEN(name, str) \
-        DEF_RECORD(name, str); \
+        RECNAME_##name = symbolFromUtf8(-1, str); \
         TOK_##name = datImmortalize( \
             makeRecord(RECNAME_##name, EMPTY_SYMBOL_TABLE))
 
