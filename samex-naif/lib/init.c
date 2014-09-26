@@ -76,12 +76,12 @@ static zvalue loadFile(zvalue path) {
     zvalue binPath = METH_CALL(cat, path, stringFromUtf8(-1, ".samb"));
     zvalue func;
 
-    if (valEq(ioFileType(binPath), SYM_file)) {
+    if (valEq(ioFileType(binPath), SYM(file))) {
         // We found a binary file.
         func = datEvalBinary(PRIMITIVE_ENVIRONMENT, binPath);
     } else {
         zvalue srcPath = METH_CALL(cat, path, stringFromUtf8(-1, ".sam"));
-        if (valEq(ioFileType(srcPath), SYM_file)) {
+        if (valEq(ioFileType(srcPath), SYM(file))) {
             // We found a source text file.
             zvalue text = ioReadFileUtf8(srcPath);
             zvalue tree = langSimplify0(langParseProgram0(text), NULL);
@@ -108,12 +108,12 @@ static zvalue getLibrary(zvalue libraryPath) {
     // Call `ModuleSystem::exports::main` to load and evaluate the
     // core library.
 
-    zvalue exports = get(moduleSystem, SYM_exports);
+    zvalue exports = get(moduleSystem, SYM(exports));
     if (exports == NULL) {
         die("Missing bootstrap `exports` binding.");
     }
 
-    zvalue mainFn = get(exports, SYM_main);
+    zvalue mainFn = get(exports, SYM(main));
     if (mainFn == NULL) {
         die("Missing bootstrap `main` binding");
     }

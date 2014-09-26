@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     }
     zvalue argsList = listFromArray(argc - 1, args);
 
-    zvalue runFunc = get(env, SYM_runCommandLine);
+    zvalue runFunc = get(env, SYM(runCommandLine));
     if (runFunc == NULL) {
         die("Missing `runCommandLine`.");
     }
