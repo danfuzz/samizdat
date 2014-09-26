@@ -16,12 +16,10 @@
 ## All the early globals. This is evaluated eagerly at load time.
 
 import ./primitives;
-import ./Class;
 import ./Value;
 
 def EARLY_GLOBALS = @{
     $primitives*,
-    $Class*,
     $Value*
 };
 
