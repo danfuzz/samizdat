@@ -15,8 +15,13 @@ help format values for more useful consumption.
 
 The class `Value` binds this to a function which returns a string consisting
 of the class name, value name (result of call to `.debugSymbol()`) if
-non-void, and low-level identifier (e.g. a memory address) of the value.
-Various of the core classes override this to provide more useful information.
+non-void, and low-level identifier (e.g. a memory address) of the value,
+all wrapped in `@<...>`. Various of the core classes override this to provide
+more useful information.
+
+As a convention, overriders are encouraged to return *either* a string that
+is either truly or very nearly Samizdat syntax, *or* a string surrounded
+by `@<...>`.
 
 **Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
