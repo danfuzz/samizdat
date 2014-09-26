@@ -43,6 +43,11 @@ extern void *datPayload(zvalue value);
 extern zvalue get_class(zvalue value);
 
 // Documented in header.
+zvalue get_name(zvalue value) {
+    return METH_CALL(get_name, value);
+}
+
+// Documented in header.
 char *valDebugString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");

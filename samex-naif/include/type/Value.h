@@ -75,6 +75,11 @@ SYM_DECL(totalEq);
 SYM_DECL(totalOrder);
 
 /**
+ * Calls the method `value.get_name()`.
+ */
+zvalue get_name(zvalue value);
+
+/**
  * Gets the "debug string" of the given value, as a `char *`. The caller
  * is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
