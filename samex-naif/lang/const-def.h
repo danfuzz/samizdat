@@ -13,10 +13,7 @@
 
 DEF_STRING(CH_DOLLAR,            "$");
 DEF_STRING(CH_DOT,               ".");
-DEF_STRING(CH_PLUS,              "+");
-DEF_STRING(CH_QMARK,             "?");
 DEF_STRING(CH_SLASH,             "/");
-DEF_STRING(CH_STAR,              "*");
 
 DEF_SYMBOL(CH_PLUS,              "+");
 DEF_SYMBOL(CH_QMARK,             "?");
