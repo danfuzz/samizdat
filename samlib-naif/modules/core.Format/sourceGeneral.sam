@@ -78,24 +78,19 @@ fn keyString(key) {
 };
 
 ## Stringifies a class.
-fn Class_sourceGeneral(value, adorn) {
-    ifValue { SPECIAL_VALUES.get(value) }
-        { string -> return string };
-
+fn Class_source(value, adorn) {
     def name = value.get_name();
 
-    return ifIs { eq(value.get_parent(), Record) }
-        { nameString("@@", name) }
-        { "@@(opaque ".cat(keyString(name), ")") };
+    return "".cat("@<class ", sourceGeneral(name, true), ">")
 };
 
 ## Stringifies an int.
-fn Int_sourceGeneral(value, adorn) {
+fn Int_source(value, adorn) {
     return intWithBase(value, 10)
 };
 
 ## Stringifies a list.
-fn List_sourceGeneral(value, adorn) {
+fn List_source(value, adorn) {
     def listElems = filterAll(value)
         { elem -> ", ".cat(sourceGeneral(elem, true)) };
 
@@ -103,7 +98,7 @@ fn List_sourceGeneral(value, adorn) {
 };
 
 ## Stringifies a map.
-fn Map_sourceGeneral(value, adorn) {
+fn Map_source(value, adorn) {
     def mapElems = filterAll(value)
         { mapping ->
             def k = keyString(mapping.get_key());
@@ -115,14 +110,14 @@ fn Map_sourceGeneral(value, adorn) {
 };
 
 ## Stringifies a string.
-fn String_sourceGeneral(value, adorn) {
+fn String_source(value, adorn) {
     def bodyChars = makeFilterGenerator(value)
         { ch -> stringChar(ch) };
     return adornIf(adorn, "\"", "".cat(bodyChars*), "\"")
 };
 
 ## Stringifies a symbol.
-fn Symbol_sourceGeneral(value, adorn) {
+fn Symbol_source(value, adorn) {
     ifIs { eq(adorn, false) }
         { return sourceGeneral(value.toString(), false) };
 
@@ -131,7 +126,7 @@ fn Symbol_sourceGeneral(value, adorn) {
 };
 
 ## Stringifies a symbol table.
-fn SymbolTable_sourceGeneral(value, adorn) {
+fn SymbolTable_source(value, adorn) {
     ## Convert to a map, and stringify that, with the requisite `@` prefix
     ## if requested.
     def mapString = sourceGeneral({}.cat(value), adorn);
@@ -139,10 +134,7 @@ fn SymbolTable_sourceGeneral(value, adorn) {
 };
 
 ## Stringifies a record or an opaque core value.
-fn Value_sourceGeneral(value, adorn) {
-    ifValue { SPECIAL_VALUES.get(value) }
-        { string -> return string };
-
+fn Value_source(value, adorn) {
     def cls = get_class(value);
     def prefix = nameString("@", cls.get_name());
 
@@ -164,17 +156,19 @@ fn Value_sourceGeneral(value, adorn) {
 ## Common code for the two `source*` variants, which takes an
 ## `adorn` flag.
 export fn sourceGeneral(value, adorn) {
-    return ifSwitch(
-        { get_class(value) },
+    return ifValueOr
+        { SPECIAL_VALUES.get(value) }
         {
-            (Class):       { . -> Class_sourceGeneral(value, adorn)       },
-            (Int):         { . -> Int_sourceGeneral(value, adorn)         },
-            (List):        { . -> List_sourceGeneral(value, adorn)        },
-            (Map):         { . -> Map_sourceGeneral(value, adorn)         },
-            (String):      { . -> String_sourceGeneral(value, adorn)      },
-            (Symbol):      { . -> Symbol_sourceGeneral(value, adorn)      },
-            (SymbolTable): { . -> SymbolTable_sourceGeneral(value, adorn) }
-        },
-        { . -> Value_sourceGeneral(value, adorn) }
-    )
+            ifSwitch({ get_class(value) },
+                {
+                    (Class):       { . -> Class_source(value, adorn)       },
+                    (Int):         { . -> Int_source(value, adorn)         },
+                    (List):        { . -> List_source(value, adorn)        },
+                    (Map):         { . -> Map_source(value, adorn)         },
+                    (String):      { . -> String_source(value, adorn)      },
+                    (Symbol):      { . -> Symbol_source(value, adorn)      },
+                    (SymbolTable): { . -> SymbolTable_source(value, adorn) }
+                },
+                { . -> Value_source(value, adorn) })
+        }
 };
