@@ -23,16 +23,16 @@ fn catVarRefs(nodes*) {
 ## `node.get_varRefs()`: Method that returns free variable references of
 ## `node`, as list of names.
 export fn get_varRefs(node) {
-    return switch (get_class(node)) {
-        @@apply: {
+    return switch (node.name) {
+        @apply: {
             catVarRefs(node::function, node::values)
         };
 
-        @@call: {
+        @call: {
             catVarRefs(node::function, node::values*)
         };
 
-        @@closure: {
+        @closure: {
             if (def refs = node::varRefs) {
                 ## Already calculated for this node.
                 return refs
@@ -77,42 +77,42 @@ export fn get_varRefs(node) {
             {}.cat(statementRefs*).keyList();
         };
 
-        @@closureRef: {
+        @closureRef: {
             node::varRefs
         };
 
-        @@fetch: {
+        @fetch: {
             get_varRefs(node::target)
         };
 
-        @@store: {
+        @store: {
             catVarRefs(node::target, node::value)
         };
 
-        @@varRef: {
+        @varRef: {
             [node::name]
         };
 
-        @@maybe:
-        @@noYield: {
+        @maybe:
+        @noYield: {
             get_varRefs(node::value)
         };
 
-        @@varDef:
-        @@varDefMutable: {
+        @varDef:
+        @varDefMutable: {
             (def v = node::value) & get_varRefs(v) | []
         };
 
-        @@importModule:
-        @@importModuleSelection:
-        @@importResource: {
+        @importModule:
+        @importModuleSelection:
+        @importResource: {
             def statements = makeDynamicImport(node);
             catVarRefs(statements*)
         };
 
-        @@literal:
-        @@literalRef:
-        @@void: {
+        @literal:
+        @literalRef:
+        @void: {
             []
         }
     }
