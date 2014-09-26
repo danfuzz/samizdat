@@ -1032,7 +1032,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { "".cat(strings*).collect { ch -> @@(ch.toSymbol()) } }
+        { "".cat(strings*).collect { ch -> ch.toSymbol() } }
     |
         tokens = parPexToken+
         { tokens.collect({ n -> n::value }) }

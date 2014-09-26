@@ -29,7 +29,7 @@ fn PegTokenSet.parse(box, input, items*) {
 
     return? ifValue { input.nextValue(var result) }
         { newInput ->
-            ifIs { data::set.get(get_class(result)) }
+            ifIs { data::set.get(result.get_name()) }
                 {
                     box* := result;
                     newInput
@@ -47,18 +47,18 @@ export fn makeToken(cls) {
     ## This is just uses a single-item token set. The performance difference
     ## between that and doing a more special-case single item class check is
     ## probably negligible.
-    return makeTokenSet(cls)
+    return makeTokenSet(cls.get_name())
 };
 
 ## Documented in spec.
-export fn makeTokenSet(clses*) {
-    ifIs { eq(clses, []) }
+export fn makeTokenSet(names*) {
+    ifIs { eq(names, []) }
         {
             ## Trivial case: Empty set, so it can never succeed.
             return fail
         };
 
-    def set = {clses*: true};  ## A set-like map of all the token classes.
+    def set = {names*: true};  ## A set-like map of all the token classes.
 
     return makeObject(PegTokenSet, SECRET, @{set})
 };

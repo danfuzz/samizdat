@@ -135,7 +135,7 @@ def parLiteral = makeMainChoice(
     makeSequence(
         makeToken(@@"@"),
         parIdentifierSymbol,
-        makeLookaheadFailure(makeTokenSet(@@"(", @@"{")),
+        makeLookaheadFailure(makeTokenSet(@"(", @"{")),
         makeCode { ., symbol, . -> symbol }));
 
 ## Documented in spec.
@@ -389,7 +389,7 @@ parAssignExpression := makeMainSequence(
 
 ## Documented in spec.
 def parYieldOrNonlocal = makeMainSequence(
-    makeTokenSet(@@break, @@continue, @@return, @@yield),
+    makeTokenSet(@break, @continue, @return, @yield),
     makeRepeat(makeToken(@@"?"), 0, 1),
     makeChoice(
         makeSequence(
@@ -454,7 +454,7 @@ def parFormal = makeMainSequence(
             makeResult(@{}))),
     makeChoice(
         makeSequence(
-            makeTokenSet(@@"?", @@"*", @@"+"),
+            makeTokenSet(@"?", @"*", @"+"),
             makeCode { ., r -> @{repeat: get_className(r)} }),
         makeResult(@{})),
     makeCode { name, repeat -> @{name*, repeat*} });
@@ -792,12 +792,11 @@ def parPexSet = makeMainSequence(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
-                "".cat(strings*).collect
-                    { ch -> @@(ch.toSymbol()) }
+                "".cat(strings*).collect { ch -> ch.toSymbol() }
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),
-            makeCode { tokens -> tokens.collect({ n -> n::value }) }),
+            makeCode { tokens -> tokens.collect({ n -> n::value.get_name() }) }),
         makeResult([])),
     makeToken(@@"]"),
     makeCode { ., type, terminals, . -> @(type){values: terminals} });
@@ -836,7 +835,7 @@ def parPexRepeat = makeMainSequence(
     parPexTerm,
     makeChoice(
         makeSequence(
-            makeTokenSet(@@"?", @@"*", @@"+"),
+            makeTokenSet(@"?", @"*", @"+"),
             makeCode { pex, repeat ->
                 @(PEX_TYPES.get(repeat.get_name())){pex}
             }),
@@ -845,7 +844,7 @@ def parPexRepeat = makeMainSequence(
 ## Documented in spec.
 def parPexLookahead = makeMainChoice(
     makeSequence(
-        makeTokenSet(@@"&", @@"!"),
+        makeTokenSet(@"&", @"!"),
         parPexRepeat,
         makeCode { lookahead, pex ->
             @(PEX_TYPES.get(lookahead.get_name())){pex}

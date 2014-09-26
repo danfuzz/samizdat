@@ -78,21 +78,19 @@ indicates that a token of the given class is to be matched.
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
 a single character).
 
-#### `@tokenSet{values: [class*]}`
+#### `@tokenSet{values: [name*]}`
 
 Representation of a token set rule. This is also used for matching
-character sets in tokenizers. `values` must be a list of classes (class values
-per se; same as the payload of `@token` nodes), which is taken to be an
-unordered set of token classes to match.
+character sets in tokenizers. `values` must be a list of names (symbols),
+which is taken to be an unordered set of token names to match.
 
 This corresponds to the syntax `[@token1 @token2 @etc]` or `["charsToMatch"]`.
 
-#### `@tokenSetComplement{values: [class*]}`
+#### `@tokenSetComplement{values: [name*]}`
 
 Representation of a token set complement rule. This is also used for matching
-character set complements in tokenizers. `values` must be a list of classes
-(class values per se; same as the payload of `@token` nodes), which is taken
-to be an unordered set of token classes to not-match.
+character set complements in tokenizers. `values` must be a list of names
+(symbols), which is taken to be an unordered set of token names to not-match.
 
 This corresponds to the syntax `[! @token1 @token2 @etc]` or
 `[! "charsToNotMatch"]`.

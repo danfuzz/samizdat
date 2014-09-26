@@ -21,11 +21,16 @@ import ./PegTokenSetComplement :: makeTokenSetComplement;
 ##
 
 ## Helper for `makeCharSet*`, which takes a string and produces a
+## list of token names for the characters.
+fn nameListFromString(string) {
+    return string.collect { ch -> ch.toSymbol() }
+};
+
+## Helper for `makeString`, which takes a string and produces a
 ## list of token classes for the characters.
 fn classListFromString(string) {
     return string.collect({ ch -> @@(ch.toSymbol()) })
 };
-
 
 ##
 ## Exported Definitions
@@ -50,13 +55,13 @@ export fn apply(rule, input) {
 export fn makeCharSet(strings*) {
     ## Make a combined string, passing it to the general token set constructor,
     ## which then splays all the characters out as a set of map keys.
-    return makeTokenSet(classListFromString("".cat(strings*))*)
+    return makeTokenSet(nameListFromString("".cat(strings*))*)
 };
 
 ## Documented in spec.
 export fn makeCharSetComplement(strings*) {
     ## See comment in `makeCharSet`.
-    return makeTokenSetComplement(classListFromString("".cat(strings*))*)
+    return makeTokenSetComplement(nameListFromString("".cat(strings*))*)
 };
 
 ## Documented in spec.

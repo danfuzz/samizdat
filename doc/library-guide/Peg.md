@@ -237,23 +237,21 @@ This is also used to match single characters in tokenizers.
 This is equivalent to the syntactic form `{: @token :}` or `{: "ch" :}`
 (where `ch` represents a single character).
 
-#### `makeTokenSet(clses*) -> rule`
+#### `makeTokenSet(names*) -> rule`
 
-Makes and returns a parser rule which matches a token whose class
-matches that of any of the given classes, consuming it upon success.
-Each argument is taken to be a token class, which is typically
-(but not necessarily) a record class. The result of successful parsing is
-whatever token was matched.
+Makes and returns a parser rule which matches a token whose name
+matches that of any of the given ones, consuming it upon success.
+Each argument is taken to be a token name, which must be a symbol.
+The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [@token1 @token2 @etc] :}`.
 
-#### `makeTokenSetComplement(clses*) -> rule`
+#### `makeTokenSetComplement(names*) -> rule`
 
-Makes and returns a parser rule which matches a token whose class
+Makes and returns a parser rule which matches a token whose name
 matches none of any of the given tokens, consuming it upon success.
-Each argument is taken to be a token class, which is typically
-(but not necessarily) a record class. The result of successful parsing is
-whatever token was matched.
+Each argument is taken to be a token name, which must be a symbol.
+The result of successful parsing is whatever token was matched.
 
 This is equivalent to the syntactic form `{: [! @token1 @token2 @etc] :}`.
 
