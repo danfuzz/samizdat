@@ -11,9 +11,9 @@
 // `DEF_TOKEN(name, "string")` -- just a token; symbol assumed to exist.
 //
 
-DEF_STRING(CH_DOLLAR,            "$");
-DEF_STRING(CH_DOT,               ".");
-DEF_STRING(CH_SLASH,             "/");
+DEF_STRING(CH_DOLLAR, "$");
+DEF_STRING(CH_DOT,    ".");
+DEF_STRING(CH_SLASH,  "/");
 
 DEF_SYMBOL(CH_AT,                 "@");
 DEF_SYMBOL(CH_ATAT,               "@@");
