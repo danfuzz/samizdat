@@ -573,21 +573,6 @@ DEF_PARSE(list) {
 }
 
 // Documented in spec.
-DEF_PARSE(type) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_ATAT);
-
-    zvalue name = PARSE(identifierSymbol);
-    if (name != NULL) {
-        return makeLiteral(makeRecordClass(get(name, SYM_value)));
-    }
-
-    name = PARSE_OR_REJECT(parenExpression);
-    return makeCall(REFS(makeRecordClass), listFrom1(name));
-}
-
-// Documented in spec.
 DEF_PARSE(fullClosure) {
     MARK();
 
@@ -654,7 +639,6 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(map);             }
     if (result == NULL) { result = PARSE(list);            }
     if (result == NULL) { result = PARSE(record);          }
-    if (result == NULL) { result = PARSE(type);            }
     if (result == NULL) { result = PARSE(fullClosure);     }
     if (result == NULL) { result = PARSE(parenExpression); }
 

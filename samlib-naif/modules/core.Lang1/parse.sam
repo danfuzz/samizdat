@@ -243,21 +243,6 @@ def parList = makeMainSequence(
     });
 
 ## Documented in spec.
-def parType = makeMainSequence(
-    makeToken(@"@@"),
-    makeChoice(
-        makeSequence(
-            parIdentifierSymbol,
-            makeCode { ., name ->
-                makeLiteral(@@(name::value))
-            }),
-        makeSequence(
-            parParenExpression,
-            makeCode { ., name ->
-                makeCall(REFS::makeRecordClass, name)
-            })));
-
-## Documented in spec.
 def parFullClosure = makeMainSequence(
     makeLookaheadSuccess(makeToken(@"{")),
     makeParserThunk { . -> parRawClosure },
@@ -296,7 +281,7 @@ def parBasicNullaryClosure = makeMainSequence(
 ## Documented in spec.
 def parTerm = makeMainChoice(
     parVarLvalue, parVarRef, parLiteral, parSymbolTable, parMap,
-    parList, parRecord, parType, parFullClosure, parParenExpression,
+    parList, parRecord, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     makeSequence(
