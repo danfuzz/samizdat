@@ -14,7 +14,7 @@ import ./PegFail :: fail;
 ##
 ## Class Definition
 ##
-## Payload: {set: {class*: null}}
+## Payload: {set: {names*: null}}
 
 ## Secret used to control access to this class.
 def SECRET = @secret.makeAnonymous();
@@ -43,11 +43,15 @@ fn PegTokenSet.parse(box, input, items*) {
 ##
 
 ## Documented in spec.
-export fn makeToken(cls) {
+export fn makeToken(name) {
     ## This is just uses a single-item token set. The performance difference
     ## between that and doing a more special-case single item class check is
     ## probably negligible.
-    return makeTokenSet(cls.get_name())
+    ##
+    ## TODO: Remove the `ifIs` once names are always passed as symbols.
+    return ifIs { hasClass(name, Class) }
+        { makeTokenSet(name.get_name()) }
+        { makeTokenSet(name) }
 };
 
 ## Documented in spec.

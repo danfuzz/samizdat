@@ -225,12 +225,11 @@ string. The result of successful parsing is a valueless token with
 
 This is equivalent to the syntactic form `{: "string" :}`.
 
-#### `makeToken(cls) -> rule`
+#### `makeToken(name) -> rule`
 
 Makes and returns a parser rule which matches any token with the same
-class as given. `cls` is an arbitrary class, which is typically (but not
-necessarily) a record class. Upon success, the rule consumes and yields the
-matched token.
+name as given. `name` must be a symbol. Upon success, the rule consumes and
+yields the matched token.
 
 This is also used to match single characters in tokenizers.
 

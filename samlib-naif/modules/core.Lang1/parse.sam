@@ -758,7 +758,7 @@ def parPexToken = makeMainSequence(
     makeToken(@@"@"),
     parIdentifierSymbol,
     makeCode { ., type ->
-        @token{value: @@(type::value)}
+        @token{value: type::value}
     });
 
 ## Documented in spec.
@@ -796,7 +796,7 @@ def parPexSet = makeMainSequence(
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),
-            makeCode { tokens -> tokens.collect({ n -> n::value.get_name() }) }),
+            makeCode { tokens -> tokens.collect({ n -> n::value }) }),
         makeResult([])),
     makeToken(@@"]"),
     makeCode { ., type, terminals, . -> @(type){values: terminals} });

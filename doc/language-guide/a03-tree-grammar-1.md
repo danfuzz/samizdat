@@ -993,7 +993,7 @@ def parPexString = {:
 def parPexToken = {:
     @"@"
     type = parIdentifierSymbol
-    { @token{value: @@(type::value)} }
+    { @token{value: type::value} }
 :};
 
 ## Parses a string or character range parsing expression, used when defining

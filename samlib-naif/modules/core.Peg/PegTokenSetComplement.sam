@@ -14,7 +14,7 @@ import ./PegAny :: any;
 ##
 ## Class Definition
 ##
-## Payload: {set: {class*: null}}
+## Payload: {set: {names*: null}}
 
 ## Secret used to control access to this class.
 def SECRET = @secret.makeAnonymous();
