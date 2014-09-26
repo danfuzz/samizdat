@@ -17,10 +17,6 @@
 // Private Definitions
 //
 
-/** Array mapping symbol indices to record classes. */
-static zvalue theClasses[DAT_MAX_SYMBOLS];
-
-
 /**
  * Payload data for all records.
  */
@@ -42,22 +38,6 @@ static RecordInfo *getInfo(zvalue value) {
     return (RecordInfo *) datPayload(value);
 }
 
-/** Vestigial record class creator. */
-static zvalue makeRecordClass(zvalue name) {
-    // `symbolIndex` will bail if `name` isn't a symbol.
-    zint index = symbolIndex(name);
-    zvalue result = theClasses[index];
-
-    if (result != NULL) {
-        return result;
-    }
-
-    result = makeClass(name, CLS_Record, NULL, NULL, NULL);
-    theClasses[index] = result;
-
-    return result;
-}
-
 
 //
 // Exported Definitions
@@ -71,7 +51,6 @@ zvalue dataOf(zvalue value) {
 // Documented in header.
 zvalue makeRecord(zvalue name, zvalue data) {
     zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
-    zvalue cls = makeRecordClass(name);
 
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
@@ -79,7 +58,7 @@ zvalue makeRecord(zvalue name, zvalue data) {
         assertHasClass(data, CLS_SymbolTable);
     }
 
-    zvalue result = datAllocValue(cls, sizeof(RecordInfo));
+    zvalue result = datAllocValue(CLS_Record, sizeof(RecordInfo));
     RecordInfo *info = getInfo(result);
 
     info->name = name;
