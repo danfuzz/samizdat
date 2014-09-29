@@ -177,7 +177,7 @@ fn String_convert(value) {
 ## Converts a symbol.
 fn Symbol_convert(value) {
     if (!value.isInterned()) {
-        die("Cannot convert anonymous symbol: \%q(value)")
+        die("Cannot convert unlisted symbol: \%q(value)")
     };
 
     ## See comment in `String_convert`.
