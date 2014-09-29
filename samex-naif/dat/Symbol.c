@@ -146,7 +146,7 @@ static char *callReporter(void *state) {
 }
 
 /**
- * Helper for `symbolFromUtf8` and `anonymousSymbolFromUtf8`, which
+ * Helper for `symbolFromUtf8` and `unlistedSymbolFromUtf8`, which
  * does all the real work.
  */
 static zvalue anySymbolFromUtf8(zint utfBytes, const char *utf,
@@ -205,7 +205,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 //
 
 // Documented in header.
-zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
+zvalue unlistedSymbolFromUtf8(zint utfBytes, const char *utf) {
     return anySymbolFromUtf8(utfBytes, utf, false);
 }
 

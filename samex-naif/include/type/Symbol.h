@@ -25,7 +25,7 @@ SYM_DECL(isInterned);
 /**
  * Like `symbolFromUtf8`, except this makes an unlisted (uninterned) symbol.
  */
-zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf);
+zvalue unlistedSymbolFromUtf8(zint utfBytes, const char *utf);
 
 /**
  * Gets the pre-existing symbol with the given index.

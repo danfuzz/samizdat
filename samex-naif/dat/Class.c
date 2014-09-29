@@ -346,7 +346,7 @@ MOD_INIT(objectModel) {
     CLS_SymbolTable = allocClass();
     CLS_Builtin     = allocClass();
 
-    theCoreSecret = anonymousSymbolFromUtf8(-1, "coreSecret");
+    theCoreSecret = unlistedSymbolFromUtf8(-1, "coreSecret");
     datImmortalize(theCoreSecret);
 
     classInitHere(CLS_Class,       CLS_Value, "Class");
