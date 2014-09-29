@@ -167,8 +167,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, totalOrder),
             NULL));
 
-    FUN_Record_makeRecord =
-        datImmortalize(FUNC_VALUE(Record_makeRecord));
+    FUN_Record_makeRecord = datImmortalize(FUNC_VALUE(Record_makeRecord));
 }
 
 // Documented in header.

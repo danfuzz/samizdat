@@ -42,19 +42,16 @@ Compares two classes. Two different classes are never equal.
 
 Compares two classes for order, as follows:
 
-* Core (primitive) classes order earlier than all other classes.
-* Record classes order earlier than everything but core classes.
-* Object classes order after all other classes.
+* Core (primitive) classes order earlier than other classes.
+* Within each category (core or other), classes are ordered by name.
+* Given two different classes with the same name (which can happen only with
+  non-core classes), the result of ordering is void (that is, the order
+  undefined).
 
-Within each category, classes are ordered by name. Given two different
-opaque classes with the same name (which can happen only with object
-classes), the result is void (that is, the order undefined).
-
-This last bit means it is okay to use any mix of core, record, and
-object classes as the keys in a map, *except* that it is invalid
-to use two different object classes that have the same name. This
-restriction is in place because there is no consistent and stable way
-to sort such classes.
+This last bit means it is okay to use any mix of classes as
+the keys in a map, *except* that it is invalid to use two different non-core
+classes that have the same name. This restriction is in place because there is
+no consistent and stable way to order such classes.
 
 
 <br><br>
