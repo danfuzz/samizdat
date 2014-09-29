@@ -65,7 +65,7 @@ def BOOTSTRAP_MODULES = {
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @secret.makeAnonymous();
+def SECRET = @secret.toUnlisted();
 
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = "core.Lang2";

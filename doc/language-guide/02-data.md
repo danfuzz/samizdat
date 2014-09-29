@@ -28,14 +28,15 @@ functions in a class's table of methods, and symbols themselves can be
 invoked as functions to perform method dispatch on the first argument of
 the function call. Every symbol has a string name.
 
-There are two "flavors" of symbol, interned and anonymous. An interned
+There are two "flavors" of symbol, interned and unlisted. An interned
 symbol is one that can be identified uniquely by its name. That is, there
 is a one-to-one correspondence between names and interned symbols.
-An anonymous symbol has a name, but it is only possible to refer to it
-by identity; that is, one can create new anonymous symbols and pass them
+An unlisted symbol has a name, but it is only possible to refer to it
+by identity; that is, one can create new unlisted symbols and pass them
 around, but &mdash; unlike interned symbols &mdash; one cannot get a
-reference to a pre-existing anonymous symbol other than being passed it
-(e.g. as an argument to a call).
+reference to a pre-existing unlisted symbol other than being passed it
+(e.g. as an argument to a call). The name is meant to be suggestive of
+unlisted phone numbers.
 
 While symbols are often used implicitly, there is also literal syntax
 for referring to them. Refer to an interned symbol with an at-sign (`@`),

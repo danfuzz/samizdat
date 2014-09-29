@@ -15,7 +15,7 @@
 ## Payload: {function: func}
 
 ## Secret used to control access to this class.
-def SECRET = @secret.makeAnonymous();
+def SECRET = @secret.toUnlisted();
 
 ## Class being defined here.
 def PegCode = makeObjectClass(@PegCode, SECRET);

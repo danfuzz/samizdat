@@ -15,17 +15,17 @@
 /** Class value for in-model class `Symbol`. */
 extern zvalue CLS_Symbol;
 
-/** Method `.makeAnonymous()`: Documented in spec. */
-SYM_DECL(makeAnonymous);
+/** Method `.toUnlisted()`: Documented in spec. */
+SYM_DECL(toUnlisted);
 
 /** Method `.isInterned()`: Documented in spec. */
 SYM_DECL(isInterned);
 
 
 /**
- * Like `symbolFromUtf8`, except this makes an anonymous (uninterned) symbol.
+ * Like `symbolFromUtf8`, except this makes an unlisted (uninterned) symbol.
  */
-zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf);
+zvalue unlistedSymbolFromUtf8(zint utfBytes, const char *utf);
 
 /**
  * Gets the pre-existing symbol with the given index.

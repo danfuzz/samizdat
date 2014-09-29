@@ -24,7 +24,7 @@ import ./cache;
 ##
 
 ## Secret used to control access to this class.
-def SECRET = @secret.makeAnonymous();
+def SECRET = @secret.toUnlisted();
 
 ## Class being defined here.
 def InternalResolver = makeObjectClass(@InternalResolver, SECRET);

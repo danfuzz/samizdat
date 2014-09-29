@@ -42,7 +42,7 @@ SYM_DECL(imports);
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
  *
- * TODO: This should be defined as an anonymous symbol and *not* exported
+ * TODO: This should be defined as an unlisted symbol and *not* exported
  * in any way to the higher layer environment.
  */
 SYM_DECL(gcMark);

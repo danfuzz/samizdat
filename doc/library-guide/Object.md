@@ -5,7 +5,7 @@ Object
 ------
 
 The class `Object` provides data and behavior encapsulation. Encapsulation
-is achieved by using a secret symbol (generally an anonymous symbol), which
+is achieved by using a secret symbol (generally an unlisted symbol), which
 is required as an argument to `makeObject()` and which becomes a bound
 as a method to access a given class's private data.
 
@@ -25,7 +25,7 @@ secret of the given `cls`, or to pass a `value` that is not a symbol table.
 #### `makeObjectClass(name, secret) -> class`
 
 Makes a new object class with the given `name` and `secret`. `name` and
-`secret` must both a symbols. `secret` should generally be an anonymous
+`secret` must both a symbols. `secret` should generally be an unlisted
 symbol, in order to have proper encapsulation.
 
 **Note:** If you call this function twice with identical arguments, the

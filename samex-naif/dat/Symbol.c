@@ -146,7 +146,7 @@ static char *callReporter(void *state) {
 }
 
 /**
- * Helper for `symbolFromUtf8` and `anonymousSymbolFromUtf8`, which
+ * Helper for `symbolFromUtf8` and `unlistedSymbolFromUtf8`, which
  * does all the real work.
  */
 static zvalue anySymbolFromUtf8(zint utfBytes, const char *utf,
@@ -205,7 +205,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 //
 
 // Documented in header.
-zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
+zvalue unlistedSymbolFromUtf8(zint utfBytes, const char *utf) {
     return anySymbolFromUtf8(utfBytes, utf, false);
 }
 
@@ -294,7 +294,7 @@ METH_IMPL_0(Symbol, isInterned) {
 }
 
 // Documented in header.
-METH_IMPL_0(Symbol, makeAnonymous) {
+METH_IMPL_0(Symbol, toUnlisted) {
     SymbolInfo *info = getInfo(ths);
     return makeSymbol0(info->s, false);
 }
@@ -316,7 +316,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 
     if (ths == other) {
         // Note: This check is necessary to keep the `ZSAME` case below from
-        // incorrectly claiming an anonymous symbol is unordered with
+        // incorrectly claiming an unlisted symbol is unordered with
         // respect to itself.
         return INT_0;
     }
@@ -334,7 +334,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
         case ZLESS: { return INT_NEG1; }
         case ZMORE: { return INT_1;    }
         case ZSAME: {
-            // Per spec, two different anonymous symbols with the same name
+            // Per spec, two different unlisted symbols with the same name
             // are unordered with respect to each other.
             return interned ? INT_0 : NULL;
         }
@@ -346,7 +346,7 @@ MOD_INIT(Symbol) {
     MOD_USE(Value);
 
     SYM_INIT(isInterned);
-    SYM_INIT(makeAnonymous);
+    SYM_INIT(toUnlisted);
 
     // Note: The `objectModel` module initializes `CLS_Symbol`.
     classBindMethods(CLS_Symbol,
@@ -356,8 +356,8 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, isInterned),
-            METH_BIND(Symbol, makeAnonymous),
             METH_BIND(Symbol, toString),
+            METH_BIND(Symbol, toUnlisted),
             METH_BIND(Symbol, totalEq),
             METH_BIND(Symbol, totalOrder),
             NULL));
@@ -367,7 +367,7 @@ MOD_INIT(Symbol) {
 zvalue CLS_Symbol = NULL;
 
 // Documented in header.
-SYM_DEF(makeAnonymous);
+SYM_DEF(toUnlisted);
 
 // Documented in header.
 SYM_DEF(isInterned);

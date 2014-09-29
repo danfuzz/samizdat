@@ -24,14 +24,14 @@ note("Symbols");
 msg(@foo);
 msg(@"foo");
 msg(@"++ blort ++");
-msg(@anon.makeAnonymous());
+msg(@anon.toUnlisted());
 
 ifNot { eq(@foo, @"foo") }
     { die("Expected same!") };
 
-def anon = @foo.makeAnonymous();
+def anon = @foo.toUnlisted();
 ifIs { eq(@foo, anon) }
-    { die("Expected interned and anonymous to be different!") };
+    { die("Expected interned and unlisted to be different!") };
 
-ifIs { eq(anon, anon.makeAnonymous()) }
-    { die("Expected anonymous and anonymous to be different!") };
+ifIs { eq(anon, anon.toUnlisted()) }
+    { die("Expected unlisted and unlisted to be different!") };

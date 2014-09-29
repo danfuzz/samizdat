@@ -23,7 +23,7 @@ fn msg(label, value) {
 ## Main demos
 ##
 
-def blortSecret = @blort.makeAnonymous();
+def blortSecret = @blort.toUnlisted();
 def Blort = makeObjectClass(@Blort, blortSecret);
 fn Blort.whatIs() {
     note("I am a Blort.");
@@ -36,7 +36,7 @@ def AnotherBlort = makeObjectClass(@Blort, blortSecret);
 ifIs { eq(Blort, AnotherBlort) }
     { die("Should be different classes!") };
 
-def fizmoSecret = @fizmo.makeAnonymous();
+def fizmoSecret = @fizmo.toUnlisted();
 def Fizmo = makeObjectClass(@Fizmo, fizmoSecret);
 fn Fizmo.whatIs() {
     note("I am a Fizmo.");
