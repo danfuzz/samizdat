@@ -149,7 +149,8 @@ static char *callReporter(void *state) {
  * Helper for `symbolFromUtf8` and `anonymousSymbolFromUtf8`, which
  * does all the real work.
  */
-zvalue anySymbolFromUtf8(zint utfBytes, const char *utf, bool interned) {
+static zvalue anySymbolFromUtf8(zint utfBytes, const char *utf,
+        bool interned) {
     zchar chars[DAT_MAX_SYMBOLS];
     zstring name = { utf8DecodeStringSize(utfBytes, utf), chars };
 
@@ -160,6 +161,15 @@ zvalue anySymbolFromUtf8(zint utfBytes, const char *utf, bool interned) {
     } else {
         return makeSymbol0(name, false);
     }
+}
+
+/**
+ * Shared implementation of `eq`, given valid symbol values.
+ */
+static bool uncheckedEq(zvalue symbol1, zvalue symbol2) {
+    // It's safe to use `==`, since by definition two different symbol
+    // references must be different symbols.
+    return symbol1 == symbol2;
 }
 
 
@@ -203,10 +213,7 @@ zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf) {
 bool symbolEq(zvalue symbol1, zvalue symbol2) {
     assertHasClass(symbol1, CLS_Symbol);
     assertHasClass(symbol2, CLS_Symbol);
-
-    // It's safe to use `==` since by definition two different symbol
-    // references must be different symbols
-    return symbol1 == symbol2;
+    return uncheckedEq(symbol1, symbol2);
 }
 
 // Documented in header.
@@ -298,6 +305,12 @@ METH_IMPL_0(Symbol, toString) {
 }
 
 // Documented in header.
+METH_IMPL_1(Symbol, totalEq, other) {
+    assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
+    return uncheckedEq(ths, other) ? ths : NULL;
+}
+
+// Documented in header.
 METH_IMPL_1(Symbol, totalOrder, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
 
@@ -345,6 +358,7 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, isInterned),
             METH_BIND(Symbol, makeAnonymous),
             METH_BIND(Symbol, toString),
+            METH_BIND(Symbol, totalEq),
             METH_BIND(Symbol, totalOrder),
             NULL));
 }
