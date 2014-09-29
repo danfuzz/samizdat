@@ -13,13 +13,13 @@ language constructs.
 
 #### `.isInterned() -> symbol | void`
 
-Returns `this` if it is interned (that is, non-anonymous). Returns void
+Returns `this` if it is interned (that is, *not* unlisted). Returns void
 otherwise.
 
 #### `.makeAnonymous() -> symbol`
 
-Returns a new anonymous symbol whose name is the same as `this`'s. This
-*always* returns a fresh symbol. (That is, if given an anonymous symbol,
+Returns a new unlisted symbol whose name is the same as `this`'s. This
+*always* returns a fresh symbol. (That is, if given an unlisted symbol,
 this method does *not* just return `this`.)
 
 #### `.toString() -> string`
@@ -32,7 +32,7 @@ Returns the name of the symbol as a string.
 #### `.debugString() -> string`
 
 Returns a string representation of the symbol. This includes a suggestive
-prefix before the name of `@` for interned symbols or `@+` for anonymous
+prefix before the name of `@` for interned symbols or `@+` for unlisted
 symbols.
 
 #### `.debugSymbol() -> symbol`
@@ -49,14 +49,15 @@ Default implementation.
 
 #### `.totalEq(other) -> builtin | void`
 
-Default implementation.
+Returns `this` if `other` is a reference to the same symbol, or void if
+not.
 
 #### `.totalOrder(other) -> int | void`
 
 Orders symbols by internedness (primary) and name (secondary), with
-interned symbols getting ordered *before* anonymous symbols. Two
-different anonymous symbols with the same name are considered unordered
-(not equal).
+interned symbols getting ordered *before* unlisted symbols. Two
+different unlisted symbols with the same name are considered unordered
+(but not equal).
 
 <br><br>
 ### Method Definitions: `Function` protocol

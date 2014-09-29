@@ -32,7 +32,7 @@ Compares two symbol tables for order. The size of the table is the major
 order (smaller is earlier). After that, the keys are compared as sorted
 lists. After that, corresponding values are compared in sorted-key order.
 
-**Note:** Because two different anonymous symbols that happen to have the
+**Note:** Because two different unlisted symbols that happen to have the
 same name are not considered ordered with respect to each other, it is
 possible for two symbol tables to also be unordered with respect to each
 other.
