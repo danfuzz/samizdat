@@ -185,7 +185,6 @@ static zvalue tokenizeIdentifier(ParseState *state) {
 
     switch (chars[0]) {
         case 'b': { if (valEq(name, SYM_break))    return TOK_break;    break; }
-        case 'c': { if (valEq(name, SYM_continue)) return TOK_continue; break; }
         case 'd': { if (valEq(name, SYM_def))      return TOK_def;      break; }
         case 'e': { if (valEq(name, SYM_export))   return TOK_export;   break; }
         case 'i': { if (valEq(name, SYM_import))   return TOK_import;   break; }
@@ -194,6 +193,11 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 't': { if (valEq(name, SYM_ztrue))    return TOK_ztrue;    break; }
         case 'v': { if (valEq(name, SYM_var))      return TOK_var;      break; }
         case 'y': { if (valEq(name, SYM_yield))    return TOK_yield;    break; }
+        case 'c': {
+                    if (valEq(name, SYM_class))    return TOK_class;
+                    if (valEq(name, SYM_continue)) return TOK_continue;
+                    break;
+        }
         case 'f': {
                     if (valEq(name, SYM_zfalse))   return TOK_zfalse;
                     if (valEq(name, SYM_fn))       return TOK_fn;
