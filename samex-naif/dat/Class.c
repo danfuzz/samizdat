@@ -24,13 +24,6 @@
 // Private Definitions
 //
 
-/** Constants identifying class category, used when sorting classes. */
-typedef enum {
-    CORE_CLASS = 0,
-    RECORD_CLASS,
-    OPAQUE_CLASS
-} ClassCategory;
-
 /** The `secret` value used for all core classes. */
 static zvalue theCoreSecret = NULL;
 
@@ -101,18 +94,11 @@ static zvalue allocClass(void) {
 }
 
 /**
- * Gets the category of a class (given its info), for sorting.
+ * Gets whether the given class is a core class. This is used for ordering
+ * classes.
  */
-static ClassCategory categoryOf(ClassInfo *info) {
-    zvalue secret = info->secret;
-
-    if (secret == theCoreSecret) {
-        return CORE_CLASS;
-    } else if (secret == NULL) {
-        return RECORD_CLASS;
-    } else {
-        return OPAQUE_CLASS;
-    }
+static bool isCoreClass(ClassInfo *info) {
+    return info->secret == theCoreSecret;
 }
 
 
@@ -262,7 +248,7 @@ METH_IMPL_0(Class, debugString) {
     } else if (classEqUnchecked(info->parent, CLS_Record)) {
         label = "record";
     } else {
-        die("Shouldn't happen: opaque class without secret.");
+        die("Shouldn't happen: non-core class without secret.");
     }
 
     return METH_CALL(cat,
@@ -314,14 +300,14 @@ METH_IMPL_1(Class, totalOrder, other) {
     ClassInfo *info2 = getInfo(other);
     zvalue name1 = info1->name;
     zvalue name2 = info2->name;
-    ClassCategory cat1 = categoryOf(info1);
-    ClassCategory cat2 = categoryOf(info2);
+    bool core1 = isCoreClass(info1);
+    bool core2 = isCoreClass(info2);
 
     // Compare categories for major order.
 
-    if (cat1 < cat2) {
+    if (core1 && !core2) {
         return INT_NEG1;
-    } else if (cat1 > cat2) {
+    } else if ((!core1) && core2) {
         return INT_1;
     }
 
@@ -333,9 +319,13 @@ METH_IMPL_1(Class, totalOrder, other) {
     }
 
     // Names are the same. The order is not defined given two different
-    // opaque classes.
+    // non-core classes.
 
-    return (cat1 == OPAQUE_CLASS) ? NULL : INT_0;
+    if (core1 || core2) {
+        die("Shouldn't happen: Same-name-but-different core classes.");
+    }
+
+    return NULL;
 }
 
 /**
