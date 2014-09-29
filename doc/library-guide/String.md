@@ -11,7 +11,7 @@ String
 
 Returns an interned symbol whose name is `this`.
 
-**Note:** If you want an anonymous symbol, call `.toUnlisted()` on a
+**Note:** If you want an unlisted symbol, call `.toUnlisted()` on a
 symbol with the desired name, e.g. `name.toSymbol().toUnlisted()`
 or (if you know the name statically) `@foo.toUnlisted()`.
 

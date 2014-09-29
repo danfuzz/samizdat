@@ -33,7 +33,7 @@ ifNot { eq(@foo, @"foo") }
 
 def anon = @foo.toUnlisted();
 ifIs { eq(@foo, anon) }
-    { die("Expected interned and anonymous to be different!") };
+    { die("Expected interned and unlisted to be different!") };
 
 ifIs { eq(anon, anon.toUnlisted()) }
-    { die("Expected anonymous and anonymous to be different!") };
+    { die("Expected unlisted and unlisted to be different!") };
