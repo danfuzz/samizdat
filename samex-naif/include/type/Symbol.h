@@ -23,7 +23,7 @@ SYM_DECL(isInterned);
 
 
 /**
- * Like `symbolFromUtf8`, except this makes an anonymous (uninterned) symbol.
+ * Like `symbolFromUtf8`, except this makes an unlisted (uninterned) symbol.
  */
 zvalue anonymousSymbolFromUtf8(zint utfBytes, const char *utf);
 

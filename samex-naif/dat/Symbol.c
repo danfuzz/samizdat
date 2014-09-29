@@ -316,7 +316,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 
     if (ths == other) {
         // Note: This check is necessary to keep the `ZSAME` case below from
-        // incorrectly claiming an anonymous symbol is unordered with
+        // incorrectly claiming an unlisted symbol is unordered with
         // respect to itself.
         return INT_0;
     }
@@ -334,7 +334,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
         case ZLESS: { return INT_NEG1; }
         case ZMORE: { return INT_1;    }
         case ZSAME: {
-            // Per spec, two different anonymous symbols with the same name
+            // Per spec, two different unlisted symbols with the same name
             // are unordered with respect to each other.
             return interned ? INT_0 : NULL;
         }
