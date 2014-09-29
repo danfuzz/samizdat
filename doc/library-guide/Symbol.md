@@ -16,15 +16,15 @@ language constructs.
 Returns `this` if it is interned (that is, *not* unlisted). Returns void
 otherwise.
 
-#### `.makeAnonymous() -> symbol`
+#### `.toString() -> string`
+
+Returns the name of the symbol as a string.
+
+#### `.toUnlisted() -> symbol`
 
 Returns a new unlisted symbol whose name is the same as `this`'s. This
 *always* returns a fresh symbol. (That is, if given an unlisted symbol,
 this method does *not* just return `this`.)
-
-#### `.toString() -> string`
-
-Returns the name of the symbol as a string.
 
 <br><br>
 ### Method Definitions: `Value` protocol

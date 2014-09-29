@@ -38,7 +38,7 @@ msg(var foo);  ## a box
 msg(Value);                   ## a core class
 msg(get_class(@blort{}));     ## a record class
 msg(@blort);                  ## an interned symbol
-msg(@blort.makeAnonymous());  ## an anonymous symbol
+msg(@blort.toUnlisted());     ## an unlisted symbol
 msg(eq);                      ## a builtin function
 msg(msg);                     ## a named in-language function
 msg({ -> });                  ## an anonymous in-language function

@@ -294,7 +294,7 @@ METH_IMPL_0(Symbol, isInterned) {
 }
 
 // Documented in header.
-METH_IMPL_0(Symbol, makeAnonymous) {
+METH_IMPL_0(Symbol, toUnlisted) {
     SymbolInfo *info = getInfo(ths);
     return makeSymbol0(info->s, false);
 }
@@ -346,7 +346,7 @@ MOD_INIT(Symbol) {
     MOD_USE(Value);
 
     SYM_INIT(isInterned);
-    SYM_INIT(makeAnonymous);
+    SYM_INIT(toUnlisted);
 
     // Note: The `objectModel` module initializes `CLS_Symbol`.
     classBindMethods(CLS_Symbol,
@@ -356,8 +356,8 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, isInterned),
-            METH_BIND(Symbol, makeAnonymous),
             METH_BIND(Symbol, toString),
+            METH_BIND(Symbol, toUnlisted),
             METH_BIND(Symbol, totalEq),
             METH_BIND(Symbol, totalOrder),
             NULL));
@@ -367,7 +367,7 @@ MOD_INIT(Symbol) {
 zvalue CLS_Symbol = NULL;
 
 // Documented in header.
-SYM_DEF(makeAnonymous);
+SYM_DEF(toUnlisted);
 
 // Documented in header.
 SYM_DEF(isInterned);
