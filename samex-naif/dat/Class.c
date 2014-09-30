@@ -125,7 +125,8 @@ void classBindMethods(zvalue cls, zvalue classMethods,
             DAT_MAX_SYMBOLS);
     }
 
-    if (classMethods != NULL) {
+    if ((classMethods != NULL) &&
+            !valEq(classMethods, EMPTY_SYMBOL_TABLE)) {
         die("No class methods allowed...yet.");
     }
 
