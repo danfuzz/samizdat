@@ -669,6 +669,23 @@
 					</string>
 				</dict>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.definition.samizdat</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>entity.name.type.class.samizdat</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>\b(class)  *([_$a-zA-Z][_$a-zA-Z0-9]*)</string>
+				</dict>
+				<dict>
 					<key>name</key>
 					<string>keyword.definition.samizdat</string>
 					<key>match</key>
