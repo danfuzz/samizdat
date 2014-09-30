@@ -222,17 +222,16 @@ export fn makeClassDef(name, attributes, methods) {
     };
 
     def access = ifValueOr { attribMap.get(@access) }
-        { makeCall(SYMS::toUnlisted, LITS::access) };
-
-    var instanceMethods = {};
+        { makeCall(SYMS::toUnlisted, SYMS::access) };
 
     ## This makes `instanceMethods` into a map of `[name, closure]` pairs.
     ## These pairs then get interpolated into a call to `makeSymbolTable`.
+    var instanceMethods = {};
     filterPump(methods) { one ->
         def name = one::name;
         ifIs { instanceMethods.get(name) }
             { die("Duplicate method: ", name.toString()) };
-        instanceMethods := @{instanceMethods*, (name): [name, one]}
+        instanceMethods := {instanceMethods*, (name): [makeLiteral(name), one]}
     };
 
     def instanceMethodTable = makeCall(REFS::makeSymbolTable,
@@ -244,7 +243,7 @@ export fn makeClassDef(name, attributes, methods) {
         LITS::EMPTY_SYMBOL_TABLE,  ## TODO: Class methods.
         instanceMethodTable);
 
-    return withTop(makeVarDef(name, statement));
+    return withTop(makeVarDef(name, call))
 };
 
 ## Documented in spec.

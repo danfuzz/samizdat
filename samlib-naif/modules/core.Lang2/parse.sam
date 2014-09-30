@@ -691,9 +691,12 @@ def parMethodBind = {:
 
 ## Parses a single class definition attribute.
 def parAttribute = {:
+    ## Note: `value` needs to be parsed as a `term` and not an `expression`,
+    ## because the former would cause the class body `{...}` to be treated as
+    ## a call argument as part of an attribute value in many cases.
     key = parNameSymbol
     @":"
-    value = parExpression
+    value = parTerm
 
     { @{(key): value} }
 :};
