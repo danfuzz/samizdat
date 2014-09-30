@@ -1,0 +1,58 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Class definition syntax demo
+##
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+fn print(args*) {
+    note($Format::sourceUnadorned(args))
+};
+
+
+##
+## Main Tests
+##
+
+def secret = @secret.toUnlisted();
+
+## Simplest possible class.
+
+class Blort {
+    ## This space intentionally left blank.
+};
+
+print(Blort);
+
+## Class with secret and no methods.
+
+class Fizmo
+        access: secret {
+    ## This space intentionally left blank.
+};
+
+print(Fizmo);
+def fizmo = makeObject(Fizmo, secret);
+print(fizmo);
+
+## Class with secret and just one method.
+
+class Igram
+        access: secret {
+    fn hello() {
+        note("Igram!")
+    }
+};
+
+print(Igram);
+def igram = makeObject(Igram, secret);
+print(igram);
+igram.hello();
