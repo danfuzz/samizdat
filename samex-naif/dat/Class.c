@@ -10,7 +10,6 @@
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/Object.h"
-#include "type/Record.h"
 #include "type/String.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
@@ -245,8 +244,6 @@ METH_IMPL_0(Class, debugString) {
         return valToString(info->name);
     } else if (info->secret != NULL) {
         label = "object";
-    } else if (classEqUnchecked(info->parent, CLS_Record)) {
-        label = "record";
     } else {
         die("Shouldn't happen: non-core class without secret.");
     }
