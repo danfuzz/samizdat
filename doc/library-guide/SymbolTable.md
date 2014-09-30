@@ -41,6 +41,18 @@ other.
 <br><br>
 ### Method Definitions
 
+#### `.cat(more*) -> symbolTable`
+
+Returns a symbol table consisting of the combination of the mappings of the
+arguments. Arguments must all be symbol tables.
+
+For any keys in common between the arguments, the lastmost argument's value
+is the one that ends up in the result. Despite the `cat` name, strictly
+speaking this isn't a linear concatenation, but it is as close as one can
+get to it given the class's key uniqueness constraints.
+
+**Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
+
 #### `.del(symbol) -> symbolTable`
 
 Returns a symbol table just like the given one, except that
