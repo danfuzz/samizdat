@@ -18,6 +18,11 @@ import ./refs :: REFS;
 ## Private Definitions
 ##
 
+## Set of allowed class attributes.
+def CLASS_ATTRIBUTES = @{
+    access: true
+};
+
 ## Expands the `yield` binding of `table` if it is `nonlocalExit`, including
 ## eliding the actual nonlocal exit when the `table` defines the matching
 ## yield definition name. Just returns the `yield` directly in
@@ -202,6 +207,44 @@ export fn makeCallOrApply(function, values*) {
 export fn makeCallThunks(function, values*) {
     def thunks = filterAll(values) { one -> makeThunk(one) };
     return makeCall(function, thunks*)
+};
+
+## Documented in spec.
+export fn makeClassDef(name, attributes, methods) {
+    def attribMap = {}.cat(attributes*);
+
+    ifNot { eq(attributes.get_size(), attribMap.get_size()) }
+        { die("Duplicate attribute.") };
+
+    filterPump(attribMap.keyList()) { key ->
+        ifNot { CLASS_ATTRIBUTES.get(key) }
+            { die("Invalid attribute: ", key.toString()) }
+    };
+
+    def access = ifValueOr { attribMap.get(@access) }
+        { makeCall(SYMS::toUnlisted, LITS::access) };
+
+    var instanceMethods = {};
+
+    ## This makes `instanceMethods` into a map of `[name, closure]` pairs.
+    ## These pairs then get interpolated into a call to `makeSymbolTable`.
+    filterPump(methods) { one ->
+        def name = one::name;
+        ifIs { instanceMethods.get(name) }
+            { die("Duplicate method: ", name.toString()) };
+        instanceMethods := @{instanceMethods*, (name): [name, one]}
+    };
+
+    def instanceMethodTable = makeCall(REFS::makeSymbolTable,
+        ([].cat(instanceMethods.valueList()*))*);
+
+    def call = makeCall(REFS::makeObjectClass,
+        makeLiteral(name),
+        access,
+        LITS::EMPTY_SYMBOL_TABLE,  ## TODO: Class methods.
+        instanceMethodTable);
+
+    return withTop(makeVarDef(name, statement));
 };
 
 ## Documented in spec.

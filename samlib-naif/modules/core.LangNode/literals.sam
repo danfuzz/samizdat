@@ -14,6 +14,7 @@ import ./constructors1 :: makeLiteral;
 
 ## Literal symbols.
 def SYMBOLS = [
+    @access,
     @add,
     @and,
     @cat,
@@ -39,6 +40,7 @@ def SYMBOLS = [
     @sliceInclusive,
     @shr,
     @sub,
+    @toUnlisted,
     @value,
     @xor
 ];
