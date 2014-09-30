@@ -694,6 +694,56 @@ def parMethodBind = {:
     }
 :};
 
+## Parses a single class definition attribute.
+def parAttribute = {:
+    ## Note: `value` needs to be parsed as a `term` and not an `expression`,
+    ## because the former would cause the class body `{...}` to be treated as
+    ## a call argument as part of an attribute value in many cases.
+    key = parNameSymbol
+    @":"
+    value = parTerm
+
+    { @{(key): value} }
+:};
+
+## Parses a single method definition.
+def parMethodDef = {:
+    @fn
+    closure = parFunctionCommon
+
+    { withFormals(closure, [@{name: @this}, closure::formals*]) }
+:};
+
+## Parses a class definition.
+def parClassDef = {:
+    @class
+    name = parNameSymbol
+
+    attributes = (
+        first = parAttribute
+        rest = (@"," parAttribute)*
+        { [first, rest*] }
+    |
+        { [] }
+    )
+
+    @"{"
+    @";"*
+
+    methods = (
+        first = parMethodDef
+        rest = (@";"+ parMethodDef)*
+        @";"*
+        { [first, rest*] }
+    |
+        { [] }
+    )
+
+    @"}"
+
+    { makeClassDef(name, attributes, methods) }
+:};
+
 ## Parses an optional binding name or name prefix for an `import` statement.
 ## This rule never fails. The result is always a map, empty if there was no
 ## name / prefix, or binding one of `name` or `prefix`.
@@ -796,7 +846,7 @@ def parImportStatement = {:
 ## Parses an executable statement form that is `export`able. This does *not*
 ## include `import` statements.
 def parExportableStatement = {:
-    parFunctionDef | parVarDef
+    parClassDef | parFunctionDef | parVarDef
 :};
 
 ## Parses an executable statement form (direct closure / program element).
