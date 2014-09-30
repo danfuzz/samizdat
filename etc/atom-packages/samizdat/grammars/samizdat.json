@@ -256,6 +256,17 @@
           "name" : "keyword.control.samizdat"
         },
         {
+          "match" : "\\b(class)  *([_$a-zA-Z][_$a-zA-Z0-9]*)",
+          "captures" : {
+            "1" : {
+              "name" : "keyword.definition.samizdat"
+            },
+            "2" : {
+              "name" : "entity.name.type.class.samizdat"
+            }
+          }
+        },
+        {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(by|def|fn|in|module|var)\\b\n\t\t\t\t\t",
           "name" : "keyword.definition.samizdat"
         },
