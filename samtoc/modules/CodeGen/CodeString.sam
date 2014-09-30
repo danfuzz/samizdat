@@ -16,21 +16,21 @@ import ./indentation :: *;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def CodeString = makeObjectClass(@CodeString, SECRET);
+class CodeString
+        access: SECRET {
+    fn flatten() {
+        def data = SECRET(this);
+        return data::text
+    };
 
-fn CodeString.flatten() {
-    def data = SECRET(this);
-    return data::text
-};
+    fn indent(level, maxColumns) {
+        def data = SECRET(this);
+        return indentation(level).cat(data::text)
+    };
 
-fn CodeString.indent(level, maxColumns) {
-    def data = SECRET(this);
-    return indentation(level).cat(data::text)
-};
-
-fn CodeString.prefersFlat() {
-    return this
+    fn prefersFlat() {
+        return this
+    };
 };
 
 

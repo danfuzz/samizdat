@@ -18,41 +18,40 @@ import ./indentation :: *;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def Comment = makeObjectClass(@Comment, SECRET);
+class Comment
+        access: SECRET {
+    fn flatten() {
+        def data = SECRET(this);
+        def text = data::text;
 
-fn Comment.flatten() {
-    def data = SECRET(this);
-    def text = data::text;
+        return (def payload = data::payload)
+            & "/* \(text) */ \(payload.flatten())"
+            | "/* \(text) */"
+    };
 
-    return (def payload = data::payload)
-        & "/* \(text) */ \(payload.flatten())"
-        | "/* \(text) */"
+    fn indent(level, maxColumns) {
+        def data = SECRET(this);
+        def prefix = indentation(level);
+
+        return if (def p = data::payload) {
+            "".cat(
+                prefix, "// ", data::text, "\n",
+                p.indent(level, maxColumns)
+            )
+        } else {
+            "\(prefix)/* \(data::text) */"
+        }
+    };
+
+    fn prefersFlat() {
+        def data = SECRET(this);
+        return? (#data::text < 30)
+            & (((def payload = data::payload)
+                & payload.prefersFlat()?
+                | true?)*)
+            & this
+    };
 };
-
-fn Comment.indent(level, maxColumns) {
-    def data = SECRET(this);
-    def prefix = indentation(level);
-
-    return if (def p = data::payload) {
-        "".cat(
-            prefix, "// ", data::text, "\n",
-            p.indent(level, maxColumns)
-        )
-    } else {
-        "\(prefix)/* \(data::text) */"
-    }
-};
-
-fn Comment.prefersFlat() {
-    def data = SECRET(this);
-    return? (#data::text < 30)
-        & (((def payload = data::payload)
-            & payload.prefersFlat()?
-            | true?)*)
-        & this
-};
-
 
 ##
 ## Exported Definitions

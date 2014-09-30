@@ -18,23 +18,23 @@ import ./indentation :: *;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def Statement = makeObjectClass(@Statement, SECRET);
+class Statement
+        access: SECRET {
+    fn flatten() {
+        def data = SECRET(this);
+        return "\(data::tree.flatten());"
+    };
 
-fn Statement.flatten() {
-    def data = SECRET(this);
-    return "\(data::tree.flatten());"
-};
+    fn indent(level, maxColumns) {
+        def data = SECRET(this);
+        return "\(data::tree.indent(level, maxColumns));\n"
+    };
 
-fn Statement.indent(level, maxColumns) {
-    def data = SECRET(this);
-    return "\(data::tree.indent(level, maxColumns));\n"
-};
-
-fn Statement.prefersFlat() {
-    def data = SECRET(this);
-    return? data::tree.prefersFlat()
-        & this
+    fn prefersFlat() {
+        def data = SECRET(this);
+        return? data::tree.prefersFlat()
+            & this
+    };
 };
 
 

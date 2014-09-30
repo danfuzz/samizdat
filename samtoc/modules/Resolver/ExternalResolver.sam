@@ -26,9 +26,6 @@ import ./cache;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def ExternalResolver = makeObjectClass(@ExternalResolver, SECRET);
-
 ## Does direct resolution on the given `source`. Only ever called when
 ## `source` is known to be `external` and so *might* be found directly
 ## in this resolver's directory of modules.
@@ -50,26 +47,29 @@ fn directResolve(self, source) {
     }
 };
 
-fn ExternalResolver.resolve(source) {
-    def data = SECRET(this);
+class ExternalResolver
+        access: SECRET {
+    fn resolve(source) {
+        def data = SECRET(this);
 
-    if (def found = $cache::cacheGet(data::cache, source)) {
-        ## `found` is always a list. See comment below.
-        return? found*
+        if (def found = $cache::cacheGet(data::cache, source)) {
+            ## `found` is always a list. See comment below.
+            return? found*
+        };
+
+        ## The result is always a list, so that we can cache a not-found
+        ## result as the empty list.
+        def result = (
+            source.hasName(@external)
+                & directResolve(this, source)
+                | (data::nextResolver).resolve(source)
+        )?;
+
+        ## Cache the result, so we don't bother with a search the next time.
+        $cache::cachePut(data::cache, source, result);
+
+        return? result*
     };
-
-    ## The result is always a list, so that we can cache a not-found result
-    ## as the empty list.
-    def result = (
-        source.hasName(@external)
-            & directResolve(this, source)
-            | (data::nextResolver).resolve(source)
-    )?;
-
-    ## Cache the result, so we don't bother with a search the next time.
-    $cache::cachePut(data::cache, source, result);
-
-    return? result*
 };
 
 
