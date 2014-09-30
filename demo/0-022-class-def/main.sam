@@ -33,6 +33,7 @@ class Blort {
 };
 
 print(Blort);
+print(Blort.get_parent());
 
 ## Another class with the same name.
 
@@ -44,6 +45,7 @@ def OtherBlort = {
 }();
 
 print(OtherBlort);
+print(OtherBlort.get_parent());
 ifIs { eq(Blort, OtherBlort) }
     { die("Should be different classes!") };
 
