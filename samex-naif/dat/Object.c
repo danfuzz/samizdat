@@ -90,7 +90,16 @@ FUNC_IMPL_2_3(Object_makeObject, cls, secret, data) {
 }
 
 // Documented in header.
-FUNC_IMPL_2(Object_makeObjectClass, name, secret) {
+FUNC_IMPL_2_4(Object_makeObjectClass, name, secret,
+        classMethods, instanceMethods) {
+    if (classMethods == NULL) {
+        classMethods = EMPTY_SYMBOL_TABLE;
+    }
+
+    if (instanceMethods == NULL) {
+        instanceMethods = EMPTY_SYMBOL_TABLE;
+    }
+
     return makeObjectClass(name, secret);
 }
 
