@@ -26,13 +26,31 @@ def secret = @secret.toUnlisted();
 
 ## Simplest possible class.
 
+note("Blort (the first)");
+
 class Blort {
     ## This space intentionally left blank.
 };
 
 print(Blort);
 
+## Another class with the same name.
+
+note("\nBlort (the second)");
+
+def OtherBlort = {
+    class Blort { };
+    Blort
+}();
+
+print(OtherBlort);
+ifIs { eq(Blort, OtherBlort) }
+    { die("Should be different classes!") };
+
+
 ## Class with secret and no methods.
+
+note("\nFizmo");
 
 class Fizmo
         access: secret {
@@ -42,17 +60,21 @@ class Fizmo
 print(Fizmo);
 def fizmo = makeObject(Fizmo, secret);
 print(fizmo);
+print(secret(fizmo));
 
 ## Class with secret and just one method.
+
+note("\nIgram");
 
 class Igram
         access: secret {
     fn hello() {
-        note("Igram!")
+        note("Igram! ", secret(this)::effect)
     }
 };
 
 print(Igram);
-def igram = makeObject(Igram, secret);
+def igram = makeObject(Igram, secret, @{effect: "purple -> invisible"});
 print(igram);
+print(secret(igram));
 igram.hello();
