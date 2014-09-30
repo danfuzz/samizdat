@@ -102,6 +102,17 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2)
 
+#define FUNC_IMPL_2_4(name, a0, a1, a2, a3) \
+    static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 2, 4) { \
+        return IMPL_##name( \
+            _args[0], \
+            (_argsSize > 1) ? _args[1] : NULL, \
+            (_argsSize > 2) ? _args[2] : NULL, \
+            (_argsSize > 3) ? _args[3] : NULL); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2, zvalue a3)
+
 
 //
 // Method implementation declarations and associated binder. Each of the
