@@ -48,6 +48,21 @@ zvalue listPrepend(zvalue elem, zvalue list) {
 }
 
 // Documented in header.
+zvalue mapAppend(zvalue map, zvalue key, zvalue value) {
+    return METH_CALL(cat, map, mapFrom1(key, value));
+}
+
+// Documented in header.
+zvalue mapFrom1(zvalue k1, zvalue v1) {
+    if (k1 == NULL) {
+        return EMPTY_MAP;
+    }
+
+    zmapping elem = {k1, v1};
+    return mapFromArray(1, &elem);
+}
+
+// Documented in header.
 zvalue recordFrom1(zvalue cls, zvalue k1, zvalue v1) {
     return recordFrom4(cls, k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
 }
