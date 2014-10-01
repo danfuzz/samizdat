@@ -19,32 +19,32 @@ import ./NullGenerator :: nullGenerator;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def RepeatGenerator = makeObjectClass(@RepeatGenerator, SECRET);
+class RepeatGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return Generator_stdCollect(this, optFilterFunction*)
+    };
 
-## Documented in spec.
-fn RepeatGenerator.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return Generator_stdCollect(this, optFilterFunction*)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## Just use the standard implementation.
+        return Generator_stdFetch(this)
+    };
 
-## Documented in spec.
-fn RepeatGenerator.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        def size = data::size;
 
-## Documented in spec.
-fn RepeatGenerator.nextValue(box) {
-    def data = SECRET(this);
-    def size = data::size;
-
-    return? ifIs { perGt(size, 0) }
-        {
-            def value = data::value;
-            box* := value;
-            makeRepeatGenerator(size.sub(1), value)
-        }
+        return? ifIs { perGt(size, 0) }
+            {
+                def value = data::value;
+                box* := value;
+                makeRepeatGenerator(size.sub(1), value)
+            }
+    };
 };
 
 

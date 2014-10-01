@@ -20,32 +20,32 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def OptGenerator = makeObjectClass(@OptGenerator, SECRET);
+class OptGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## It is an "unbounded collect" error to call this.
+        unboundedCollect(this)
+    };
 
-## Documented in spec.
-fn OptGenerator.collect(optFilterFunction?) {
-    ## It is an "unbounded collect" error to call this.
-    unboundedCollect(this)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## It is an "unbounded fetch" error to call this.
+        unboundedFetch(this)
+    };
 
-## Documented in spec.
-fn OptGenerator.fetch() {
-    ## It is an "unbounded fetch" error to call this.
-    unboundedFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        def result;
 
-## Documented in spec.
-fn OptGenerator.nextValue(box) {
-    def data = SECRET(this);
-    def result;
-
-    return ifValue { data::generator.nextValue(var result) }
-        { nextGenerator ->
-            box* := [result];
-            makeOptGenerator(nextGenerator)
-        }
-        { makeValueGenerator([]).nextValue(box) }
+        return ifValue { data::generator.nextValue(var result) }
+            { nextGenerator ->
+                box* := [result];
+                makeOptGenerator(nextGenerator)
+            }
+            { makeValueGenerator([]).nextValue(box) }
+    };
 };
 
 

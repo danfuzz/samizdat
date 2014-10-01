@@ -16,22 +16,22 @@
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def NullGenerator = makeObjectClass(@NullGenerator, SECRET);
+class NullGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        return []
+    };
 
-## Documented in spec.
-fn NullGenerator.collect(optFilterFunction?) {
-    return []
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## Do nothing. Return void.
+    };
 
-## Documented in spec.
-fn NullGenerator.fetch() {
-    ## Do nothing. Return void.
-};
-
-## Documented in spec.
-fn NullGenerator.nextValue(box) {
-    ## Do nothing. Return void.
+    ## Documented in spec.
+    fn nextValue(box) {
+        ## Do nothing. Return void.
+    };
 };
 
 

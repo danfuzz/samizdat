@@ -22,45 +22,45 @@ import ./NullGenerator :: nullGenerator;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def ParaGenerator = makeObjectClass(@ParaGenerator, SECRET);
+class ParaGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return Generator_stdCollect(this, optFilterFunction*)
+    };
 
-## Documented in spec.
-fn ParaGenerator.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return Generator_stdCollect(this, optFilterFunction*)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## Just use the standard implementation.
+        return Generator_stdFetch(this)
+    };
 
-## Documented in spec.
-fn ParaGenerator.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        def subGens = data::generators;
 
-## Documented in spec.
-fn ParaGenerator.nextValue(box) {
-    def data = SECRET(this);
-    def subGens = data::generators;
+        ifIs { eq(subGens, []) }
+            { return };
 
-    ifIs { eq(subGens, []) }
-        { return };
+        var result;
+        def generatorCalls = subGens.collect(
+            { gen ->
+                ifValue { gen.nextValue(var result) }
+                    { nextGenerator -> [result, nextGenerator] }
+                    {
+                        ## One of the sub-generators became voided.
+                        return
+                    }
+            });
 
-    var result;
-    def generatorCalls = subGens.collect(
-        { gen ->
-            ifValue { gen.nextValue(var result) }
-                { nextGenerator -> [result, nextGenerator] }
-                {
-                    ## One of the sub-generators became voided.
-                    return
-                }
-        });
+        def yields = generatorCalls.collect({ one -> one.nth(0) });
+        def nexts = generatorCalls.collect({ one -> one.nth(1) });
 
-    def yields = generatorCalls.collect({ one -> one.nth(0) });
-    def nexts = generatorCalls.collect({ one -> one.nth(1) });
-
-    box* := yields;
-    return makeObject(ParaGenerator, SECRET, @{generators: nexts})
+        box* := yields;
+        return makeObject(ParaGenerator, SECRET, @{generators: nexts})
+    };
 };
 
 
