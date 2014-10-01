@@ -73,19 +73,16 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 // Documented in header.
 zvalue makeObjectClass(zvalue name, zvalue secret,
         zvalue classMethods, zvalue instanceMethods) {
-    if (classMethods == NULL) {
-        classMethods = EMPTY_SYMBOL_TABLE;
-    }
+    zvalue extraInstanceMethods = symbolTableFromArgs(
+        secret, FUNC_VALUE(Object_privateDataOf),
+        NULL);
 
     if (instanceMethods == NULL) {
-        instanceMethods = EMPTY_SYMBOL_TABLE;
+        instanceMethods = extraInstanceMethods;
+    } else {
+        instanceMethods = METH_CALL(cat,
+            instanceMethods, extraInstanceMethods);
     }
-
-    instanceMethods = METH_CALL(cat,
-        instanceMethods,
-        symbolTableFromArgs(
-            secret, FUNC_VALUE(Object_privateDataOf),
-            NULL));
 
     return makeClass(name, CLS_Object, secret,
         classMethods, instanceMethods);

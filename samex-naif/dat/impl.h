@@ -173,10 +173,12 @@ typedef struct {
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Binds all the methods of a class. This is only supposed to be called from
- * the class initialization of classes that are partially built by the
- * object model bootstrap code. Everywhere else should use `makeClass()` or
- * `makeCoreClass()`.
+ * Binds all the methods of a class. Either `*Methods` argument can be
+ * `NULL`, in which case it is treated as `@{}` (the empty symbol table).
+ *
+ * This is only supposed to be called from the class initialization of classes
+ * that are partially built by the object model bootstrap code. Everywhere
+ * else should use `makeClass()` or `makeCoreClass()`.
  */
 void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 

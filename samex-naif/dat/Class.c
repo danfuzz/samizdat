@@ -110,6 +110,21 @@ static bool isCoreClass(ClassInfo *info) {
 void classBindMethods(zvalue cls, zvalue classMethods,
         zvalue instanceMethods) {
     ClassInfo *info = getInfo(cls);
+    zint cmethSize;
+    zint imethSize;
+
+    if (classMethods == NULL) {
+        cmethSize = 0;
+    } else {
+        assertHasClass(classMethods, CLS_SymbolTable);
+        cmethSize = symbolTableSize(classMethods);
+    }
+
+    if (instanceMethods == NULL) {
+        imethSize = 0;
+    } else {
+        imethSize = symbolTableSize(instanceMethods);
+    }
 
     if (info->hasSubclasses && (info->parent != NULL)) {
         // `Value` (the only class without a parent) gets a pass on this
@@ -125,16 +140,14 @@ void classBindMethods(zvalue cls, zvalue classMethods,
             DAT_MAX_SYMBOLS);
     }
 
-    if ((classMethods != NULL) &&
-            !valEq(classMethods, EMPTY_SYMBOL_TABLE)) {
+    if (cmethSize != 0) {
         die("No class methods allowed...yet.");
     }
 
-    if (instanceMethods != NULL) {
-        zint size = symbolTableSize(instanceMethods);
-        zmapping methods[size];
+    if (imethSize != 0) {
+        zmapping methods[imethSize];
         arrayFromSymbolTable(methods, instanceMethods);
-        for (zint i = 0; i < size; i++) {
+        for (zint i = 0; i < imethSize; i++) {
             zvalue sym = methods[i].key;
             zint index = symbolIndex(methods[i].key);
             info->methods[index] = methods[i].value;
