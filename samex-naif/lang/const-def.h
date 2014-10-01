@@ -40,7 +40,6 @@ DEF_SYMBOL(access,                "access");
 DEF_SYMBOL(apply,                 "apply");
 DEF_SYMBOL(break,                 "break");
 DEF_SYMBOL(class,                 "class");
-DEF_SYMBOL(classAddMethod,        "classAddMethod");
 DEF_SYMBOL(closure,               "closure");
 DEF_SYMBOL(continue,              "continue");
 DEF_SYMBOL(def,                   "def");
