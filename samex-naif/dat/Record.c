@@ -98,6 +98,21 @@ METH_IMPL_0(Record, dataOf) {
 }
 
 // Documented in header.
+METH_IMPL_0(Record, debugString) {
+    RecordInfo *info = getInfo(ths);
+
+    if (valEq(info->data, EMPTY_SYMBOL_TABLE)) {
+        return METH_CALL(cat,
+            METH_CALL(debugString, info->name),
+            stringFromUtf8(-1, "{}"));
+    } else {
+        return METH_CALL(cat,
+            METH_CALL(debugString, info->name),
+            stringFromUtf8(-1, "{...}"));
+    }
+}
+
+// Documented in header.
 METH_IMPL_0(Record, gcMark) {
     RecordInfo *info = getInfo(ths);
 
@@ -159,6 +174,7 @@ MOD_INIT(Record) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(Record, dataOf),
+            METH_BIND(Record, debugString),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
             METH_BIND(Record, get_name),
