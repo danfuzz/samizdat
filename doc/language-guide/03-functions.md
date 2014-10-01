@@ -304,27 +304,39 @@ Classes in Samizdat bind symbols (method identifiers) to functions,
 for later invocation. See the "Symbol" subsection under "Data" for
 information about symbol syntax and semantics.
 
-#### Binding methods
+### Class definition
 
-TODO: This section reflects Samizdat syntax in transition.
+**Note:** This section reflects Samizdat syntax in transition.
 
-Methods are bound to classes using a syntax similar to the regular function
-statement syntax (as described above). The difference is that instead of
-just a simple function name, the name consists of a class reference,
-followed by a dot (`.`), followed by the symbol name. For example:
+Classes in Samizdat bind symbols (method identifiers) to functions,
+for later invocation.
 
-```
-fn Fizmo.blort(arg) { ... }  ## Bind to the class `Fizmo`.
-```
-
-Within the body of such a function, the local variable `this` refers to
-the target to which the function was applied, that is, `this` is the implicit
-name of the first formal parameter to the function. Any additional parameters
-are as specified within the parentheses. For example:
+Classes are defined using a `class` statement, which has the general form:
 
 ```
-fn Fizmo.blort(igram) {
-    this;   ## refers to the Fizmo target of the function.
-    igram;  ## refers to the second parameter to the function.
-}
+class NameOfClass
+        access: SECRET {
+    fn methodName(arg) {
+        ...
+    };
+    ...
+};
+```
+
+Within a `class` definition, methods are defined using a syntax identical to
+the regular function statement syntax (as described above). The one notable
+difference is that the variable `this` is bound in the body of the method.
+
+The `access: SECRET` line is used to define the (effectively private)
+method used to get at instance state. `SECRET` must be a symbol and is
+usually an unlisted symbol, which can be created along the lines of:
+
+```
+def SECRET = @secret.toUnlisted();
+```
+
+The same secret is used when constructing instances of classes:
+
+```
+def anInstance = makeObject(NameOfClass, SECRET, @{...});
 ```
