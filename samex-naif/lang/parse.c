@@ -995,25 +995,6 @@ DEF_PARSE(functionDef) {
 }
 
 // Documented in spec.
-DEF_PARSE(methodBind) {
-    MARK();
-
-    MATCH_OR_REJECT(fn);
-    zvalue bind = PARSE_OR_REJECT(varLvalue);
-    MATCH_OR_REJECT(CH_DOT);
-    zvalue closure = PARSE_OR_REJECT(functionCommon);
-
-    zvalue formals = get(closure, SYM_formals);
-    zvalue name = get(closure, SYM_name);
-    zvalue fullClosure = withFormals(closure,
-        METH_CALL(cat,
-            listFrom1(tableFrom1(SYM_name, SYM_this)),
-            formals));
-    return makeCall(REFS(classAddMethod),
-        listFrom3(bind, makeLiteral(name), fullClosure));
-}
-
-// Documented in spec.
 DEF_PARSE(attribute) {
     MARK();
 
@@ -1217,7 +1198,6 @@ DEF_PARSE(statement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(exportableStatement); }
-    if (result == NULL) { result = PARSE(methodBind);          }
     if (result == NULL) { result = PARSE(varDefMutable);       }
     if (result == NULL) { result = PARSE(expression);          }
 

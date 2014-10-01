@@ -672,23 +672,6 @@ def parFunctionDef = {:
     { withTop(makeVarDef(closure::name, closure)) }
 :};
 
-## Parses a method binding. This wraps a `@closure` result of
-## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
-## formal argument.
-def parMethodBind = {:
-    @fn
-    bind = parVarLvalue
-    @"."
-    closure = parFunctionCommon
-
-    {
-        def formals = closure::formals;
-        def name = closure::name;
-        def fullClosure = withFormals(closure, [@{name: @this}, formals*]);
-        makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
-    }
-:};
-
 ## Parses a single class definition attribute.
 def parAttribute = {:
     ## Note: `value` needs to be parsed as a `term` and not an `expression`,
@@ -847,7 +830,7 @@ def parExportableStatement = {:
 ## Parses an executable statement form (direct closure / program element).
 ## This includes all the `export`able statements and a few additional forms.
 def parStatement = {:
-    parExportableStatement | parMethodBind | parVarDefMutable | parExpression
+    parExportableStatement | parVarDefMutable | parExpression
 :};
 
 ## Parses a program body statement form, including both regular executable
