@@ -50,9 +50,6 @@ SYM_DECL(gcMark);
 /** Method `.get_name()`: Documented in spec. */
 SYM_DECL(get_name);
 
-/** Method `.hasName()`: Documented in spec. */
-SYM_DECL(hasName);
-
 /** Symbol `main`. Same comment applies as with `exports`, above. */
 SYM_DECL(main);
 
