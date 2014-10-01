@@ -123,26 +123,6 @@ typedef struct DatHeader {
 } DatHeader;
 
 /**
- * Payload struct for class `Class`.
- */
-typedef struct {
-    /** Parent class. Only allowed to be `NULL` for `Value`. */
-    zvalue parent;
-
-    /** Name of the class, as a symbol. */
-    zvalue name;
-
-    /** Access secret of the class. Optional, and arbitrary if present. */
-    zvalue secret;
-
-    /**
-     * Bindings from method symbols to functions, keyed off of symbol
-     * index number.
-     */
-    zvalue methods[DAT_MAX_SYMBOLS];
-} ClassInfo;
-
-/**
  * Entry in the map cache. The cache is used to speed up calls to `mapFind`
  * (see which for details).
  */
