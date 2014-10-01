@@ -420,6 +420,11 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 }
 
 // Documented in spec.
+zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
+    die("TODO");
+}
+
+// Documented in spec.
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, SYM_format);
     zvalue name = get(node, SYM_name);
