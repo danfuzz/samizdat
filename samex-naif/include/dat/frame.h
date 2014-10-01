@@ -73,16 +73,4 @@ inline void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     datFrameAdd(returnValue);
 }
 
-/**
- * Indicates that the frame whose start returned the given stack pointer
- * should be reset to a state that *only* includes the given value
- * (or is totally reset if `stackedValue` is `NULL`).
- */
-inline void datFrameReset(zstackPointer savedStack, zvalue stackedValue) {
-    // The difference between this function and `datFrameReturn` is
-    // one of intent, even though the implementation is (blatantly)
-    // identical.
-    datFrameReturn(savedStack, stackedValue);
-}
-
 #endif

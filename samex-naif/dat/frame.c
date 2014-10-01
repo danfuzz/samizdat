@@ -59,7 +59,4 @@ extern zstackPointer datFrameStart(void);
 extern zvalue datFrameAdd(zvalue value);
 
 // Documented in header.
-extern void datFrameReset(zstackPointer savedStack, zvalue stackedValue);
-
-// Documented in header.
 extern void datFrameReturn(zstackPointer savedStack, zvalue returnValue);
