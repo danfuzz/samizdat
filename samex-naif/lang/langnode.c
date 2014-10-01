@@ -438,7 +438,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
 
     zvalue access = get(attribMap, SYM(access));
     if (access == NULL) {
-        access = makeCall(SYMS(toUnlisted), SYMS(access));
+        access = makeCall(SYMS(toUnlisted), listFrom1(SYMS(access)));
     }
 
     zvalue instanceMethods = EMPTY_MAP;
