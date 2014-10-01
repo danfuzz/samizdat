@@ -54,7 +54,7 @@ zvalue mapAppend(zvalue map, zvalue key, zvalue value) {
 
 // Documented in header.
 zvalue mapFrom1(zvalue k1, zvalue v1) {
-    if (k1 == NULL) {
+    if (v1 == NULL) {
         return EMPTY_MAP;
     }
 
@@ -63,25 +63,25 @@ zvalue mapFrom1(zvalue k1, zvalue v1) {
 }
 
 // Documented in header.
-zvalue recordFrom1(zvalue cls, zvalue k1, zvalue v1) {
-    return recordFrom4(cls, k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+zvalue recordFrom1(zvalue name, zvalue k1, zvalue v1) {
+    return recordFrom4(name, k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 // Documented in header.
-zvalue recordFrom2(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return recordFrom4(cls, k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+zvalue recordFrom2(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return recordFrom4(name, k1, v1, k2, v2, NULL, NULL, NULL, NULL);
 }
 
 // Documented in header.
-zvalue recordFrom3(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue recordFrom3(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3) {
-    return recordFrom4(cls, k1, v1, k2, v2, k3, v3, NULL, NULL);
+    return recordFrom4(name, k1, v1, k2, v2, k3, v3, NULL, NULL);
 }
 
 // Documented in header.
-zvalue recordFrom4(zvalue cls, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue recordFrom4(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
-    return makeRecord(cls, tableFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
+    return makeRecord(name, tableFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
 }
 
 // Documented in header.
