@@ -174,19 +174,6 @@ void assertHasClass(zvalue value, zvalue cls) {
 }
 
 // Documented in header.
-void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
-    assertHasClassClass(cls);
-    ClassInfo *info = getInfo(cls);
-    zint index = symbolIndex(symbol);
-
-    if (info->hasSubclasses) {
-        die("Cannot modify method table of a class with subclasses.");
-    }
-
-    info->methods[index] = function;
-}
-
-// Documented in header.
 bool classHasParent(zvalue cls, zvalue parent) {
     assertHasClassClass(cls);
     assertHasClassClass(parent);

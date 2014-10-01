@@ -28,12 +28,6 @@ SYM_DECL(get_parent);
 void assertHasClass(zvalue value, zvalue cls);
 
 /**
- * Adds a new method to a class. TODO: This function should get removed once
- * the system can cleanly construct classes with their methods in one go.
- */
-void classAddMethod(zvalue cls, zvalue symbol, zvalue function);
-
-/**
  * Returns `true` iff the given class has the given parent. This is for
  * a direct parent check only, not for general ancestry.
  */
