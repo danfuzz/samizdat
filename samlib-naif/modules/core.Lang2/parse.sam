@@ -672,21 +672,54 @@ def parFunctionDef = {:
     { withTop(makeVarDef(closure::name, closure)) }
 :};
 
-## Parses a method binding. This wraps a `@closure` result of
-## `parFunctionCommon` in a `@call`. The closure also gets a new `this`
-## formal argument.
-def parMethodBind = {:
+## Parses a single class definition attribute.
+def parAttribute = {:
+    ## Note: `value` needs to be parsed as a `term` and not an `expression`,
+    ## because the former would cause the class body `{...}` to be treated as
+    ## a call argument as part of an attribute value in many cases.
+    key = parNameSymbol
+    @":"
+    value = parTerm
+
+    { @{(key): value} }
+:};
+
+## Parses a single method definition.
+def parMethodDef = {:
     @fn
-    bind = parVarLvalue
-    @"."
     closure = parFunctionCommon
 
-    {
-        def formals = closure::formals;
-        def name = closure::name;
-        def fullClosure = withFormals(closure, [@{name: @this}, formals*]);
-        makeCall(REFS::classAddMethod, bind, makeLiteral(name), fullClosure)
-    }
+    { withFormals(closure, [@{name: @this}, closure::formals*]) }
+:};
+
+## Parses a class definition.
+def parClassDef = {:
+    @class
+    name = parNameSymbol
+
+    attributes = (
+        first = parAttribute
+        rest = (@"," parAttribute)*
+        { [first, rest*] }
+    |
+        { [] }
+    )
+
+    @"{"
+    @";"*
+
+    methods = (
+        first = parMethodDef
+        rest = (@";"+ parMethodDef)*
+        @";"*
+        { [first, rest*] }
+    |
+        { [] }
+    )
+
+    @"}"
+
+    { makeClassDef(name, attributes, methods) }
 :};
 
 ## Parses an optional binding name or name prefix for an `import` statement.
@@ -791,13 +824,13 @@ def parImportStatement = {:
 ## Parses an executable statement form that is `export`able. This does *not*
 ## include `import` statements.
 def parExportableStatement = {:
-    parFunctionDef | parVarDef
+    parClassDef | parFunctionDef | parVarDef
 :};
 
 ## Parses an executable statement form (direct closure / program element).
 ## This includes all the `export`able statements and a few additional forms.
 def parStatement = {:
-    parExportableStatement | parMethodBind | parVarDefMutable | parExpression
+    parExportableStatement | parVarDefMutable | parExpression
 :};
 
 ## Parses a program body statement form, including both regular executable

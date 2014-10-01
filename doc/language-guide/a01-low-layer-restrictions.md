@@ -41,6 +41,11 @@ control constructs, and a bit more variety in expressing literal data.
 In Layers 0 and 1, only single-line comments are recognized. Layer 2
 introduces multi-line comment syntax (`#: ... :#`).
 
+#### Semicolons
+
+In Layer 0, only single semicolons (not multiple) are allowed between
+statements.
+
 #### Ints
 
 Ints only have a 64-bit signed range in Layers 0, 1, and 2. Out-of-range

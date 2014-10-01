@@ -20,35 +20,35 @@ import ./indentation :: *;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def Wrapper = makeObjectClass(@Wrapper, SECRET);
+class Wrapper
+        access: SECRET {
+    fn flatten() {
+        def data = SECRET(this);
+        def flatBox = data::flatBox;
 
-fn Wrapper.flatten() {
-    def data = SECRET(this);
-    def flatBox = data::flatBox;
-
-    return flatBox*
-        | (flatBox* := data::tree.flatten())
-};
-
-fn Wrapper.indent(level, maxColumns) {
-    def data = SECRET(this);
-    def tree = data::tree;
-
-    if (tree.prefersFlat()) {
-        def flat = this.flatten();
-        def prefix = indentation(level);
-        if ((#flat + #prefix) <= maxColumns) {
-            return prefix.cat(flat)
-        }
+        return flatBox*
+            | (flatBox* := data::tree.flatten())
     };
 
-    return tree.indent(level, maxColumns)
-};
+    fn indent(level, maxColumns) {
+        def data = SECRET(this);
+        def tree = data::tree;
 
-fn Wrapper.prefersFlat() {
-    def data = SECRET(this);
-    return? data::tree.prefersFlat() & this;
+        if (tree.prefersFlat()) {
+            def flat = this.flatten();
+            def prefix = indentation(level);
+            if ((#flat + #prefix) <= maxColumns) {
+                return prefix.cat(flat)
+            }
+        };
+
+        return tree.indent(level, maxColumns)
+    };
+
+    fn prefersFlat() {
+        def data = SECRET(this);
+        return? data::tree.prefersFlat() & this;
+    };
 };
 
 

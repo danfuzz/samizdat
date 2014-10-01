@@ -22,14 +22,18 @@ It is a fatal error (terminating the runtime) to pass for `cls` something
 other than an object class, to pass a `secret` that doesn't match the
 secret of the given `cls`, or to pass a `value` that is not a symbol table.
 
-#### `makeObjectClass(name, secret) -> class`
+#### `makeObjectClass(name, secret, classMethods?, instanceMethods?) -> class`
 
 Makes a new object class with the given `name` and `secret`. `name` and
 `secret` must both a symbols. `secret` should generally be an unlisted
 symbol, in order to have proper encapsulation.
 
+The two `*Methods` arguments, if present, must be symbol tables that map
+method names to functions. If either is not passed, it is equivalent to
+passing `@{}` (the empty symbol table).
+
 **Note:** If you call this function twice with identical arguments, the
-results will be two *different* classes with the same `name` and `secret`.
+results will be two *different* classes with the same `name`.
 
 
 <br><br>

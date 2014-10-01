@@ -69,13 +69,8 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->parent = parent;
     info->name = name;
     info->secret = secret;
-    info->hasSubclasses = false;
 
     datImmortalize(cls);
-
-    if (parent != NULL) {
-        getInfo(parent)->hasSubclasses = true;
-    }
 }
 
 /**
@@ -109,12 +104,20 @@ static bool isCoreClass(ClassInfo *info) {
 void classBindMethods(zvalue cls, zvalue classMethods,
         zvalue instanceMethods) {
     ClassInfo *info = getInfo(cls);
+    zint cmethSize;
+    zint imethSize;
 
-    if (info->hasSubclasses && (info->parent != NULL)) {
-        // `Value` (the only class without a parent) gets a pass on this
-        // sanity check, since during during bootstrap it gains subclasses
-        // before it's possible to define its methods.
-        die("Cannot modify method table of a class with subclasses.");
+    if (classMethods == NULL) {
+        cmethSize = 0;
+    } else {
+        assertHasClass(classMethods, CLS_SymbolTable);
+        cmethSize = symbolTableSize(classMethods);
+    }
+
+    if (instanceMethods == NULL) {
+        imethSize = 0;
+    } else {
+        imethSize = symbolTableSize(instanceMethods);
     }
 
     if (info->parent != NULL) {
@@ -124,15 +127,14 @@ void classBindMethods(zvalue cls, zvalue classMethods,
             DAT_MAX_SYMBOLS);
     }
 
-    if (classMethods != NULL) {
+    if (cmethSize != 0) {
         die("No class methods allowed...yet.");
     }
 
-    if (instanceMethods != NULL) {
-        zint size = symbolTableSize(instanceMethods);
-        zmapping methods[size];
+    if (imethSize != 0) {
+        zmapping methods[imethSize];
         arrayFromSymbolTable(methods, instanceMethods);
-        for (zint i = 0; i < size; i++) {
+        for (zint i = 0; i < imethSize; i++) {
             zvalue sym = methods[i].key;
             zint index = symbolIndex(methods[i].key);
             info->methods[index] = methods[i].value;
@@ -156,19 +158,6 @@ void assertHasClass(zvalue value, zvalue cls) {
         die("Expected class %s; got %s.",
             valDebugString(cls), valDebugString(value));
     }
-}
-
-// Documented in header.
-void classAddMethod(zvalue cls, zvalue symbol, zvalue function) {
-    assertHasClassClass(cls);
-    ClassInfo *info = getInfo(cls);
-    zint index = symbolIndex(symbol);
-
-    if (info->hasSubclasses) {
-        die("Cannot modify method table of a class with subclasses.");
-    }
-
-    info->methods[index] = function;
 }
 
 // Documented in header.

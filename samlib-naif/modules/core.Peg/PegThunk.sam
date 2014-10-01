@@ -17,14 +17,14 @@
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegThunk = makeObjectClass(@PegThunk, SECRET);
-
-## Documented in spec.
-fn PegThunk.parse(box, input, items*) {
-    def data = SECRET(this);
-    return? ifValue { data::function(items*) }
-        { thunkResult -> thunkResult.parse(box, input, items*) }
+class PegThunk
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, items*) {
+        def data = SECRET(this);
+        return? ifValue { data::function(items*) }
+            { thunkResult -> thunkResult.parse(box, input, items*) }
+    };
 };
 
 

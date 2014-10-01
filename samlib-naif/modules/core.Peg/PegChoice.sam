@@ -21,19 +21,19 @@ import ./PegFail :: fail;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegChoice = makeObjectClass(@PegChoice, SECRET);
+class PegChoice
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, items*) {
+        def data = SECRET(this);
+        filterPump(data::rules) { rule ->
+            ifValue { rule.parse(box, input, items*) }
+                { newInput -> return newInput }
+        };
 
-## Documented in spec.
-fn PegChoice.parse(box, input, items*) {
-    def data = SECRET(this);
-    filterPump(data::rules) { rule ->
-        ifValue { rule.parse(box, input, items*) }
-            { newInput -> return newInput }
+        ## No rule succeeded.
+        return
     };
-
-    ## No rule succeeded.
-    return
 };
 
 

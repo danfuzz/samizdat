@@ -16,7 +16,6 @@ import ./literals :: SYMS;
 ## Global variable names / regular variable references.
 def NAMES = [
     @break,
-    @classAddMethod,
     @continue,
     @eq,
     @ge,
@@ -34,6 +33,7 @@ def NAMES = [
     @lt,
     @makeList,
     @makeMap,
+    @makeObjectClass,
     @makeRecord,
     @makeSymbolTable,
     @makeValueMap,

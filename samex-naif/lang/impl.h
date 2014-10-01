@@ -21,7 +21,7 @@
 /** Implementation limits. */
 enum {
     /** Maximum number of formal arguments to a function. */
-    LANG_MAX_FORMALS = 10,
+    LANG_MAX_FORMALS = 20,
 
     /**
      * Maximum number of tokens in a given parse (which is the maximum

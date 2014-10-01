@@ -19,22 +19,22 @@ import ./PegFail :: fail;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegTokenSet = makeObjectClass(@PegTokenSet, SECRET);
+class PegTokenSet
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, items*) {
+        def data = SECRET(this);
+        def result;
 
-## Documented in spec.
-fn PegTokenSet.parse(box, input, items*) {
-    def data = SECRET(this);
-    def result;
-
-    return? ifValue { input.nextValue(var result) }
-        { newInput ->
-            ifIs { data::set.get(result.get_name()) }
-                {
-                    box* := result;
-                    newInput
-                }
-        }
+        return? ifValue { input.nextValue(var result) }
+            { newInput ->
+                ifIs { data::set.get(result.get_name()) }
+                    {
+                        box* := result;
+                        newInput
+                    }
+            }
+    };
 };
 
 

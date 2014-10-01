@@ -420,6 +420,55 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 }
 
 // Documented in spec.
+zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
+    zvalue attribMap = METH_APPLY(cat, listPrepend(EMPTY_MAP, attributes));
+    zint attribSize = get_size(attribMap);
+
+    if (get_size(attributes) != attribSize) {
+        die("Duplicate attribute.");
+    }
+
+    zvalue keys = METH_CALL(keyList, attribMap);
+    for (zint i = 0; i < attribSize; i++) {
+        zvalue one = nth(keys, i);
+        if (!valEq(one, SYM(access))) {
+            die("Invalid attribute: %s", valDebugString(one));
+        }
+    }
+
+    zvalue access = get(attribMap, SYM(access));
+    if (access == NULL) {
+        access = makeCall(SYMS(toUnlisted), listFrom1(SYMS(access)));
+    }
+
+    zvalue instanceMethods = EMPTY_MAP;
+    zint methSize = get_size(methods);
+
+    for (zint i = 0; i < methSize; i++) {
+        zvalue one = nth(methods, i);
+        zvalue name = get(one, SYM(name));
+        if (get(instanceMethods, name) != NULL) {
+            die("Duplicate method: %s", valDebugString(name));
+        }
+        instanceMethods = mapAppend(instanceMethods,
+            name, listFrom2(makeLiteral(name), one));
+    }
+
+    zvalue instanceMethodTable = makeCall(REFS(makeSymbolTable),
+        METH_APPLY(cat,
+            listPrepend(EMPTY_LIST, METH_CALL(valueList, instanceMethods))));
+
+    zvalue call = makeCall(REFS(makeObjectClass),
+        listFrom4(
+            makeLiteral(name),
+            access,
+            makeLiteral(EMPTY_SYMBOL_TABLE),
+            instanceMethodTable));
+
+    return withTop(makeVarDef(name, call));
+}
+
+// Documented in spec.
 zvalue makeDynamicImport(zvalue node) {
     zvalue format = get(node, SYM_format);
     zvalue name = get(node, SYM_name);

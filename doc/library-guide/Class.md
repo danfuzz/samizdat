@@ -57,15 +57,7 @@ no consistent and stable way to order such classes.
 <br><br>
 ### Primitive Definitions
 
-#### `classAddMethod(cls, symbol, function) -> .`
-
-Adds a new method to the given class, binding `symbol` to `function`.
-
-**Note:** This function is temporary scaffolding for use while transitioning
-from generic functions to symbols. Ultimately, a class definition should
-be made such that all its methods come in one fell atomic swoop rather than
-being added one at a time with a function such as this one (which also, FWIW,
-doesn't bother with the class's secret either).
+(none)
 
 
 <br><br>

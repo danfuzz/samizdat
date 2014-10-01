@@ -139,8 +139,8 @@ static void dumpState(ParseState *state) {
 #define PARSE_OPT(name) parseOpt(RULE(name), state)
 #define PARSE_STAR(name) parseStar(RULE(name), state)
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
-#define PARSE_DELIMITED_SEQ(name, type) \
-    parseDelimitedSequence(RULE(name), TOKEN(type), state)
+#define PARSE_DELIMITED_SEQ(ruleName, tokenName) \
+    parseDelimitedSequence(RULE(ruleName), TOKEN(tokenName), state)
 #define PARSE_LOOKAHEAD(name) parseLookahead(RULE(name), state)
 #define MATCH(name) readMatch(state, (TOKEN(name)))
 #define MATCH_ANY() read(state)
@@ -253,7 +253,7 @@ static zvalue parseLookahead(parserFunction rule, ParseState *state) {
 }
 
 /**
- * Parses zero or more semicolons. Always returns `NULL`.
+ * Parses zero or more semicolons. Always returns `EMPTY_LIST`.
  */
 DEF_PARSE(optSemicolons) {
     while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
@@ -995,22 +995,43 @@ DEF_PARSE(functionDef) {
 }
 
 // Documented in spec.
-DEF_PARSE(methodBind) {
+DEF_PARSE(attribute) {
+    MARK();
+
+    zvalue key = PARSE_OR_REJECT(nameSymbol);
+    MATCH_OR_REJECT(CH_COLON);
+    zvalue value = PARSE_OR_REJECT(term);
+
+    return tableFrom1(key, value);
+}
+
+// Documented in spec.
+DEF_PARSE(methodDef) {
     MARK();
 
     MATCH_OR_REJECT(fn);
-    zvalue bind = PARSE_OR_REJECT(varLvalue);
-    MATCH_OR_REJECT(CH_DOT);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    zvalue formals = get(closure, SYM_formals);
-    zvalue name = get(closure, SYM_name);
-    zvalue fullClosure = withFormals(closure,
+    return withFormals(closure,
         METH_CALL(cat,
             listFrom1(tableFrom1(SYM_name, SYM_this)),
-            formals));
-    return makeCall(REFS(classAddMethod),
-        listFrom3(bind, makeLiteral(name), fullClosure));
+            get(closure, SYM_formals)));
+}
+
+// Documented in spec.
+DEF_PARSE(classDef) {
+    MARK();
+
+    MATCH_OR_REJECT(class);
+    zvalue name = PARSE_OR_REJECT(nameSymbol);
+    zvalue attributes = PARSE_DELIMITED_SEQ(attribute, CH_COMMA);
+    MATCH_OR_REJECT(CH_OCURLY);
+    PARSE(optSemicolons);
+    zvalue methods = PARSE_DELIMITED_SEQ(methodDef, CH_SEMICOLON);
+    PARSE(optSemicolons);
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    return makeClassDef(name, attributes, methods);
 }
 
 /** Helper for `importName`: Parses the first alternate. */
@@ -1164,6 +1185,7 @@ DEF_PARSE(importStatement) {
 DEF_PARSE(exportableStatement) {
     zvalue result = NULL;
 
+    if (result == NULL) { result = PARSE(classDef);    }
     if (result == NULL) { result = PARSE(functionDef); }
     if (result == NULL) { result = PARSE(varDef);      }
 
@@ -1176,7 +1198,6 @@ DEF_PARSE(statement) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(exportableStatement); }
-    if (result == NULL) { result = PARSE(methodBind);          }
     if (result == NULL) { result = PARSE(varDefMutable);       }
     if (result == NULL) { result = PARSE(expression);          }
 

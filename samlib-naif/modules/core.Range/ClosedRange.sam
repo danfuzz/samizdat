@@ -21,35 +21,35 @@ import ./rangeAdd :: *;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def ClosedRange = makeObjectClass(@ClosedRange, SECRET);
+class ClosedRange
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return stdCollect(this, optFilterFunction*)
+    };
 
-## Documented in spec.
-fn ClosedRange.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return stdCollect(this, optFilterFunction*)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## Just use the standard implementation.
+        return Generator_stdFetch(this)
+    };
 
-## Documented in spec.
-fn ClosedRange.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
 
-## Documented in spec.
-fn ClosedRange.nextValue(box) {
-    def data = SECRET(this);
-
-    return? ifValue { ge(data::size, 0) }
-        { size ->
-            def firstValue = data::firstValue;
-            def increment = data::increment;
-            box* := firstValue;
-            makeClosedRange(
-                rangeAdd(firstValue, increment),
-                size.sub(1),
-                increment)
-        }
+        return? ifValue { ge(data::size, 0) }
+            { size ->
+                def firstValue = data::firstValue;
+                def increment = data::increment;
+                box* := firstValue;
+                makeClosedRange(
+                    rangeAdd(firstValue, increment),
+                    size.sub(1),
+                    increment)
+            }
+    };
 };
 
 

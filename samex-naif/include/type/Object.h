@@ -30,8 +30,11 @@ extern zvalue FUN_Object_makeObjectClass;
 zvalue makeObject(zvalue cls, zvalue secret, zvalue data);
 
 /**
- * Makes a new object class with the given name and secret.
+ * Makes a new object class with the given name, secret, and method
+ * tables. If either method table is passed as `NULL`, it is treated as
+ * the empty symbol table.
  */
-zvalue makeObjectClass(zvalue name, zvalue secret);
+zvalue makeObjectClass(zvalue name, zvalue secret,
+        zvalue classMethods, zvalue instanceMethods);
 
 #endif

@@ -71,12 +71,21 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 }
 
 // Documented in header.
-zvalue makeObjectClass(zvalue name, zvalue secret) {
+zvalue makeObjectClass(zvalue name, zvalue secret,
+        zvalue classMethods, zvalue instanceMethods) {
+    zvalue extraInstanceMethods = symbolTableFromArgs(
+        secret, FUNC_VALUE(Object_privateDataOf),
+        NULL);
+
+    if (instanceMethods == NULL) {
+        instanceMethods = extraInstanceMethods;
+    } else {
+        instanceMethods = METH_CALL(cat,
+            instanceMethods, extraInstanceMethods);
+    }
+
     return makeClass(name, CLS_Object, secret,
-        NULL,
-        symbolTableFromArgs(
-            secret, FUNC_VALUE(Object_privateDataOf),
-            NULL));
+        classMethods, instanceMethods);
 }
 
 
@@ -90,8 +99,9 @@ FUNC_IMPL_2_3(Object_makeObject, cls, secret, data) {
 }
 
 // Documented in header.
-FUNC_IMPL_2(Object_makeObjectClass, name, secret) {
-    return makeObjectClass(name, secret);
+FUNC_IMPL_2_4(Object_makeObjectClass, name, secret,
+        classMethods, instanceMethods) {
+    return makeObjectClass(name, secret, classMethods, instanceMethods);
 }
 
 // Documented in header.

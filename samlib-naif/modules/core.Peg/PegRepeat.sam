@@ -17,52 +17,52 @@
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegRepeat = makeObjectClass(@PegRepeat, SECRET);
+class PegRepeat
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, items*) {
+        def data = SECRET(this);
+        var remainingInput = input;
+        var results = [];  ## Values that have been parsed by the inner rule.
 
-## Documented in spec.
-fn PegRepeat.parse(box, input, items*) {
-    def data = SECRET(this);
-    var remainingInput = input;
-    var results = [];  ## Values that have been parsed by the inner rule.
+        fn doLoop() { /out ->
+            def rule = data::rule;
+            var result;
 
-    fn doLoop() { /out ->
-        def rule = data::rule;
-        var result;
-
-        def maxCheck = ifValue { data::maxSize }
-            { maxSize ->
-                { ->
-                    ifIs { eq(results.get_size(), maxSize) }
-                        { yield /out }
+            def maxCheck = ifValue { data::maxSize }
+                { maxSize ->
+                    { ->
+                        ifIs { eq(results.get_size(), maxSize) }
+                            { yield /out }
+                    }
                 }
+                { {->} };
+
+            loop {
+                ifValue { rule.parse(var result, remainingInput, items*) }
+                    { newInput ->
+                        ## Successfully parsed the inner rule.
+                        remainingInput := newInput;
+                        results := [results*, result];
+                        maxCheck()
+                    }
+                    {
+                        ## Failed to parse the inner rule.
+                        yield /out
+                    }
             }
-            { {->} };
+        };
 
-        loop {
-            ifValue { rule.parse(var result, remainingInput, items*) }
-                { newInput ->
-                    ## Successfully parsed the inner rule.
-                    remainingInput := newInput;
-                    results := [results*, result];
-                    maxCheck()
-                }
-                {
-                    ## Failed to parse the inner rule.
-                    yield /out
-                }
-        }
+        doLoop();
+
+        ## Check for minimum match count. Store result and return success if
+        ## appropriate.
+        return? ifIs { ge(results.get_size(), data::minSize) }
+            {
+                box* := results;
+                remainingInput
+            }
     };
-
-    doLoop();
-
-    ## Check for minimum match count. Store result and return success if
-    ## appropriate.
-    return? ifIs { ge(results.get_size(), data::minSize) }
-        {
-            box* := results;
-            remainingInput
-        }
 };
 
 

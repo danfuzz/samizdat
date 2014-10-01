@@ -54,6 +54,9 @@ zvalue makeCall(zvalue function, zvalue values);
 zvalue makeCallOrApply(zvalue function, zvalue values);
 
 // Documented in spec.
+zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods);
+
+// Documented in spec.
 zvalue makeDynamicImport(zvalue node);
 
 // Documented in spec.

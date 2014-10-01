@@ -17,31 +17,31 @@
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def ListWrapGenerator = makeObjectClass(@ListWrapGenerator, SECRET);
+class ListWrapGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return Generator_stdCollect(this, optFilterFunction*)
+    };
 
-## Documented in spec.
-fn ListWrapGenerator.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return Generator_stdCollect(this, optFilterFunction*)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## Just use the standard implementation.
+        return Generator_stdFetch(this)
+    };
 
-## Documented in spec.
-fn ListWrapGenerator.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        def result;
 
-## Documented in spec.
-fn ListWrapGenerator.nextValue(box) {
-    def data = SECRET(this);
-    def result;
-
-    return? ifValue { data::generator.nextValue(var result) }
-        { nextGenerator ->
-            box* := [result];
-            makeListWrapGenerator(nextGenerator)
-        }
+        return? ifValue { data::generator.nextValue(var result) }
+            { nextGenerator ->
+                box* := [result];
+                makeListWrapGenerator(nextGenerator)
+            }
+    };
 };
 
 

@@ -31,13 +31,16 @@ msg((100).perEq(100));
 note("\nLayer 2:\n");
 
 def theSecret = @secret.toUnlisted();
-def Igram = makeObjectClass(@Igram, theSecret);
-fn Igram.get_foo() {
-    return "a foo"
+class Igram
+        access: theSecret {
+    fn get_foo() {
+        return "a foo"
+    };
+    fn set_foo(foo) {
+        note("Set to: \%q(foo)");
+    };
 };
-fn Igram.set_foo(foo) {
-    note("Set to: \%q(foo)");
-};
+
 def obj = makeObject(Igram, theSecret);
 note(obj.foo);
 obj.foo := "whatevs";

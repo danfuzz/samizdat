@@ -20,52 +20,52 @@ import ./ParaGenerator :: makeParaGenerator;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def FilterGenerator = makeObjectClass(@FilterGenerator, SECRET);
+class FilterGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return Generator_stdCollect(this, optFilterFunction*)
+    };
 
-## Documented in spec.
-fn FilterGenerator.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return Generator_stdCollect(this, optFilterFunction*)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## Just use the standard implementation.
+        return Generator_stdFetch(this)
+    };
 
-## Documented in spec.
-fn FilterGenerator.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        var innerGen = data::generator;
+        def filterFunction = data::filterFunction;
+        var result;
 
-## Documented in spec.
-fn FilterGenerator.nextValue(box) {
-    def data = SECRET(this);
-    var innerGen = data::generator;
-    def filterFunction = data::filterFunction;
-    var result;
-
-    ## This loop handles the fact that the filter function is
-    ## allowed to yield void to indicate a generated value is to
-    ## be discarded.
-    loop {
-        ifValue { innerGen.nextValue(var result) }
-            { nextGen ->
-                ifValue { filterFunction(result*) }
-                    { value ->
-                        box* := value;
-                        return makeObject(FilterGenerator, SECRET,
-                            @{filterFunction, generator: nextGen})
-                    }
-                    {
-                        ## The filter discarded the value. As this doesn't
-                        ## `return` (per se) it will fall through to the end
-                        ## of the loop body and iterate.
-                        innerGen := nextGen;
-                    }
-            }
-            {
-                ## The inner generator was voided.
-                return
-            }
-    }
+        ## This loop handles the fact that the filter function is
+        ## allowed to yield void to indicate a generated value is to
+        ## be discarded.
+        loop {
+            ifValue { innerGen.nextValue(var result) }
+                { nextGen ->
+                    ifValue { filterFunction(result*) }
+                        { value ->
+                            box* := value;
+                            return makeObject(FilterGenerator, SECRET,
+                                @{filterFunction, generator: nextGen})
+                        }
+                        {
+                            ## The filter discarded the value. As this doesn't
+                            ## `return` (per se) it will fall through to the end
+                            ## of the loop body and iterate.
+                            innerGen := nextGen;
+                        }
+                }
+                {
+                    ## The inner generator was voided.
+                    return
+                }
+        }
+    };
 };
 
 

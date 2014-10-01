@@ -19,40 +19,40 @@ import ./NullGenerator :: nullGenerator;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def SerialGenerator = makeObjectClass(@SerialGenerator, SECRET);
+class SerialGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return Generator_stdCollect(this, optFilterFunction*)
+    };
 
-## Documented in spec.
-fn SerialGenerator.collect(optFilterFunction?) {
-    ## Just use the standard implementation.
-    return Generator_stdCollect(this, optFilterFunction*)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## Just use the standard implementation.
+        return Generator_stdFetch(this)
+    };
 
-## Documented in spec.
-fn SerialGenerator.fetch() {
-    ## Just use the standard implementation.
-    return Generator_stdFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        def subGens = data::generators;
 
-## Documented in spec.
-fn SerialGenerator.nextValue(box) {
-    def data = SECRET(this);
-    def subGens = data::generators;
+        return? ifValue { subGens.nth(0) }
+            { firstGen ->
+                def moreGens = subGens.sliceInclusive(1);
 
-    return? ifValue { subGens.nth(0) }
-        { firstGen ->
-            def moreGens = subGens.sliceInclusive(1);
-
-            ifValue { firstGen.nextValue(box) }
-                { nextGenerator ->
-                    makeObject(SerialGenerator, SECRET,
-                        @{generators: [nextGenerator, moreGens*]})
-                }
-                {
-                    ## First generator was voided.
-                    makeSerialGenerator(moreGens*).nextValue(box)
-                }
-        }
+                ifValue { firstGen.nextValue(box) }
+                    { nextGenerator ->
+                        makeObject(SerialGenerator, SECRET,
+                            @{generators: [nextGenerator, moreGens*]})
+                    }
+                    {
+                        ## First generator was voided.
+                        makeSerialGenerator(moreGens*).nextValue(box)
+                    }
+            }
+    };
 };
 
 

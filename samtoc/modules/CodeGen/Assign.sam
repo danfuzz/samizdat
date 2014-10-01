@@ -18,28 +18,28 @@ import ./indentation :: *;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def Assign = makeObjectClass(@Assign, SECRET);
+class Assign
+        access: SECRET {
+    fn flatten() {
+        def data = SECRET(this);
+        return "\(data::target.flatten()) = \(data::value.flatten())"
+    };
 
-fn Assign.flatten() {
-    def data = SECRET(this);
-    return "\(data::target.flatten()) = \(data::value.flatten())"
-};
+    fn indent(level, maxColumns) {
+        def data = SECRET(this);
+        return "".cat(
+            data::target.indent(level, maxColumns),
+            " =\n",
+            data::value.indent(level + 1, maxColumns)
+        )
+    };
 
-fn Assign.indent(level, maxColumns) {
-    def data = SECRET(this);
-    return "".cat(
-        data::target.indent(level, maxColumns),
-        " =\n",
-        data::value.indent(level + 1, maxColumns)
-    )
-};
-
-fn Assign.prefersFlat() {
-    def data = SECRET(this);
-    return? data::target.prefersFlat()
-        & data::value.prefersFlat()
-        & this
+    fn prefersFlat() {
+        def data = SECRET(this);
+        return? data::target.prefersFlat()
+            & data::value.prefersFlat()
+            & this
+    };
 };
 
 

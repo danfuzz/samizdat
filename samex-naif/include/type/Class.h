@@ -28,12 +28,6 @@ SYM_DECL(get_parent);
 void assertHasClass(zvalue value, zvalue cls);
 
 /**
- * Adds a new method to a class. TODO: This function should get removed once
- * the system can cleanly construct classes with their methods in one go.
- */
-void classAddMethod(zvalue cls, zvalue symbol, zvalue function);
-
-/**
  * Returns `true` iff the given class has the given parent. This is for
  * a direct parent check only, not for general ancestry.
  */
@@ -60,7 +54,8 @@ bool haveSameClass(zvalue value, zvalue other);
  * Makes a new class. `name` is the class's name (a symbol or a string).
  * `parent` is its superclass. `secret` is the construction and access secret
  * (an arbitrary value). The two method table arguments must be
- * `SymbolTable`s or `NULL`.
+ * `SymbolTable`s or `NULL`. `NULL` is treated as `@{}` (the empty symbol
+ * table).
  */
 zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
         zvalue classMethods, zvalue instanceMethods);

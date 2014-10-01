@@ -19,26 +19,26 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def ValueGenerator = makeObjectClass(@ValueGenerator, SECRET);
+class ValueGenerator
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## It is an "unbounded collect" error to call this.
+        unboundedCollect(this)
+    };
 
-## Documented in spec.
-fn ValueGenerator.collect(optFilterFunction?) {
-    ## It is an "unbounded collect" error to call this.
-    unboundedCollect(this)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## It is an "unbounded fetch" error to call this.
+        unboundedFetch(this)
+    };
 
-## Documented in spec.
-fn ValueGenerator.fetch() {
-    ## It is an "unbounded fetch" error to call this.
-    unboundedFetch(this)
-};
-
-## Documented in spec.
-fn ValueGenerator.nextValue(box) {
-    def data = SECRET(this);
-    box* := data::value;
-    return this
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        box* := data::value;
+        return this
+    };
 };
 
 
