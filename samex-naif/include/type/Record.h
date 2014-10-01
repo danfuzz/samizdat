@@ -18,6 +18,9 @@ extern zvalue CLS_Record;
 /** Method `.dataOf()`: Documented in spec. */
 SYM_DECL(dataOf);
 
+/** Method `.hasName()`: Documented in spec. */
+SYM_DECL(hasName);
+
 /** Global function `makeRecord()`: Documented in spec. */
 extern zvalue FUN_Record_makeRecord;
 

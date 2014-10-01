@@ -270,11 +270,6 @@ METH_IMPL_0(Class, get_parent) {
 }
 
 // Documented in header.
-METH_IMPL_1(Class, hasName, name) {
-    return symbolEq(getInfo(ths)->name, name) ? ths : NULL;
-}
-
-// Documented in header.
 METH_IMPL_1(Class, totalOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
@@ -356,7 +351,6 @@ MOD_INIT(Class) {
             METH_BIND(Class, gcMark),
             METH_BIND(Class, get_name),
             METH_BIND(Class, get_parent),
-            METH_BIND(Class, hasName),
             METH_BIND(Class, totalOrder),
             NULL));
 }

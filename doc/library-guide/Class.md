@@ -11,16 +11,14 @@ Class
 
 Returns the name of the class, as a symbol.
 
+**Note:** It is possible for two different classes to have the same name,
+so `cls1.get_name() == cls2.get_name()` does *not* imply that `cls1 == cls2`.
+
 #### `.get_parent() -> class | void`
 
 Returns the parent class (that is, the superclass) of the given class. This
 returns a class for all classes except `Value`. For `Value`, this returns
 void.
-
-#### `.hasName(name) -> class`
-
-Returns `this` if its name is as given, or void if not. Bear in mind that
-it is possible for two different classes to have the same name.
 
 
 <br><br>

@@ -167,6 +167,7 @@ MOD_INIT(Record) {
     MOD_USE(Data);
 
     SYM_INIT(dataOf);
+    SYM_INIT(hasName);
 
     CLS_Record = makeCoreClass("Record", CLS_Data,
         NULL,
@@ -189,6 +190,9 @@ zvalue CLS_Record = NULL;
 
 // Documented in header.
 SYM_DEF(dataOf);
+
+// Documented in header.
+SYM_DEF(hasName);
 
 // Documented in header.
 zvalue FUN_Record_makeRecord = NULL;
