@@ -1048,6 +1048,7 @@ DEF_PARSE(classDef) {
     PARSE(optSemicolons);
     zvalue methods = PARSE_DELIMITED_SEQ(methodDef, CH_SEMICOLON);
     PARSE(optSemicolons);
+    MATCH_OR_REJECT(CH_CCURLY);
 
     return makeClassDef(name, attributes, methods);
 }
