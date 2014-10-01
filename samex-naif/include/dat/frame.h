@@ -33,8 +33,11 @@ void datFrameError(const char *message);
 
 /**
  * Adds an item to the current frame and returns it. This is only necessary to
- * call when a reference gets "detached" from a live structure (e.g. returning
- * an element out of a collection).
+ * call when a reference gets "detached" from a structure (e.g. returning
+ * an element out of a collection, where it is not known that the collection
+ * will remain live after the call) and either returned from a C function
+ * (but not an in-model function or method call) or stored in a structure that
+ * GC won't immediately find.
  */
 inline zvalue datFrameAdd(zvalue value) {
     if (value == NULL) {
