@@ -136,13 +136,6 @@ typedef struct {
     zvalue secret;
 
     /**
-     * Whether this class has any subclasses. If so, it's invalid to
-     * add any method bindings. TODO: Remove this once incremental method
-     * binding is no longer allowed at all.
-     */
-    bool hasSubclasses;
-
-    /**
      * Bindings from method symbols to functions, keyed off of symbol
      * index number.
      */

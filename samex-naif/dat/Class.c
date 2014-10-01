@@ -70,13 +70,8 @@ static void classInit(zvalue cls, zvalue name, zvalue parent, zvalue secret) {
     info->parent = parent;
     info->name = name;
     info->secret = secret;
-    info->hasSubclasses = false;
 
     datImmortalize(cls);
-
-    if (parent != NULL) {
-        getInfo(parent)->hasSubclasses = true;
-    }
 }
 
 /**
@@ -124,13 +119,6 @@ void classBindMethods(zvalue cls, zvalue classMethods,
         imethSize = 0;
     } else {
         imethSize = symbolTableSize(instanceMethods);
-    }
-
-    if (info->hasSubclasses && (info->parent != NULL)) {
-        // `Value` (the only class without a parent) gets a pass on this
-        // sanity check, since during during bootstrap it gains subclasses
-        // before it's possible to define its methods.
-        die("Cannot modify method table of a class with subclasses.");
     }
 
     if (info->parent != NULL) {
