@@ -92,9 +92,7 @@ FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
 
 // Documented in header.
 METH_IMPL_0(Record, dataOf) {
-    // The `datFrameAdd()` call is because `value` might immediately become
-    // garbage.
-    return datFrameAdd(getInfo(ths)->data);
+    return getInfo(ths)->data;
 }
 
 // Documented in header.
