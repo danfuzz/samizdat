@@ -21,29 +21,29 @@ import ./rangeAdd :: *;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def OpenRange = makeObjectClass(@OpenRange, SECRET);
+class OpenRange
+        access: SECRET {
+    ## Documented in spec.
+    fn collect(optFilterFunction?) {
+        ## It is an "unbounded collect" error to call this.
+        unboundedCollect(this)
+    };
 
-## Documented in spec.
-fn OpenRange.collect(optFilterFunction?) {
-    ## It is an "unbounded collect" error to call this.
-    unboundedCollect(this)
-};
+    ## Documented in spec.
+    fn fetch() {
+        ## It is an "unbounded fetch" error to call this.
+        unboundedFetch(this)
+    };
 
-## Documented in spec.
-fn OpenRange.fetch() {
-    ## It is an "unbounded fetch" error to call this.
-    unboundedFetch(this)
-};
+    ## Documented in spec.
+    fn nextValue(box) {
+        def data = SECRET(this);
+        def firstValue = data::firstValue;
+        def increment = data::increment;
 
-## Documented in spec.
-fn OpenRange.nextValue(box) {
-    def data = SECRET(this);
-    def firstValue = data::firstValue;
-    def increment = data::increment;
-
-    box* := firstValue;
-    return makeOpenRange(rangeAdd(firstValue, increment), increment)
+        box* := firstValue;
+        return makeOpenRange(rangeAdd(firstValue, increment), increment)
+    };
 };
 
 

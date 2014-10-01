@@ -294,21 +294,22 @@ export fn loadResource(loader, source, format) {
 ## Class Definition: null `Loader`
 ##
 
-def NullLoader = makeObjectClass(@NullLoader, SECRET);
+class NullLoader
+        access: SECRET {
+    ## Documented in spec.
+    fn readResource(source, format) {
+        ## Returns void, always.
+    };
+
+    ## Documented in spec.
+    fn resolve(source) {
+        return? ifIs { checkExternalSource(source) }
+            { BOOTSTRAP_MODULES.get(source) }
+    };
+};
 
 ## The one instance of the class.
 def nullLoader = makeObject(NullLoader, SECRET);
-
-## Documented in spec.
-fn NullLoader.readResource(source, format) {
-    ## Returns void, always.
-};
-
-## Documented in spec.
-fn NullLoader.resolve(source) {
-    return? ifIs { checkExternalSource(source) }
-        { BOOTSTRAP_MODULES.get(source) }
-};
 
 ## Helper to "massage" `null` into `nullLoader` and pass everything
 ## else through as-is.
@@ -329,8 +330,6 @@ fn fixNullLoader(loader) {
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
 
-def ExternalLoader = makeObjectClass(@ExternalLoader, SECRET);
-
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
     def data = SECRET(loader);
@@ -349,30 +348,33 @@ fn doExternalResolve(loader, source) {
         }
 };
 
-## Documented in spec.
-fn ExternalLoader.readResource(source, format) {
-    ## Always just defer to the next loader.
-    def data = SECRET(this);
-    return? data::nextLoader.readResource(source, format)
-};
-
-## Documented in spec.
-fn ExternalLoader.resolve(source) {
-    def data = SECRET(this);
-
-    ifNot { checkExternalSource(source) }
-        {
-            ## Not an external source, so punt to the next loader.
-            return? data::nextLoader.resolve(source)
-        };
-
-    fn externalResolve() {
-        return? ifValueOr
-            { doExternalResolve(this, source) }
-            { data::nextLoader.resolve(source) }
+class ExternalLoader
+        access: SECRET {
+    ## Documented in spec.
+    fn readResource(source, format) {
+        ## Always just defer to the next loader.
+        def data = SECRET(this);
+        return? data::nextLoader.readResource(source, format)
     };
 
-    return? resolveHelper(data::loadedBox, source, externalResolve)
+    ## Documented in spec.
+    fn resolve(source) {
+        def data = SECRET(this);
+
+        ifNot { checkExternalSource(source) }
+            {
+                ## Not an external source, so punt to the next loader.
+                return? data::nextLoader.resolve(source)
+            };
+
+        fn externalResolve() {
+            return? ifValueOr
+                { doExternalResolve(this, source) }
+                { data::nextLoader.resolve(source) }
+        };
+
+        return? resolveHelper(data::loadedBox, source, externalResolve)
+    };
 };
 
 ## Documented in spec.
@@ -400,6 +402,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
         })
 };
 
+
 ##
 ## Class Definition: `InternalLoader`
 ##
@@ -408,8 +411,6 @@ export fn makeExternalLoader(path, globals, nextLoader) {
 ## * `basePath` -- absolute path prefix for all loading, with trailing `/`.
 ## * `globals` -- global variable environment to use when loading.
 ## * `loadedBox` -- map from partial paths to the results of loading.
-
-def InternalLoader = makeObjectClass(@InternalLoader, SECRET);
 
 ## Convenient helper which just resolves a top-level `main` file.
 fn resolveMain(loader) {
@@ -465,41 +466,44 @@ def INTERNAL_READERS = {
     @utf8: readResource_utf8
 };
 
-## Documented in spec.
-fn InternalLoader.readResource(source, format) {
-    def data = SECRET(this);
+class InternalLoader
+        access: SECRET {
+    ## Documented in spec.
+    fn readResource(source, format) {
+        def data = SECRET(this);
 
-    ifNot { checkInternalSource(source) }
-        {
-            ## Not an internal source, so punt to the next loader.
-            return? data::nextLoader.readResource(source, format)
-        };
+        ifNot { checkInternalSource(source) }
+            {
+                ## Not an internal source, so punt to the next loader.
+                return? data::nextLoader.readResource(source, format)
+            };
 
-    def fullPath = data::basePath.cat(source::name);
+        def fullPath = data::basePath.cat(source::name);
 
-    return ifValue { INTERNAL_READERS.get(format) }
-        { reader -> reader(fullPath) }
-        { die("Unsupported resource format: ", format) }
-};
-
-## Documented in spec.
-fn InternalLoader.resolve(source) {
-    def data = SECRET(this);
-
-    ifNot { checkInternalSource(source) }
-        {
-            ## Not an internal source, so punt to the next loader.
-            return? data::nextLoader.resolve(source)
-        };
-
-    ## Unlike with `ExternalLoader`, we don't walk up the parent chain if
-    ## resolution fails, as that would break the semantic model. (We don't
-    ## want to end up finding a parent loader's internal file.)
-    fn internalResolve() {
-        return? doInternalResolve(this, source)
+        return ifValue { INTERNAL_READERS.get(format) }
+            { reader -> reader(fullPath) }
+            { die("Unsupported resource format: ", format) }
     };
 
-    return? resolveHelper(data::loadedBox, source, internalResolve)
+    ## Documented in spec.
+    fn resolve(source) {
+        def data = SECRET(this);
+
+        ifNot { checkInternalSource(source) }
+            {
+                ## Not an internal source, so punt to the next loader.
+                return? data::nextLoader.resolve(source)
+            };
+
+        ## Unlike with `ExternalLoader`, we don't walk up the parent chain if
+        ## resolution fails, as that would break the semantic model. (We don't
+        ## want to end up finding a parent loader's internal file.)
+        fn internalResolve() {
+            return? doInternalResolve(this, source)
+        };
+
+        return? resolveHelper(data::loadedBox, source, internalResolve)
+    };
 };
 
 ## Documented in spec.
