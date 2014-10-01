@@ -44,13 +44,7 @@ static BoxInfo *getInfo(zvalue box) {
  * Does the main action of fetching, without checking the argument class.
  */
 static zvalue doFetch(zvalue box) {
-    zvalue result = getInfo(box)->value;
-
-    // The box has a value that we are about to return. Since the box
-    // could become garbage after this, we have to treat the value as
-    // "escaped" and so explicitly add the result value to the frame at
-    // this point. This ensures that GC will be able to find it.
-    return datFrameAdd(result);
+    return getInfo(box)->value;
 }
 
 /**

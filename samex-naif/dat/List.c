@@ -269,7 +269,7 @@ METH_IMPL_1(List, nth, n) {
     ListInfo *info = getInfo(ths);
     zint index = seqNthIndexStrict(info->size, n);
 
-    return (index < 0) ? NULL : datFrameAdd(info->elems[index]);
+    return (index < 0) ? NULL : info->elems[index];
 }
 
 // Documented in header.

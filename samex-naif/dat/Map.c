@@ -409,7 +409,7 @@ METH_IMPL_0(Map, gcMark) {
 // Documented in header.
 METH_IMPL_1(Map, get, key) {
     zint index = mapFind(ths, key);
-    return (index < 0) ? NULL : datFrameAdd(getInfo(ths)->elems[index].value);
+    return (index < 0) ? NULL : getInfo(ths)->elems[index].value;
 }
 
 // Documented in header.
@@ -420,7 +420,7 @@ METH_IMPL_0(Map, get_key) {
         die("Not a size 1 map.");
     }
 
-    return datFrameAdd(info->elems[0].key);
+    return info->elems[0].key;
 }
 
 // Documented in header.
@@ -436,7 +436,7 @@ METH_IMPL_0(Map, get_value) {
         die("Not a size 1 map.");
     }
 
-    return datFrameAdd(info->elems[0].value);
+    return info->elems[0].value;
 }
 
 // Documented in header.
