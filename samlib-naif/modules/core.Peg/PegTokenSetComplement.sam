@@ -19,22 +19,22 @@ import ./PegAny :: any;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegTokenSetComplement = makeObjectClass(@PegTokenSetComplement, SECRET);
+class PegTokenSetComplement
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, items*) {
+        def data = SECRET(this);
+        def result;
 
-## Documented in spec.
-fn PegTokenSetComplement.parse(box, input, items*) {
-    def data = SECRET(this);
-    def result;
-
-    return? ifValue { input.nextValue(var result) }
-        { newInput ->
-            ifNot { data::set.get(result.get_name()) }
-                {
-                    box* := result;
-                    newInput
-                }
-        }
+        return? ifValue { input.nextValue(var result) }
+            { newInput ->
+                ifNot { data::set.get(result.get_name()) }
+                    {
+                        box* := result;
+                        newInput
+                    }
+            }
+    };
 };
 
 

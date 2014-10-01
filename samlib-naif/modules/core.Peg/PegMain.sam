@@ -20,14 +20,14 @@ import ./PegSequence :: makeSequence;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegMain = makeObjectClass(@PegMain, SECRET);
-
-## Documented in spec.
-fn PegMain.parse(box, input, .*) {
-    ## The point of this implementation is to drop the `items` context.
-    def data = SECRET(this);
-    return? data::rule.parse(box, input)
+class PegMain
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, .*) {
+        ## The point of this implementation is to drop the `items` context.
+        def data = SECRET(this);
+        return? data::rule.parse(box, input)
+    };
 };
 
 

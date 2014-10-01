@@ -16,12 +16,12 @@
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegAny = makeObjectClass(@PegAny, SECRET);
-
-## Documented in spec.
-fn PegAny.parse(box, input, .*) {
-    return? input.nextValue(box)
+class PegAny
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, .*) {
+        return? input.nextValue(box)
+    };
 };
 
 

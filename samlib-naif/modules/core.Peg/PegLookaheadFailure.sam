@@ -24,17 +24,17 @@ import ./PegResult :: empty;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegLookaheadFailure = makeObjectClass(@PegLookaheadFailure, SECRET);
-
-## Documented in spec.
-fn PegLookaheadFailure.parse(box, input, items*) {
-    def data = SECRET(this);
-    return? ifNot { data::rule.parse(nullBox, input, items*) }
-        {
-            box* := null;
-            input
-        }
+class PegLookaheadFailure
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, items*) {
+        def data = SECRET(this);
+        return? ifNot { data::rule.parse(nullBox, input, items*) }
+            {
+                box* := null;
+                input
+            }
+    };
 };
 
 

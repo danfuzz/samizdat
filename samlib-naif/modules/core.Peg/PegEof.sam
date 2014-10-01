@@ -18,16 +18,16 @@ import core.Box :: nullBox;
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegEof = makeObjectClass(@PegEof, SECRET);
-
-## Documented in spec.
-fn PegEof.parse(box, input, .*) {
-    return? ifNot { input.nextValue(nullBox) }
-        {
-            box* := null;
-            input
-        }
+class PegEof
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, .*) {
+        return? ifNot { input.nextValue(nullBox) }
+            {
+                box* := null;
+                input
+            }
+    };
 };
 
 

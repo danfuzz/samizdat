@@ -17,14 +17,14 @@
 ## Secret used to control access to this class.
 def SECRET = @secret.toUnlisted();
 
-## Class being defined here.
-def PegResult = makeObjectClass(@PegResult, SECRET);
-
-## Documented in spec.
-fn PegResult.parse(box, input, .*) {
-    def data = SECRET(this);
-    box* := data::value;
-    return input
+class PegResult
+        access: SECRET {
+    ## Documented in spec.
+    fn parse(box, input, .*) {
+        def data = SECRET(this);
+        box* := data::value;
+        return input
+    };
 };
 
 
