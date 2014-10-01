@@ -168,6 +168,12 @@ arguments.
 Like `makeCall`, except that each of the `values` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
+#### `makeClassDef(name, attributes, methods) -> node`
+
+Makes a class definition node. This is a `top` variable definition of a class
+with the given name. `attributes` must be a list of single-binding symbol
+tables, and `methods` must be a list of named closures.
+
 #### `makeDynamicImport(node) -> [node+]`
 
 Converts an `import*` node to a list of statement nodes which perform an
