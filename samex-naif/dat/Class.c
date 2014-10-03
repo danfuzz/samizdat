@@ -354,7 +354,7 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Class,       CLS_Value, "Class");
     classInitHere(CLS_Value,       NULL,      "Value");
     classInitHere(CLS_Core,        CLS_Value, "Core");
-    classInitHere(CLS_Symbol,      CLS_Value, "Symbol");
+    classInitHere(CLS_Symbol,      CLS_Core,  "Symbol");
     classInitHere(CLS_SymbolTable, CLS_Core,  "SymbolTable");
     classInitHere(CLS_Builtin,     CLS_Core,  "Builtin");
 }

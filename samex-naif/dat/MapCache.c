@@ -61,7 +61,7 @@ METH_IMPL_0(MapCache, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(MapCache) {
-    MOD_USE(Value);
+    MOD_USE(Core);
 
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `gcMark` method gets called during gc,
