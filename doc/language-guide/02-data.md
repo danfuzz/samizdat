@@ -9,13 +9,17 @@ data types and a few compound data types. Samizdat also allows for any
 number of user-specified classes. Finally, Samizdat defines a number of
 special named constant values.
 
+Almost all core classes are concrete (instantiable) and immutable once
+constructed. The few exceptions are noted as "abstract" (not instantiable)
+or "mutable."
+
 The examples in this section all use literal value syntax for all parts of
 values, but it is worth noting that the language syntax allows arbitrary
 expressions anywhere where a literal value occurs in these examples.
 
 ### Core classes
 
-#### Value
+#### Value (abstract)
 
 This is the ultimate superclass (parent of the parent of…) of all other classes
 in the language.
@@ -50,11 +54,13 @@ the quotes are optional.
 @"++ weird ++"  ## Non-identifier names need to be quoted.
 ```
 
-#### Data
+#### Core (abstract)
 
-This is the parent of all "immutable data" classes in the language.
+This is the parent class (superclass) of all core classes in the language.
+Notably, while in general it is possible for two different classes to have
+the same name, every core class's name is unique.
 
-#### Object
+#### Object (abstract)
 
 This is the parent of all non-core classes, other than "record" classes.
 Every object class has an associated "secret" which is the key used to
@@ -63,13 +69,13 @@ data payload of such objects.
 
 The data payload of an object is always a symbol table.
 
-#### Null (data)
+#### Null
 
 The value `null` is used when a value is needed for some reason or other
 but no particular value is otherwise suitable. The language keyword
 `null` refers to this value.
 
-#### Bool (data)
+#### Bool
 
 A `Bool` is a boolean truth value. The two possible values of this class are
 `true` and `false`, with their usual interpretations.
@@ -83,7 +89,7 @@ used for conditional expression, though the `**` and `??` operators can
 bridge the divide. See the section on "Logic" in the "Basics" section
 for details.
 
-#### Int (data)
+#### Int
 
 An `Int` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
@@ -112,7 +118,7 @@ and not necessarily part of an int constant.
 0b1011_0111_1110_1111
 ```
 
-#### String (data)
+#### String
 
 A `String` is a sequence of zero or more Unicode code points.
 
@@ -185,7 +191,7 @@ syntax is covered in the section on string formatting.
 "
 ```
 
-#### List (data)
+#### List
 
 A `List` is a sequence of zero or more other values.
 
@@ -293,7 +299,7 @@ def zorch = "Z";
 A `Builtin` is an encapsulated potential computation, defined at the
 lowest layer of the system. It is a kind of `Function` (see which).
 
-#### Box
+#### Box (mutable)
 
 A `Box` is a holder for some other value. (In other systems, boxes are
 sometimes called "cells" or "handles.")
@@ -322,7 +328,7 @@ There are four predefined box variants:
 * The special value `nullBox` is a box that is permanently empty (succeeds
   but does nothing when `store` is called on it).
 
-#### Class
+#### Class (abstract)
 
 A `Class` value represents the class of a value. Every class has a name, which
 is a symbol. There are two major categories of class:
@@ -340,7 +346,7 @@ is a symbol. There are two major categories of class:
   class beyond the scope of the class's trusted implementation.
 
 
-### Record (data)
+### Record
 
 A record is a value that is constructed with an explicit record name and
 data payload. Record names can be either symbols or record classes.
