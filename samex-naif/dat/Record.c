@@ -164,12 +164,12 @@ METH_IMPL_1(Record, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Record) {
-    MOD_USE(Data);
+    MOD_USE(Core);
 
     SYM_INIT(dataOf);
     SYM_INIT(hasName);
 
-    CLS_Record = makeCoreClass("Record", CLS_Data,
+    CLS_Record = makeCoreClass("Record", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Record, dataOf),

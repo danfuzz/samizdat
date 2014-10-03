@@ -197,7 +197,7 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    CLS_Int = makeCoreClass("Int", CLS_Data,
+    CLS_Int = makeCoreClass("Int", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Int, abs),

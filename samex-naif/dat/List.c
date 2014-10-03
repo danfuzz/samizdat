@@ -386,7 +386,7 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
     MOD_USE(OneOff);
 
-    CLS_List = makeCoreClass("List", CLS_Data,
+    CLS_List = makeCoreClass("List", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(List, cat),

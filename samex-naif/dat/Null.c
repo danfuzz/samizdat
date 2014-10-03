@@ -43,7 +43,7 @@ METH_IMPL_1(Null, totalOrder, other) {
 MOD_INIT(Null) {
     MOD_USE(Int);
 
-    CLS_Null = makeCoreClass("Null", CLS_Data,
+    CLS_Null = makeCoreClass("Null", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Null, debugString),

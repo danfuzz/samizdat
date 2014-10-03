@@ -15,7 +15,7 @@
 // Classes.
 PRIM_DEF(Bool,                    CLS_Bool);
 PRIM_DEF(Class,                   CLS_Class);
-PRIM_DEF(Data,                    CLS_Data);
+PRIM_DEF(Core,                    CLS_Core);
 PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);

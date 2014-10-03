@@ -20,7 +20,7 @@ def CODE_C_NULL = genCodeString("NULL");
 def SPECIAL_VALUES = {
     (Bool) :       genCodeString("CLS_Bool"),
     (Class):       genCodeString("CLS_Class"),
-    (Data):        genCodeString("CLS_Data"),
+    (Core):        genCodeString("CLS_Core"),
     (Int):         genCodeString("CLS_Int"),
     (List):        genCodeString("CLS_List"),
     (Map):         genCodeString("CLS_Map"),
