@@ -9,7 +9,7 @@
 #ifndef _TYPE_LIST_H_
 #define _TYPE_LIST_H_
 
-#include "type/Data.h"
+#include "type/Core.h"
 #include "type/Sequence.h"
 
 

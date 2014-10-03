@@ -10,7 +10,7 @@
 #define _TYPE_MAP_H_
 
 #include "type/Collection.h"
-#include "type/Data.h"
+#include "type/Core.h"
 
 
 /** Class value for in-model class `Map`. */

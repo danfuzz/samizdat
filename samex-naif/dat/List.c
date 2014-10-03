@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 #include "type/Box.h"
-#include "type/Data.h"
+#include "type/Core.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/OneOff.h"

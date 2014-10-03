@@ -11,7 +11,7 @@
 #include "type/Builtin.h"
 #include "type/Class.h"
 #include "type/Collection.h"
-#include "type/Data.h"
+#include "type/Core.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"

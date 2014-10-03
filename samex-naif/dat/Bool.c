@@ -4,7 +4,7 @@
 
 #include "type/Bitwise.h"
 #include "type/Bool.h"
-#include "type/Data.h"
+#include "type/Core.h"
 #include "type/Int.h"
 #include "type/define.h"
 
