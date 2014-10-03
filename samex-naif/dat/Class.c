@@ -343,6 +343,7 @@ MOD_INIT(objectModel) {
     CLS_Class->cls = CLS_Class;
 
     CLS_Value       = allocClass();
+    CLS_Core        = allocClass();
     CLS_Symbol      = allocClass();
     CLS_SymbolTable = allocClass();
     CLS_Builtin     = allocClass();
@@ -352,6 +353,7 @@ MOD_INIT(objectModel) {
 
     classInitHere(CLS_Class,       CLS_Value, "Class");
     classInitHere(CLS_Value,       NULL,      "Value");
+    classInitHere(CLS_Core,        CLS_Value, "Core");
     classInitHere(CLS_Symbol,      CLS_Value, "Symbol");
     classInitHere(CLS_SymbolTable, CLS_Value, "SymbolTable");
     classInitHere(CLS_Builtin,     CLS_Value, "Builtin");
