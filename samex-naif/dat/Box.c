@@ -166,7 +166,7 @@ MOD_INIT(Box) {
 
     SYM_INIT(store);
 
-    CLS_Box = makeCoreClass("Box", CLS_Value,
+    CLS_Box = makeCoreClass("Box", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Box, collect),

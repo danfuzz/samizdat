@@ -66,7 +66,7 @@ MOD_INIT(MapCache) {
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `gcMark` method gets called during gc,
     // which we use as a trigger to clear the map cache.
-    zvalue CLS_MapCache = makeCoreClass("MapCache", CLS_Value,
+    zvalue CLS_MapCache = makeCoreClass("MapCache", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(MapCache, gcMark),
