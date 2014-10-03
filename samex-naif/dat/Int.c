@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include "type/Bitwise.h"
-#include "type/Data.h"
+#include "type/Core.h"
 #include "type/Int.h"
 #include "type/Number.h"
 #include "type/String.h"
@@ -197,7 +197,7 @@ MOD_INIT(Int) {
     MOD_USE(Number);
     MOD_USE(OneOff);
 
-    CLS_Int = makeCoreClass("Int", CLS_Data,
+    CLS_Int = makeCoreClass("Int", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Int, abs),

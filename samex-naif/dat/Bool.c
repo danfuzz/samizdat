@@ -4,7 +4,7 @@
 
 #include "type/Bitwise.h"
 #include "type/Bool.h"
-#include "type/Data.h"
+#include "type/Core.h"
 #include "type/Int.h"
 #include "type/define.h"
 
@@ -184,7 +184,7 @@ MOD_INIT(Bool) {
     MOD_USE(Int);
     MOD_USE(OneOff);
 
-    CLS_Bool = makeCoreClass("Bool", CLS_Data,
+    CLS_Bool = makeCoreClass("Bool", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Bool, and),

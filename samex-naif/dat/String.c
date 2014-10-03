@@ -548,7 +548,7 @@ MOD_INIT(String) {
 
     SYM_INIT(toSymbol);
 
-    CLS_String = makeCoreClass("String", CLS_Data,
+    CLS_String = makeCoreClass("String", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(String, cat),

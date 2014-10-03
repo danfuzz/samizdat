@@ -3,16 +3,16 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Data` class
+// `Core` class
 //
 
-#ifndef _TYPE_DATA_H_
-#define _TYPE_DATA_H_
+#ifndef _TYPE_CORE_H_
+#define _TYPE_CORE_H_
 
 #include "type/Value.h"
 
 
-/** Class value for in-model class `Data`. */
-extern zvalue CLS_Data;
+/** Class value for in-model class `Core`. */
+extern zvalue CLS_Core;
 
 #endif

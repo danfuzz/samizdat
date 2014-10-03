@@ -358,7 +358,7 @@ METH_IMPL_0(Closure, gcMark) {
 MOD_INIT(Closure) {
     MOD_USE(Box);
 
-    CLS_Closure = makeCoreClass("Closure", CLS_Value,
+    CLS_Closure = makeCoreClass("Closure", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Closure, call),

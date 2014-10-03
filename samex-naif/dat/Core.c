@@ -3,10 +3,10 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Data` class
+// `Core` class
 //
 
-#include "type/Data.h"
+#include "type/Core.h"
 #include "type/define.h"
 
 #include "impl.h"
@@ -17,11 +17,14 @@
 //
 
 /** Initializes the module. */
-MOD_INIT(Data) {
+MOD_INIT(Core) {
     MOD_USE(Value);
 
-    CLS_Data = makeCoreClass("Data", CLS_Value, NULL, NULL);
+    // Note: The `objectModel` module initializes `CLS_Core`.
+    classBindMethods(CLS_Core,
+        NULL,
+        NULL);
 }
 
 // Documented in header.
-zvalue CLS_Data = NULL;
+zvalue CLS_Core = NULL;

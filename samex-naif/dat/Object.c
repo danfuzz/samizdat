@@ -116,6 +116,8 @@ METH_IMPL_0(Object, gcMark) {
 MOD_INIT(Object) {
     MOD_USE(Value);
 
+    // Note: This does *not* inherit from `Core`, as this class is the
+    // base for all non-core classes.
     CLS_Object = makeCoreClass("Object", CLS_Value,
         NULL,
         symbolTableFromArgs(

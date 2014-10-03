@@ -71,6 +71,7 @@ will be returned, or one of:
   * [Builtin](Builtin.md)
   * [Class](Class.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
+  * [Core](Core.md)
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)

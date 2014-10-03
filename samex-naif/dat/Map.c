@@ -625,7 +625,7 @@ MOD_INIT(Map) {
     MOD_USE(MapCache);
     MOD_USE(OneOff);
 
-    CLS_Map = makeCoreClass("Map", CLS_Data,
+    CLS_Map = makeCoreClass("Map", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Map, cat),

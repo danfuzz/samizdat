@@ -9,7 +9,7 @@
 #ifndef _TYPE_NULL_H_
 #define _TYPE_NULL_H_
 
-#include "type/Data.h"
+#include "type/Core.h"
 
 
 /** Class value for in-model class `Null`. */

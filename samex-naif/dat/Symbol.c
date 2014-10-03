@@ -343,7 +343,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Symbol) {
-    MOD_USE(Value);
+    MOD_USE(Core);
 
     SYM_INIT(isInterned);
     SYM_INIT(toUnlisted);

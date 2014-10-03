@@ -162,11 +162,11 @@ METH_IMPL_0_1(Box, store, value) {
 /** Initializes the module. */
 MOD_INIT(Box) {
     MOD_USE(Generator);
-    MOD_USE(Value);
+    MOD_USE(Core);
 
     SYM_INIT(store);
 
-    CLS_Box = makeCoreClass("Box", CLS_Value,
+    CLS_Box = makeCoreClass("Box", CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Box, collect),

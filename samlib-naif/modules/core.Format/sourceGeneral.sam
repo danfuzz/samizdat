@@ -38,7 +38,7 @@ fn collectionBody(elems) {
 def SPECIAL_VALUES = {
     (Bool) :       "Bool",
     (Class):       "Class",
-    (Data):        "Data",
+    (Core):        "Core",
     (Int):         "Int",
     (List):        "List",
     (Map):         "Map",
