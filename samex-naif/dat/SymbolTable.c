@@ -461,7 +461,6 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
 /** Initializes the module. */
 MOD_INIT(SymbolTable) {
     MOD_USE(Symbol);
-    MOD_USE(OneOff);
 
     // Note: The `objectModel` module initializes `CLS_SymbolTable`.
     classBindMethods(CLS_SymbolTable,

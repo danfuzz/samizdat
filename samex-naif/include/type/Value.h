@@ -24,20 +24,23 @@ extern zvalue CLS_Value;
 /** Method `.call(args*)`: Documented in spec. */
 SYM_DECL(call);
 
+/** Method `.cat(args*)`: Documented in spec. */
+SYM_DECL(cat);
+
 /** Method `.debugString()`: Documented in spec. */
 SYM_DECL(debugString);
 
 /** Method `.debugSymbol()`: Documented in spec. */
 SYM_DECL(debugSymbol);
 
+/** Method `.del(key)`: Documented in spec. */
+SYM_DECL(del);
+
 /**
  * Symbol `exports`. Used when accessing modules. Not needed in `dat` per se,
  * but defined here, because there isn't really a better place to put it.
  */
 SYM_DECL(exports);
-
-/** Symbol `imports`. Same comment applies as with `exports`, above. */
-SYM_DECL(imports);
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
@@ -47,8 +50,14 @@ SYM_DECL(imports);
  */
 SYM_DECL(gcMark);
 
+/** Method `.get(key)`: Documented in spec. */
+SYM_DECL(get);
+
 /** Method `.get_name()`: Documented in spec. */
 SYM_DECL(get_name);
+
+/** Symbol `imports`. Same comment applies as with `exports`, above. */
+SYM_DECL(imports);
 
 /** Symbol `main`. Same comment applies as with `exports`, above. */
 SYM_DECL(main);
@@ -58,6 +67,9 @@ SYM_DECL(perEq);
 
 /** Method `.perOrder(other)`: Documented in spec. */
 SYM_DECL(perOrder);
+
+/** Method `.put(key, value)`: Documented in spec. */
+SYM_DECL(put);
 
 /** Symbol `resources`. Same comment applies as with `exports`, above. */
 SYM_DECL(resources);

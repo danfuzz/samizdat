@@ -35,24 +35,16 @@ zvalue collPut(zvalue coll, zvalue key, zvalue value) {
 MOD_INIT(Collection) {
     MOD_USE(OneOff);
 
-    SYM_INIT(del);
     SYM_INIT(keyList);
     SYM_INIT(nthMapping);
-    SYM_INIT(put);
     SYM_INIT(valueList);
 }
-
-// Documented in header.
-SYM_DEF(del);
 
 // Documented in header.
 SYM_DEF(keyList);
 
 // Documented in header.
 SYM_DEF(nthMapping);
-
-// Documented in header.
-SYM_DEF(put);
 
 // Documented in header.
 SYM_DEF(valueList);
