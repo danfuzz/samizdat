@@ -201,6 +201,36 @@ METH_IMPL_1(Value, totalOrder, other) {
     return valEq(ths, other) ? INT_0 : NULL;
 }
 
+// Documented in header.
+void bindMethodsForValue(void) {
+    SYM_INIT(call);
+    SYM_INIT(debugString);
+    SYM_INIT(debugSymbol);
+    SYM_INIT(exports);
+    SYM_INIT(gcMark);
+    SYM_INIT(get_name);
+    SYM_INIT(imports);
+    SYM_INIT(main);
+    SYM_INIT(perEq);
+    SYM_INIT(perOrder);
+    SYM_INIT(resources);
+    SYM_INIT(toString);
+    SYM_INIT(totalEq);
+    SYM_INIT(totalOrder);
+
+    classBindMethods(CLS_Value,
+        NULL,
+        symbolTableFromArgs(
+            METH_BIND(Value, debugString),
+            METH_BIND(Value, debugSymbol),
+            METH_BIND(Value, gcMark),
+            METH_BIND(Value, perEq),
+            METH_BIND(Value, perOrder),
+            METH_BIND(Value, totalEq),
+            METH_BIND(Value, totalOrder),
+            NULL));
+}
+
 /** Initializes the module. */
 MOD_INIT(Value) {
     MOD_USE(objectModel);
@@ -220,33 +250,8 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Null);
     MOD_USE_NEXT(String);
 
-    SYM_INIT(call);
-    SYM_INIT(debugString);
-    SYM_INIT(debugSymbol);
-    SYM_INIT(exports);
-    SYM_INIT(gcMark);
-    SYM_INIT(get_name);
-    SYM_INIT(imports);
-    SYM_INIT(main);
-    SYM_INIT(perEq);
-    SYM_INIT(perOrder);
-    SYM_INIT(resources);
-    SYM_INIT(toString);
-    SYM_INIT(totalEq);
-    SYM_INIT(totalOrder);
-
-    // Note: The `objectModel` module initializes `CLS_Value`.
-    classBindMethods(CLS_Value,
-        NULL,
-        symbolTableFromArgs(
-            METH_BIND(Value, debugString),
-            METH_BIND(Value, debugSymbol),
-            METH_BIND(Value, gcMark),
-            METH_BIND(Value, perEq),
-            METH_BIND(Value, perOrder),
-            METH_BIND(Value, totalEq),
-            METH_BIND(Value, totalOrder),
-            NULL));
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForValue()`.
 }
 
 // Documented in header.

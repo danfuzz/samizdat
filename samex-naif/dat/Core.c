@@ -16,14 +16,19 @@
 // Class Definition
 //
 
+// Documented in header.
+void bindMethodsForCore(void) {
+    classBindMethods(CLS_Core,
+        NULL,
+        NULL);
+}
+
 /** Initializes the module. */
 MOD_INIT(Core) {
     MOD_USE(Value);
 
-    // Note: The `objectModel` module initializes `CLS_Core`.
-    classBindMethods(CLS_Core,
-        NULL,
-        NULL);
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForValue()`.
 }
 
 // Documented in header.

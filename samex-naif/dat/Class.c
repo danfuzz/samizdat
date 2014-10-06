@@ -357,15 +357,24 @@ MOD_INIT(objectModel) {
     classInitHere(CLS_Symbol,      CLS_Core,  "Symbol");
     classInitHere(CLS_SymbolTable, CLS_Core,  "SymbolTable");
     classInitHere(CLS_Builtin,     CLS_Core,  "Builtin");
+
+    // At this point, all of the "corest" classes exist but have no bound
+    // methods. Their methods get bound by the following calls. The order of
+    // these calls is significant, since method table setup starts by copying
+    // the parent's class and metaclass tables. Instead of trying to get fancy
+    // with recursive `MOD_USE()` calls (or something like that), we just use
+    // an order here that works.
+
+    bindMethodsForValue();
+    bindMethodsForClass(); // See below.
+    bindMethodsForCore();
+    bindMethodsForSymbol();
 }
 
-/** Initializes the module. */
-MOD_INIT(Class) {
-    MOD_USE(Value);
-
+// Documented in header.
+void bindMethodsForClass(void) {
     SYM_INIT(get_parent);
 
-    // Note: The `objectModel` module (directly above) initializes `CLS_Class`.
     classBindMethods(CLS_Class,
         NULL,
         symbolTableFromArgs(
@@ -375,6 +384,14 @@ MOD_INIT(Class) {
             METH_BIND(Class, get_parent),
             METH_BIND(Class, totalOrder),
             NULL));
+}
+
+/** Initializes the module. */
+MOD_INIT(Class) {
+    MOD_USE(Value);
+
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForClass()`.
 }
 
 // Documented in header.

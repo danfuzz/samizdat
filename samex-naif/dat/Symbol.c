@@ -341,14 +341,11 @@ METH_IMPL_1(Symbol, totalOrder, other) {
     }
 }
 
-/** Initializes the module. */
-MOD_INIT(Symbol) {
-    MOD_USE(Core);
-
+// Documented in header.
+void bindMethodsForSymbol(void) {
     SYM_INIT(isInterned);
     SYM_INIT(toUnlisted);
 
-    // Note: The `objectModel` module initializes `CLS_Symbol`.
     classBindMethods(CLS_Symbol,
         NULL,
         symbolTableFromArgs(
@@ -361,6 +358,14 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, totalEq),
             METH_BIND(Symbol, totalOrder),
             NULL));
+}
+
+/** Initializes the module. */
+MOD_INIT(Symbol) {
+    MOD_USE(Core);
+
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForSymbol()`.
 }
 
 // Documented in header.
