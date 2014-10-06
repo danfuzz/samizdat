@@ -148,11 +148,8 @@ METH_IMPL_0(Builtin, gcMark) {
     return NULL;
 }
 
-/** Initializes the module. */
-MOD_INIT(Builtin) {
-    MOD_USE(Core);
-
-    // Note: The `objectModel` module initializes `CLS_Builtin`.
+// Documented in header.
+void bindMethodsForBuiltin(void) {
     classBindMethods(CLS_Builtin,
         NULL,
         symbolTableFromArgs(
@@ -160,6 +157,14 @@ MOD_INIT(Builtin) {
             METH_BIND(Builtin, debugSymbol),
             METH_BIND(Builtin, gcMark),
             NULL));
+}
+
+/** Initializes the module. */
+MOD_INIT(Builtin) {
+    MOD_USE(Core);
+
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForBuiltin()`.
 }
 
 // Documented in header.

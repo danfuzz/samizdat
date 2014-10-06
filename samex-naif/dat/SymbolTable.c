@@ -458,11 +458,8 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
     return INT_0;
 }
 
-/** Initializes the module. */
-MOD_INIT(SymbolTable) {
-    MOD_USE(Symbol);
-
-    // Note: The `objectModel` module initializes `CLS_SymbolTable`.
+// Documented in header.
+void bindMethodsForSymbolTable(void) {
     classBindMethods(CLS_SymbolTable,
         NULL,
         symbolTableFromArgs(
@@ -483,6 +480,14 @@ MOD_INIT(SymbolTable) {
         datImmortalize(FUNC_VALUE(SymbolTable_makeValueSymbolTable));
 
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance(0));
+}
+
+/** Initializes the module. */
+MOD_INIT(SymbolTable) {
+    MOD_USE(Symbol);
+
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForSymbolTable()`.
 }
 
 // Documented in header.

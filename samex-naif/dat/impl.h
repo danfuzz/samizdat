@@ -196,9 +196,11 @@ zint markFrameStack(void);
 // due to the circular nature of the class structure.
 //
 
+void bindMethodsForBuiltin(void);
 void bindMethodsForClass(void);
 void bindMethodsForCore(void);
 void bindMethodsForSymbol(void);
+void bindMethodsForSymbolTable(void);
 void bindMethodsForValue(void);
 
 #endif

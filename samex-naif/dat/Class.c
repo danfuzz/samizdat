@@ -369,6 +369,8 @@ MOD_INIT(objectModel) {
     bindMethodsForClass(); // See below.
     bindMethodsForCore();
     bindMethodsForSymbol();
+    bindMethodsForSymbolTable();
+    bindMethodsForBuiltin();
 }
 
 // Documented in header.
