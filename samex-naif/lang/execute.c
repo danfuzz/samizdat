@@ -33,8 +33,8 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e);
  * Executes an `apply` form.
  */
 static zvalue execApply(Frame *frame, zvalue apply) {
-    zvalue functionExpr = cm_get(apply, SYM_function);
-    zvalue valuesExpr = cm_get(apply, SYM_values);
+    zvalue functionExpr = cm_get(apply, SYM(function));
+    zvalue valuesExpr = cm_get(apply, SYM(values));
     zvalue function = execExpression(frame, functionExpr);
     zvalue values = execExpressionOrMaybe(frame, valuesExpr);
 
@@ -51,8 +51,8 @@ static zvalue execApply(Frame *frame, zvalue apply) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    zvalue functionExpr = cm_get(call, SYM_function);
-    zvalue valuesExprs = cm_get(call, SYM_values);
+    zvalue functionExpr = cm_get(call, SYM(function));
+    zvalue valuesExprs = cm_get(call, SYM(values));
     zvalue function = execExpression(frame, functionExpr);
 
     zint argCount = get_size(valuesExprs);
@@ -71,7 +71,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `fetch` form.
  */
 static zvalue execFetch(Frame *frame, zvalue fetch) {
-    zvalue targetExpr = cm_get(fetch, SYM_target);
+    zvalue targetExpr = cm_get(fetch, SYM(target));
     zvalue target = execExpression(frame, targetExpr);
 
     return cm_fetch(target);
@@ -88,7 +88,7 @@ static void execImport(Frame *frame, zvalue import) {
  * Executes a `maybe` form.
  */
 static zvalue execMaybe(Frame *frame, zvalue maybe) {
-    zvalue valueExpression = cm_get(maybe, SYM_value);
+    zvalue valueExpression = cm_get(maybe, SYM(value));
     return execExpressionVoidOk(frame, valueExpression);
 }
 
@@ -98,7 +98,7 @@ static zvalue execMaybe(Frame *frame, zvalue maybe) {
 static void execNoYield(Frame *frame, zvalue noYield)
     __attribute__((noreturn));
 static void execNoYield(Frame *frame, zvalue noYield) {
-    zvalue valueExpression = cm_get(noYield, SYM_value);
+    zvalue valueExpression = cm_get(noYield, SYM(value));
     mustNotYield(execExpression(frame, valueExpression));
 }
 
@@ -106,8 +106,8 @@ static void execNoYield(Frame *frame, zvalue noYield) {
  * Executes a `store` form.
  */
 static zvalue execStore(Frame *frame, zvalue store) {
-    zvalue targetExpr = cm_get(store, SYM_target);
-    zvalue valueExpr = cm_get(store, SYM_value);
+    zvalue targetExpr = cm_get(store, SYM(target));
+    zvalue valueExpr = cm_get(store, SYM(value));
     zvalue target = execExpression(frame, targetExpr);
     zvalue value = execExpressionOrMaybe(frame, valueExpr);
 
@@ -119,8 +119,8 @@ static zvalue execStore(Frame *frame, zvalue store) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue name = cm_get(varDef, SYM_name);
-    zvalue valueExpression = cm_get(varDef, SYM_value);
+    zvalue name = cm_get(varDef, SYM(name));
+    zvalue valueExpression = cm_get(varDef, SYM(value));
     zvalue box = valueExpression
         ? makeResult(execExpression(frame, valueExpression))
         : makePromise();
@@ -133,8 +133,8 @@ static void execVarDef(Frame *frame, zvalue varDef) {
  * as appropriate.
  */
 static void execVarDefMutable(Frame *frame, zvalue varDef) {
-    zvalue name = cm_get(varDef, SYM_name);
-    zvalue valueExpression = cm_get(varDef, SYM_value);
+    zvalue name = cm_get(varDef, SYM(name));
+    zvalue valueExpression = cm_get(varDef, SYM(value));
     zvalue value = valueExpression
         ? execExpression(frame, valueExpression)
         : NULL;
@@ -146,7 +146,7 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = cm_get(varRef, SYM_name);
+    zvalue name = cm_get(varRef, SYM(name));
     return frameGet(frame, name);
 }
 

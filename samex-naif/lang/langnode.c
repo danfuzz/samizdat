@@ -81,22 +81,22 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 
 // Documented in `LangNode` source.
 static zvalue expandYield(zvalue table) {
-    zvalue yieldNode = cm_get(table, SYM_yield);
+    zvalue yieldNode = cm_get(table, SYM(yield));
 
     if (     (yieldNode == NULL)
           || !recordEvalTypeIs(yieldNode, EVAL_nonlocalExit)) {
         return yieldNode;
     }
 
-    zvalue function = cm_get(yieldNode, SYM_function);
-    zvalue value = cm_get(yieldNode, SYM_value);
-    zvalue yieldDef = cm_get(table, SYM_yieldDef);
-    zvalue functionTarget = cm_get(function, SYM_target);
+    zvalue function = cm_get(yieldNode, SYM(function));
+    zvalue value = cm_get(yieldNode, SYM(value));
+    zvalue yieldDef = cm_get(table, SYM(yieldDef));
+    zvalue functionTarget = cm_get(function, SYM(target));
 
     if (     recordEvalTypeIs(function, EVAL_fetch)
           && recordEvalTypeIs(functionTarget, EVAL_varRef)
           && (yieldDef != NULL)
-          && valEq(cm_get(functionTarget, SYM_name), yieldDef)) {
+          && valEq(cm_get(functionTarget, SYM(name)), yieldDef)) {
         return value;
     }
 
@@ -109,7 +109,7 @@ static zvalue expandYield(zvalue table) {
         }
         case EVAL_maybe: {
             zvalue arg = makeInterpolate(
-                makeMaybeValue(cm_get(value, SYM_value)));
+                makeMaybeValue(cm_get(value, SYM(value))));
             exitCall = makeCallOrApply(function, listFrom1(arg));
             break;
         }
@@ -152,12 +152,12 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
     for (zint i = 0; i < size; i++) {
         zvalue one = cm_nth(mappings, i);
         if (recordEvalTypeIs(one, EVAL_mapping)) {
-            zvalue keys = cm_get(one, SYM_keys);
-            zvalue value = cm_get(one, SYM_value);
+            zvalue keys = cm_get(one, SYM(keys));
+            zvalue value = cm_get(one, SYM(value));
             bool handled = false;
             if (get_size(keys) == 1) {
                 zvalue key = cm_nth(keys, 0);
-                if (cm_get(key, SYM_interpolate) == NULL) {
+                if (cm_get(key, SYM(interpolate)) == NULL) {
                     singleArgs[singleAt] = key;
                     singleArgs[singleAt + 1] = value;
                     singleAt += 2;
@@ -210,7 +210,7 @@ zvalue formalsMaxArgs(zvalue formals) {
 
     for (zint i = 0; i < sz; i++) {
         zvalue one = cm_nth(formals, i);
-        zvalue repeat = cm_get(one, SYM_repeat);
+        zvalue repeat = cm_get(one, SYM(repeat));
         if (valEqNullOk(repeat, SYM_CH_STAR)
             || valEqNullOk(repeat, SYM_CH_PLUS)) {
             maxArgs = -1;
@@ -229,7 +229,7 @@ zvalue formalsMinArgs(zvalue formals) {
 
     for (zint i = 0; i < sz; i++) {
         zvalue one = cm_nth(formals, i);
-        zvalue repeat = cm_get(one, SYM_repeat);
+        zvalue repeat = cm_get(one, SYM(repeat));
         if (!(valEqNullOk(repeat, SYM_CH_QMARK)
               || valEqNullOk(repeat, SYM_CH_STAR))) {
             minArgs++;
@@ -243,12 +243,13 @@ zvalue formalsMinArgs(zvalue formals) {
 zvalue get_baseName(zvalue source) {
     switch (recordEvalType(source)) {
         case EVAL_external: {
-            zvalue components = splitAtChar(cm_get(source, SYM_name), STR_CH_DOT);
+            zvalue components =
+                splitAtChar(cm_get(source, SYM(name)), STR_CH_DOT);
             return cm_nth(components, get_size(components) - 1);
         }
         case EVAL_internal: {
             zvalue components =
-                splitAtChar(cm_get(source, SYM_name), STR_CH_SLASH);
+                splitAtChar(cm_get(source, SYM(name)), STR_CH_SLASH);
             zvalue last = cm_nth(components, get_size(components) - 1);
             zvalue parts = splitAtChar(last, STR_CH_DOT);
             return cm_nth(parts, 0);
@@ -263,21 +264,21 @@ zvalue get_baseName(zvalue source) {
 zvalue get_definedNames(zvalue node) {
     switch (recordEvalType(node)) {
         case EVAL_export: {
-            return get_definedNames(cm_get(node, SYM_value));
+            return get_definedNames(cm_get(node, SYM(value)));
         }
         case EVAL_importModule:
         case EVAL_importResource:
         case EVAL_varDef:
         case EVAL_varDefMutable: {
-            return listFrom1(cm_get(node, SYM_name));
+            return listFrom1(cm_get(node, SYM(name)));
         }
         case EVAL_importModuleSelection: {
-            zvalue select = cm_get(node, SYM_select);
+            zvalue select = cm_get(node, SYM(select));
             if (select == NULL) {
                 die("Cannot call `get_definedNames` on unresolved import.");
             }
 
-            zvalue prefix = cm_get(node, SYM_prefix);
+            zvalue prefix = cm_get(node, SYM(prefix));
             if (prefix != NULL) {
                 zvalue prefixStr = cm_toString(prefix);
                 zint size = get_size(select);
@@ -320,7 +321,9 @@ zvalue makeApply(zvalue function, zvalue values) {
         values = TOK_void;
     }
 
-    return recordFrom2(SYM(apply), SYM_function, function, SYM_values, values);
+    return recordFrom2(SYM(apply),
+        SYM(function), function,
+        SYM(values),   values);
 }
 
 // Documented in spec.
@@ -332,12 +335,12 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
     // significant thing, and its value is ignored; instead, per-type
     // assignment conversion is implemented directly below.
 
-    if (cm_get(target, SYM_lvalue) == NULL) {
+    if (cm_get(target, SYM(lvalue)) == NULL) {
         return NULL;
     } else if (recordEvalTypeIs(target, EVAL_fetch)) {
-        zvalue innerTarget = cm_get(target, SYM_target);
+        zvalue innerTarget = cm_get(target, SYM(target));
         return recordFrom2(SYM(store),
-            SYM_target, innerTarget, SYM_value, value);
+            SYM(target), innerTarget, SYM(value), value);
     } else {
         die("Improper `lvalue` binding.");
     }
@@ -347,7 +350,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 zvalue makeBasicClosure(zvalue table) {
     return makeRecord(SYM(closure),
         cm_cat(
-            tableFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
+            tableFrom2(SYM(formals), EMPTY_LIST, SYM(statements), EMPTY_LIST),
             table));
 }
 
@@ -357,7 +360,9 @@ zvalue makeCall(zvalue function, zvalue values) {
         values = EMPTY_LIST;
     }
 
-    return recordFrom2(SYM(call), SYM_function, function, SYM_values, values);
+    return recordFrom2(SYM(call),
+        SYM(function), function,
+        SYM(values),   values);
 }
 
 // Documented in spec.
@@ -390,7 +395,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
     for (zint i = 0; i < sz; i++) {
         zvalue one = cm_nth(values, i);
-        zvalue node = cm_get(one, SYM_interpolate);
+        zvalue node = cm_get(one, SYM(interpolate));
         if (node != NULL) {
             addPendingToCooked();
             addToCooked(makeCall(SYMS(collect), listFrom1(node)));
@@ -469,10 +474,10 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
 
 // Documented in spec.
 zvalue makeDynamicImport(zvalue node) {
-    zvalue format = cm_get(node, SYM_format);
-    zvalue name = cm_get(node, SYM_name);
-    zvalue select = cm_get(node, SYM_select);
-    zvalue source = cm_get(node, SYM_source);
+    zvalue format = cm_get(node, SYM(format));
+    zvalue name = cm_get(node, SYM(name));
+    zvalue select = cm_get(node, SYM(select));
+    zvalue source = cm_get(node, SYM(source));
 
     switch (recordEvalType(node)) {
         case EVAL_importModule: {
@@ -491,7 +496,8 @@ zvalue makeDynamicImport(zvalue node) {
                 zvalue name = cm_nth(names, i);
                 zvalue sel = cm_nth(select, i);
                 stats[i] = makeVarDef(name,
-                    makeCall(SYMS(get), listFrom2(loadCall, makeLiteral(sel))));
+                    makeCall(SYMS(get),
+                        listFrom2(loadCall, makeLiteral(sel))));
             }
 
             return listFromArray(size, stats);
@@ -511,20 +517,20 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return recordFrom1(SYM(export), SYM_value, node);
+    return recordFrom1(SYM(export), SYM(value), node);
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return recordFrom1(SYM(exportSelection), SYM_select, names);
+    return recordFrom1(SYM(exportSelection), SYM(select), names);
 }
 
 // Documented in spec.
 zvalue makeFullClosure(zvalue baseData) {
     zvalue table = hasClass(baseData, CLS_SymbolTable)
         ? baseData : get_data(baseData);
-    zvalue formals = cm_get(table, SYM_formals);
-    zvalue statements = cm_get(table, SYM_statements);
+    zvalue formals = cm_get(table, SYM(formals));
+    zvalue statements = cm_get(table, SYM(statements));
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
     zvalue yieldNode = expandYield(table);
 
@@ -538,7 +544,7 @@ zvalue makeFullClosure(zvalue baseData) {
 
     if (     (yieldNode == NULL)
           && (statSz != 0)
-          && (cm_get(table, SYM_yieldDef) == NULL)) {
+          && (cm_get(table, SYM(yieldDef)) == NULL)) {
         zvalue lastStat = cm_nth(statements, statSz - 1);
         if (isExpression(lastStat)) {
             statements = METH_CALL(sliceExclusive, statements, intFromZint(0));
@@ -556,9 +562,9 @@ zvalue makeFullClosure(zvalue baseData) {
         cm_cat(
             table,
             tableFrom3(
-                SYM_formals,    formals,
-                SYM_statements, statements,
-                SYM_yield,      yieldNode)));
+                SYM(formals),    formals,
+                SYM(statements), statements,
+                SYM(yield),      yieldNode)));
 }
 
 // Documented in spec.
@@ -567,35 +573,35 @@ zvalue makeImport(zvalue baseData) {
     // `LangNode`.
     zvalue data = baseData;  // Modified in some cases below.
 
-    zvalue select = cm_get(data, SYM_select);
+    zvalue select = cm_get(data, SYM(select));
     if (select != NULL) {
         // It's a module binding selection.
 
-        if (cm_get(data, SYM_name) != NULL) {
+        if (cm_get(data, SYM(name)) != NULL) {
             die("Import selection name must be a prefix.");
-        } else if (cm_get(data, SYM_format) != NULL) {
+        } else if (cm_get(data, SYM(format)) != NULL) {
             die("Cannot import selection of resource.");
         }
 
         if (valEq(select, SYM_CH_STAR)) {
             // It's a wildcard import.
-            data = METH_CALL(del, data, SYM_select);
+            data = METH_CALL(del, data, SYM(select));
         }
 
         return makeRecord(SYM(importModuleSelection), data);
     }
 
-    if (cm_get(data, SYM_name) == NULL) {
+    if (cm_get(data, SYM(name)) == NULL) {
         // No `name` provided, so figure out a default one.
         zvalue name = cm_cat(
             STR_CH_DOLLAR,
-            get_baseName(cm_get(baseData, SYM_source)));
-        data = cm_put(data, SYM_name, symbolFromString(name));
+            get_baseName(cm_get(baseData, SYM(source))));
+        data = cm_put(data, SYM(name), symbolFromString(name));
     }
 
-    if (cm_get(data, SYM_format) != NULL) {
+    if (cm_get(data, SYM(format)) != NULL) {
         // It's a resource.
-        if (recordEvalTypeIs(cm_get(data, SYM_source), EVAL_external)) {
+        if (recordEvalTypeIs(cm_get(data, SYM(source)), EVAL_external)) {
             die("Cannot import external resource.");
         }
         return makeRecord(SYM(importResource), data);
@@ -607,12 +613,12 @@ zvalue makeImport(zvalue baseData) {
 
 // Documented in spec.
 zvalue makeInfoTable(zvalue node) {
-    zvalue info = cm_get(node, SYM_info);
+    zvalue info = cm_get(node, SYM(info));
     if (info != NULL) {
         return info;
     }
 
-    zvalue statements = cm_get(node, SYM_statements);
+    zvalue statements = cm_get(node, SYM(statements));
     zint size = get_size(statements);
 
     zvalue exports = EMPTY_MAP;
@@ -624,7 +630,7 @@ zvalue makeInfoTable(zvalue node) {
 
         switch (recordEvalType(s)) {
             case EVAL_exportSelection: {
-                zvalue select = cm_get(s, SYM_select);
+                zvalue select = cm_get(s, SYM(select));
                 zint sz = get_size(select);
                 for (zint j = 0; j < sz; j++) {
                     zvalue name = cm_nth(select, j);
@@ -641,7 +647,7 @@ zvalue makeInfoTable(zvalue node) {
                 }
                 // And fall through to the next `switch` statement, to handle
                 // an `import*` payload, if any.
-                s = cm_get(s, SYM_value);
+                s = cm_get(s, SYM(value));
                 break;
             }
             default: {
@@ -653,13 +659,13 @@ zvalue makeInfoTable(zvalue node) {
         // Intentionally *not* part of the above `switch` (see comment above).
         switch (recordEvalType(s)) {
             case EVAL_importModule: {
-                imports =
-                    addImportBinding(imports, cm_get(s, SYM_source), SYM_module);
+                imports = addImportBinding(imports,
+                    cm_get(s, SYM(source)), SYM(module));
                 break;
             }
             case EVAL_importModuleSelection: {
-                zvalue source = cm_get(s, SYM_source);
-                zvalue select = cm_get(s, SYM_select);
+                zvalue source = cm_get(s, SYM(source));
+                zvalue select = cm_get(s, SYM(select));
                 if (select == NULL) {
                     die("Cannot call `makeInfoTable` on unresolved import.");
                 }
@@ -672,7 +678,7 @@ zvalue makeInfoTable(zvalue node) {
             }
             case EVAL_importResource: {
                 resources = addResourceBinding(resources,
-                    cm_get(s, SYM_source), cm_get(s, SYM_format));
+                    cm_get(s, SYM(source)), cm_get(s, SYM(format)));
                 break;
             }
             default: {
@@ -683,23 +689,23 @@ zvalue makeInfoTable(zvalue node) {
     }
 
     return symbolTableFromArgs(
-        SYM_exports,   exports,
-        SYM_imports,   imports,
-        SYM_resources, resources,
+        SYM(exports),   exports,
+        SYM(imports),   imports,
+        SYM(resources), resources,
         NULL);
 }
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
     return recordFrom3(SYM(fetch),
-        SYM_target,      node,
-        SYM_interpolate, node,
-        SYM_lvalue,      EMPTY_LIST);
+        SYM(target),      node,
+        SYM(interpolate), node,
+        SYM(lvalue),      EMPTY_LIST);
 }
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return recordFrom1(SYM(literal), SYM_value, value);
+    return recordFrom1(SYM(literal), SYM(value), value);
 }
 
 // Documented in spec.
@@ -710,7 +716,7 @@ zvalue makeMapExpression(zvalue mappings) {
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return recordFrom1(SYM(maybe), SYM_value, value);
+    return recordFrom1(SYM(maybe), SYM(value), value);
 }
 
 // Documented in spec.
@@ -720,14 +726,14 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return recordFrom1(SYM(noYield), SYM_value, value);
+    return recordFrom1(SYM(noYield), SYM(value), value);
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
     return recordFrom2(SYM(nonlocalExit),
-        SYM_function, function, SYM_value, value);
+        SYM(function), function, SYM(value), value);
 }
 
 // Documented in spec.
@@ -748,27 +754,27 @@ zvalue makeThunk(zvalue expression) {
         ? makeMaybe(expression)
         : expression;
 
-    return makeFullClosure(tableFrom1(SYM_yield, yieldNode));
+    return makeFullClosure(tableFrom1(SYM(yield), yieldNode));
 }
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return recordFrom1(SYM(varRef), SYM_name, name);
+    return recordFrom1(SYM(varRef), SYM(name), name);
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue value) {
-    return recordFrom2(SYM(varDef), SYM_name, name, SYM_value, value);
+    return recordFrom2(SYM(varDef), SYM(name), name, SYM(value), value);
 }
 
 // Documented in spec.
 zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return recordFrom2(SYM(varDefMutable), SYM_name, name, SYM_value, value);
+    return recordFrom2(SYM(varDefMutable), SYM(name), name, SYM(value), value);
 }
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return recordFrom1(SYM(fetch), SYM_target, makeVarRef(name));
+    return recordFrom1(SYM(fetch), SYM(target), makeVarRef(name));
 }
 
 // Documented in spec.
@@ -776,13 +782,13 @@ zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
     return recordFrom2(SYM(fetch),
-        SYM_target, makeVarRef(name), SYM_lvalue, EMPTY_LIST);
+        SYM(target), makeVarRef(name), SYM(lvalue), EMPTY_LIST);
 }
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
     return recordFrom2(SYM(store),
-        SYM_target, makeVarRef(name), SYM_value, value);
+        SYM(target), makeVarRef(name), SYM(value), value);
 }
 
 // Documented in spec.
@@ -797,7 +803,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 
     zvalue resolved = EMPTY_SYMBOL_TABLE;
     if (resolveFn != NULL) {
-        zvalue source = cm_get(node, SYM_source);
+        zvalue source = cm_get(node, SYM(source));
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
             die("Could not resolve import.");
@@ -812,20 +818,20 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             return node;
         }
         case EVAL_importModuleSelection: {
-            // Get the exports. When given a `NULL` `resolveFn`, this acts as if
-            // all sources resolve to an empty export map, and hence this node
-            // won't bind anything.
+            // Get the exports. When given a `NULL` `resolveFn`, this acts as
+            // if all sources resolve to an empty export map, and hence this
+            // node won't bind anything.
             zvalue exports = EMPTY_LIST;
-            zvalue info = cm_get(resolved, SYM_info);
+            zvalue info = cm_get(resolved, SYM(info));
             if (info != NULL) {
-                exports = cm_get(info, SYM_exports);
+                exports = cm_get(info, SYM(exports));
             }
 
-            zvalue select = cm_get(node, SYM_select);
+            zvalue select = cm_get(node, SYM(select));
             if (select != NULL) {
                 // The selection is specified. So no modification needs to be
-                // done to the node, just validation, including of the import in
-                // general (above) and the particular selection (here).
+                // done to the node, just validation, including of the import
+                // in general (above) and the particular selection (here).
                 zint size = get_size(select);
                 for (zint i = 0; i < size; i++) {
                     zvalue one = cm_nth(select, i);
@@ -839,7 +845,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
                 select = METH_CALL(keyList, exports);
                 return makeRecord(
                     SYM(importModuleSelection),
-                    cm_put(get_data(node), SYM_select, select));
+                    cm_put(get_data(node), SYM(select), select));
             }
         }
         default: {
@@ -852,18 +858,18 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeRecord(
         get_name(node),
-        cm_put(get_data(node), SYM_formals, formals));
+        cm_put(get_data(node), SYM(formals), formals));
 }
 
 // Documented in spec.
 zvalue withModuleDefs(zvalue node) {
-    if (!valEqNullOk(cm_get(node, SYM_yield), TOK_void)) {
+    if (!valEqNullOk(cm_get(node, SYM(yield)), TOK_void)) {
         die("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 
     zvalue info = makeInfoTable(node);
 
-    zvalue rawStatements = cm_get(node, SYM_statements);
+    zvalue rawStatements = cm_get(node, SYM(statements));
     zint size = get_size(rawStatements);
     zvalue statements = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
@@ -874,7 +880,7 @@ zvalue withModuleDefs(zvalue node) {
                 continue;
             }
             case EVAL_export: {
-                s = cm_get(s, SYM_value);
+                s = cm_get(s, SYM(value));
                 break;
             }
             default: {
@@ -887,7 +893,7 @@ zvalue withModuleDefs(zvalue node) {
     }
 
     zvalue exportValues = EMPTY_LIST;
-    zvalue exportInfo = cm_get(info, SYM_exports);
+    zvalue exportInfo = cm_get(info, SYM(exports));
     zint exSize = get_size(exportInfo);
     zmapping mappings[exSize];
     arrayFromMap(mappings, exportInfo);
@@ -903,32 +909,32 @@ zvalue withModuleDefs(zvalue node) {
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeRecord),
         listFrom2(
-            makeLiteral(SYM_module),
+            makeLiteral(SYM(module)),
             makeCall(REFS(makeSymbolTable),
                 listFrom4(
-                    makeLiteral(SYM_exports), yieldExports,
-                    makeLiteral(SYM_info),    yieldInfo))));
+                    makeLiteral(SYM(exports)), yieldExports,
+                    makeLiteral(SYM(info)),    yieldInfo))));
 
     return makeRecord(
         get_name(node),
         cm_cat(
             get_data(node),
             tableFrom3(
-                SYM_info,       info,
-                SYM_statements, statements,
-                SYM_yield,      yieldNode)));
+                SYM(info),       info,
+                SYM(statements), statements,
+                SYM(yield),      yieldNode)));
 }
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
     return makeRecord(
         get_name(node),
-        cm_put(get_data(node), SYM_name, name));
+        cm_put(get_data(node), SYM(name), name));
 }
 
 // Documented in spec.
 zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
-    zvalue rawStatements = cm_get(node, SYM_statements);
+    zvalue rawStatements = cm_get(node, SYM(statements));
     zint size = get_size(rawStatements);
     zvalue arr[size];
     arrayFromList(arr, rawStatements);
@@ -940,7 +946,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
         if (recordEvalTypeIs(s, EVAL_export)) {
             exported = true;
-            defNode = cm_get(s, SYM_value);
+            defNode = cm_get(s, SYM(value));
         }
 
         switch (recordEvalType(defNode)) {
@@ -963,29 +969,30 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         get_name(node),
         cm_cat(
             get_data(node),
-            tableFrom1(SYM_statements, converted)));
+            tableFrom1(SYM(statements), converted)));
 }
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
     return makeRecord(
         get_name(node),
-        cm_put(get_data(node), SYM_top, BOOL_TRUE));
+        cm_put(get_data(node), SYM(top), BOOL_TRUE));
 }
 
 
 // Documented in spec.
 zvalue withYieldDef(zvalue node, zvalue name) {
     zvalue table = get_data(node);
-    zvalue yieldDef = cm_get(table, SYM_yieldDef);
+    zvalue yieldDef = cm_get(table, SYM(yieldDef));
     zvalue newBindings;
 
     if (yieldDef != NULL) {
         zvalue defStat = makeVarDef(name, makeVarFetch(yieldDef));
         newBindings = tableFrom1(
-            SYM_statements, listPrepend(defStat, cm_get(node, SYM_statements)));
+            SYM(statements),
+            listPrepend(defStat, cm_get(node, SYM(statements))));
     } else {
-        newBindings = tableFrom1(SYM_yieldDef, name);
+        newBindings = tableFrom1(SYM(yieldDef), name);
     }
 
     return makeRecord(
@@ -997,24 +1004,24 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 zvalue withoutInterpolate(zvalue node) {
     return makeRecord(
         get_name(node),
-        METH_CALL(del, get_data(node), SYM_interpolate));
+        METH_CALL(del, get_data(node), SYM(interpolate)));
 }
 
 // Documented in spec.
 zvalue withoutTops(zvalue node) {
-    zvalue rawStatements = cm_get(node, SYM_statements);
+    zvalue rawStatements = cm_get(node, SYM(statements));
     zint size = get_size(rawStatements);
 
     zvalue tops = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = cm_nth(rawStatements, i);
         zvalue defNode = recordEvalTypeIs(s, EVAL_export)
-            ? cm_get(s, SYM_value)
+            ? cm_get(s, SYM(value))
             : s;
 
-        if (cm_get(defNode, SYM_top) != NULL) {
+        if (cm_get(defNode, SYM(top)) != NULL) {
             tops = listAppend(tops,
-                makeVarDef(cm_get(defNode, SYM_name), NULL));
+                makeVarDef(cm_get(defNode, SYM(name)), NULL));
         }
     }
 
@@ -1022,12 +1029,13 @@ zvalue withoutTops(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = cm_nth(rawStatements, i);
         zvalue defNode = recordEvalTypeIs(s, EVAL_export)
-            ? cm_get(s, SYM_value)
+            ? cm_get(s, SYM(value))
             : s;
 
-        if (cm_get(defNode, SYM_top) != NULL) {
+        if (cm_get(defNode, SYM(top)) != NULL) {
             mains = listAppend(mains,
-                makeVarStore(cm_get(defNode, SYM_name), cm_get(defNode, SYM_value)));
+                makeVarStore(cm_get(defNode, SYM(name)),
+                    cm_get(defNode, SYM(value))));
         } else {
             mains = listAppend(mains, s);
         }
@@ -1041,12 +1049,12 @@ zvalue withoutTops(zvalue node) {
             continue;
         }
 
-        zvalue defNode = cm_get(s, SYM_value);
-        if (cm_get(defNode, SYM_top) == NULL) {
+        zvalue defNode = cm_get(s, SYM(value));
+        if (cm_get(defNode, SYM(top)) == NULL) {
             continue;
         }
 
-        exports = listAppend(exports, cm_get(defNode, SYM_name));
+        exports = listAppend(exports, cm_get(defNode, SYM(name)));
     };
 
     zvalue optSelection = (get_size(exports) == 0)
@@ -1058,5 +1066,5 @@ zvalue withoutTops(zvalue node) {
         cm_cat(
             get_data(node),
             tableFrom1(
-                SYM_statements, cm_cat(tops, mains, optSelection))));
+                SYM(statements), cm_cat(tops, mains, optSelection))));
 }

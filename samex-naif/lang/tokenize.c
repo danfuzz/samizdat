@@ -149,7 +149,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return recordFrom1(SYM(int), SYM_value, intval);
+    return recordFrom1(SYM(int), SYM(value), intval);
 }
 
 /**
@@ -184,28 +184,28 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue name = symbolFromZstring(s);
 
     switch (chars[0]) {
-        case 'b': { if (valEq(name, SYM_break))    return TOK_break;    break; }
-        case 'd': { if (valEq(name, SYM_def))      return TOK_def;      break; }
-        case 'e': { if (valEq(name, SYM_export))   return TOK_export;   break; }
-        case 'i': { if (valEq(name, SYM_import))   return TOK_import;   break; }
-        case 'n': { if (valEq(name, SYM_null))     return TOK_null;     break; }
-        case 'r': { if (valEq(name, SYM_return))   return TOK_return;   break; }
-        case 't': { if (valEq(name, SYM_ztrue))    return TOK_ztrue;    break; }
-        case 'v': { if (valEq(name, SYM_var))      return TOK_var;      break; }
-        case 'y': { if (valEq(name, SYM_yield))    return TOK_yield;    break; }
+        case 'b': { if (valEq(name, SYM(break)))    return TOK_break;    break; }
+        case 'd': { if (valEq(name, SYM(def)))      return TOK_def;      break; }
+        case 'e': { if (valEq(name, SYM(export)))   return TOK_export;   break; }
+        case 'i': { if (valEq(name, SYM(import)))   return TOK_import;   break; }
+        case 'n': { if (valEq(name, SYM(null)))     return TOK_null;     break; }
+        case 'r': { if (valEq(name, SYM(return)))   return TOK_return;   break; }
+        case 't': { if (valEq(name, SYM(ztrue)))    return TOK_ztrue;    break; }
+        case 'v': { if (valEq(name, SYM(var)))      return TOK_var;      break; }
+        case 'y': { if (valEq(name, SYM(yield)))    return TOK_yield;    break; }
         case 'c': {
-                    if (valEq(name, SYM_class))    return TOK_class;
-                    if (valEq(name, SYM_continue)) return TOK_continue;
+                    if (valEq(name, SYM(class)))    return TOK_class;
+                    if (valEq(name, SYM(continue))) return TOK_continue;
                     break;
         }
         case 'f': {
-                    if (valEq(name, SYM_zfalse))   return TOK_zfalse;
-                    if (valEq(name, SYM_fn))       return TOK_fn;
+                    if (valEq(name, SYM(zfalse)))   return TOK_zfalse;
+                    if (valEq(name, SYM(fn)))       return TOK_fn;
                     break;
         }
     }
 
-    return recordFrom1(SYM(identifier), SYM_value, name);
+    return recordFrom1(SYM(identifier), SYM(value), name);
 }
 
 /**
@@ -255,7 +255,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZstring(s);
-    return recordFrom1(SYM(string), SYM_value, string);
+    return recordFrom1(SYM(string), SYM(value), string);
 }
 
 /**
@@ -270,8 +270,8 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue name = symbolFromString(cm_get(result, SYM_value));
-    return recordFrom1(SYM(identifier), SYM_value, name);
+    zvalue name = symbolFromString(cm_get(result, SYM(value)));
+    return recordFrom1(SYM(identifier), SYM(value), name);
 }
 
 /**
@@ -354,8 +354,8 @@ static zvalue tokenizeDirective(ParseState *state) {
 
     zvalue value = stringFromZstring(s);
     return recordFrom2(SYM(directive),
-        SYM_name, cm_get(name, SYM_value),
-        SYM_value, value);
+        SYM(name), cm_get(name, SYM(value)),
+        SYM(value), value);
 }
 
 /**
@@ -420,8 +420,8 @@ zvalue langLanguageOf0(zvalue string) {
 
     if ((result != NULL)
         && recordEvalTypeIs(result, EVAL_directive)
-        && valEq(cm_get(result, SYM_name), SYM_language)) {
-        return cm_get(result, SYM_value);
+        && valEq(cm_get(result, SYM(name)), SYM(language))) {
+        return cm_get(result, SYM(value));
     }
 
     return NULL;
