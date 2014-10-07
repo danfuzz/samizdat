@@ -30,7 +30,7 @@
 /**
  * Calls `x.cat(...)`. **Note:** This is a macro.
  */
-#define cm_cat(...) METH_CALL(cat, __VA_ARGS__)
+#define cm_cat(...) (METH_CALL(cat, __VA_ARGS__))
 
 /**
  * Calls `x.debugString()`, converting the result to a `char *`. The
@@ -40,14 +40,14 @@
 char *cm_debugString(zvalue x);
 
 /**
- * Calls `x.fetch()`.
+ * Calls `x.fetch()`. **Note:** This is a macro.
  */
-zvalue cm_fetch(zvalue x);
+#define cm_fetch(x) (METH_CALL(fetch, (x)))
 
 /**
- * Calls `x.get(key)`.
+ * Calls `x.get(key)`. **Note:** This is a macro.
  */
-zvalue cm_get(zvalue x, zvalue key);
+#define cm_get(x, key) (METH_CALL(get, (x), (key)))
 
 /**
  * Calls `x.nth(index)`, converting the given `zint` index to an `Int`.
@@ -64,15 +64,14 @@ zvalue cm_nth(zvalue x, zint index);
 zorder cm_order(zvalue x, zvalue other);
 
 /**
- * Calls `x.put(key, value)`.
+ * Calls `x.put(key, value)`. **Note:** This is a macro.
  */
-zvalue cm_put(zvalue x, zvalue key, zvalue value);
+#define cm_put(x, key, value) (METH_CALL(put, (x), (key), (value)))
 
 /**
- * Calls `x.store()`, with either no arguments or one argument, if `value`
- * is `NULL` or not (respectively). `box` is *not* allowed to be `NULL`.
+ * Calls `x.store(...)`. **Note:** This is a macro.
  */
-zvalue cm_store(zvalue x, zvalue value);
+#define cm_store(...) (METH_CALL(store, __VA_ARGS__))
 
 /**
  * Calls `x.toString()`.
