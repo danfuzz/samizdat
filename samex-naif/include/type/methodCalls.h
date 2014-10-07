@@ -11,14 +11,16 @@
 // * `get_<name>(x)` is a function to call the method `x.get_<name>()`.
 // * `cm_<name>(x, ...)` is a function to call the method `x.<name>(...)`.
 //
-// Note that several of these functions take or return C types instead of
-// just `zvalue`, and in some cases the contract is *slightly* different, in
-// order to be more convenient to the C callers. All such variance is
-// documented, though not all variance warrants the third convention (above).
+// In cases where the only win here is to remove boilerplate, the definition
+// is a macro which expands to a straightforward method call. In cases where
+// a method can take different numbers of arguments, the macro is a varargs
+// one; in these cases, the C compiler will not catch calls with an improper
+// number of arguments.
 //
-// Also note that a couple of these are macros which take varargs. In these
-// cases, the C compiler will not catch calls with an improper number of
-// arguments.
+// Several of the definitions here are functions which take or return C types
+// instead of just `zvalue`, and in some cases the contract is *slightly*
+// different, in order to be more convenient to the C callers. All such
+// variance is documented.
 
 #ifndef _METHOD_CALLS_H_
 #define _METHOD_CALLS_H_
