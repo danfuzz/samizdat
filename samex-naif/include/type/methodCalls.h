@@ -10,7 +10,7 @@
 //
 // * `get_<name>(value)` is a function to call the method `value.get_<name>()`.
 //
-// * `c_<name>(value, ...)` is a function to call the method
+// * `cm_<name>(value, ...)` is a function to call the method
 //   `value.<name>(...)`.
 //
 // Note that several of these functions take or return C types instead of
@@ -28,7 +28,7 @@
  * if `value` is `NULL` or not (respectively). `box` is *not* allowed to be
  * `NULL`.
  */
-zvalue boxStoreNullOk(zvalue box, zvalue value);
+zvalue cm_store(zvalue box, zvalue value);
 
 /**
  * Calls `value.dataOf()`.

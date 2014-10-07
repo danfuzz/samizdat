@@ -25,7 +25,7 @@ static bool inValDebugString = false;
 //
 
 // Documented in header.
-zvalue boxStoreNullOk(zvalue box, zvalue value) {
+zvalue cm_store(zvalue box, zvalue value) {
     return (value == NULL)
         ? METH_CALL(store, box)
         : METH_CALL(store, box, value);

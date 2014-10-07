@@ -111,7 +111,7 @@ static zvalue execStore(Frame *frame, zvalue store) {
     zvalue target = execExpression(frame, targetExpr);
     zvalue value = execExpressionOrMaybe(frame, valueExpr);
 
-    return boxStoreNullOk(target, value);
+    return cm_store(target, value);
 }
 
 /**
