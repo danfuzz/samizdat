@@ -23,7 +23,7 @@ static zvalue programTree(void) {
 }
 
 static zvalue lookup(zvalue env, const char *name) {
-    return get(env, symbolFromUtf8(-1, name));
+    return cm_get(env, symbolFromUtf8(-1, name));
 }
 
 static zvalue externalSource(const char *name) {
