@@ -26,6 +26,15 @@ DEF_SYMBOL(put);
 DEF_SYMBOL(toString);
 DEF_SYMBOL(totalEq);
 DEF_SYMBOL(totalOrder);
+DEF_SYMBOL(and);
+DEF_SYMBOL(bit);
+DEF_SYMBOL(bitSize);
+DEF_SYMBOL(not);
+DEF_SYMBOL(or);
+DEF_SYMBOL(shl);
+DEF_SYMBOL(shr);
+DEF_SYMBOL(xor);
+
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.

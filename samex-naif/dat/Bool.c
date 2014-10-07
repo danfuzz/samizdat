@@ -2,7 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "type/Bitwise.h"
 #include "type/Bool.h"
 #include "type/Core.h"
 #include "type/Int.h"
@@ -180,7 +179,6 @@ METH_IMPL_1(Bool, xor, other) {
 
 /** Initializes the module. */
 MOD_INIT(Bool) {
-    MOD_USE(Bitwise);
     MOD_USE(Int);
     MOD_USE(OneOff);
 

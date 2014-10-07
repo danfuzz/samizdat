@@ -5,7 +5,6 @@
 #include "impl.h"
 #include "io.h"
 #include "lang.h"
-#include "type/Bitwise.h"
 #include "type/Bool.h"
 #include "type/Box.h"
 #include "type/Builtin.h"

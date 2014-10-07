@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 
-#include "type/Bitwise.h"
 #include "type/Core.h"
 #include "type/Int.h"
 #include "type/Number.h"
@@ -193,7 +192,6 @@ METH_IMPL_1(Int, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Int) {
-    MOD_USE(Bitwise);
     MOD_USE(Number);
     MOD_USE(OneOff);
 
