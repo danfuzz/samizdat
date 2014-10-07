@@ -34,6 +34,16 @@ DEF_SYMBOL(or);
 DEF_SYMBOL(shl);
 DEF_SYMBOL(shr);
 DEF_SYMBOL(xor);
+DEF_SYMBOL(abs);
+DEF_SYMBOL(add);
+DEF_SYMBOL(div);
+DEF_SYMBOL(divEu);
+DEF_SYMBOL(mod);
+DEF_SYMBOL(modEu);
+DEF_SYMBOL(mul);
+DEF_SYMBOL(neg);
+DEF_SYMBOL(sign);
+DEF_SYMBOL(sub);
 
 
 /**

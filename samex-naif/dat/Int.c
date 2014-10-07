@@ -6,7 +6,6 @@
 
 #include "type/Core.h"
 #include "type/Int.h"
-#include "type/Number.h"
 #include "type/String.h"
 #include "type/define.h"
 
@@ -192,7 +191,6 @@ METH_IMPL_1(Int, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Int) {
-    MOD_USE(Number);
     MOD_USE(OneOff);
 
     CLS_Int = makeCoreClass("Int", CLS_Core,
