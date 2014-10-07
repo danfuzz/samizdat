@@ -8,7 +8,6 @@
 #include "type/Core.h"
 #include "type/Int.h"
 #include "type/List.h"
-#include "type/OneOff.h"
 #include "type/define.h"
 
 #include "impl.h"
@@ -384,9 +383,8 @@ METH_IMPL_0(List, valueList) {
 /** Initializes the module. */
 MOD_INIT(List) {
     MOD_USE(Sequence);
-    MOD_USE(OneOff);
 
-    CLS_List = makeCoreClass("List", CLS_Core,
+    CLS_List = makeCoreClass(SYM(List), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(List, cat),

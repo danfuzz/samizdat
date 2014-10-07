@@ -5,7 +5,6 @@
 #include "type/Box.h"
 #include "type/Int.h"
 #include "type/List.h"
-#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/define.h"
 
@@ -544,11 +543,8 @@ METH_IMPL_0(String, valueList) {
 /** Initializes the module. */
 MOD_INIT(String) {
     MOD_USE(Sequence);
-    MOD_USE(OneOff);
 
-    SYM_INIT(toSymbol);
-
-    CLS_String = makeCoreClass("String", CLS_Core,
+    CLS_String = makeCoreClass(SYM(String), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(String, cat),
@@ -582,6 +578,3 @@ MOD_INIT(String) {
 
 // Documented in header.
 zvalue CLS_String = NULL;
-
-// Documented in header.
-SYM_DEF(toSymbol);

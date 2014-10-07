@@ -118,7 +118,7 @@ MOD_INIT(Object) {
 
     // Note: This does *not* inherit from `Core`, as this class is the
     // base for all non-core classes.
-    CLS_Object = makeCoreClass("Object", CLS_Value,
+    CLS_Object = makeCoreClass(SYM(Object), CLS_Value,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Object, gcMark),

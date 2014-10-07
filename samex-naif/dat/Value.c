@@ -3,7 +3,6 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdio.h>
-#include <string.h>
 
 #include "type/Int.h"
 #include "type/String.h"
@@ -11,17 +10,6 @@
 #include "type/define.h"
 
 #include "impl.h"
-
-
-//
-// Private Definitions
-//
-
-/**
- * Flag indicating that `valDebugString` is in progress, as it's bad news
- * if the function is called recursively.
- */
-static bool inValDebugString = false;
 
 
 //
@@ -41,30 +29,6 @@ extern void *datPayload(zvalue value);
 
 // This provides the non-inline version of this function.
 extern zvalue get_class(zvalue value);
-
-// Documented in header.
-zvalue get_name(zvalue value) {
-    return METH_CALL(get_name, value);
-}
-
-// Documented in header.
-char *valDebugString(zvalue value) {
-    if (value == NULL) {
-        return utilStrdup("(null)");
-    }
-
-    if (SYM(debugString) == NULL) {
-        die("Too early to call `debugString`.");
-    } else if (inValDebugString) {
-        die("`valDebugString` called recursively");
-    }
-
-    inValDebugString = true;
-    char *result = utf8DupFromString(METH_CALL(debugString, value));
-    inValDebugString = false;
-
-    return result;
-}
 
 // Documented in header.
 zvalue valEq(zvalue value, zvalue other) {
@@ -106,27 +70,6 @@ zvalue valOrder(zvalue value, zvalue other) {
     } else {
         return METH_CALL(perOrder, valueCls, otherCls);
     }
-}
-
-// Documented in header.
-zvalue valToString(zvalue value) {
-    return METH_CALL(toString, value);
-}
-
-// Documented in header.
-zorder valZorder(zvalue value, zvalue other) {
-    // This frame usage avoids having the `zvalue` result of the call pollute
-    // the stack. See note on `valOrder` for more color.
-    zstackPointer save = datFrameStart();
-    zvalue result = valOrder(value, other);
-
-    if (result == NULL) {
-        die("Attempt to order unordered values.");
-    }
-
-    zorder order = zintFromInt(result);
-    datFrameReturn(save, NULL);
-    return order;
 }
 
 
@@ -203,25 +146,6 @@ METH_IMPL_1(Value, totalOrder, other) {
 
 // Documented in header.
 void bindMethodsForValue(void) {
-    SYM_INIT(call);
-    SYM_INIT(cat);
-    SYM_INIT(debugString);
-    SYM_INIT(debugSymbol);
-    SYM_INIT(del);
-    SYM_INIT(exports);
-    SYM_INIT(gcMark);
-    SYM_INIT(get);
-    SYM_INIT(get_name);
-    SYM_INIT(imports);
-    SYM_INIT(main);
-    SYM_INIT(perEq);
-    SYM_INIT(perOrder);
-    SYM_INIT(put);
-    SYM_INIT(resources);
-    SYM_INIT(toString);
-    SYM_INIT(totalEq);
-    SYM_INIT(totalOrder);
-
     classBindMethods(CLS_Value,
         NULL,
         symbolTableFromArgs(
@@ -260,57 +184,3 @@ MOD_INIT(Value) {
 
 // Documented in header.
 zvalue CLS_Value = NULL;
-
-// Documented in header.
-SYM_DEF(call);
-
-// Documented in header.
-SYM_DEF(cat);
-
-// Documented in header.
-SYM_DEF(debugString);
-
-// Documented in header.
-SYM_DEF(debugSymbol);
-
-// Documented in header.
-SYM_DEF(del);
-
-// Documented in header.
-SYM_DEF(exports);
-
-// Documented in header.
-SYM_DEF(gcMark);
-
-// Documented in header.
-SYM_DEF(get);
-
-// Documented in header.
-SYM_DEF(get_name);
-
-// Documented in header.
-SYM_DEF(imports);
-
-// Documented in header.
-SYM_DEF(main);
-
-// Documented in header.
-SYM_DEF(perEq);
-
-// Documented in header.
-SYM_DEF(perOrder);
-
-// Documented in header.
-SYM_DEF(put);
-
-// Documented in header.
-SYM_DEF(resources);
-
-// Documented in header.
-SYM_DEF(toString);
-
-// Documented in header.
-SYM_DEF(totalEq);
-
-// Documented in header.
-SYM_DEF(totalOrder);

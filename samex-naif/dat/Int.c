@@ -4,10 +4,8 @@
 
 #include <stdio.h>
 
-#include "type/Bitwise.h"
 #include "type/Core.h"
 #include "type/Int.h"
-#include "type/Number.h"
 #include "type/String.h"
 #include "type/define.h"
 
@@ -193,11 +191,9 @@ METH_IMPL_1(Int, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Int) {
-    MOD_USE(Bitwise);
-    MOD_USE(Number);
-    MOD_USE(OneOff);
+    MOD_USE(Core);
 
-    CLS_Int = makeCoreClass("Int", CLS_Core,
+    CLS_Int = makeCoreClass(SYM(Int), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Int, abs),

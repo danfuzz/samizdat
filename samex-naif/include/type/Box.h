@@ -15,15 +15,6 @@
 /** Class value for in-model class `Box`. */
 extern zvalue CLS_Box;
 
-/** Method `.store(value?)`: Documented in spec. */
-SYM_DECL(store);
-
-/**
- * Calls the method `store`, with either one or two arguments, one if
- * `value` is `NULL`, two if not. `box` is *not* allowed to be `NULL`.
- */
-zvalue boxStoreNullOk(zvalue box, zvalue value);
-
 /**
  * Constructs a mutable (re-settable) box, with the given initial value.
  * Pass `NULL` to leave it initially unset.

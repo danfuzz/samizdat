@@ -202,5 +202,6 @@ void bindMethodsForCore(void);
 void bindMethodsForSymbol(void);
 void bindMethodsForSymbolTable(void);
 void bindMethodsForValue(void);
+void initCoreSymbols(void);
 
 #endif

@@ -94,7 +94,7 @@ METH_IMPL_0(Jump, gcMark) {
 MOD_INIT(Jump) {
     MOD_USE(Value);
 
-    CLS_Jump = makeCoreClass("Jump", CLS_Core,
+    CLS_Jump = makeCoreClass(SYM(Jump), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Jump, call),

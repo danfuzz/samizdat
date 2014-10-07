@@ -5,21 +5,17 @@
 #include "impl.h"
 #include "io.h"
 #include "lang.h"
-#include "type/Bitwise.h"
 #include "type/Bool.h"
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Class.h"
-#include "type/Collection.h"
 #include "type/Core.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
-#include "type/Number.h"
 #include "type/Object.h"
-#include "type/OneOff.h"
 #include "type/Record.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"
@@ -50,7 +46,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = collPut(env, nameSymbol, \
+            env = METH_CALL(put, env, nameSymbol, \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameSymbol)); \
         } while(0)
@@ -58,7 +54,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_DEF(name, value) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = collPut(env, nameSymbol, value); \
+            env = METH_CALL(put, env, nameSymbol, value); \
         } while(0)
 
     #include "prim-def.h"

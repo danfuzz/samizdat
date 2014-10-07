@@ -99,24 +99,11 @@ MOD_INIT(Generator) {
     MOD_USE_NEXT(Box);
     MOD_USE_NEXT(List);
 
-    SYM_INIT(collect);
-    SYM_INIT(fetch);
-    SYM_INIT(nextValue);
-
     FUN_Generator_stdCollect =
         datImmortalize(FUNC_VALUE(Generator_stdCollect));
 
     FUN_Generator_stdFetch = datImmortalize(FUNC_VALUE(Generator_stdFetch));
 }
-
-// Documented in header.
-SYM_DEF(collect);
-
-// Documented in header.
-SYM_DEF(fetch);
-
-// Documented in header.
-SYM_DEF(nextValue);
 
 // Documented in header.
 zvalue FUN_Generator_stdCollect = NULL;

@@ -15,19 +15,8 @@
 /** Class value for in-model class `Record`. */
 extern zvalue CLS_Record;
 
-/** Method `.dataOf()`: Documented in spec. */
-SYM_DECL(dataOf);
-
-/** Method `.hasName()`: Documented in spec. */
-SYM_DECL(hasName);
-
 /** Global function `makeRecord()`: Documented in spec. */
 extern zvalue FUN_Record_makeRecord;
-
-/**
- * Calls the method `dataOf()`.
- */
-zvalue dataOf(zvalue value);
 
 /**
  * C version of library function `makeRecord()`. Documented in spec.

@@ -63,7 +63,7 @@ zvalue ioReadDirectory(zvalue path) {
             default:     { type = SYM(other);     break; }
         }
 
-        result = collPut(result, name, type);
+        result = METH_CALL(put, result, name, type);
     }
 
     if (closedir(dir) != 0) {

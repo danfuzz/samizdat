@@ -16,17 +16,8 @@
 
 #include <stdbool.h>
 
-#include "type/Collection.h"  // Because all sequences are collections.
+#include "type/Value.h"
 
-
-/** Method `.reverse()`: Documented in spec. */
-SYM_DECL(reverse);
-
-/** Method `.sliceExclusive(start, end?)`: Documented in spec. */
-SYM_DECL(sliceExclusive);
-
-/** Method `.sliceInclusive(start, end?)`: Documented in spec. */
-SYM_DECL(sliceInclusive);
 
 /** Standard implementation for `Sequence.get`. */
 extern zvalue FUN_Sequence_get;

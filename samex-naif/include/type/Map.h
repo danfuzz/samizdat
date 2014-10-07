@@ -9,7 +9,6 @@
 #ifndef _TYPE_MAP_H_
 #define _TYPE_MAP_H_
 
-#include "type/Collection.h"
 #include "type/Core.h"
 
 

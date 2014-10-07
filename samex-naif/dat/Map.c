@@ -10,7 +10,6 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
-#include "type/OneOff.h"
 #include "type/Record.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
@@ -619,13 +618,11 @@ METH_IMPL_0(Map, valueList) {
 
 /** Initializes the module. */
 MOD_INIT(Map) {
-    MOD_USE(Collection);
     MOD_USE(Generator);
     MOD_USE(List);
     MOD_USE(MapCache);
-    MOD_USE(OneOff);
 
-    CLS_Map = makeCoreClass("Map", CLS_Core,
+    CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Map, cat),

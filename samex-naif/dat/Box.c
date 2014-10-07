@@ -71,13 +71,6 @@ static zvalue doStore(zvalue box, zvalue value) {
 //
 
 // Documented in header.
-zvalue boxStoreNullOk(zvalue box, zvalue value) {
-    return (value == NULL)
-        ? METH_CALL(store, box)
-        : METH_CALL(store, box, value);
-}
-
-// Documented in header.
 zvalue makeCell(zvalue value) {
     zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
@@ -164,9 +157,7 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Core);
 
-    SYM_INIT(store);
-
-    CLS_Box = makeCoreClass("Box", CLS_Core,
+    CLS_Box = makeCoreClass(SYM(Box), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Box, collect),
@@ -179,6 +170,3 @@ MOD_INIT(Box) {
 
 // Documented in header.
 zvalue CLS_Box = NULL;
-
-// Documented in header.
-SYM_DEF(store);

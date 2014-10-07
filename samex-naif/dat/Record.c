@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 
-#include "type/Collection.h"
 #include "type/Int.h"
 #include "type/Record.h"
 #include "type/SymbolTable.h"
@@ -42,11 +41,6 @@ static RecordInfo *getInfo(zvalue value) {
 //
 // Exported Definitions
 //
-
-// Documented in header.
-zvalue dataOf(zvalue value) {
-    return METH_CALL(dataOf, value);
-}
 
 // Documented in header.
 zvalue makeRecord(zvalue name, zvalue data) {
@@ -166,10 +160,7 @@ METH_IMPL_1(Record, totalOrder, other) {
 MOD_INIT(Record) {
     MOD_USE(Core);
 
-    SYM_INIT(dataOf);
-    SYM_INIT(hasName);
-
-    CLS_Record = makeCoreClass("Record", CLS_Core,
+    CLS_Record = makeCoreClass(SYM(Record), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Record, dataOf),
@@ -187,12 +178,6 @@ MOD_INIT(Record) {
 
 // Documented in header.
 zvalue CLS_Record = NULL;
-
-// Documented in header.
-SYM_DEF(dataOf);
-
-// Documented in header.
-SYM_DEF(hasName);
 
 // Documented in header.
 zvalue FUN_Record_makeRecord = NULL;

@@ -17,9 +17,6 @@
 /** Class value for in-model class `String`. */
 extern zvalue CLS_String;
 
-/** Method `.toSymbol()`: Documented in spec. */
-SYM_DECL(toSymbol);
-
 /** The standard value `""`. */
 extern zvalue EMPTY_STRING;
 
