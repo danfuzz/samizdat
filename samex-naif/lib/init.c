@@ -104,12 +104,12 @@ static zvalue getLibrary(zvalue libraryPath) {
     // Call `ModuleSystem::exports::main` to load and evaluate the
     // core library.
 
-    zvalue exports = get(moduleSystem, SYM(exports));
+    zvalue exports = cm_get(moduleSystem, SYM(exports));
     if (exports == NULL) {
         die("Missing bootstrap `exports` binding.");
     }
 
-    zvalue mainFn = get(exports, SYM(main));
+    zvalue mainFn = cm_get(exports, SYM(main));
     if (mainFn == NULL) {
         die("Missing bootstrap `main` binding");
     }

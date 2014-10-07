@@ -38,7 +38,7 @@ zvalue get_data(zvalue value);
 /**
  * Calls `value.get(key)`.
  */
-zvalue get(zvalue value, zvalue key);
+zvalue cm_get(zvalue value, zvalue key);
 
 /**
  * Calls `value.get_name()`.

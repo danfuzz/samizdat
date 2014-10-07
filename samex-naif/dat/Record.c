@@ -110,7 +110,7 @@ METH_IMPL_0(Record, gcMark) {
 
 // Documented in header.
 METH_IMPL_1(Record, get, key) {
-    return get(getInfo(ths)->data, key);
+    return cm_get(getInfo(ths)->data, key);
 }
 
 // Documented in header.

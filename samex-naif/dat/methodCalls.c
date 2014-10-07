@@ -37,7 +37,7 @@ zvalue get_data(zvalue value) {
 }
 
 // Documented in header.
-zvalue get(zvalue value, zvalue key) {
+zvalue cm_get(zvalue value, zvalue key) {
     return METH_CALL(get, value, key);
 }
 

@@ -45,7 +45,7 @@ FUN_IMPL_DECL(ifSwitch) {
         die("Void result from `ifSwitch` call to `testFunction`.");
     }
 
-    zvalue consequentFunction = get(valueFunctions, value);
+    zvalue consequentFunction = cm_get(valueFunctions, value);
 
     if (consequentFunction != NULL) {
         return FUN_CALL(consequentFunction, value);

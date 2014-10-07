@@ -297,7 +297,7 @@ DEF_PARSE(nameSymbol) {
     MARK();
 
     zvalue nameIdent = MATCH_OR_REJECT(identifier);
-    return get(nameIdent, SYM_value);
+    return cm_get(nameIdent, SYM_value);
 }
 
 // Documented in spec.
@@ -332,7 +332,7 @@ DEF_PARSE(identifierSymbol) {
     MARK();
 
     zvalue s = MATCH(string);
-    if (s != NULL) { return makeSymbolLiteral(get(s, SYM_value)); }
+    if (s != NULL) { return makeSymbolLiteral(cm_get(s, SYM_value)); }
 
     zvalue name = PARSE(nameSymbol);
     if (name != NULL) { return makeLiteral(name); }
@@ -343,7 +343,7 @@ DEF_PARSE(identifierSymbol) {
     // non-alphabetic name, instead of looking up in `KEYWORDS`: `KEYWORDS`
     // isn't defined in layer 0.
 
-    REJECT_IF(get(token, SYM_value) != NULL);
+    REJECT_IF(cm_get(token, SYM_value) != NULL);
 
     name = get_name(token);
     zchar firstCh = zcharFromString(cm_nth(cm_toString(name), 0));
@@ -359,7 +359,7 @@ DEF_PARSE(keyLiteral) {
 
     zvalue s = MATCH(string);
     if (s != NULL) {
-        return makeLiteral(get(s, SYM_value));
+        return makeLiteral(cm_get(s, SYM_value));
     }
 
     return PARSE_OR_REJECT(identifierSymbol);
@@ -385,11 +385,11 @@ DEF_PARSE(literal) {
 
     if (MATCH(CH_MINUS)) {
         token = MATCH_OR_REJECT(int);
-        return makeLiteral(METH_CALL(neg, get(token, SYM_value)));
+        return makeLiteral(METH_CALL(neg, cm_get(token, SYM_value)));
     } else if ((token = MATCH(int))) {
-        return makeLiteral(get(token, SYM_value));
+        return makeLiteral(cm_get(token, SYM_value));
     } else if ((token = MATCH(string))) {
-        return makeLiteral(get(token, SYM_value));
+        return makeLiteral(cm_get(token, SYM_value));
     } else if (MATCH(zfalse)) {
         return makeLiteral(BOOL_FALSE);
     } else if (MATCH(ztrue)) {
@@ -459,7 +459,7 @@ DEF_PARSE(mapping2) {
 
     zvalue value = PARSE_OR_REJECT(expression);
 
-    zvalue result = get(value, SYM_interpolate);
+    zvalue result = cm_get(value, SYM_interpolate);
     REJECT_IF(result == NULL);
 
     return result;
@@ -605,7 +605,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(fullClosure);
 
-    zvalue formals = get(c, SYM_formals);
+    zvalue formals = cm_get(c, SYM_formals);
     if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
@@ -619,7 +619,7 @@ DEF_PARSE(basicNullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(basicClosure);
 
-    zvalue formals = get(c, SYM_formals);
+    zvalue formals = cm_get(c, SYM_formals);
     if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
@@ -703,8 +703,8 @@ DEF_PARSE(unaryExpression) {
         } else switch (recordEvalType(one)) {
             case EVAL_call: {
                 // Method call.
-                zvalue function = get(one, SYM_function);
-                zvalue values = get(one, SYM_values);
+                zvalue function = cm_get(one, SYM_function);
+                zvalue values = cm_get(one, SYM_values);
                 result = makeCallOrApply(function,
                     listPrepend(result, values));
                 break;
@@ -990,7 +990,7 @@ DEF_PARSE(functionDef) {
     MATCH_OR_REJECT(fn);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    return withTop(makeVarDef(get(closure, SYM_name), closure));
+    return withTop(makeVarDef(cm_get(closure, SYM_name), closure));
 }
 
 // Documented in spec.
@@ -1014,7 +1014,7 @@ DEF_PARSE(methodDef) {
     return withFormals(closure,
         METH_CALL(cat,
             listFrom1(tableFrom1(SYM_name, SYM_this)),
-            get(closure, SYM_formals)));
+            cm_get(closure, SYM_formals)));
 }
 
 // Documented in spec.
@@ -1056,7 +1056,7 @@ DEF_PARSE(importFormat1) {
 
     MATCH_OR_REJECT(CH_AT);
     zvalue f = PARSE_OR_REJECT(identifierSymbol);
-    return tableFrom1(SYM_format, get(f, SYM_value));
+    return tableFrom1(SYM_format, cm_get(f, SYM_value));
 }
 
 // Documented in spec.

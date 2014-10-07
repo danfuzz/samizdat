@@ -270,7 +270,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue name = symbolFromString(get(result, SYM_value));
+    zvalue name = symbolFromString(cm_get(result, SYM_value));
     return recordFrom1(SYM(identifier), SYM_value, name);
 }
 
@@ -354,7 +354,7 @@ static zvalue tokenizeDirective(ParseState *state) {
 
     zvalue value = stringFromZstring(s);
     return recordFrom2(SYM(directive),
-        SYM_name, get(name, SYM_value),
+        SYM_name, cm_get(name, SYM_value),
         SYM_value, value);
 }
 
@@ -420,8 +420,8 @@ zvalue langLanguageOf0(zvalue string) {
 
     if ((result != NULL)
         && recordEvalTypeIs(result, EVAL_directive)
-        && valEq(get(result, SYM_name), SYM_language)) {
-        return get(result, SYM_value);
+        && valEq(cm_get(result, SYM_name), SYM_language)) {
+        return cm_get(result, SYM_value);
     }
 
     return NULL;
