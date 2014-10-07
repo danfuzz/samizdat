@@ -360,6 +360,12 @@ METH_IMPL_0(Class, get_parent) {
 }
 
 // Documented in header.
+METH_IMPL_1(Class, totalEq, other) {
+    assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
+    return classEqUnchecked(ths, other) ? ths : NULL;
+}
+
+// Documented in header.
 METH_IMPL_1(Class, totalOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
@@ -506,6 +512,7 @@ void bindMethodsForClass(void) {
             METH_BIND(Class, gcMark),
             METH_BIND(Class, get_name),
             METH_BIND(Class, get_parent),
+            METH_BIND(Class, totalEq),
             METH_BIND(Class, totalOrder),
             NULL));
 
