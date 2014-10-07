@@ -80,8 +80,7 @@ zvalue makeObjectClass(zvalue name, zvalue secret,
     if (instanceMethods == NULL) {
         instanceMethods = extraInstanceMethods;
     } else {
-        instanceMethods = METH_CALL(cat,
-            instanceMethods, extraInstanceMethods);
+        instanceMethods = cm_cat(instanceMethods, extraInstanceMethods);
     }
 
     return makeClass(name, CLS_Object, secret,

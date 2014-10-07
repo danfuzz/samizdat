@@ -322,7 +322,7 @@ METH_IMPL_0(Class, debugString) {
         die("Shouldn't happen: non-core class without secret.");
     }
 
-    return METH_CALL(cat,
+    return cm_cat(
         stringFromUtf8(-1, "@<"),
         stringFromUtf8(-1, label),
         stringFromUtf8(-1, " class "),

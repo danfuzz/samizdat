@@ -334,7 +334,7 @@ METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@" : "@+";
 
-    return METH_CALL(cat, stringFromUtf8(-1, prefix), cm_toString(ths));
+    return cm_cat(stringFromUtf8(-1, prefix), cm_toString(ths));
 }
 
 // Documented in header.

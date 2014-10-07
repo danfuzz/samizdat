@@ -89,11 +89,11 @@ METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
     if (valEq(info->data, EMPTY_SYMBOL_TABLE)) {
-        return METH_CALL(cat,
+        return cm_cat(
             METH_CALL(debugString, info->name),
             stringFromUtf8(-1, "{}"));
     } else {
-        return METH_CALL(cat,
+        return cm_cat(
             METH_CALL(debugString, info->name),
             stringFromUtf8(-1, "{...}"));
     }

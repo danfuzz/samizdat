@@ -348,7 +348,7 @@ METH_IMPL_1(String, del, key) {
 // Documented in header.
 METH_IMPL_0(String, debugString) {
     zvalue quote = stringFromUtf8(1, "\"");
-    return METH_CALL(cat, quote, ths, quote);
+    return cm_cat(quote, ths, quote);
 }
 
 // Documented in header.
@@ -425,7 +425,7 @@ METH_IMPL_2(String, put, key, value) {
 
     if (index == size) {
         // This is an append operation.
-        return METH_CALL(cat, ths, value);
+        return cm_cat(ths, value);
     }
 
     zchar *resultChars = allocArray(size);

@@ -3,10 +3,10 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// Utility functions to call methods from C. This helps remove boilerplate
-// from commonly-called methods.
+// Utility functions and macros to call methods from C. This helps remove
+// boilerplate from commonly-called methods.
 //
-// Functions defined here have three naming conventions:
+// Things defined here have two naming conventions:
 //
 // * `get_<name>(x)` is a function to call the method `x.get_<name>()`.
 // * `cm_<name>(x, ...)` is a function to call the method `x.<name>(...)`.
@@ -15,11 +15,20 @@
 // just `zvalue`, and in some cases the contract is *slightly* different, in
 // order to be more convenient to the C callers. All such variance is
 // documented, though not all variance warrants the third convention (above).
+//
+// Also note that a couple of these are macros which take varargs. In these
+// cases, the C compiler will not catch calls with an improper number of
+// arguments.
 
 #ifndef _METHOD_CALLS_H_
 #define _METHOD_CALLS_H_
 
 #include "dat.h"
+
+/**
+ * Calls `x.cat(...)`. **Note:** This is a macro.
+ */
+#define cm_cat(...) METH_CALL(cat, __VA_ARGS__)
 
 /**
  * Calls `x.debugString()`, converting the result to a `char *`. The
