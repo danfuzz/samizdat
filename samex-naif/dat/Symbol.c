@@ -397,9 +397,6 @@ METH_IMPL_1(Symbol, totalOrder, other) {
 
 // Documented in header.
 void bindMethodsForSymbol(void) {
-    SYM_INIT(isInterned);
-    SYM_INIT(toUnlisted);
-
     classBindMethods(CLS_Symbol,
         NULL,
         symbolTableFromArgs(
@@ -425,9 +422,3 @@ MOD_INIT(Symbol) {
 
 // Documented in header.
 zvalue CLS_Symbol = NULL;
-
-// Documented in header.
-SYM_DEF(toUnlisted);
-
-// Documented in header.
-SYM_DEF(isInterned);

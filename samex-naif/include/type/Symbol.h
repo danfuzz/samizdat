@@ -15,12 +15,6 @@
 /** Class value for in-model class `Symbol`. */
 extern zvalue CLS_Symbol;
 
-/** Method `.toUnlisted()`: Documented in spec. */
-SYM_DECL(toUnlisted);
-
-/** Method `.isInterned()`: Documented in spec. */
-SYM_DECL(isInterned);
-
 
 /**
  * Like `symbolFromUtf8`, except this makes an unlisted (uninterned) symbol.

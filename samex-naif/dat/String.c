@@ -545,8 +545,6 @@ METH_IMPL_0(String, valueList) {
 MOD_INIT(String) {
     MOD_USE(Sequence);
 
-    SYM_INIT(toSymbol);
-
     CLS_String = makeCoreClass("String", CLS_Core,
         NULL,
         symbolTableFromArgs(
@@ -581,6 +579,3 @@ MOD_INIT(String) {
 
 // Documented in header.
 zvalue CLS_String = NULL;
-
-// Documented in header.
-SYM_DEF(toSymbol);

@@ -64,6 +64,9 @@ DEF_SYMBOL(hasName);
 DEF_SYMBOL(reverse);
 DEF_SYMBOL(sliceExclusive);
 DEF_SYMBOL(sliceInclusive);
+DEF_SYMBOL(toSymbol);
+DEF_SYMBOL(isInterned);
+DEF_SYMBOL(toUnlisted);
 
 
 /**
