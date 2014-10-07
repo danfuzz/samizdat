@@ -49,6 +49,10 @@ DEF_SYMBOL(keyList);
 DEF_SYMBOL(nthMapping);
 DEF_SYMBOL(valueList);
 DEF_SYMBOL(get_parent);
+DEF_SYMBOL(collect);
+DEF_SYMBOL(fetch);
+DEF_SYMBOL(nextValue);
+
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.

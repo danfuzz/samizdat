@@ -16,15 +16,6 @@
 #include "type/Value.h"
 
 
-/** Method `.collect()`: Documenetd in spec. */
-SYM_DECL(collect);
-
-/** Method `.fetch()`: Documented in spec. */
-SYM_DECL(fetch);
-
-/** Method `.nextValue(box)`: Documenetd in spec. */
-SYM_DECL(nextValue);
-
 /** `core.Generator::stdCollect`: Documented in spec. */
 extern zvalue FUN_Generator_stdCollect;
 
