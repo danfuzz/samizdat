@@ -279,7 +279,7 @@ zvalue get_definedNames(zvalue node) {
 
             zvalue prefix = get(node, SYM_prefix);
             if (prefix != NULL) {
-                zvalue prefixStr = valToString(prefix);
+                zvalue prefixStr = cm_toString(prefix);
                 zint size = get_size(select);
                 zvalue arr[size];
                 arrayFromList(arr, select);

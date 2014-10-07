@@ -68,15 +68,15 @@ char *cm_debugString(zvalue value) {
         die("`cm_debugString` called recursively");
     }
 
-    inValDebugString = true;
+    inDebugString = true;
     char *result = utf8DupFromString(METH_CALL(debugString, value));
-    inValDebugString = false;
+    inDebugString = false;
 
     return result;
 }
 
 // Documented in header.
-zvalue valToString(zvalue value) {
+zvalue cm_toString(zvalue value) {
     return METH_CALL(toString, value);
 }
 

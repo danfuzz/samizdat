@@ -66,7 +66,7 @@ char *cm_debugString(zvalue value);
 /**
  * Calls `value.toString()`.
  */
-zvalue valToString(zvalue value);
+zvalue cm_toString(zvalue value);
 
 /**
  * Calls `value.valOrder(other)`, except that the return value is of type

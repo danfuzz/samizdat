@@ -346,7 +346,7 @@ DEF_PARSE(identifierSymbol) {
     REJECT_IF(get(token, SYM_value) != NULL);
 
     name = get_name(token);
-    zchar firstCh = zcharFromString(nth(valToString(name), 0));
+    zchar firstCh = zcharFromString(nth(cm_toString(name), 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
 

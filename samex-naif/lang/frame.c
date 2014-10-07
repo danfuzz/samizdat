@@ -46,7 +46,7 @@ void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue newVars = METH_CALL(put, vars, name, box);
 
     if (get_size(vars) == get_size(newVars)) {
-        die("Variable already defined: %s", cm_debugString(valToString(name)));
+        die("Variable already defined: %s", cm_debugString(cm_toString(name)));
     }
 
     frame->vars = newVars;
@@ -62,7 +62,7 @@ zvalue frameGet(Frame *frame, zvalue name) {
         }
     }
 
-    die("Variable not defined: %s", cm_debugString(valToString(name)));
+    die("Variable not defined: %s", cm_debugString(cm_toString(name)));
 }
 
 // Documented in header.
