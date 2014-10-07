@@ -74,7 +74,7 @@ static zvalue execFetch(Frame *frame, zvalue fetch) {
     zvalue targetExpr = cm_get(fetch, SYM_target);
     zvalue target = execExpression(frame, targetExpr);
 
-    return METH_CALL(fetch, target);
+    return cm_fetch(target);
 }
 
 /**

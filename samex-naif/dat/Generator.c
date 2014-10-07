@@ -36,7 +36,7 @@ FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
             break;
         }
 
-        zvalue one = METH_CALL(fetch, box);
+        zvalue one = cm_fetch(box);
         generator = nextGen;
 
         if (function != NULL) {
@@ -85,7 +85,7 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
     } else {
         // We got a value out of the generator. Now need to make sure it's
         // voided.
-        result = METH_CALL(fetch, box);
+        result = cm_fetch(box);
         if (METH_CALL(nextValue, nextGen, box) != NULL) {
             die("Generator produced second item in `fetch`.");
         }

@@ -44,6 +44,11 @@ char *cm_debugString(zvalue value) {
 }
 
 // Documented in header.
+zvalue cm_fetch(zvalue box) {
+    return METH_CALL(fetch, box);
+}
+
+// Documented in header.
 zvalue cm_get(zvalue value, zvalue key) {
     return METH_CALL(get, value, key);
 }

@@ -31,6 +31,11 @@
 char *cm_debugString(zvalue value);
 
 /**
+ * Calls `box.fetch()`.
+ */
+zvalue cm_fetch(zvalue box);
+
+/**
  * Calls `value.get(key)`.
  */
 zvalue cm_get(zvalue value, zvalue key);
