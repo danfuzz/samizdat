@@ -431,7 +431,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     for (zint i = 0; i < attribSize; i++) {
         zvalue one = nth(keys, i);
         if (!valEq(one, SYM(access))) {
-            die("Invalid attribute: %s", valDebugString(one));
+            die("Invalid attribute: %s", cm_debugString(one));
         }
     }
 
@@ -447,7 +447,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
         zvalue one = nth(methods, i);
         zvalue name = get(one, SYM(name));
         if (get(instanceMethods, name) != NULL) {
-            die("Duplicate method: %s", valDebugString(name));
+            die("Duplicate method: %s", cm_debugString(name));
         }
         instanceMethods = mapAppend(instanceMethods,
             name, listFrom2(makeLiteral(name), one));

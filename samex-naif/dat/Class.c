@@ -78,7 +78,7 @@ static void assertIsClass(zvalue value) {
         cls = getInfo(cls)->parent;
     }
 
-    die("Expected a class; got %s.", valDebugString(value));
+    die("Expected a class; got %s.", cm_debugString(value));
 }
 
 /**
@@ -243,7 +243,7 @@ zvalue classFindMethodUnchecked(zvalue cls, zint index) {
 void assertHasClass(zvalue value, zvalue cls) {
     if (!hasClass(value, cls)) {
         die("Expected class %s; got %s.",
-            valDebugString(cls), valDebugString(value));
+            cm_debugString(cls), cm_debugString(value));
     }
 }
 

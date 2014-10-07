@@ -49,7 +49,7 @@ static char *callReporter(void *state) {
         return utf8DupFromString(ensureString(name));
     }
 
-    char *clsString = valDebugString(get_class(value));
+    char *clsString = cm_debugString(get_class(value));
     char *result;
 
     asprintf(&result, "anonymous %s", clsString);

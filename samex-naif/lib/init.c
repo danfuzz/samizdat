@@ -83,7 +83,7 @@ static zvalue loadFile(zvalue path) {
             zvalue tree = langSimplify0(langParseProgram0(text), NULL);
             func = langEval0(PRIMITIVE_ENVIRONMENT, tree);
         } else {
-            die("Missing bootstrap library file: %s", valDebugString(path));
+            die("Missing bootstrap library file: %s", cm_debugString(path));
         }
     }
 

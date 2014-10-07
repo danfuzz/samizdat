@@ -136,7 +136,7 @@ static zvalue findInternedSymbol(zstring name) {
  */
 static char *callReporter(void *state) {
     zvalue cls = state;
-    char *clsString = valDebugString(cls);
+    char *clsString = cm_debugString(cls);
     char *result;
 
     asprintf(&result, "class %s", clsString);
@@ -190,7 +190,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugString(valToString(symbol)));
+            cm_debugString(cls), cm_debugString(valToString(symbol)));
     }
 
     UTIL_TRACE_START(callReporter, cls);

@@ -119,7 +119,7 @@ static void dumpState(ParseState *state) {
             break;
         }
 
-        char *oneStr = valDebugString(one);
+        char *oneStr = cm_debugString(one);
         note("    %s", oneStr);
         utilFree(oneStr);
     }

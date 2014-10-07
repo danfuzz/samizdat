@@ -179,7 +179,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case EVAL_store:    { return execStore(frame, e);   }
         case EVAL_varRef:   { return execVarRef(frame, e);  }
         default: {
-            die("Invalid expression type: %s", valDebugString(get_class(e)));
+            die("Invalid expression type: %s", cm_debugString(get_class(e)));
         }
     }
 }

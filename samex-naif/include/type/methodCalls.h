@@ -61,7 +61,7 @@ zvalue nth(zvalue value, zint index);
  * caller is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
  */
-char *valDebugString(zvalue value);
+char *cm_debugString(zvalue value);
 
 /**
  * Calls `value.toString()`.

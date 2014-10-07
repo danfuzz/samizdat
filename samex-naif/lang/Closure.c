@@ -141,7 +141,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
         if (name != NULL) {
             if (get(names, name) != NULL) {
-                die("Duplicate formal name: %s", valDebugString(name));
+                die("Duplicate formal name: %s", cm_debugString(name));
             }
             names = METH_CALL(put, names, name, name);
             formalNameCount++;
@@ -155,7 +155,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
                 case EVAL_CH_PLUS:  { rep = REP_PLUS;  break; }
                 case EVAL_CH_QMARK: { rep = REP_QMARK; break; }
                 default: {
-                    die("Invalid repeat modifier: %s", valDebugString(repeat));
+                    die("Invalid repeat modifier: %s", cm_debugString(repeat));
                 }
             }
         }

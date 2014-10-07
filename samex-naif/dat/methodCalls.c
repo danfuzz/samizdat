@@ -14,10 +14,10 @@
 //
 
 /**
- * Flag indicating that `valDebugString` is in progress, as it's bad news
+ * Flag indicating that `cm_debugString` is in progress, as it's bad news
  * if the function is called recursively.
  */
-static bool inValDebugString = false;
+static bool inDebugString = false;
 
 
 //
@@ -57,15 +57,15 @@ zvalue nth(zvalue value, zint index) {
 }
 
 // Documented in header.
-char *valDebugString(zvalue value) {
+char *cm_debugString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");
     }
 
     if (SYM(debugString) == NULL) {
         die("Too early to call `debugString`.");
-    } else if (inValDebugString) {
-        die("`valDebugString` called recursively");
+    } else if (inDebugString) {
+        die("`cm_debugString` called recursively");
     }
 
     inValDebugString = true;
