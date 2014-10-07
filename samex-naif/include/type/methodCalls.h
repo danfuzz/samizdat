@@ -31,9 +31,9 @@
 zvalue cm_store(zvalue box, zvalue value);
 
 /**
- * Calls `value.dataOf()`.
+ * Calls `value.get_data()`.
  */
-zvalue dataOf(zvalue value);
+zvalue get_data(zvalue value);
 
 /**
  * Calls `value.get(key)`.

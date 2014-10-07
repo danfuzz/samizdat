@@ -333,7 +333,7 @@ def parPostfixOperator = makeMainChoice(
                 { node ->
                     def getterCall = makeCall(getterRef, node);
                     @(getterCall.get_name()){
-                        getterCall.dataOf()*,
+                        getterCall.get_data()*,
                         lvalue: { expr ->
                             def setterRef = makeSymbolLiteral("set_".cat(name));
                             makeCall(setterRef, node, expr)
@@ -815,7 +815,7 @@ def parPexSet = makeMainSequence(
 ## Documented in spec.
 def parPexCode = makeMainSequence(
     parNullaryClosure,
-    makeCode { closure -> @code(closure.dataOf()) });
+    makeCode { closure -> @code(closure.get_data()) });
 
 
 ## Documented in spec.

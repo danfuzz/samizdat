@@ -522,7 +522,7 @@ zvalue makeExportSelection(zvalue names) {
 // Documented in spec.
 zvalue makeFullClosure(zvalue baseData) {
     zvalue table = hasClass(baseData, CLS_SymbolTable)
-        ? baseData : dataOf(baseData);
+        ? baseData : get_data(baseData);
     zvalue formals = get(table, SYM_formals);
     zvalue statements = get(table, SYM_statements);
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
@@ -839,7 +839,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
                 select = METH_CALL(keyList, exports);
                 return makeRecord(
                     SYM(importModuleSelection),
-                    METH_CALL(put, dataOf(node), SYM_select, select));
+                    METH_CALL(put, get_data(node), SYM_select, select));
             }
         }
         default: {
@@ -852,7 +852,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeRecord(
         get_name(node),
-        METH_CALL(put, dataOf(node), SYM_formals, formals));
+        METH_CALL(put, get_data(node), SYM_formals, formals));
 }
 
 // Documented in spec.
@@ -912,7 +912,7 @@ zvalue withModuleDefs(zvalue node) {
     return makeRecord(
         get_name(node),
         METH_CALL(cat,
-            dataOf(node),
+            get_data(node),
             tableFrom3(
                 SYM_info,       info,
                 SYM_statements, statements,
@@ -923,7 +923,7 @@ zvalue withModuleDefs(zvalue node) {
 zvalue withName(zvalue node, zvalue name) {
     return makeRecord(
         get_name(node),
-        METH_CALL(put, dataOf(node), SYM_name, name));
+        METH_CALL(put, get_data(node), SYM_name, name));
 }
 
 // Documented in spec.
@@ -962,7 +962,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     return makeRecord(
         get_name(node),
         METH_CALL(cat,
-            dataOf(node),
+            get_data(node),
             tableFrom1(SYM_statements, converted)));
 }
 
@@ -970,13 +970,13 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 zvalue withTop(zvalue node) {
     return makeRecord(
         get_name(node),
-        METH_CALL(put, dataOf(node), SYM_top, BOOL_TRUE));
+        METH_CALL(put, get_data(node), SYM_top, BOOL_TRUE));
 }
 
 
 // Documented in spec.
 zvalue withYieldDef(zvalue node, zvalue name) {
-    zvalue table = dataOf(node);
+    zvalue table = get_data(node);
     zvalue yieldDef = get(table, SYM_yieldDef);
     zvalue newBindings;
 
@@ -997,7 +997,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 zvalue withoutInterpolate(zvalue node) {
     return makeRecord(
         get_name(node),
-        METH_CALL(del, dataOf(node), SYM_interpolate));
+        METH_CALL(del, get_data(node), SYM_interpolate));
 }
 
 // Documented in spec.
@@ -1056,7 +1056,7 @@ zvalue withoutTops(zvalue node) {
     return makeRecord(
         get_name(node),
         METH_CALL(cat,
-            dataOf(node),
+            get_data(node),
             tableFrom1(
                 SYM_statements, METH_CALL(cat, tops, mains, optSelection))));
 }

@@ -220,6 +220,6 @@ expectDifferent(@x{a: 1}, @x{a: 2});
 expectDifferent(@x{a: 1}, @y{a: 1});
 
 expectSame(@blort, @blort{}.get_name());
-expectSame(@{a: 1}, @blort{a: 1}.dataOf());
+expectSame(@{a: 1}, @blort{a: 1}.get_data());
 
 expectRecord(@fizmo{});

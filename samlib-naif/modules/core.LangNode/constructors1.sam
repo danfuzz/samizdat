@@ -112,17 +112,17 @@ export fn makeVarStore(name, value) {
 
 ## Documented in spec.
 export fn withFormals(node, formals) {
-    return @(node.get_name()){node.dataOf()*, formals}
+    return @(node.get_name()){node.get_data()*, formals}
 };
 
 ## Documented in spec.
 export fn withName(node, name) {
-    return @(node.get_name()){node.dataOf()*, name}
+    return @(node.get_name()){node.get_data()*, name}
 };
 
 ## Documented in spec.
 export fn withYieldDef(node, name) {
-    def table = node.dataOf();
+    def table = node.get_data();
     def newBindings = ifValue { table::yieldDef }
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
@@ -143,11 +143,11 @@ export fn withYieldDefIfAbsent(node, name) {
 
 ## Documented in spec.
 export fn withoutInterpolate(node) {
-    return @(node.get_name())(node.dataOf().del(@interpolate))
+    return @(node.get_name())(node.get_data().del(@interpolate))
 };
 
 ## Documented in spec.
 export fn withoutIntermediates(node) {
-    def data = node.dataOf().del(@lvalue).del(@interpolate);
+    def data = node.get_data().del(@lvalue).del(@interpolate);
     return @(node.get_name())(data)
 };

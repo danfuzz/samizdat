@@ -84,7 +84,7 @@ export fn resolveImport(node, resolveFn) {
                         ## It's a wildcard import, so return a modified node
                         ## that lists all the exported names.
                         def select = exports.keyList();
-                        @importModuleSelection{node.dataOf()*, select}
+                        @importModuleSelection{node.get_data()*, select}
                     }
             },
 
@@ -122,5 +122,5 @@ export fn withResolvedImports(node, resolveFn) {
             { resolved }
     };
 
-    return @(node.get_name()){node.dataOf()*, statements: [converted*]}
+    return @(node.get_name()){node.get_data()*, statements: [converted*]}
 };

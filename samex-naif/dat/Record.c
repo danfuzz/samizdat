@@ -85,11 +85,6 @@ FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
 }
 
 // Documented in header.
-METH_IMPL_0(Record, dataOf) {
-    return getInfo(ths)->data;
-}
-
-// Documented in header.
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
@@ -116,6 +111,11 @@ METH_IMPL_0(Record, gcMark) {
 // Documented in header.
 METH_IMPL_1(Record, get, key) {
     return get(getInfo(ths)->data, key);
+}
+
+// Documented in header.
+METH_IMPL_0(Record, get_data) {
+    return getInfo(ths)->data;
 }
 
 // Documented in header.
@@ -163,10 +163,10 @@ MOD_INIT(Record) {
     CLS_Record = makeCoreClass(SYM(Record), CLS_Core,
         NULL,
         symbolTableFromArgs(
-            METH_BIND(Record, dataOf),
             METH_BIND(Record, debugString),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
+            METH_BIND(Record, get_data),
             METH_BIND(Record, get_name),
             METH_BIND(Record, hasName),
             METH_BIND(Record, totalEq),

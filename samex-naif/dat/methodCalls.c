@@ -32,8 +32,8 @@ zvalue cm_store(zvalue box, zvalue value) {
 }
 
 // Documented in header.
-zvalue dataOf(zvalue value) {
-    return METH_CALL(dataOf, value);
+zvalue get_data(zvalue value) {
+    return METH_CALL(get_data, value);
 }
 
 // Documented in header.
