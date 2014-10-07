@@ -4,7 +4,7 @@
 
 //
 // Utility functions and macros to call methods from C. This helps remove
-// boilerplate from commonly-called methods.
+// boilerplate from the call sites of commonly-called methods.
 //
 // Things defined here have two naming conventions:
 //

@@ -69,14 +69,14 @@ static void makePrimitiveEnvironment(void) {
  * with `.sam` for a text source file.
  */
 static zvalue loadFile(zvalue path) {
-    zvalue binPath = METH_CALL(cat, path, stringFromUtf8(-1, ".samb"));
+    zvalue binPath = cm_cat(path, stringFromUtf8(-1, ".samb"));
     zvalue func;
 
     if (valEq(ioFileType(binPath), SYM(file))) {
         // We found a binary file.
         func = datEvalBinary(PRIMITIVE_ENVIRONMENT, binPath);
     } else {
-        zvalue srcPath = METH_CALL(cat, path, stringFromUtf8(-1, ".sam"));
+        zvalue srcPath = cm_cat(path, stringFromUtf8(-1, ".sam"));
         if (valEq(ioFileType(srcPath), SYM(file))) {
             // We found a source text file.
             zvalue text = ioReadFileUtf8(srcPath);
@@ -98,7 +98,7 @@ static zvalue loadFile(zvalue path) {
 static zvalue getLibrary(zvalue libraryPath) {
     // Evaluate `ModuleSystem`. Works with either source or binary.
     zvalue moduleSystem = loadFile(
-        METH_CALL(cat, libraryPath,
+        cm_cat(libraryPath,
             stringFromUtf8(-1, "/modules/core.ModuleSystem/main")));
 
     // Call `ModuleSystem::exports::main` to load and evaluate the

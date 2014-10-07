@@ -285,7 +285,7 @@ zvalue get_definedNames(zvalue node) {
                 arrayFromList(arr, select);
 
                 for (zint i = 0; i < size; i++) {
-                    arr[i] = symbolFromString(METH_CALL(cat, prefixStr, arr[i]));
+                    arr[i] = symbolFromString(cm_cat(prefixStr, arr[i]));
                 }
 
                 return listFromArray(size, arr);
@@ -346,7 +346,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 // Documented in spec.
 zvalue makeBasicClosure(zvalue table) {
     return makeRecord(SYM(closure),
-        METH_CALL(cat,
+        cm_cat(
             tableFrom2(SYM_formals, EMPTY_LIST, SYM_statements, EMPTY_LIST),
             table));
 }
@@ -553,7 +553,7 @@ zvalue makeFullClosure(zvalue baseData) {
     }
 
     return makeRecord(SYM(closure),
-        METH_CALL(cat,
+        cm_cat(
             table,
             tableFrom3(
                 SYM_formals,    formals,
@@ -587,7 +587,7 @@ zvalue makeImport(zvalue baseData) {
 
     if (cm_get(data, SYM_name) == NULL) {
         // No `name` provided, so figure out a default one.
-        zvalue name = METH_CALL(cat,
+        zvalue name = cm_cat(
             STR_CH_DOLLAR,
             get_baseName(cm_get(baseData, SYM_source)));
         data = cm_put(data, SYM_name, symbolFromString(name));
@@ -893,7 +893,7 @@ zvalue withModuleDefs(zvalue node) {
     arrayFromMap(mappings, exportInfo);
     for (zint i = 0; i < exSize; i++) {
         zvalue name = mappings[i].key;
-        exportValues = METH_CALL(cat, exportValues,
+        exportValues = cm_cat(exportValues,
             listFrom2(makeLiteral(name), makeVarFetch(name)));
     }
 
@@ -911,7 +911,7 @@ zvalue withModuleDefs(zvalue node) {
 
     return makeRecord(
         get_name(node),
-        METH_CALL(cat,
+        cm_cat(
             get_data(node),
             tableFrom3(
                 SYM_info,       info,
@@ -961,7 +961,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     return makeRecord(
         get_name(node),
-        METH_CALL(cat,
+        cm_cat(
             get_data(node),
             tableFrom1(SYM_statements, converted)));
 }
@@ -990,7 +990,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
     return makeRecord(
         get_name(node),
-        METH_CALL(cat, table, newBindings));
+        cm_cat(table, newBindings));
 };
 
 // Documented in spec.
@@ -1055,8 +1055,8 @@ zvalue withoutTops(zvalue node) {
 
     return makeRecord(
         get_name(node),
-        METH_CALL(cat,
+        cm_cat(
             get_data(node),
             tableFrom1(
-                SYM_statements, METH_CALL(cat, tops, mains, optSelection))));
+                SYM_statements, cm_cat(tops, mains, optSelection))));
 }

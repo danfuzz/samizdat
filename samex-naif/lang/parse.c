@@ -652,7 +652,7 @@ DEF_PARSE(actualsList) {
         zvalue normalActuals = PARSE(unadornedList);  // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
         zvalue closureActuals = PARSE_STAR(fullClosure);
-        return METH_CALL(cat, closureActuals, normalActuals);
+        return cm_cat(closureActuals, normalActuals);
     }
 
     return PARSE_PLUS(fullClosure);
@@ -931,7 +931,7 @@ DEF_PARSE(closureDeclarations2) {
     if (MATCH(CH_OPAREN) != NULL) {
         zvalue formals = PARSE(formalsList);    // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        return METH_CALL(cat, name, tableFrom1(SYM_formals, formals));
+        return cm_cat(name, tableFrom1(SYM_formals, formals));
     } else {
         RESET();
         zvalue formals = PARSE(formalsList);    // This never fails.
@@ -951,7 +951,7 @@ DEF_PARSE(closureDeclarations3) {
 
     MATCH_OR_REJECT(CH_RARROW);
 
-    return METH_CALL(cat, most, yieldDef);
+    return cm_cat(most, yieldDef);
 }
 
 // Documented in spec.
@@ -1012,7 +1012,7 @@ DEF_PARSE(methodDef) {
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
     return withFormals(closure,
-        METH_CALL(cat,
+        cm_cat(
             listFrom1(tableFrom1(SYM_name, SYM_this)),
             cm_get(closure, SYM_formals)));
 }
@@ -1075,7 +1075,7 @@ DEF_PARSE(importSourceDotName) {
     MATCH_OR_REJECT(CH_DOT);
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return METH_CALL(cat, STR_CH_DOT, name);
+    return cm_cat(STR_CH_DOT, name);
 }
 
 /**
@@ -1088,7 +1088,7 @@ DEF_PARSE(importSourceSlashName) {
     MATCH_OR_REJECT(CH_SLASH);
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return METH_CALL(cat, STR_CH_SLASH, name);
+    return cm_cat(STR_CH_SLASH, name);
 }
 
 /** Helper for `importSource`: Parses the first alternate. */
@@ -1102,7 +1102,7 @@ DEF_PARSE(importSource1) {
     zvalue optSuffix = PARSE_OPT(importSourceDotName);
 
     zvalue name = METH_APPLY(cat,
-        METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest, optSuffix));
+        cm_cat(listFrom2(EMPTY_STRING, first), rest, optSuffix));
     return recordFrom1(SYM(internal), SYM_name, name);
 }
 
@@ -1114,7 +1114,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = METH_APPLY(cat,
-        METH_CALL(cat, listFrom2(EMPTY_STRING, first), rest));
+        cm_cat(listFrom2(EMPTY_STRING, first), rest));
     return recordFrom1(SYM(external), SYM_name, name);
 }
 
@@ -1169,7 +1169,7 @@ DEF_PARSE(importStatement) {
     zvalue source = PARSE_OR_REJECT(importSource);
     zvalue select = PARSE(importSelect);      // Never fails.
 
-    zvalue data = METH_CALL(cat,
+    zvalue data = cm_cat(
         nameOrPrefix,
         format,
         select,
@@ -1270,7 +1270,7 @@ DEF_PARSE(rawClosure) {
 
     MATCH_OR_REJECT(CH_CCURLY);
 
-    return METH_CALL(cat, decls, body);
+    return cm_cat(decls, body);
 }
 
 // Documented in spec.

@@ -39,17 +39,17 @@ zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
 
 // Documented in header.
 zvalue listAppend(zvalue list, zvalue elem) {
-    return METH_CALL(cat, list, listFrom1(elem));
+    return cm_cat(list, listFrom1(elem));
 }
 
 // Documented in header.
 zvalue listPrepend(zvalue elem, zvalue list) {
-    return METH_CALL(cat, listFrom1(elem), list);
+    return cm_cat(listFrom1(elem), list);
 }
 
 // Documented in header.
 zvalue mapAppend(zvalue map, zvalue key, zvalue value) {
-    return METH_CALL(cat, map, mapFrom1(key, value));
+    return cm_cat(map, mapFrom1(key, value));
 }
 
 // Documented in header.
