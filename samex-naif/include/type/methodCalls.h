@@ -74,19 +74,19 @@ zorder cm_order(zvalue x, zvalue other);
 #define cm_store(...) (METH_CALL(store, __VA_ARGS__))
 
 /**
- * Calls `x.toString()`.
+ * Calls `x.toString()`. **Note:** This is a macro.
  */
-zvalue cm_toString(zvalue x);
+#define cm_toString(x) (METH_CALL(toString, (x)))
 
 /**
- * Calls `x.get_data()`.
+ * Calls `x.get_data()`. **Note:** This is a macro.
  */
-zvalue get_data(zvalue x);
+#define get_data(x) (METH_CALL(get_data, (x)))
 
 /**
- * Calls `x.get_name()`.
+ * Calls `x.get_name()`. **Note:** This is a macro.
  */
-zvalue get_name(zvalue x);
+#define get_name(x) (METH_CALL(get_name, (x)))
 
 /**
  * Calls `x.get_size()`, converting the result to a `zint`.

@@ -65,21 +65,6 @@ zorder cm_order(zvalue x, zvalue other) {
 }
 
 // Documented in header.
-zvalue cm_toString(zvalue x) {
-    return METH_CALL(toString, x);
-}
-
-// Documented in header.
-zvalue get_data(zvalue x) {
-    return METH_CALL(get_data, x);
-}
-
-// Documented in header.
-zvalue get_name(zvalue x) {
-    return METH_CALL(get_name, x);
-}
-
-// Documented in header.
 zint get_size(zvalue x) {
     return zintFromInt(METH_CALL(get_size, x));
 }
