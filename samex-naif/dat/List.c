@@ -384,7 +384,6 @@ METH_IMPL_0(List, valueList) {
 /** Initializes the module. */
 MOD_INIT(List) {
     MOD_USE(Sequence);
-    MOD_USE(OneOff);
 
     CLS_List = makeCoreClass("List", CLS_Core,
         NULL,

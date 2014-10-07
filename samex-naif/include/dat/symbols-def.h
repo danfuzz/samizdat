@@ -52,6 +52,13 @@ DEF_SYMBOL(get_parent);
 DEF_SYMBOL(collect);
 DEF_SYMBOL(fetch);
 DEF_SYMBOL(nextValue);
+DEF_SYMBOL(get_key);
+DEF_SYMBOL(get_value);
+DEF_SYMBOL(nth);
+DEF_SYMBOL(readResource);
+DEF_SYMBOL(resolve);
+DEF_SYMBOL(toInt);
+DEF_SYMBOL(toNumber);
 
 
 /**

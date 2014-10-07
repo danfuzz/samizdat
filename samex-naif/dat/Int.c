@@ -191,7 +191,7 @@ METH_IMPL_1(Int, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Int) {
-    MOD_USE(OneOff);
+    MOD_USE(Core);
 
     CLS_Int = makeCoreClass("Int", CLS_Core,
         NULL,

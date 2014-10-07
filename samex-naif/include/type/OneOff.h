@@ -11,39 +11,6 @@
 
 #include "type/Value.h"
 
-
-/** Method `.get_key()`: Documented in spec. */
-SYM_DECL(get_key);
-
-/** Method `.get_value()`: Documented in spec. */
-SYM_DECL(get_value);
-
-/** Method `.nth(int)`: Documented in spec. */
-SYM_DECL(nth);
-
-/**
- * Method `.readResource(source, type)`: Documented in spec.
- *
- * **Note:** Actually part of the `Loader` protocol, but as the nature of
- * protocols is in flux, it's more convenient to just drop it here rather
- * than cons up a whole new file which will probably get removed again fairly
- * quickly.
- */
-SYM_DECL(readResource);
-
-/**
- * Method `.resolve(source)`: Documented in spec.
- *
- * **Note:** Same situation as `readResource` above.
- */
-SYM_DECL(resolve);
-
-/** Method `.toInt()`: Documented in spec. */
-SYM_DECL(toInt);
-
-/** Method `.toNumber()`: Documented in spec. */
-SYM_DECL(toNumber);
-
 /**
  * Calls the `get` method.
  */

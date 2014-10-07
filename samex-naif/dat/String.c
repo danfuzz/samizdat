@@ -544,7 +544,6 @@ METH_IMPL_0(String, valueList) {
 /** Initializes the module. */
 MOD_INIT(String) {
     MOD_USE(Sequence);
-    MOD_USE(OneOff);
 
     SYM_INIT(toSymbol);
 

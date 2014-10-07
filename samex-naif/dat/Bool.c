@@ -180,7 +180,6 @@ METH_IMPL_1(Bool, xor, other) {
 /** Initializes the module. */
 MOD_INIT(Bool) {
     MOD_USE(Int);
-    MOD_USE(OneOff);
 
     CLS_Bool = makeCoreClass("Bool", CLS_Core,
         NULL,
