@@ -8,10 +8,8 @@
 //
 // Functions defined here have three naming conventions:
 //
-// * `get_<name>(value)` is a function to call the method `value.get_<name>()`.
-//
-// * `cm_<name>(value, ...)` is a function to call the method
-//   `value.<name>(...)`.
+// * `get_<name>(x)` is a function to call the method `x.get_<name>()`.
+// * `cm_<name>(x, ...)` is a function to call the method `x.<name>(...)`.
 //
 // Note that several of these functions take or return C types instead of
 // just `zvalue`, and in some cases the contract is *slightly* different, in
@@ -24,36 +22,35 @@
 #include "dat.h"
 
 /**
- * Calls `value.debugString()`, converting the result to a `char *`. The
+ * Calls `x.debugString()`, converting the result to a `char *`. The
  * caller is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
  */
-char *cm_debugString(zvalue value);
+char *cm_debugString(zvalue x);
 
 /**
- * Calls `box.fetch()`.
+ * Calls `x.fetch()`.
  */
-zvalue cm_fetch(zvalue box);
+zvalue cm_fetch(zvalue x);
 
 /**
- * Calls `value.get(key)`.
+ * Calls `x.get(key)`.
  */
-zvalue cm_get(zvalue value, zvalue key);
+zvalue cm_get(zvalue x, zvalue key);
 
 /**
- * Calls `value.nth(index)`, converting the given `zint` index to an `Int`
- * value.
+ * Calls `x.nth(index)`, converting the given `zint` index to an `Int`.
  */
-zvalue cm_nth(zvalue value, zint index);
+zvalue cm_nth(zvalue x, zint index);
 
 /**
- * Calls `value.valOrder(other)`, except that the return value is of type
+ * Calls `x.valOrder(other)`, except that the return value is of type
  * `zorder`, and this reports a fatal error if given incomparable values.
  *
  * **Note:** The constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking
  * at results.
  */
-zorder cm_order(zvalue value, zvalue other);
+zorder cm_order(zvalue x, zvalue other);
 
 /**
  * Calls `x.put(key, value)`.
@@ -61,29 +58,29 @@ zorder cm_order(zvalue value, zvalue other);
 zvalue cm_put(zvalue x, zvalue key, zvalue value);
 
 /**
- * Calls `box.store()`, with either no arguments or one argument, if `value`
+ * Calls `x.store()`, with either no arguments or one argument, if `value`
  * is `NULL` or not (respectively). `box` is *not* allowed to be `NULL`.
  */
-zvalue cm_store(zvalue box, zvalue value);
+zvalue cm_store(zvalue x, zvalue value);
 
 /**
- * Calls `value.toString()`.
+ * Calls `x.toString()`.
  */
-zvalue cm_toString(zvalue value);
+zvalue cm_toString(zvalue x);
 
 /**
- * Calls `value.get_data()`.
+ * Calls `x.get_data()`.
  */
-zvalue get_data(zvalue value);
+zvalue get_data(zvalue x);
 
 /**
- * Calls `value.get_name()`.
+ * Calls `x.get_name()`.
  */
-zvalue get_name(zvalue value);
+zvalue get_name(zvalue x);
 
 /**
- * Calls `value.get_size()`, converting the result to a `zint`.
+ * Calls `x.get_size()`, converting the result to a `zint`.
  */
-zint get_size(zvalue value);
+zint get_size(zvalue x);
 
 #endif

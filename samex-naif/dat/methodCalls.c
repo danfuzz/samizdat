@@ -25,8 +25,8 @@ static bool inDebugString = false;
 //
 
 // Documented in header.
-char *cm_debugString(zvalue value) {
-    if (value == NULL) {
+char *cm_debugString(zvalue x) {
+    if (x == NULL) {
         return utilStrdup("(null)");
     }
 
@@ -37,33 +37,33 @@ char *cm_debugString(zvalue value) {
     }
 
     inDebugString = true;
-    char *result = utf8DupFromString(METH_CALL(debugString, value));
+    char *result = utf8DupFromString(METH_CALL(debugString, x));
     inDebugString = false;
 
     return result;
 }
 
 // Documented in header.
-zvalue cm_fetch(zvalue box) {
-    return METH_CALL(fetch, box);
+zvalue cm_fetch(zvalue x) {
+    return METH_CALL(fetch, x);
 }
 
 // Documented in header.
-zvalue cm_get(zvalue value, zvalue key) {
-    return METH_CALL(get, value, key);
+zvalue cm_get(zvalue x, zvalue key) {
+    return METH_CALL(get, x, key);
 }
 
 // Documented in header.
-zvalue cm_nth(zvalue value, zint index) {
-    return METH_CALL(nth, value, intFromZint(index));
+zvalue cm_nth(zvalue x, zint index) {
+    return METH_CALL(nth, x, intFromZint(index));
 }
 
 // Documented in header.
-zorder cm_order(zvalue value, zvalue other) {
+zorder cm_order(zvalue x, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack. See note on `valOrder` for more color.
     zstackPointer save = datFrameStart();
-    zvalue result = valOrder(value, other);
+    zvalue result = valOrder(x, other);
 
     if (result == NULL) {
         die("Attempt to order unordered values.");
@@ -75,10 +75,10 @@ zorder cm_order(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-zvalue cm_store(zvalue box, zvalue value) {
+zvalue cm_store(zvalue x, zvalue value) {
     return (value == NULL)
-        ? METH_CALL(store, box)
-        : METH_CALL(store, box, value);
+        ? METH_CALL(store, x)
+        : METH_CALL(store, x, value);
 }
 
 // Documented in header.
@@ -87,21 +87,21 @@ zvalue cm_put(zvalue x, zvalue key, zvalue value) {
 }
 
 // Documented in header.
-zvalue cm_toString(zvalue value) {
-    return METH_CALL(toString, value);
+zvalue cm_toString(zvalue x) {
+    return METH_CALL(toString, x);
 }
 
 // Documented in header.
-zvalue get_data(zvalue value) {
-    return METH_CALL(get_data, value);
+zvalue get_data(zvalue x) {
+    return METH_CALL(get_data, x);
 }
 
 // Documented in header.
-zvalue get_name(zvalue value) {
-    return METH_CALL(get_name, value);
+zvalue get_name(zvalue x) {
+    return METH_CALL(get_name, x);
 }
 
 // Documented in header.
-zint get_size(zvalue value) {
-    return zintFromInt(METH_CALL(get_size, value));
+zint get_size(zvalue x) {
+    return zintFromInt(METH_CALL(get_size, x));
 }
