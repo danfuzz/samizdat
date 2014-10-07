@@ -545,7 +545,7 @@ METH_IMPL_0(String, valueList) {
 MOD_INIT(String) {
     MOD_USE(Sequence);
 
-    CLS_String = makeCoreClass("String", CLS_Core,
+    CLS_String = makeCoreClass(SYM(String), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(String, cat),

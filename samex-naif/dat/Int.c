@@ -193,7 +193,7 @@ METH_IMPL_1(Int, totalOrder, other) {
 MOD_INIT(Int) {
     MOD_USE(Core);
 
-    CLS_Int = makeCoreClass("Int", CLS_Core,
+    CLS_Int = makeCoreClass(SYM(Int), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Int, abs),

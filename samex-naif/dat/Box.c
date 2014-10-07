@@ -164,7 +164,7 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Core);
 
-    CLS_Box = makeCoreClass("Box", CLS_Core,
+    CLS_Box = makeCoreClass(SYM(Box), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Box, collect),

@@ -181,7 +181,7 @@ METH_IMPL_1(Bool, xor, other) {
 MOD_INIT(Bool) {
     MOD_USE(Int);
 
-    CLS_Bool = makeCoreClass("Bool", CLS_Core,
+    CLS_Bool = makeCoreClass(SYM(Bool), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Bool, and),

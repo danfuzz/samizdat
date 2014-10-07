@@ -12,6 +12,7 @@
 #include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/OneOff.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "util.h"
@@ -358,7 +359,7 @@ METH_IMPL_0(Closure, gcMark) {
 MOD_INIT(Closure) {
     MOD_USE(Box);
 
-    CLS_Closure = makeCoreClass("Closure", CLS_Core,
+    CLS_Closure = makeCoreClass(symbolFromUtf8(-1, "Closure"), CLS_Core,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Closure, call),
