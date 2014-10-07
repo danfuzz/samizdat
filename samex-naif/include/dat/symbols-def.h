@@ -11,7 +11,7 @@
 // `DEF_SYMBOL(name)` -- Defines an interned symbol.
 //
 
-// The following are all names of methods. See the spec for details.
+// The following are all method names. See the spec for details.
 DEF_SYMBOL(call);
 DEF_SYMBOL(cat);
 DEF_SYMBOL(debugString);
@@ -48,6 +48,7 @@ DEF_SYMBOL(store);
 DEF_SYMBOL(keyList);
 DEF_SYMBOL(nthMapping);
 DEF_SYMBOL(valueList);
+DEF_SYMBOL(get_parent);
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
@@ -65,6 +66,9 @@ DEF_SYMBOL(imports);
 
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(main);
+
+/** Used as the prefix for metaclass names. */
+DEF_SYMBOL(meta_);
 
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(resources);

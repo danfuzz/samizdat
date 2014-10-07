@@ -484,9 +484,6 @@ MOD_INIT(objectModel) {
     datImmortalize(theCoreSecret);
     initCoreSymbols();
 
-    // And to make the prefix used for all metaclasses.
-    SYM_INIT(meta_);
-
     // And with that, initialize `name` and `secret` on all the classes
     // constructed above.
     initEarlyClass(CLS_Class,     symbolFromUtf8(-1, "Class"));
@@ -529,8 +526,6 @@ MOD_INIT(objectModel) {
 
 // Documented in header.
 void bindMethodsForClass(void) {
-    SYM_INIT(get_parent);
-
     classBindMethods(CLS_Class,
         NULL,
         symbolTableFromArgs(
@@ -564,9 +559,3 @@ zvalue CLS_Metaclass = NULL;
 
 // Documented in header.
 zvalue CLS_Class = NULL;
-
-// Documented in header.
-SYM_DEF(get_parent);
-
-// Documented in header.
-SYM_DEF(meta_);

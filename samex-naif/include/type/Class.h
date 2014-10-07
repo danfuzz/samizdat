@@ -20,12 +20,6 @@ extern zvalue CLS_Class;
 /** Class value for in-model class `Metaclass`. */
 extern zvalue CLS_Metaclass;
 
-/** Method `.get_parent()`: Documented in spec. */
-SYM_DECL(get_parent);
-
-/** Symbol `meta_`. Used when constructing metaclass names. */
-SYM_DECL(meta_);
-
 /**
  * Asserts that the given value has the given class. If not, this aborts
  * the process with a diagnostic message. **Note:** This does not do a
