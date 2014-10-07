@@ -72,10 +72,10 @@ of all per-class ordering functions.
 
 Performs a class-specific equality comparison of the two given
 values, using the "total value ordering" order. When called by the system,
-the two values are guaranteed to have the same class; however, it is possible
-to call this function directly, so implementations must check to see if
-`other` has the same class as `this`. If a client calls with different-class
-values, it is a fatal error (terminating the runtime).
+the two values are guaranteed to have the same direct class; however, it is
+possible to call this function directly, so implementations must check to see
+if `other` has the same class as `this`. If a client calls with
+different-class values, it is a fatal error (terminating the runtime).
 
 The return value is either `this` (or `other` really) if the two values
 are in fact identical, or `void` if they are not.
@@ -97,7 +97,7 @@ of all cross-class equality comparison functions.
 
 Returns the class-specific order of the two given values, using the "total
 value ordering" order. When called by the system, the two values are
-guaranteed to have the same class; however, it is possible to call this
+guaranteed to have the same direct class; however, it is possible to call this
 function directly, so implementations must check to see if `other` has the
 same class as `this`. If a client calls with different-class values, it is a
 fatal error (terminating the runtime).
