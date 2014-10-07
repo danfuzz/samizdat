@@ -82,6 +82,11 @@ zvalue cm_store(zvalue box, zvalue value) {
 }
 
 // Documented in header.
+zvalue cm_put(zvalue x, zvalue key, zvalue value) {
+    return METH_CALL(put, x, key, value);
+}
+
+// Documented in header.
 zvalue cm_toString(zvalue value) {
     return METH_CALL(toString, value);
 }

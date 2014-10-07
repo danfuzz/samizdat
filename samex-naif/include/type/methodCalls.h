@@ -56,9 +56,13 @@ zvalue cm_nth(zvalue value, zint index);
 zorder cm_order(zvalue value, zvalue other);
 
 /**
- * Calls the method `box.store()`, with either no arguments or one argument,
- * if `value` is `NULL` or not (respectively). `box` is *not* allowed to be
- * `NULL`.
+ * Calls `x.put(key, value)`.
+ */
+zvalue cm_put(zvalue x, zvalue key, zvalue value);
+
+/**
+ * Calls `box.store()`, with either no arguments or one argument, if `value`
+ * is `NULL` or not (respectively). `box` is *not* allowed to be `NULL`.
  */
 zvalue cm_store(zvalue box, zvalue value);
 
