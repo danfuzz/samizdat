@@ -16,75 +16,11 @@
 #include <stddef.h>
 
 #include "type/declare.h"
+#include "type/symbols.h"
 
 
 /** Class value for in-model class `Value`. */
 extern zvalue CLS_Value;
-
-/** Method `.call(args*)`: Documented in spec. */
-SYM_DECL(call);
-
-/** Method `.cat(args*)`: Documented in spec. */
-SYM_DECL(cat);
-
-/** Method `.debugString()`: Documented in spec. */
-SYM_DECL(debugString);
-
-/** Method `.debugSymbol()`: Documented in spec. */
-SYM_DECL(debugSymbol);
-
-/** Method `.del(key)`: Documented in spec. */
-SYM_DECL(del);
-
-/**
- * Symbol `exports`. Used when accessing modules. Not needed in `dat` per se,
- * but defined here, because there isn't really a better place to put it.
- */
-SYM_DECL(exports);
-
-/**
- * Method `.gcMark()`: Does GC marking for the given value.
- *
- * TODO: This should be defined as an unlisted symbol and *not* exported
- * in any way to the higher layer environment.
- */
-SYM_DECL(gcMark);
-
-/** Method `.get(key)`: Documented in spec. */
-SYM_DECL(get);
-
-/** Method `.get_name()`: Documented in spec. */
-SYM_DECL(get_name);
-
-/** Method `.get_size()`: Documented in spec. */
-SYM_DECL(get_size);
-
-/** Symbol `imports`. Same comment applies as with `exports`, above. */
-SYM_DECL(imports);
-
-/** Symbol `main`. Same comment applies as with `exports`, above. */
-SYM_DECL(main);
-
-/** Method `.perEq(other)`: Documented in spec. */
-SYM_DECL(perEq);
-
-/** Method `.perOrder(other)`: Documented in spec. */
-SYM_DECL(perOrder);
-
-/** Method `.put(key, value)`: Documented in spec. */
-SYM_DECL(put);
-
-/** Symbol `resources`. Same comment applies as with `exports`, above. */
-SYM_DECL(resources);
-
-/** Method `.toString()`: Documented in spec. */
-SYM_DECL(toString);
-
-/** Method `.totalEq(other)`: Documented in spec. */
-SYM_DECL(totalEq);
-
-/** Method `.totalOrder(other)`: Documented in spec. */
-SYM_DECL(totalOrder);
 
 /**
  * Calls the method `value.get_name()`.

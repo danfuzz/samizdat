@@ -478,9 +478,11 @@ MOD_INIT(objectModel) {
     CLS_Symbol = makeClassPair(NULL, CLS_Core, NULL);
 
     // With `Symbol` barely initialized, it's now possible to make an
-    // instance of it to use as the core library secret.
+    // unlisted instance of it to use as the core library secret, as well as
+    // interned instances as needed by the rest of the core.
     theCoreSecret = unlistedSymbolFromUtf8(-1, "coreSecret");
     datImmortalize(theCoreSecret);
+    initCoreSymbols();
 
     // And to make the prefix used for all metaclasses.
     SYM_INIT(meta_);

@@ -203,26 +203,6 @@ METH_IMPL_1(Value, totalOrder, other) {
 
 // Documented in header.
 void bindMethodsForValue(void) {
-    SYM_INIT(call);
-    SYM_INIT(cat);
-    SYM_INIT(debugString);
-    SYM_INIT(debugSymbol);
-    SYM_INIT(del);
-    SYM_INIT(exports);
-    SYM_INIT(gcMark);
-    SYM_INIT(get);
-    SYM_INIT(get_name);
-    SYM_INIT(get_size);
-    SYM_INIT(imports);
-    SYM_INIT(main);
-    SYM_INIT(perEq);
-    SYM_INIT(perOrder);
-    SYM_INIT(put);
-    SYM_INIT(resources);
-    SYM_INIT(toString);
-    SYM_INIT(totalEq);
-    SYM_INIT(totalOrder);
-
     classBindMethods(CLS_Value,
         NULL,
         symbolTableFromArgs(
@@ -261,57 +241,3 @@ MOD_INIT(Value) {
 
 // Documented in header.
 zvalue CLS_Value = NULL;
-
-// Documented in header.
-SYM_DEF(call);
-
-// Documented in header.
-SYM_DEF(cat);
-
-// Documented in header.
-SYM_DEF(debugString);
-
-// Documented in header.
-SYM_DEF(debugSymbol);
-
-// Documented in header.
-SYM_DEF(del);
-
-// Documented in header.
-SYM_DEF(exports);
-
-// Documented in header.
-SYM_DEF(gcMark);
-
-// Documented in header.
-SYM_DEF(get);
-
-// Documented in header.
-SYM_DEF(get_name);
-
-// Documented in header.
-SYM_DEF(imports);
-
-// Documented in header.
-SYM_DEF(main);
-
-// Documented in header.
-SYM_DEF(perEq);
-
-// Documented in header.
-SYM_DEF(perOrder);
-
-// Documented in header.
-SYM_DEF(put);
-
-// Documented in header.
-SYM_DEF(resources);
-
-// Documented in header.
-SYM_DEF(toString);
-
-// Documented in header.
-SYM_DEF(totalEq);
-
-// Documented in header.
-SYM_DEF(totalOrder);
