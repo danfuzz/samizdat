@@ -474,31 +474,28 @@ MOD_INIT(objectModel) {
     // classes to have `name`s and `secret`s.
 
     // Construct these with `NULL` `name` and `secret` initially.
-    CLS_Core = makeClassPair(NULL, CLS_Value, NULL);
-    CLS_Symbol = makeClassPair(NULL, CLS_Core, NULL);
+    CLS_Core   = makeClassPair(NULL, CLS_Value, NULL);
+    CLS_Symbol = makeClassPair(NULL, CLS_Core,  NULL);
 
     // With `Symbol` barely initialized, it's now possible to make an
     // unlisted instance of it to use as the core library secret, as well as
     // interned instances as needed by the rest of the core.
-    theCoreSecret = unlistedSymbolFromUtf8(-1, "coreSecret");
-    datImmortalize(theCoreSecret);
+    theCoreSecret = datImmortalize(unlistedSymbolFromUtf8(-1, "coreSecret"));
     initCoreSymbols();
 
     // And with that, initialize `name` and `secret` on all the classes
     // constructed above.
-    initEarlyClass(CLS_Class,     symbolFromUtf8(-1, "Class"));
-    initEarlyClass(CLS_Core,      symbolFromUtf8(-1, "Core"));
-    initEarlyClass(CLS_Metaclass, symbolFromUtf8(-1, "Metaclass"));
-    initEarlyClass(CLS_Symbol,    symbolFromUtf8(-1, "Symbol"));
-    initEarlyClass(CLS_Value,     symbolFromUtf8(-1, "Value"));
+    initEarlyClass(CLS_Class,     SYM(Class));
+    initEarlyClass(CLS_Core,      SYM(Core));
+    initEarlyClass(CLS_Metaclass, SYM(Metaclass));
+    initEarlyClass(CLS_Symbol,    SYM(Symbol));
+    initEarlyClass(CLS_Value,     SYM(Value));
 
     // Finally, construct the classes that are required in order for
     // methods to be bound to classes.
 
-    CLS_SymbolTable =
-        makeClassPair(symbolFromUtf8(-1, "SymbolTable"), CLS_Core, theCoreSecret);
-    CLS_Builtin =
-        makeClassPair(symbolFromUtf8(-1, "Builtin"), CLS_Core, theCoreSecret);
+    CLS_SymbolTable = makeClassPair(SYM(SymbolTable), CLS_Core, theCoreSecret);
+    CLS_Builtin     = makeClassPair(SYM(Builtin),     CLS_Core, theCoreSecret);
 
     // At this point, all of the "corest" classes exist but have no bound
     // methods. Their methods get bound by the following calls. The order of

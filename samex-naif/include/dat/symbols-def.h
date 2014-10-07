@@ -11,6 +11,25 @@
 // `DEF_SYMBOL(name)` -- Defines an interned symbol.
 //
 
+// The following are all class names. See the spec for details.
+DEF_SYMBOL(Bool);
+DEF_SYMBOL(Box);
+DEF_SYMBOL(Builtin);
+DEF_SYMBOL(Class);
+DEF_SYMBOL(Core);
+DEF_SYMBOL(Int);
+DEF_SYMBOL(Jump);
+DEF_SYMBOL(List);
+DEF_SYMBOL(Map);
+DEF_SYMBOL(Metaclass);
+DEF_SYMBOL(Null);
+DEF_SYMBOL(Object);
+DEF_SYMBOL(Record);
+DEF_SYMBOL(String);
+DEF_SYMBOL(Symbol);
+DEF_SYMBOL(SymbolTable);
+DEF_SYMBOL(Value);
+
 // The following are all method names. See the spec for details.
 DEF_SYMBOL(call);
 DEF_SYMBOL(cat);
