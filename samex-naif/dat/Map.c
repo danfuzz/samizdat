@@ -619,7 +619,6 @@ METH_IMPL_0(Map, valueList) {
 
 /** Initializes the module. */
 MOD_INIT(Map) {
-    MOD_USE(Collection);
     MOD_USE(Generator);
     MOD_USE(List);
     MOD_USE(MapCache);

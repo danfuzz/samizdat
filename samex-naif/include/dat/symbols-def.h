@@ -44,7 +44,10 @@ DEF_SYMBOL(mul);
 DEF_SYMBOL(neg);
 DEF_SYMBOL(sign);
 DEF_SYMBOL(sub);
-
+DEF_SYMBOL(store);
+DEF_SYMBOL(keyList);
+DEF_SYMBOL(nthMapping);
+DEF_SYMBOL(valueList);
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.

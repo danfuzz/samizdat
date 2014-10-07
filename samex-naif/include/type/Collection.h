@@ -17,17 +17,7 @@
 #define _TYPE_COLLECTION_H_
 
 #include "type/Generator.h"  // Because all collections are generators.
-#include "type/OneOff.h"
 
-
-/** Method `.keyList()`: Documented in spec. */
-SYM_DECL(keyList);
-
-/** Method `.nthMapping(n)`: Documented in spec. */
-SYM_DECL(nthMapping);
-
-/** Method `.valueList()`: Documented in spec. */
-SYM_DECL(valueList);
 
 /**
  * Calls the `del` method.

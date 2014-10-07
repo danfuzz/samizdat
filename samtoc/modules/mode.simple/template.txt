@@ -9,7 +9,6 @@
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Class.h"
-#include "type/Collection.h"
 #include "type/Int.h"
 #include "type/Jump.h"
 #include "type/List.h"

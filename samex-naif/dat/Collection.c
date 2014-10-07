@@ -7,9 +7,6 @@
 //
 
 #include "type/Collection.h"
-#include "type/define.h"
-
-#include "impl.h"
 
 
 //
@@ -25,26 +22,3 @@ zvalue collDel(zvalue coll, zvalue key) {
 zvalue collPut(zvalue coll, zvalue key, zvalue value) {
     return METH_CALL(put, coll, key, value);
 }
-
-
-//
-// Class Definition: `Collection`
-//
-
-/** Initializes the module. */
-MOD_INIT(Collection) {
-    MOD_USE(OneOff);
-
-    SYM_INIT(keyList);
-    SYM_INIT(nthMapping);
-    SYM_INIT(valueList);
-}
-
-// Documented in header.
-SYM_DEF(keyList);
-
-// Documented in header.
-SYM_DEF(nthMapping);
-
-// Documented in header.
-SYM_DEF(valueList);

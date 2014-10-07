@@ -6,6 +6,7 @@
 
 #include "type/Collection.h"
 #include "type/Int.h"
+#include "type/OneOff.h"
 #include "type/Record.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"

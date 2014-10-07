@@ -11,6 +11,7 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/OneOff.h"
 #include "type/Sequence.h"
 #include "type/define.h"
 
@@ -132,7 +133,6 @@ METH_IMPL_1(Sequence, nthMapping, n) {
 
 /** Initializes the module. */
 MOD_INIT(Sequence) {
-    MOD_USE(Collection);
     MOD_USE_NEXT(Generator);
 
     SYM_INIT(reverse);

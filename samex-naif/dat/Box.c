@@ -164,8 +164,6 @@ MOD_INIT(Box) {
     MOD_USE(Generator);
     MOD_USE(Core);
 
-    SYM_INIT(store);
-
     CLS_Box = makeCoreClass("Box", CLS_Core,
         NULL,
         symbolTableFromArgs(
@@ -179,6 +177,3 @@ MOD_INIT(Box) {
 
 // Documented in header.
 zvalue CLS_Box = NULL;
-
-// Documented in header.
-SYM_DEF(store);
