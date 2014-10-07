@@ -6,6 +6,17 @@
 // Utility functions to call methods from C. This helps remove boilerplate
 // from commonly-called methods.
 //
+// Functions defined here have two naming conventions:
+//
+// * `get_<name>(value)` is a function to call the method `value.get_<name>()`.
+//
+// * `c_<name>(value, ...)` is a function to call the method
+//   `value.<name>(...)`.
+//
+// Note that several of these functions take or return C types instead of
+// just `zvalue`, and in some cases the contract is *slightly* different, in
+// order to be more convenient to the C callers. All such variance is
+// documented.
 
 #ifndef _METHOD_CALLS_H_
 #define _METHOD_CALLS_H_
