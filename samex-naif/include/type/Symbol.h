@@ -28,6 +28,13 @@ SYM_DECL(isInterned);
 zvalue unlistedSymbolFromUtf8(zint utfBytes, const char *utf);
 
 /**
+ * Concatenates two (just two) symbols together, resulting in an interned
+ * symbol. This is like calling `symbol1.cat(symbol2)`, execpt that this
+ * is safe to call before `Symbol`'s methods are bound.
+ */
+zvalue symbolCat(zvalue symbol1, zvalue symbol2);
+
+/**
  * Gets the pre-existing symbol with the given index.
  */
 zvalue symbolFromIndex(zint index);
@@ -85,5 +92,11 @@ zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol);
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
 zint utf8SizeFromSymbol(zvalue symbol);
+
+/**
+ * Gets a `zstring` of the given symbol. The result `chars` shares storage
+ * with the `symbol`. As such, it is important to *not* modify the contents.
+ */
+zstring zstringFromSymbol(zvalue symbol);
 
 #endif
