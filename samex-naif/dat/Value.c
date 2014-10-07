@@ -104,7 +104,7 @@ zvalue valOrder(zvalue value, zvalue other) {
     if (valueCls == otherCls) {
         return METH_CALL(totalOrder, value, other);
     } else {
-        return METH_CALL(totalOrder, valueCls, otherCls);
+        return METH_CALL(perOrder, valueCls, otherCls);
     }
 }
 
@@ -201,6 +201,40 @@ METH_IMPL_1(Value, totalOrder, other) {
     return valEq(ths, other) ? INT_0 : NULL;
 }
 
+// Documented in header.
+void bindMethodsForValue(void) {
+    SYM_INIT(call);
+    SYM_INIT(cat);
+    SYM_INIT(debugString);
+    SYM_INIT(debugSymbol);
+    SYM_INIT(del);
+    SYM_INIT(exports);
+    SYM_INIT(gcMark);
+    SYM_INIT(get);
+    SYM_INIT(get_name);
+    SYM_INIT(imports);
+    SYM_INIT(main);
+    SYM_INIT(perEq);
+    SYM_INIT(perOrder);
+    SYM_INIT(put);
+    SYM_INIT(resources);
+    SYM_INIT(toString);
+    SYM_INIT(totalEq);
+    SYM_INIT(totalOrder);
+
+    classBindMethods(CLS_Value,
+        NULL,
+        symbolTableFromArgs(
+            METH_BIND(Value, debugString),
+            METH_BIND(Value, debugSymbol),
+            METH_BIND(Value, gcMark),
+            METH_BIND(Value, perEq),
+            METH_BIND(Value, perOrder),
+            METH_BIND(Value, totalEq),
+            METH_BIND(Value, totalOrder),
+            NULL));
+}
+
 /** Initializes the module. */
 MOD_INIT(Value) {
     MOD_USE(objectModel);
@@ -220,33 +254,8 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Null);
     MOD_USE_NEXT(String);
 
-    SYM_INIT(call);
-    SYM_INIT(debugString);
-    SYM_INIT(debugSymbol);
-    SYM_INIT(exports);
-    SYM_INIT(gcMark);
-    SYM_INIT(get_name);
-    SYM_INIT(imports);
-    SYM_INIT(main);
-    SYM_INIT(perEq);
-    SYM_INIT(perOrder);
-    SYM_INIT(resources);
-    SYM_INIT(toString);
-    SYM_INIT(totalEq);
-    SYM_INIT(totalOrder);
-
-    // Note: The `objectModel` module initializes `CLS_Value`.
-    classBindMethods(CLS_Value,
-        NULL,
-        symbolTableFromArgs(
-            METH_BIND(Value, debugString),
-            METH_BIND(Value, debugSymbol),
-            METH_BIND(Value, gcMark),
-            METH_BIND(Value, perEq),
-            METH_BIND(Value, perOrder),
-            METH_BIND(Value, totalEq),
-            METH_BIND(Value, totalOrder),
-            NULL));
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForValue()`.
 }
 
 // Documented in header.
@@ -256,16 +265,25 @@ zvalue CLS_Value = NULL;
 SYM_DEF(call);
 
 // Documented in header.
+SYM_DEF(cat);
+
+// Documented in header.
 SYM_DEF(debugString);
 
 // Documented in header.
 SYM_DEF(debugSymbol);
 
 // Documented in header.
+SYM_DEF(del);
+
+// Documented in header.
 SYM_DEF(exports);
 
 // Documented in header.
 SYM_DEF(gcMark);
+
+// Documented in header.
+SYM_DEF(get);
 
 // Documented in header.
 SYM_DEF(get_name);
@@ -281,6 +299,9 @@ SYM_DEF(perEq);
 
 // Documented in header.
 SYM_DEF(perOrder);
+
+// Documented in header.
+SYM_DEF(put);
 
 // Documented in header.
 SYM_DEF(resources);

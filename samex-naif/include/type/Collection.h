@@ -20,17 +20,11 @@
 #include "type/OneOff.h"
 
 
-/** Method `.del(key)`: Documented in spec. */
-SYM_DECL(del);
-
 /** Method `.keyList()`: Documented in spec. */
 SYM_DECL(keyList);
 
 /** Method `.nthMapping(n)`: Documented in spec. */
 SYM_DECL(nthMapping);
-
-/** Method `.put(key, value)`: Documented in spec. */
-SYM_DECL(put);
 
 /** Method `.valueList()`: Documented in spec. */
 SYM_DECL(valueList);

@@ -11,6 +11,11 @@ language constructs.
 <br><br>
 ### Method Definitions: `Symbol` protocol
 
+#### `.cat(more*) -> symbol`
+
+Returns a symbol consisting of the concatenation of the contents
+of all the arguments, in argument order. Arguments must all be symbols.
+
 #### `.isInterned() -> symbol | void`
 
 Returns `this` if it is interned (that is, *not* unlisted). Returns void

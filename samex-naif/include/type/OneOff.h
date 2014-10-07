@@ -12,12 +12,6 @@
 #include "type/Value.h"
 
 
-/** Method `.cat(more*)`: Documented in spec. */
-SYM_DECL(cat);
-
-/** Method `.get(key)`: Documented in spec. */
-SYM_DECL(get);
-
 /** Method `.get_key()`: Documented in spec. */
 SYM_DECL(get_key);
 

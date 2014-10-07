@@ -189,4 +189,18 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 zint markFrameStack(void);
 
 
+//
+// Object model initialization. These functions are needed in order to
+// keep the implementations of the "corest of the core" classes in separate
+// files while still allowing them to be initialized in two steps, as needed
+// due to the circular nature of the class structure.
+//
+
+void bindMethodsForBuiltin(void);
+void bindMethodsForClass(void);
+void bindMethodsForCore(void);
+void bindMethodsForSymbol(void);
+void bindMethodsForSymbolTable(void);
+void bindMethodsForValue(void);
+
 #endif

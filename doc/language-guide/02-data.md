@@ -331,19 +331,32 @@ There are four predefined box variants:
 #### Class (abstract)
 
 A `Class` value represents the class of a value. Every class has a name, which
-is a symbol. There are two major categories of class:
+is a symbol. There are four categories of class:
 
-* All core values (described above, and values of class `Class` as described
-  here) have a "core class" as their class. The name of each core class is a
-  string of the "human" name of the class. By convention, core class names
-  are capitalized. Core classes are exported as variables in the
-  standard global environment, each with a variable name that matches its
-  name. For example, the global reference `String` refers to the core
-  class named `String`.
+* All core values (described above) have a "core class" as their class. The
+  name of each core class is a string of the "human" name of the class. By
+  convention, core class names are capitalized. Core classes are exported as
+  variables in the standard global environment, each with a variable name
+  that matches its name. For example, the global reference `String` refers to
+  the core class named `String`.
 
-* All other classes are "object" classes. These have a name and secret. The
-  secret is used to prevent creation of and inner access to values of the
-  class beyond the scope of the class's trusted implementation.
+* All values have an "object class" as their class. These have a name and
+  secret. The secret is used to prevent creation of and inner access to values
+  of the class beyond the scope of the class's trusted implementation.
+
+* Every class covered by the previous two items is an *indirect* instance
+  of the class `Class`, and is a *direct* instance of its own metaclass, which
+  always has a name which is identical to the class's with the prefix `meta_`.
+  Metaclasses have a heritage hierarchy that exactly matches the hierarchy
+  of their (non-meta) companion classes, with the exception of `Value`.
+  `Value` has no superclass, while `meta_Value`'s superclass is `Class`.
+
+* Every metaclass is a direct instance of `Metaclass`. `Metaclass` inherits
+  from `Class`.
+
+The class and metaclass arrangement can be confusing at first blush. The
+point of the arrangement is so that (a) classes can respond to method calls
+just like any other value, and (b) classes can define class methods.
 
 
 ### Record

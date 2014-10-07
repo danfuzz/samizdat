@@ -210,6 +210,25 @@ zvalue unlistedSymbolFromUtf8(zint utfBytes, const char *utf) {
 }
 
 // Documented in header.
+zvalue symbolCat(zvalue symbol1, zvalue symbol2) {
+    assertHasClass(symbol1, CLS_Symbol);
+    assertHasClass(symbol2, CLS_Symbol);
+
+    SymbolInfo *info1 = getInfo(symbol1);
+    SymbolInfo *info2 = getInfo(symbol2);
+
+    zint size1 = info1->s.size;
+    zint size = size1 + info2->s.size;
+    zchar chars[size];
+
+    arrayFromZstring(chars, info1->s);
+    arrayFromZstring(&chars[size1], info2->s);
+
+    zstring s = { size, chars };
+    return symbolFromZstring(s);
+}
+
+// Documented in header.
 bool symbolEq(zvalue symbol1, zvalue symbol2) {
     assertHasClass(symbol1, CLS_Symbol);
     assertHasClass(symbol2, CLS_Symbol);
@@ -249,20 +268,23 @@ zint symbolIndex(zvalue symbol) {
 
 // Documented in header.
 char *utf8DupFromSymbol(zvalue symbol) {
-    assertHasClass(symbol, CLS_Symbol);
-    return utf8DupFromZstring(getInfo(symbol)->s);
+    return utf8DupFromZstring(zstringFromSymbol(symbol));
 }
 
 // Documented in header.
 zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol) {
-    assertHasClass(symbol, CLS_Symbol);
-    return utf8FromZstring(resultSize, result, getInfo(symbol)->s);
+    return utf8FromZstring(resultSize, result, zstringFromSymbol(symbol));
 }
 
 // Documented in header.
 zint utf8SizeFromSymbol(zvalue symbol) {
+    return utf8SizeFromZstring(zstringFromSymbol(symbol));
+}
+
+// Documented in header.
+zstring zstringFromSymbol(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
-    return utf8SizeFromZstring(getInfo(symbol)->s);
+    return getInfo(symbol)->s;
 }
 
 
@@ -273,6 +295,38 @@ zint utf8SizeFromSymbol(zvalue symbol) {
 // Documented in header.
 METH_IMPL_rest(Symbol, call, args) {
     return symbolCall(ths, argsSize, args);
+}
+
+// Documented in header.
+METH_IMPL_rest(Symbol, cat, args) {
+    if (argsSize == 0) {
+        return ths;
+    }
+
+    zint thsSize = getInfo(ths)->s.size;
+    zint size = thsSize;
+
+    for (zint i = 0; i < argsSize; i++) {
+        zvalue one = args[i];
+        assertHasClass(one, CLS_Symbol);
+        size += getInfo(one)->s.size;
+    }
+
+    if (size > DAT_MAX_SYMBOL_SIZE) {
+        die("Too many characters in arguments to `Symbol.cat()`.");
+    }
+
+    zchar chars[size];
+    zint at = thsSize;
+    arrayFromZstring(chars, getInfo(ths)->s);
+    for (zint i = 0; i < argsSize; i++) {
+        zstring one = zstringFromSymbol(args[at]);
+        arrayFromZstring(&chars[at], one);
+        at += one.size;
+    }
+
+    zstring s = { size, chars };
+    return symbolFromZstring(s);
 }
 
 // Documented in header.
@@ -341,18 +395,16 @@ METH_IMPL_1(Symbol, totalOrder, other) {
     }
 }
 
-/** Initializes the module. */
-MOD_INIT(Symbol) {
-    MOD_USE(Core);
-
+// Documented in header.
+void bindMethodsForSymbol(void) {
     SYM_INIT(isInterned);
     SYM_INIT(toUnlisted);
 
-    // Note: The `objectModel` module initializes `CLS_Symbol`.
     classBindMethods(CLS_Symbol,
         NULL,
         symbolTableFromArgs(
             METH_BIND(Symbol, call),
+            METH_BIND(Symbol, cat),
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, isInterned),
@@ -361,6 +413,14 @@ MOD_INIT(Symbol) {
             METH_BIND(Symbol, totalEq),
             METH_BIND(Symbol, totalOrder),
             NULL));
+}
+
+/** Initializes the module. */
+MOD_INIT(Symbol) {
+    MOD_USE(Core);
+
+    // No class init here. That happens in `MOD_INIT(objectModel)` and
+    // and `bindMethodsForSymbol()`.
 }
 
 // Documented in header.

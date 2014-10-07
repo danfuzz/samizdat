@@ -44,8 +44,6 @@ zint nthChar(zvalue value, zint index) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
-    SYM_INIT(cat);
-    SYM_INIT(get);
     SYM_INIT(get_key);
     SYM_INIT(get_size);
     SYM_INIT(get_value);
@@ -55,12 +53,6 @@ MOD_INIT(OneOff) {
     SYM_INIT(toInt);
     SYM_INIT(toNumber);
 }
-
-// Documented in header.
-SYM_DEF(cat);
-
-// Documented in header.
-SYM_DEF(get);
 
 // Documented in header.
 SYM_DEF(get_key);
