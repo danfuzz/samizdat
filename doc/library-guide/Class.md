@@ -30,14 +30,6 @@ Default implementation.
 
 #### `.perOrder(other) -> int`
 
-Default implementation.
-
-#### `.totalEq(other) -> class | void`
-
-Compares two classes. Two different classes are never equal.
-
-#### `.totalOrder(other) -> int | void`
-
 Compares two classes for order, as follows:
 
 * Core (primitive) classes order earlier than other classes.
@@ -51,11 +43,21 @@ This last bit means it is okay to use any mix of classes as the keys in a map,
 the same name. This restriction is in place because there is no consistent and
 stable way to order such classes.
 
-**Note:** This method goes beyond the usual contract for `.totalEq()` in that
-it will accept any two values, even when their direct (concrete) classes
-differ. This is done as a way to make the fact that regular classes each have
-a unique direct metaclass easy to ignore in most code, since most of the time
-that arrangement either doesn't matter or would cause trouble if not ignored.
+**Note:** This method intentionally differs from `.totalEq()` in that
+it will provide an order for most pairs of classes in practice, even when
+their direct (concrete) classes differ. This is done as a way to make the
+fact that regular classes each have a unique direct metaclass easy to ignore
+in most code, since most of the time that arrangement either doesn't matter
+or would cause trouble if not ignored.
+
+#### `.totalEq(other) -> class | void`
+
+Compares two classes. Two different classes are never equal.
+
+#### `.totalOrder(other) -> int | void`
+
+This is identical to `.perEq()`, except it first asserts that `other` has the
+same direct class as `this` (which in practice is only true of metaclasses).
 
 
 <br><br>

@@ -360,13 +360,7 @@ METH_IMPL_0(Class, get_parent) {
 }
 
 // Documented in header.
-METH_IMPL_1(Class, totalEq, other) {
-    assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
-    return classEqUnchecked(ths, other) ? ths : NULL;
-}
-
-// Documented in header.
-METH_IMPL_1(Class, totalOrder, other) {
+METH_IMPL_1(Class, perOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
         return INT_0;
@@ -403,6 +397,37 @@ METH_IMPL_1(Class, totalOrder, other) {
     }
 
     return NULL;
+}
+
+// Documented in header.
+METH_IMPL_1(Class, totalEq, other) {
+    assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
+    return classEqUnchecked(ths, other) ? ths : NULL;
+}
+
+// Documented in header.
+METH_IMPL_1(Class, totalOrder, other) {
+    if (ths == other) {
+        // Easy case to avoid decomposition and detailed tests.
+        return INT_0;
+    }
+
+    if (!haveSameClass(ths, other)) {
+        die("Improper call to `totalOrder`: different concrete classes");
+    }
+
+    // We should only be able to make it here if given two instances of
+    // `Metaclass`.
+    assertHasClass(ths, CLS_Metaclass);
+
+    // Sort by name, treating same-name as unordered (but not an error).
+    ClassInfo *info1 = getInfo(ths);
+    ClassInfo *info2 = getInfo(other);
+    zvalue name1 = info1->name;
+    zvalue name2 = info2->name;
+    zorder nameOrder = valZorder(name1, name2);
+
+    return (nameOrder == ZSAME) ? NULL : intFromZint(nameOrder);
 }
 
 /**
@@ -512,6 +537,7 @@ void bindMethodsForClass(void) {
             METH_BIND(Class, gcMark),
             METH_BIND(Class, get_name),
             METH_BIND(Class, get_parent),
+            METH_BIND(Class, perOrder),
             METH_BIND(Class, totalEq),
             METH_BIND(Class, totalOrder),
             NULL));

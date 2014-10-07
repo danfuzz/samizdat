@@ -104,7 +104,7 @@ zvalue valOrder(zvalue value, zvalue other) {
     if (valueCls == otherCls) {
         return METH_CALL(totalOrder, value, other);
     } else {
-        return METH_CALL(totalOrder, valueCls, otherCls);
+        return METH_CALL(perOrder, valueCls, otherCls);
     }
 }
 
