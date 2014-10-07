@@ -6,7 +6,7 @@
 // Utility functions to call methods from C. This helps remove boilerplate
 // from commonly-called methods.
 //
-// Functions defined here have two naming conventions:
+// Functions defined here have three naming conventions:
 //
 // * `get_<name>(value)` is a function to call the method `value.get_<name>()`.
 //
@@ -16,7 +16,7 @@
 // Note that several of these functions take or return C types instead of
 // just `zvalue`, and in some cases the contract is *slightly* different, in
 // order to be more convenient to the C callers. All such variance is
-// documented.
+// documented, though not all variance warrants the third convention (above).
 
 #ifndef _METHOD_CALLS_H_
 #define _METHOD_CALLS_H_
@@ -55,14 +55,6 @@ zint get_size(zvalue value);
  * value.
  */
 zvalue nth(zvalue value, zint index);
-
-/**
- * Calls `value.nth(index)`, converting the given `zint` index to an `Int`
- * value, and converting a non-void return value &mdash; which must be a
- * single-character `String` &mdash; to a `zint` in the range of a `zchar`.
- * A void return value gets converted to `-1`.
- */
-zint nthChar(zvalue value, zint index);
 
 /**
  * Calls `value.debugString()`, converting the result to a `char *`. The

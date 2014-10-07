@@ -57,12 +57,6 @@ zvalue nth(zvalue value, zint index) {
 }
 
 // Documented in header.
-zint nthChar(zvalue value, zint index) {
-    zvalue result = nth(value, index);
-    return (result == NULL) ? -1 : zcharFromString(result);
-}
-
-// Documented in header.
 char *valDebugString(zvalue value) {
     if (value == NULL) {
         return utilStrdup("(null)");
