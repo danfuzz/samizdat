@@ -14,11 +14,6 @@
 //
 
 // Documented in header.
-zvalue collDel(zvalue coll, zvalue key) {
-    return METH_CALL(del, coll, key);
-}
-
-// Documented in header.
 zvalue collPut(zvalue coll, zvalue key, zvalue value) {
     return METH_CALL(put, coll, key, value);
 }

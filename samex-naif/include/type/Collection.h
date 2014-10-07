@@ -20,11 +20,6 @@
 
 
 /**
- * Calls the `del` method.
- */
-zvalue collDel(zvalue coll, zvalue key);
-
-/**
  * Calls the `put` method.
  */
 zvalue collPut(zvalue coll, zvalue key, zvalue value);

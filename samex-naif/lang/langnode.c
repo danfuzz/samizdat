@@ -580,7 +580,7 @@ zvalue makeImport(zvalue baseData) {
 
         if (valEq(select, SYM_CH_STAR)) {
             // It's a wildcard import.
-            data = collDel(data, SYM_select);
+            data = METH_CALL(del, data, SYM_select);
         }
 
         return makeRecord(SYM(importModuleSelection), data);
@@ -998,7 +998,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 zvalue withoutInterpolate(zvalue node) {
     return makeRecord(
         get_name(node),
-        collDel(dataOf(node), SYM_interpolate));
+        METH_CALL(del, dataOf(node), SYM_interpolate));
 }
 
 // Documented in spec.
