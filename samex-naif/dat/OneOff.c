@@ -57,9 +57,6 @@ MOD_INIT(OneOff) {
 SYM_DEF(get_key);
 
 // Documented in header.
-SYM_DEF(get_size);
-
-// Documented in header.
 SYM_DEF(get_value);
 
 // Documented in header.
