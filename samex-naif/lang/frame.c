@@ -43,7 +43,7 @@ void frameMark(Frame *frame) {
 // Documented in header.
 void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue vars = frame->vars;
-    zvalue newVars = METH_CALL(put, vars, name, box);
+    zvalue newVars = cm_put(vars, name, box);
 
     if (get_size(vars) == get_size(newVars)) {
         die("Variable already defined: %s", cm_debugString(cm_toString(name)));

@@ -46,7 +46,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = METH_CALL(put, env, nameSymbol, \
+            env = cm_put(env, nameSymbol, \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameSymbol)); \
         } while(0)
@@ -54,7 +54,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_DEF(name, value) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = METH_CALL(put, env, nameSymbol, value); \
+            env = cm_put(env, nameSymbol, value); \
         } while(0)
 
     #include "prim-def.h"
