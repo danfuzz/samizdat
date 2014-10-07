@@ -259,7 +259,7 @@ METH_IMPL_1(List, nextValue, box) {
     // Yield the first element via the box, and return a list of the
     // remainder. `listFrom` handles returning `EMPTY_LIST` when appropriate.
 
-    METH_CALL(store, box, info->elems[0]);
+    cm_store(box, info->elems[0]);
     return listFrom(size - 1, &info->elems[1], NULL, 0, NULL);
 }
 

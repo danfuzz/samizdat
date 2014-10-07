@@ -389,7 +389,7 @@ METH_IMPL_1(String, nextValue, box) {
         }
         case 1: {
             // `string` is a single character, so it can be yielded directly.
-            METH_CALL(store, box, ths);
+            cm_store(box, ths);
             return EMPTY_STRING;
         }
         default: {
@@ -397,7 +397,7 @@ METH_IMPL_1(String, nextValue, box) {
             // Make an indirect string for the return value, to avoid the
             // churn of copying and re-re-...-copying the content.
             const zchar *chars = info->s.chars;
-            METH_CALL(store, box, stringFromZchar(chars[0]));
+            cm_store(box, stringFromZchar(chars[0]));
             return makeIndirectString(ths, 1, size - 1);
         }
     }

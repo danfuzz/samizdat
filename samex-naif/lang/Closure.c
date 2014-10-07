@@ -192,7 +192,7 @@ static zvalue getCachedClosure(zvalue node) {
     if (result == NULL) {
         result = buildCachedClosure(get_data(node));
         nodeCache = METH_CALL(put, nodeCache, node, result);
-        METH_CALL(store, nodeCacheBox, nodeCache);
+        cm_store(nodeCacheBox, nodeCache);
     }
 
     return result;

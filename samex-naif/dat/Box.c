@@ -140,7 +140,7 @@ METH_IMPL_1(Box, nextValue, out) {
     zvalue value = doFetch(ths);
 
     if (value != NULL) {
-        METH_CALL(store, out, value);
+        cm_store(out, value);
         return EMPTY_LIST;
     } else {
         return NULL;

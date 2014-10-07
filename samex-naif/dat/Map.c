@@ -464,7 +464,7 @@ METH_IMPL_1(Map, nextValue, box) {
         }
         case 1: {
             // `map` is a single element, so we can yield it directly.
-            METH_CALL(store, box, ths);
+            cm_store(box, ths);
             return EMPTY_MAP;
         }
         default: {
@@ -472,7 +472,7 @@ METH_IMPL_1(Map, nextValue, box) {
             // a map of the remainder.
             zmapping *elems = info->elems;
             zvalue mapping = makeMapping(elems[0].key, elems[0].value);
-            METH_CALL(store, box, mapping);
+            cm_store(box, mapping);
             return mapFromArrayUnchecked(size - 1, &elems[1]);
         }
     }
