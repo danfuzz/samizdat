@@ -52,7 +52,7 @@ zint get_size(zvalue value) {
 }
 
 // Documented in header.
-zvalue nth(zvalue value, zint index) {
+zvalue cm_nth(zvalue value, zint index) {
     return METH_CALL(nth, value, intFromZint(index));
 }
 

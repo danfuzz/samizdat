@@ -54,7 +54,7 @@ zint get_size(zvalue value);
  * Calls `value.nth(index)`, converting the given `zint` index to an `Int`
  * value.
  */
-zvalue nth(zvalue value, zint index);
+zvalue cm_nth(zvalue value, zint index);
 
 /**
  * Calls `value.debugString()`, converting the result to a `char *`. The

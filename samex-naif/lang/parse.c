@@ -50,7 +50,7 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    zvalue result = nth(state->tokens, state->at);
+    zvalue result = cm_nth(state->tokens, state->at);
     state->at++;
 
     return result;
@@ -64,7 +64,7 @@ static zvalue readMatch(ParseState *state, zvalue name) {
         return NULL;
     }
 
-    zvalue result = nth(state->tokens, state->at);
+    zvalue result = cm_nth(state->tokens, state->at);
 
     if (recHasName(result, name)) {
         state->at++;
@@ -346,7 +346,7 @@ DEF_PARSE(identifierSymbol) {
     REJECT_IF(get(token, SYM_value) != NULL);
 
     name = get_name(token);
-    zchar firstCh = zcharFromString(nth(cm_toString(name), 0));
+    zchar firstCh = zcharFromString(cm_nth(cm_toString(name), 0));
 
     REJECT_IF((firstCh < 'a') || (firstCh > 'z'));
 
@@ -696,7 +696,7 @@ DEF_PARSE(unaryExpression) {
 
     zint size = get_size(postfixes);
     for (zint i = 0; i < size; i++) {
-        zvalue one = nth(postfixes, i);
+        zvalue one = cm_nth(postfixes, i);
         if (hasClass(one, CLS_List)) {
             // Regular function call.
             result = makeCallOrApply(result, one);
