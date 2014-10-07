@@ -24,6 +24,33 @@
 #include "dat.h"
 
 /**
+ * Calls `value.debugString()`, converting the result to a `char *`. The
+ * caller is responsible for `free()`ing the result. As a convenience, this
+ * converts `NULL` into `"(null)"`.
+ */
+char *cm_debugString(zvalue value);
+
+/**
+ * Calls `value.get(key)`.
+ */
+zvalue cm_get(zvalue value, zvalue key);
+
+/**
+ * Calls `value.nth(index)`, converting the given `zint` index to an `Int`
+ * value.
+ */
+zvalue cm_nth(zvalue value, zint index);
+
+/**
+ * Calls `value.valOrder(other)`, except that the return value is of type
+ * `zorder`, and this reports a fatal error if given incomparable values.
+ *
+ * **Note:** The constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking
+ * at results.
+ */
+zorder cm_order(zvalue value, zvalue other);
+
+/**
  * Calls the method `box.store()`, with either no arguments or one argument,
  * if `value` is `NULL` or not (respectively). `box` is *not* allowed to be
  * `NULL`.
@@ -31,14 +58,14 @@
 zvalue cm_store(zvalue box, zvalue value);
 
 /**
+ * Calls `value.toString()`.
+ */
+zvalue cm_toString(zvalue value);
+
+/**
  * Calls `value.get_data()`.
  */
 zvalue get_data(zvalue value);
-
-/**
- * Calls `value.get(key)`.
- */
-zvalue cm_get(zvalue value, zvalue key);
 
 /**
  * Calls `value.get_name()`.
@@ -49,32 +76,5 @@ zvalue get_name(zvalue value);
  * Calls `value.get_size()`, converting the result to a `zint`.
  */
 zint get_size(zvalue value);
-
-/**
- * Calls `value.nth(index)`, converting the given `zint` index to an `Int`
- * value.
- */
-zvalue cm_nth(zvalue value, zint index);
-
-/**
- * Calls `value.debugString()`, converting the result to a `char *`. The
- * caller is responsible for `free()`ing the result. As a convenience, this
- * converts `NULL` into `"(null)"`.
- */
-char *cm_debugString(zvalue value);
-
-/**
- * Calls `value.toString()`.
- */
-zvalue cm_toString(zvalue value);
-
-/**
- * Calls `value.valOrder(other)`, except that the return value is of type
- * `zorder`, and this reports a fatal error if given incomparable values.
- *
- * **Note:** The constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking
- * at results.
- */
-zorder cm_order(zvalue value, zvalue other);
 
 #endif
