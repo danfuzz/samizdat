@@ -1135,7 +1135,7 @@ DEF_PARSE(importSelect1) {
     MATCH_OR_REJECT(CH_COLONCOLON);
     zvalue result = MATCH_OR_REJECT(CH_STAR);
 
-    return tableFrom1(SYM(select), SYM_CH_STAR);
+    return tableFrom1(SYM(select), SYM(CH_STAR));
 }
 
 /** Helper for `importSelect`: Parses the second alternate. */

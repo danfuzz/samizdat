@@ -211,8 +211,8 @@ zvalue formalsMaxArgs(zvalue formals) {
     for (zint i = 0; i < sz; i++) {
         zvalue one = cm_nth(formals, i);
         zvalue repeat = cm_get(one, SYM(repeat));
-        if (valEqNullOk(repeat, SYM_CH_STAR)
-            || valEqNullOk(repeat, SYM_CH_PLUS)) {
+        if (valEqNullOk(repeat, SYM(CH_STAR))
+            || valEqNullOk(repeat, SYM(CH_PLUS))) {
             maxArgs = -1;
             break;
         }
@@ -230,8 +230,8 @@ zvalue formalsMinArgs(zvalue formals) {
     for (zint i = 0; i < sz; i++) {
         zvalue one = cm_nth(formals, i);
         zvalue repeat = cm_get(one, SYM(repeat));
-        if (!(valEqNullOk(repeat, SYM_CH_QMARK)
-              || valEqNullOk(repeat, SYM_CH_STAR))) {
+        if (!(valEqNullOk(repeat, SYM(CH_QMARK))
+              || valEqNullOk(repeat, SYM(CH_STAR)))) {
             minArgs++;
         }
     }
@@ -583,7 +583,7 @@ zvalue makeImport(zvalue baseData) {
             die("Cannot import selection of resource.");
         }
 
-        if (valEq(select, SYM_CH_STAR)) {
+        if (valEq(select, SYM(CH_STAR))) {
             // It's a wildcard import.
             data = METH_CALL(del, data, SYM(select));
         }
