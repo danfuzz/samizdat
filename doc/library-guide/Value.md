@@ -158,7 +158,7 @@ Returns the order of the two given values, using the total order of values.
 The return value is one of `-1 0 1` indicating how the two values sort with
 each other, just like `perOrder` and `totalOrder`.
 
-This function works by calling `totalOrder` on the classes of the two arguments
+This function works by calling `perOrder` on the classes of the two arguments
 if they are different, or by calling `totalOrder` on the arguments themselves
 if they both have the same class.
 
