@@ -50,7 +50,7 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
  * Adds a `{(name): Value}` binding to the given map or table.
  */
 static zvalue addTypeBinding(zvalue map, zvalue name) {
-    return collPut(map, name, CLS_Value);
+    return METH_CALL(put, map, name, CLS_Value);
 }
 
 /**
@@ -61,7 +61,7 @@ static zvalue addImportBinding(zvalue map, zvalue source, zvalue name) {
     zvalue names = get(map, source);
 
     names = addTypeBinding((names == NULL) ? EMPTY_MAP : names, name);
-    return collPut(map, source, names);
+    return METH_CALL(put, map, source, names);
 }
 
 /**
@@ -77,7 +77,7 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 
     // Unlike the `LangNode` version, this one doesn't de-duplicate formats.
     formats = listAppend(formats, format);
-    return collPut(map, source, formats);
+    return METH_CALL(put, map, source, formats);
 }
 
 // Documented in `LangNode` source.
@@ -591,7 +591,7 @@ zvalue makeImport(zvalue baseData) {
         zvalue name = METH_CALL(cat,
             STR_CH_DOLLAR,
             get_baseName(get(baseData, SYM_source)));
-        data = collPut(data, SYM_name, symbolFromString(name));
+        data = METH_CALL(put, data, SYM_name, symbolFromString(name));
     }
 
     if (get(data, SYM_format) != NULL) {
@@ -840,7 +840,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
                 select = METH_CALL(keyList, exports);
                 return makeRecord(
                     SYM(importModuleSelection),
-                    collPut(dataOf(node), SYM_select, select));
+                    METH_CALL(put, dataOf(node), SYM_select, select));
             }
         }
         default: {
@@ -853,7 +853,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 zvalue withFormals(zvalue node, zvalue formals) {
     return makeRecord(
         get_name(node),
-        collPut(dataOf(node), SYM_formals, formals));
+        METH_CALL(put, dataOf(node), SYM_formals, formals));
 }
 
 // Documented in spec.
@@ -924,7 +924,7 @@ zvalue withModuleDefs(zvalue node) {
 zvalue withName(zvalue node, zvalue name) {
     return makeRecord(
         get_name(node),
-        collPut(dataOf(node), SYM_name, name));
+        METH_CALL(put, dataOf(node), SYM_name, name));
 }
 
 // Documented in spec.
@@ -971,7 +971,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 zvalue withTop(zvalue node) {
     return makeRecord(
         get_name(node),
-        collPut(dataOf(node), SYM_top, BOOL_TRUE));
+        METH_CALL(put, dataOf(node), SYM_top, BOOL_TRUE));
 }
 
 

@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 
-#include "type/Collection.h"
 #include "type/Int.h"
 #include "type/OneOff.h"
 #include "type/Record.h"

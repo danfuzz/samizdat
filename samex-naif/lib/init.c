@@ -9,7 +9,6 @@
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Class.h"
-#include "type/Collection.h"
 #include "type/Core.h"
 #include "type/Generator.h"
 #include "type/Int.h"
@@ -48,7 +47,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = collPut(env, nameSymbol, \
+            env = METH_CALL(put, env, nameSymbol, \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameSymbol)); \
         } while(0)
@@ -56,7 +55,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_DEF(name, value) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = collPut(env, nameSymbol, value); \
+            env = METH_CALL(put, env, nameSymbol, value); \
         } while(0)
 
     #include "prim-def.h"

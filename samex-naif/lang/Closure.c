@@ -144,7 +144,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
             if (get(names, name) != NULL) {
                 die("Duplicate formal name: %s", valDebugString(name));
             }
-            names = collPut(names, name, name);
+            names = METH_CALL(put, names, name, name);
             formalNameCount++;
         }
 
@@ -192,7 +192,7 @@ static zvalue getCachedClosure(zvalue node) {
 
     if (result == NULL) {
         result = buildCachedClosure(dataOf(node));
-        nodeCache = collPut(nodeCache, node, result);
+        nodeCache = METH_CALL(put, nodeCache, node, result);
         METH_CALL(store, nodeCacheBox, nodeCache);
     }
 

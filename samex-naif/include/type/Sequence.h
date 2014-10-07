@@ -16,7 +16,7 @@
 
 #include <stdbool.h>
 
-#include "type/Collection.h"  // Because all sequences are collections.
+#include "type/Value.h"
 
 
 /** Standard implementation for `Sequence.get`. */
