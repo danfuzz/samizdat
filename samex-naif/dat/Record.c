@@ -167,9 +167,6 @@ METH_IMPL_1(Record, totalOrder, other) {
 MOD_INIT(Record) {
     MOD_USE(Core);
 
-    SYM_INIT(dataOf);
-    SYM_INIT(hasName);
-
     CLS_Record = makeCoreClass("Record", CLS_Core,
         NULL,
         symbolTableFromArgs(
@@ -188,12 +185,6 @@ MOD_INIT(Record) {
 
 // Documented in header.
 zvalue CLS_Record = NULL;
-
-// Documented in header.
-SYM_DEF(dataOf);
-
-// Documented in header.
-SYM_DEF(hasName);
 
 // Documented in header.
 zvalue FUN_Record_makeRecord = NULL;

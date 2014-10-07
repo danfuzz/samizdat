@@ -135,23 +135,10 @@ METH_IMPL_1(Sequence, nthMapping, n) {
 MOD_INIT(Sequence) {
     MOD_USE_NEXT(Generator);
 
-    SYM_INIT(reverse);
-    SYM_INIT(sliceExclusive);
-    SYM_INIT(sliceInclusive);
-
     FUN_Sequence_get        = datImmortalize(FUNC_VALUE(Sequence_get));
     FUN_Sequence_keyList    = datImmortalize(FUNC_VALUE(Sequence_keyList));
     FUN_Sequence_nthMapping = datImmortalize(FUNC_VALUE(Sequence_nthMapping));
 }
-
-// Documented in header.
-SYM_DEF(reverse);
-
-// Documented in header.
-SYM_DEF(sliceExclusive);
-
-// Documented in header.
-SYM_DEF(sliceInclusive);
 
 // Documented in header.
 zvalue FUN_Sequence_get = NULL;

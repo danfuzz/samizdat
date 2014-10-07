@@ -59,6 +59,11 @@ DEF_SYMBOL(readResource);
 DEF_SYMBOL(resolve);
 DEF_SYMBOL(toInt);
 DEF_SYMBOL(toNumber);
+DEF_SYMBOL(dataOf);
+DEF_SYMBOL(hasName);
+DEF_SYMBOL(reverse);
+DEF_SYMBOL(sliceExclusive);
+DEF_SYMBOL(sliceInclusive);
 
 
 /**
