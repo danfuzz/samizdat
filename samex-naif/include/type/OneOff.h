@@ -15,9 +15,6 @@
 /** Method `.get_key()`: Documented in spec. */
 SYM_DECL(get_key);
 
-/** Method `.get_size()`: Documented in spec. */
-SYM_DECL(get_size);
-
 /** Method `.get_value()`: Documented in spec. */
 SYM_DECL(get_value);
 

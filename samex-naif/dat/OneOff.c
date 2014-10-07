@@ -45,7 +45,6 @@ MOD_INIT(OneOff) {
     MOD_USE(Value);
 
     SYM_INIT(get_key);
-    SYM_INIT(get_size);
     SYM_INIT(get_value);
     SYM_INIT(readResource);
     SYM_INIT(resolve);

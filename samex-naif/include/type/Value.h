@@ -56,6 +56,9 @@ SYM_DECL(get);
 /** Method `.get_name()`: Documented in spec. */
 SYM_DECL(get_name);
 
+/** Method `.get_size()`: Documented in spec. */
+SYM_DECL(get_size);
+
 /** Symbol `imports`. Same comment applies as with `exports`, above. */
 SYM_DECL(imports);
 

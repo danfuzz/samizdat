@@ -212,6 +212,7 @@ void bindMethodsForValue(void) {
     SYM_INIT(gcMark);
     SYM_INIT(get);
     SYM_INIT(get_name);
+    SYM_INIT(get_size);
     SYM_INIT(imports);
     SYM_INIT(main);
     SYM_INIT(perEq);
