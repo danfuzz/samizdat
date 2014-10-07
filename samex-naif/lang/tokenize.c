@@ -6,6 +6,7 @@
 #include "util.h"
 #include "type/Int.h"
 #include "type/List.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Symbol.h"
 
