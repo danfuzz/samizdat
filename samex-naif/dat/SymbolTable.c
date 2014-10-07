@@ -7,7 +7,6 @@
 
 #include "type/Builtin.h"
 #include "type/Int.h"
-#include "type/OneOff.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "util.h"

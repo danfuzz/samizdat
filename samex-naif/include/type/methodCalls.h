@@ -13,9 +13,33 @@
 #include "dat.h"
 
 /**
+ * Calls `value.get(key)`.
+ */
+zvalue get(zvalue value, zvalue key);
+
+/**
  * Calls `value.get_name()`.
  */
 zvalue get_name(zvalue value);
+
+/**
+ * Calls `value.get_size()`, converting the result to a `zint`.
+ */
+zint get_size(zvalue value);
+
+/**
+ * Calls `value.nth(index)`, converting the given `zint` index to an `Int`
+ * value.
+ */
+zvalue nth(zvalue value, zint index);
+
+/**
+ * Calls `value.nth(index)`, converting the given `zint` index to an `Int`
+ * value, and converting a non-void return value &mdash; which must be a
+ * single-character `String` &mdash; to a `zint` in the range of a `zchar`.
+ * A void return value gets converted to `-1`.
+ */
+zint nthChar(zvalue value, zint index);
 
 /**
  * Calls `value.debugString()`, converting the result to a `char *`. The

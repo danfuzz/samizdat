@@ -25,8 +25,29 @@ static bool inValDebugString = false;
 //
 
 // Documented in header.
+zvalue get(zvalue value, zvalue key) {
+    return METH_CALL(get, value, key);
+}
+
+// Documented in header.
 zvalue get_name(zvalue value) {
     return METH_CALL(get_name, value);
+}
+
+// Documented in header.
+zint get_size(zvalue value) {
+    return zintFromInt(METH_CALL(get_size, value));
+}
+
+// Documented in header.
+zvalue nth(zvalue value, zint index) {
+    return METH_CALL(nth, value, intFromZint(index));
+}
+
+// Documented in header.
+zint nthChar(zvalue value, zint index) {
+    zvalue result = nth(value, index);
+    return (result == NULL) ? -1 : zcharFromString(result);
 }
 
 // Documented in header.

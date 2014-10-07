@@ -12,7 +12,6 @@
 #include "type/Jump.h"
 #include "type/List.h"
 #include "type/Map.h"
-#include "type/OneOff.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 #include "util.h"

@@ -12,7 +12,6 @@
 #include "type/Builtin.h"
 #include "type/Jump.h"
 #include "type/List.h"
-#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Symbol.h"
 #include "type/define.h"

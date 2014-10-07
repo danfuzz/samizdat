@@ -16,7 +16,6 @@
 #include "type/Map.h"
 #include "type/Null.h"
 #include "type/Object.h"
-#include "type/OneOff.h"
 #include "type/Record.h"
 #include "type/Symbol.h"
 #include "type/SymbolTable.h"

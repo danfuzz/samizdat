@@ -8,7 +8,6 @@
 #include "type/Core.h"
 #include "type/Int.h"
 #include "type/List.h"
-#include "type/OneOff.h"
 #include "type/define.h"
 
 #include "impl.h"
