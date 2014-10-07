@@ -46,10 +46,16 @@ Compares two classes for order, as follows:
   non-core classes), the result of ordering is void (that is, the order
   undefined).
 
-This last bit means it is okay to use any mix of classes as
-the keys in a map, *except* that it is invalid to use two different non-core
-classes that have the same name. This restriction is in place because there is
-no consistent and stable way to order such classes.
+This last bit means it is okay to use any mix of classes as the keys in a map,
+*except* that it is invalid to use two different non-core classes that have
+the same name. This restriction is in place because there is no consistent and
+stable way to order such classes.
+
+**Note:** This method goes beyond the usual contract for `.totalEq()` in that
+it will accept any two values, even when their direct (concrete) classes
+differ. This is done as a way to make the fact that regular classes each have
+a unique direct metaclass easy to ignore in most code, since most of the time
+that arrangement either doesn't matter or would cause trouble if not ignored.
 
 
 <br><br>
