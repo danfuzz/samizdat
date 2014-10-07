@@ -71,13 +71,6 @@ static zvalue doStore(zvalue box, zvalue value) {
 //
 
 // Documented in header.
-zvalue boxStoreNullOk(zvalue box, zvalue value) {
-    return (value == NULL)
-        ? METH_CALL(store, box)
-        : METH_CALL(store, box, value);
-}
-
-// Documented in header.
 zvalue makeCell(zvalue value) {
     zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);

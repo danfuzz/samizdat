@@ -19,11 +19,6 @@ extern zvalue CLS_Record;
 extern zvalue FUN_Record_makeRecord;
 
 /**
- * Calls the method `dataOf()`.
- */
-zvalue dataOf(zvalue value);
-
-/**
  * C version of library function `makeRecord()`. Documented in spec.
  */
 zvalue makeRecord(zvalue name, zvalue data);

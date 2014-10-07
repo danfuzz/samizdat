@@ -43,11 +43,6 @@ static RecordInfo *getInfo(zvalue value) {
 //
 
 // Documented in header.
-zvalue dataOf(zvalue value) {
-    return METH_CALL(dataOf, value);
-}
-
-// Documented in header.
 zvalue makeRecord(zvalue name, zvalue data) {
     zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
 

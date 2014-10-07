@@ -13,6 +13,18 @@
 #include "dat.h"
 
 /**
+ * Calls the method `box.store()`, with either no arguments or one argument,
+ * if `value` is `NULL` or not (respectively). `box` is *not* allowed to be
+ * `NULL`.
+ */
+zvalue boxStoreNullOk(zvalue box, zvalue value);
+
+/**
+ * Calls `value.dataOf()`.
+ */
+zvalue dataOf(zvalue value);
+
+/**
  * Calls `value.get(key)`.
  */
 zvalue get(zvalue value, zvalue key);

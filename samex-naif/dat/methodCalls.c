@@ -25,6 +25,18 @@ static bool inValDebugString = false;
 //
 
 // Documented in header.
+zvalue boxStoreNullOk(zvalue box, zvalue value) {
+    return (value == NULL)
+        ? METH_CALL(store, box)
+        : METH_CALL(store, box, value);
+}
+
+// Documented in header.
+zvalue dataOf(zvalue value) {
+    return METH_CALL(dataOf, value);
+}
+
+// Documented in header.
 zvalue get(zvalue value, zvalue key) {
     return METH_CALL(get, value, key);
 }
