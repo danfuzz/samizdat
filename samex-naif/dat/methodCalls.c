@@ -81,7 +81,7 @@ zvalue cm_toString(zvalue value) {
 }
 
 // Documented in header.
-zorder valZorder(zvalue value, zvalue other) {
+zorder cm_order(zvalue value, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack. See note on `valOrder` for more color.
     zstackPointer save = datFrameStart();

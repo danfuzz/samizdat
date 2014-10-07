@@ -384,7 +384,7 @@ METH_IMPL_1(Class, perOrder, other) {
 
     // Compare names for minor order.
 
-    zorder nameOrder = valZorder(name1, name2);
+    zorder nameOrder = cm_order(name1, name2);
     if (nameOrder != ZSAME) {
         return intFromZint(nameOrder);
     }
@@ -425,7 +425,7 @@ METH_IMPL_1(Class, totalOrder, other) {
     ClassInfo *info2 = getInfo(other);
     zvalue name1 = info1->name;
     zvalue name2 = info2->name;
-    zorder nameOrder = valZorder(name1, name2);
+    zorder nameOrder = cm_order(name1, name2);
 
     return (nameOrder == ZSAME) ? NULL : intFromZint(nameOrder);
 }

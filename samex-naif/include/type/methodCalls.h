@@ -75,6 +75,6 @@ zvalue cm_toString(zvalue value);
  * **Note:** The constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking
  * at results.
  */
-zorder valZorder(zvalue value, zvalue other);
+zorder cm_order(zvalue value, zvalue other);
 
 #endif
