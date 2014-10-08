@@ -199,11 +199,8 @@ MOD_INIT(Bool) {
             METH_BIND(Bool, totalOrder),
             NULL));
 
-    BOOL_FALSE = boolFrom(false);
-    datImmortalize(BOOL_FALSE);
-
-    BOOL_TRUE = boolFrom(true);
-    datImmortalize(BOOL_TRUE);
+    BOOL_FALSE = datImmortalize(boolFrom(false));
+    BOOL_TRUE = datImmortalize(boolFrom(true));
 }
 
 // Documented in header.
