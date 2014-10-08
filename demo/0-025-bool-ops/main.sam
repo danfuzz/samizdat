@@ -96,7 +96,15 @@ expect("shr8", false, { true.shr(2) });
 expect("toInt1", 0, { false.toInt() });
 expect("toInt2", 1, { true.toInt() });
 
+expectVoid("toLogic1", { false.toLogic() });
+expect("toLogic2", true, { true.toLogic() });
+
 expect("toNumber1", 0, { false.toNumber() });
 expect("toNumber2", 1, { true.toNumber() });
+
+expect("fromLogic1", false, { Bool.fromLogic() });
+expect("fromLogic2", true, { Bool.fromLogic(true) });
+expect("fromLogic3", true, { Bool.fromLogic(false) });
+expect("fromLogic4", true, { Bool.fromLogic("blort") });
 
 note("All good.");
