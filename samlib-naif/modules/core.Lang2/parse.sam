@@ -1905,10 +1905,13 @@ def parMultiTest = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Result function which constructs the overall `ifValues` call.
+            ## Result function which constructs the overall `ifValueAnd*` call.
             { thenThunk, elseThunk? ->
-                makeCall(REFS::ifValues,
-                    makeCall(REFS::makeList, testThunks*),
+                def func = ifIs { elseThunk* }
+                    { REFS::ifValueAndElse }
+                    { REFS::ifValueAnd };
+                makeCall(func,
+                    testThunks*,
                     withFormals(thenThunk, formals),
                     elseThunk*)
             }
