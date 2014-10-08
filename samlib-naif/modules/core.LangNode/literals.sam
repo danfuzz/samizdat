@@ -23,6 +23,7 @@ def SYMBOLS = [
     @divEu,
     @exclusive,
     @exports,
+    @fromLogic,
     @get,
     @get_size,
     @inclusive,
@@ -40,6 +41,7 @@ def SYMBOLS = [
     @sliceInclusive,
     @shr,
     @sub,
+    @toLogic,
     @toUnlisted,
     @value,
     @xor
