@@ -91,7 +91,7 @@ FUN_IMPL_DECL(ifValueAndElse) {
     zvalue elseFunc = args[funcCount + 1];
     zvalue results[funcCount];
 
-    for (zint i = 0; i < argCount; i++) {
+    for (zint i = 0; i < funcCount; i++) {
         results[i] = funCall(args[i], i, results);
 
         if (results[i] == NULL) {
@@ -99,7 +99,7 @@ FUN_IMPL_DECL(ifValueAndElse) {
         }
     }
 
-    return funCall(thenFunc, argCount, results);
+    return funCall(thenFunc, funcCount, results);
 }
 
 // Documented in spec.
