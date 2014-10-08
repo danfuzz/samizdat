@@ -47,7 +47,7 @@ zvalue stringFromZstring(zstring string);
 
 /**
  * Compares two strings for equality. This is the same as calling
- * `valZorder()` on the strings, except that it terminates with an error if
+ * `cm_order()` on the strings, except that it terminates with an error if
  * either argument is *not* a string, and it doesn't require a fully
  * running system. In particular, it avoids method dispatch.
  */

@@ -136,7 +136,7 @@ static zvalue findInternedSymbol(zstring name) {
  */
 static char *callReporter(void *state) {
     zvalue cls = state;
-    char *clsString = valDebugString(cls);
+    char *clsString = cm_debugString(cls);
     char *result;
 
     asprintf(&result, "class %s", clsString);
@@ -190,7 +190,7 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 
     if (function == NULL) {
         die("Unbound method: %s.%s",
-            valDebugString(cls), valDebugString(valToString(symbol)));
+            cm_debugString(cls), cm_debugString(cm_toString(symbol)));
     }
 
     UTIL_TRACE_START(callReporter, cls);
@@ -334,7 +334,7 @@ METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@" : "@+";
 
-    return METH_CALL(cat, stringFromUtf8(-1, prefix), valToString(ths));
+    return cm_cat(stringFromUtf8(-1, prefix), cm_toString(ths));
 }
 
 // Documented in header.

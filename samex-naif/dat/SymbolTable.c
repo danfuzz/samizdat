@@ -160,7 +160,7 @@ static int compareMappings(const void *m1, const void *m2) {
     } else if (key2 == NULL) {
         return -1;
     } else {
-        return valZorder(key1, key2);
+        return cm_order(key1, key2);
     }
 }
 
@@ -392,7 +392,7 @@ METH_IMPL_1(SymbolTable, totalEq, other) {
         }
 
         zvalue value1 = info->array[i].value;
-        zvalue value2 = get(other, key1);
+        zvalue value2 = cm_get(other, key1);
 
         if (!valEqNullOk(value1, value2)) {
             return NULL;
@@ -447,7 +447,7 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
     for (zint i = 0; i < size; i++) {
         zvalue value1 = array1[i].value;
         zvalue value2 = array2[i].value;
-        zorder order = valZorder(value1, value2);
+        zorder order = cm_order(value1, value2);
         if (order != ZSAME) {
             return intFromZint(order);
         }

@@ -259,7 +259,7 @@ METH_IMPL_1(List, nextValue, box) {
     // Yield the first element via the box, and return a list of the
     // remainder. `listFrom` handles returning `EMPTY_LIST` when appropriate.
 
-    METH_CALL(store, box, info->elems[0]);
+    cm_store(box, info->elems[0]);
     return listFrom(size - 1, &info->elems[1], NULL, 0, NULL);
 }
 
@@ -362,7 +362,7 @@ METH_IMPL_1(List, totalOrder, other) {
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
-        zorder result = valZorder(e1[i], e2[i]);
+        zorder result = cm_order(e1[i], e2[i]);
         if (result != ZSAME) {
             return intFromZint(result);
         }

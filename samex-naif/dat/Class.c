@@ -78,7 +78,7 @@ static void assertIsClass(zvalue value) {
         cls = getInfo(cls)->parent;
     }
 
-    die("Expected a class; got %s.", valDebugString(value));
+    die("Expected a class; got %s.", cm_debugString(value));
 }
 
 /**
@@ -243,7 +243,7 @@ zvalue classFindMethodUnchecked(zvalue cls, zint index) {
 void assertHasClass(zvalue value, zvalue cls) {
     if (!hasClass(value, cls)) {
         die("Expected class %s; got %s.",
-            valDebugString(cls), valDebugString(value));
+            cm_debugString(cls), cm_debugString(value));
     }
 }
 
@@ -315,18 +315,18 @@ METH_IMPL_0(Class, debugString) {
     const char *label;
 
     if (info->secret == theCoreSecret) {
-        return valToString(info->name);
+        return cm_toString(info->name);
     } else if (info->secret != NULL) {
         label = "object";
     } else {
         die("Shouldn't happen: non-core class without secret.");
     }
 
-    return METH_CALL(cat,
+    return cm_cat(
         stringFromUtf8(-1, "@<"),
         stringFromUtf8(-1, label),
         stringFromUtf8(-1, " class "),
-        METH_CALL(debugString, valToString(info->name)),
+        METH_CALL(debugString, cm_toString(info->name)),
         stringFromUtf8(-1, ">"));
 }
 
@@ -384,7 +384,7 @@ METH_IMPL_1(Class, perOrder, other) {
 
     // Compare names for minor order.
 
-    zorder nameOrder = valZorder(name1, name2);
+    zorder nameOrder = cm_order(name1, name2);
     if (nameOrder != ZSAME) {
         return intFromZint(nameOrder);
     }
@@ -425,7 +425,7 @@ METH_IMPL_1(Class, totalOrder, other) {
     ClassInfo *info2 = getInfo(other);
     zvalue name1 = info1->name;
     zvalue name2 = info2->name;
-    zorder nameOrder = valZorder(name1, name2);
+    zorder nameOrder = cm_order(name1, name2);
 
     return (nameOrder == ZSAME) ? NULL : intFromZint(nameOrder);
 }

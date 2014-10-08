@@ -43,10 +43,10 @@ void frameMark(Frame *frame) {
 // Documented in header.
 void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue vars = frame->vars;
-    zvalue newVars = METH_CALL(put, vars, name, box);
+    zvalue newVars = cm_put(vars, name, box);
 
     if (get_size(vars) == get_size(newVars)) {
-        die("Variable already defined: %s", valDebugString(valToString(name)));
+        die("Variable already defined: %s", cm_debugString(cm_toString(name)));
     }
 
     frame->vars = newVars;
@@ -55,14 +55,14 @@ void frameDef(Frame *frame, zvalue name, zvalue box) {
 // Documented in header.
 zvalue frameGet(Frame *frame, zvalue name) {
     for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
-        zvalue result = get(frame->vars, name);
+        zvalue result = cm_get(frame->vars, name);
 
         if (result != NULL) {
             return result;
         }
     }
 
-    die("Variable not defined: %s", valDebugString(valToString(name)));
+    die("Variable not defined: %s", cm_debugString(cm_toString(name)));
 }
 
 // Documented in header.

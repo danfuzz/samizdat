@@ -34,7 +34,7 @@ fn makeCallPex(function, node, formals, moreArgs*) {
 
 ## Makes a node with additional / replacement bindings from the original.
 fn withBindings(orig, more) {
-    return @(orig.get_name()){orig.dataOf()*, more*}
+    return @(orig.get_name()){orig.get_data()*, more*}
 };
 
 ## Makes a node with additional / replacement bindings from the original,
@@ -63,7 +63,7 @@ fn convertPex(node, formals) {
                 ## node, and just convert that. As a special case, notice if
                 ## the closure is just a yield of a literal, and convert that
                 ## with `makeResult`.
-                def closurePayload = @{(node.dataOf())*, formals};
+                def closurePayload = @{(node.get_data())*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
                 ifValues(

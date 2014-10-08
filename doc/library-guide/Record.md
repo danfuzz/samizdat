@@ -7,7 +7,7 @@ Record
 <br><br>
 ### Method Definitions: `Record` protocol
 
-#### `.dataOf() -> symbolTable`
+#### `.get_data() -> symbolTable`
 
 Returns the data payload of the given record.
 

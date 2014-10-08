@@ -46,7 +46,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = METH_CALL(put, env, nameSymbol, \
+            env = cm_put(env, nameSymbol, \
                 makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
                     nameSymbol)); \
         } while(0)
@@ -54,7 +54,7 @@ static void makePrimitiveEnvironment(void) {
     #define PRIM_DEF(name, value) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = METH_CALL(put, env, nameSymbol, value); \
+            env = cm_put(env, nameSymbol, value); \
         } while(0)
 
     #include "prim-def.h"
@@ -69,21 +69,21 @@ static void makePrimitiveEnvironment(void) {
  * with `.sam` for a text source file.
  */
 static zvalue loadFile(zvalue path) {
-    zvalue binPath = METH_CALL(cat, path, stringFromUtf8(-1, ".samb"));
+    zvalue binPath = cm_cat(path, stringFromUtf8(-1, ".samb"));
     zvalue func;
 
     if (valEq(ioFileType(binPath), SYM(file))) {
         // We found a binary file.
         func = datEvalBinary(PRIMITIVE_ENVIRONMENT, binPath);
     } else {
-        zvalue srcPath = METH_CALL(cat, path, stringFromUtf8(-1, ".sam"));
+        zvalue srcPath = cm_cat(path, stringFromUtf8(-1, ".sam"));
         if (valEq(ioFileType(srcPath), SYM(file))) {
             // We found a source text file.
             zvalue text = ioReadFileUtf8(srcPath);
             zvalue tree = langSimplify0(langParseProgram0(text), NULL);
             func = langEval0(PRIMITIVE_ENVIRONMENT, tree);
         } else {
-            die("Missing bootstrap library file: %s", valDebugString(path));
+            die("Missing bootstrap library file: %s", cm_debugString(path));
         }
     }
 
@@ -98,18 +98,18 @@ static zvalue loadFile(zvalue path) {
 static zvalue getLibrary(zvalue libraryPath) {
     // Evaluate `ModuleSystem`. Works with either source or binary.
     zvalue moduleSystem = loadFile(
-        METH_CALL(cat, libraryPath,
+        cm_cat(libraryPath,
             stringFromUtf8(-1, "/modules/core.ModuleSystem/main")));
 
     // Call `ModuleSystem::exports::main` to load and evaluate the
     // core library.
 
-    zvalue exports = get(moduleSystem, SYM(exports));
+    zvalue exports = cm_get(moduleSystem, SYM(exports));
     if (exports == NULL) {
         die("Missing bootstrap `exports` binding.");
     }
 
-    zvalue mainFn = get(exports, SYM(main));
+    zvalue mainFn = cm_get(exports, SYM(main));
     if (mainFn == NULL) {
         die("Missing bootstrap `main` binding");
     }

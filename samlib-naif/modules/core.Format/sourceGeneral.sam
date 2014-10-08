@@ -114,7 +114,7 @@ fn Record_source(value, adorn) {
     return "".cat(
         nameString("@", value.get_name()),
         "{",
-        sourceGeneral(value.dataOf(), false),
+        sourceGeneral(value.get_data(), false),
         "}")
 };
 

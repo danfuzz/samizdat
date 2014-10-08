@@ -108,7 +108,7 @@ static ClosureInfo *getInfo(zvalue closure) {
  * storage in the cache.
  */
 static zvalue buildCachedClosure(zvalue defMap) {
-    zvalue formals = get(defMap, SYM_formals);
+    zvalue formals = cm_get(defMap, SYM(formals));
     zint formalsSize = get_size(formals);
 
     // Build out most of the result.
@@ -118,9 +118,9 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     info->defMap = defMap;
     info->formalsSize = formalsSize;
-    info->statements = get(defMap, SYM_statements);
-    info->yield = get(defMap, SYM_yield);
-    info->yieldDef = get(defMap, SYM_yieldDef);
+    info->statements = cm_get(defMap, SYM(statements));
+    info->yield = cm_get(defMap, SYM(yield));
+    info->yieldDef = cm_get(defMap, SYM(yieldDef));
 
     // Validate and transform all the formals.
 
@@ -135,15 +135,15 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
-        zvalue name = get(formal, SYM_name);
-        zvalue repeat = get(formal, SYM_repeat);
+        zvalue name = cm_get(formal, SYM(name));
+        zvalue repeat = cm_get(formal, SYM(repeat));
         zrepeat rep;
 
         if (name != NULL) {
-            if (get(names, name) != NULL) {
-                die("Duplicate formal name: %s", valDebugString(name));
+            if (cm_get(names, name) != NULL) {
+                die("Duplicate formal name: %s", cm_debugString(name));
             }
-            names = METH_CALL(put, names, name, name);
+            names = cm_put(names, name, name);
             formalNameCount++;
         }
 
@@ -155,7 +155,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
                 case EVAL_CH_PLUS:  { rep = REP_PLUS;  break; }
                 case EVAL_CH_QMARK: { rep = REP_QMARK; break; }
                 default: {
-                    die("Invalid repeat modifier: %s", valDebugString(repeat));
+                    die("Invalid repeat modifier: %s", cm_debugString(repeat));
                 }
             }
         }
@@ -174,7 +174,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
  * Gets the cached `Closure` associated with the given node.
  */
 static zvalue getCachedClosure(zvalue node) {
-    zvalue result = get(nodeCache, node);
+    zvalue result = cm_get(nodeCache, node);
 
     if (CHATTY_CACHEY) {
         static int hits = 0;
@@ -190,9 +190,9 @@ static zvalue getCachedClosure(zvalue node) {
     }
 
     if (result == NULL) {
-        result = buildCachedClosure(dataOf(node));
-        nodeCache = METH_CALL(put, nodeCache, node, result);
-        METH_CALL(store, nodeCacheBox, nodeCache);
+        result = buildCachedClosure(get_data(node));
+        nodeCache = cm_put(nodeCache, node, result);
+        cm_store(nodeCacheBox, nodeCache);
     }
 
     return result;
@@ -342,7 +342,7 @@ METH_IMPL_rest(Closure, call, args) {
 
 // Documented in header.
 METH_IMPL_0(Closure, debugSymbol) {
-    return get(getInfo(ths)->defMap, SYM_name);
+    return cm_get(getInfo(ths)->defMap, SYM(name));
 }
 
 // Documented in header.

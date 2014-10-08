@@ -288,7 +288,7 @@ export fn makeDynamicImport(node) {
 ## Documented in spec.
 export fn makeFullClosure(baseData) {
     def table = ifValueOr { hasClass(baseData, SymbolTable) }
-        { baseData.dataOf() };
+        { baseData.get_data() };
     def formals = ifValueOr { table::formals } { [] };
     var statements = ifValueOr { table::statements } { [] };
     def statSz = statements.get_size();
@@ -484,7 +484,7 @@ export fn withDynamicImports(node) {
     };
 
     def statements = [].cat(converted*);
-    return @(node.get_name()){node.dataOf()*, statements}
+    return @(node.get_name()){node.get_data()*, statements}
 };
 
 ## Documented in spec.
@@ -529,7 +529,7 @@ export fn withModuleDefs(node) {
             SYMS::info,    yieldInfo));
 
     return @(node.get_name()){
-        node.dataOf()*,
+        node.get_data()*,
         info,
         yield: yieldNode,
         statements
@@ -538,7 +538,7 @@ export fn withModuleDefs(node) {
 
 ## Documented in spec.
 export fn withTop(node) {
-    return @(node.get_name()){node.dataOf()*, top: true}
+    return @(node.get_name()){node.get_data()*, top: true}
 };
 
 ## Documented in spec.
@@ -583,7 +583,7 @@ export fn withoutTops(node) {
         { [makeExportSelection(exports*)] };
 
     return @(node.get_name()){
-        node.dataOf()*,
+        node.get_data()*,
         statements: [tops*, mains*, optSelection*]
     }
 };

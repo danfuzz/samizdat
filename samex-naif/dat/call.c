@@ -24,14 +24,14 @@
 //
 
 /**
- * Returns `value` if it is a string. Returns `valToString(value)` if it is
+ * Returns `value` if it is a string. Returns `cm_toString(value)` if it is
  * a symbol; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
     if (hasClass(value, CLS_String)) {
         return value;
     } else if (hasClass(value, CLS_Symbol)) {
-        return valToString(value);
+        return cm_toString(value);
     } else {
         return METH_CALL(debugString, value);
     }
@@ -49,7 +49,7 @@ static char *callReporter(void *state) {
         return utf8DupFromString(ensureString(name));
     }
 
-    char *clsString = valDebugString(get_class(value));
+    char *clsString = cm_debugString(get_class(value));
     char *result;
 
     asprintf(&result, "anonymous %s", clsString);

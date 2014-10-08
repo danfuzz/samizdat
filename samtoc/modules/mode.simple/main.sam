@@ -160,7 +160,7 @@ fn mainClosureMaker(node, interner) {
                 ( name in varRefs, id in ids ->
                     genComment("\%q(name)",
                         genCall("makeResult",
-                            genCall("get", "GLOBALS", "LIT_\(id)")))
+                            genCall("cm_get", "GLOBALS", "LIT_\(id)")))
                 )*)));
 
     return usualIndent(stat, 1)

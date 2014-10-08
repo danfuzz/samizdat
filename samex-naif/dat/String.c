@@ -279,7 +279,7 @@ METH_IMPL_rest(String, cat, args) {
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         if (hasClass(one, CLS_Symbol)) {
-            one = valToString(one);
+            one = cm_toString(one);
         } else {
             assertString(one);
         }
@@ -348,7 +348,7 @@ METH_IMPL_1(String, del, key) {
 // Documented in header.
 METH_IMPL_0(String, debugString) {
     zvalue quote = stringFromUtf8(1, "\"");
-    return METH_CALL(cat, quote, ths, quote);
+    return cm_cat(quote, ths, quote);
 }
 
 // Documented in header.
@@ -389,7 +389,7 @@ METH_IMPL_1(String, nextValue, box) {
         }
         case 1: {
             // `string` is a single character, so it can be yielded directly.
-            METH_CALL(store, box, ths);
+            cm_store(box, ths);
             return EMPTY_STRING;
         }
         default: {
@@ -397,7 +397,7 @@ METH_IMPL_1(String, nextValue, box) {
             // Make an indirect string for the return value, to avoid the
             // churn of copying and re-re-...-copying the content.
             const zchar *chars = info->s.chars;
-            METH_CALL(store, box, stringFromZchar(chars[0]));
+            cm_store(box, stringFromZchar(chars[0]));
             return makeIndirectString(ths, 1, size - 1);
         }
     }
@@ -425,7 +425,7 @@ METH_IMPL_2(String, put, key, value) {
 
     if (index == size) {
         // This is an append operation.
-        return METH_CALL(cat, ths, value);
+        return cm_cat(ths, value);
     }
 
     zchar *resultChars = allocArray(size);
