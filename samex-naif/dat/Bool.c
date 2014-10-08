@@ -62,6 +62,11 @@ zbool zboolFromBool(zvalue boolval) {
 //
 
 // Documented in spec.
+CMETH_IMPL_0_1(Bool, fromLogic, value) {
+    return (value == NULL) ? BOOL_FALSE : BOOL_TRUE;
+}
+
+// Documented in spec.
 METH_IMPL_1(Bool, and, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
@@ -145,6 +150,11 @@ METH_IMPL_0(Bool, toInt) {
 }
 
 // Documented in spec.
+METH_IMPL_0(Bool, toLogic) {
+    return zboolValue(ths) ? ths : NULL;
+}
+
+// Documented in spec.
 METH_IMPL_0(Bool, toNumber) {
     return intFromZint(zboolValue(ths));
 }
@@ -182,7 +192,9 @@ MOD_INIT(Bool) {
     MOD_USE(Int);
 
     CLS_Bool = makeCoreClass(SYM(Bool), CLS_Core,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(Bool, fromLogic),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(Bool, and),
             METH_BIND(Bool, bit),
@@ -194,6 +206,7 @@ MOD_INIT(Bool) {
             METH_BIND(Bool, shr),
             METH_BIND(Bool, xor),
             METH_BIND(Bool, toInt),
+            METH_BIND(Bool, toLogic),
             METH_BIND(Bool, toNumber),
             METH_BIND(Bool, totalEq),
             METH_BIND(Bool, totalOrder),
