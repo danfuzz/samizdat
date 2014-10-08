@@ -4,8 +4,24 @@ Samizdat Layer 0: Core Library
 Class
 -----
 
+These are the instance methods on `Class`, which means that they &mdash;
+along with the default methods on `Value` &mdash; are the default *class*
+methods for all classes.
+
 <br><br>
 ### Method Definitions: `Class` protocol
+
+#### `.castFrom(value) -> . | void`
+
+Returns an instance of `this` which is the casted version of the given
+`value`. If `value` cannot be cast to `this` class, then this returns
+void.
+
+The default implementation of this method merely checks to see if `value` is
+already of the class. If so, it returns `value`; if not, it returns `void`.
+
+**Note:** This method is used by the global functions `cast()` and `optCast()`
+as part of the more general casting mechanism.
 
 #### `.get_name() -> symbol`
 
