@@ -8,6 +8,17 @@ A `Bool` is both a truth value and a single-bit `Bitwise` value. The
 keywords `true` and `false` refer to the only two values of this class.
 
 
+<br><br>
+### Class Method Definitions
+
+#### `.fromLogic(value?) -> bool`
+
+Returns the boolean equivalent of the argument-or-not. This is a bridge
+from value-or-void logic. If given an argument, this returns `true`. If
+given no argument, this returns `false`.
+
+**Syntax Note:** Used in the translation of `expression??` forms.
+
 
 <br><br>
 ### Method Definitions: `Value` protocol
@@ -40,6 +51,13 @@ Compares the given boolean values, ordering `false` before `true`.
 #### `.toInt() -> int`
 
 Returns `0` given `false`, or `1` given `true`.
+
+#### `.toLogic() -> true | void`
+
+Converts `this` into a value useful for logic operations. In particular, this
+returns `true` if given `true` and void if given `false`.
+
+**Syntax Note:** Used in the translation of `expr**` forms.
 
 #### `.toNumber() -> int`
 
