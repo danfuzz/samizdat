@@ -85,6 +85,24 @@ FUN_IMPL_DECL(ifValueAnd) {
 }
 
 // Documented in spec.
+FUN_IMPL_DECL(ifValueAndElse) {
+    zint funcCount = argCount - 2;
+    zvalue thenFunc = args[funcCount];
+    zvalue elseFunc = args[funcCount + 1];
+    zvalue results[funcCount];
+
+    for (zint i = 0; i < argCount; i++) {
+        results[i] = funCall(args[i], i, results);
+
+        if (results[i] == NULL) {
+            return funCall(elseFunc, 0, NULL);
+        }
+    }
+
+    return funCall(thenFunc, argCount, results);
+}
+
+// Documented in spec.
 FUN_IMPL_DECL(ifValueOr) {
     for (zint i = 0; i < argCount; i++) {
         zvalue result = FUN_CALL(args[i]);
