@@ -36,6 +36,7 @@ export
     ifSwitch,
     ifValue,
     ifValueAnd,
+    ifValueAndElse,
     ifValueOr,
     ifValues,
     loop,

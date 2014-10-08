@@ -1938,12 +1938,11 @@ def parMultiTest = {:
 ##             ifIs { expr2 }
 ##                 { name2 -> thenStat2 }
 ##                 {
-##                     ifValues(
-##                         makeList(
-##                             { expr3 },
-##                             { name3 -> expr4 }),
+##                     ifValueAndElse
+##                         { expr3 }
+##                         { name3 -> expr4 }
 ##                         { name3, name4 -> thenStat34 },
-##                         { elseStat })
+##                         { elseStat }
 ##                 }
 ##         }
 ## }()
@@ -1954,8 +1953,8 @@ def parMultiTest = {:
 ## * omitting the final `elseStat` if there was no `else` clause.
 ## * `ifIs` instead of `ifValue` and no then-clause argument declaration for
 ##   any clause where no name binding was present.
-## * `ifValues` instead of `ifValue` (with incremental formals binding) for
-##   any clause that uses multiple tests.
+## * `ifValueAnd` or `ifValueAndElse` instead of `ifValue` (with incremental
+##   formals binding) for any clause that uses multiple tests.
 ## * arbitrary nesting of additional clauses.
 def parIfExpression = {:
     @if
@@ -2179,7 +2178,7 @@ def parOptBreakDef = {:
 ## * the body argument declaration changed to `.` if there is no
 ##   test expression name binding.
 ## * `ifIs` instead of `ifValue` if there is no name binding.
-## * `ifValues` instead of `ifValue` if there are multiple tests.
+## * `ifValueAnd` instead of `ifValue` if there are multiple tests.
 def parWhileExpression = {:
     @while
     breakDef = parOptBreakDef
