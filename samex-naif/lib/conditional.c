@@ -70,6 +70,21 @@ FUN_IMPL_DECL(ifValue) {
 }
 
 // Documented in spec.
+FUN_IMPL_DECL(ifValueAnd) {
+    zvalue results[argCount];
+
+    for (zint i = 0; i < argCount; i++) {
+        results[i] = funCall(args[i], i, results);
+
+        if (results[i] == NULL) {
+            return NULL;
+        }
+    }
+
+    return results[argCount - 1];
+}
+
+// Documented in spec.
 FUN_IMPL_DECL(ifValueOr) {
     for (zint i = 0; i < argCount; i++) {
         zvalue result = FUN_CALL(args[i]);
