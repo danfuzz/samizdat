@@ -1849,15 +1849,24 @@ def parLogicOrExpression = {:
 ## ```
 ##
 ## ```
-## (def name1 = expr1, unboundExpr, def name3 = expr3)
+## (def name1 = expr1, unboundExpr, def name3 = expr3)  ## no else
 ## =>
-## ifValues(
-##     makeList(
-##         { expr1 },
-##         { name1 -> unboundExpr },
-##         { name1, . -> expr3 }),
+## ifValueAnd
+##     { expr1 }
+##     { name1 -> unboundExpr }
+##     { name1, . -> expr3 }
 ##     { name1, ., name3 -> ... then ... }
-##     { ... else ... })
+## ```
+##
+## ```
+## (def name1 = expr1, unboundExpr, def name3 = expr3) ... else ...
+## =>
+## ifValueAndElse
+##     { expr1 }
+##     { name1 -> unboundExpr }
+##     { name1, . -> expr3 }
+##     { name1, ., name3 -> ... then ... }
+##     { ... else ... }
 ## ```
 def parMultiTest = {:
     clauses = parParenTestClauseList
