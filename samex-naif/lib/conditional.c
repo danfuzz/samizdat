@@ -70,6 +70,39 @@ FUN_IMPL_DECL(ifValue) {
 }
 
 // Documented in spec.
+FUN_IMPL_DECL(ifValueAnd) {
+    zvalue results[argCount];
+
+    for (zint i = 0; i < argCount; i++) {
+        results[i] = funCall(args[i], i, results);
+
+        if (results[i] == NULL) {
+            return NULL;
+        }
+    }
+
+    return results[argCount - 1];
+}
+
+// Documented in spec.
+FUN_IMPL_DECL(ifValueAndElse) {
+    zint funcCount = argCount - 2;
+    zvalue thenFunc = args[funcCount];
+    zvalue elseFunc = args[funcCount + 1];
+    zvalue results[funcCount];
+
+    for (zint i = 0; i < funcCount; i++) {
+        results[i] = funCall(args[i], i, results);
+
+        if (results[i] == NULL) {
+            return funCall(elseFunc, 0, NULL);
+        }
+    }
+
+    return funCall(thenFunc, funcCount, results);
+}
+
+// Documented in spec.
 FUN_IMPL_DECL(ifValueOr) {
     for (zint i = 0; i < argCount; i++) {
         zvalue result = FUN_CALL(args[i]);
@@ -79,27 +112,6 @@ FUN_IMPL_DECL(ifValueOr) {
     }
 
     return NULL;
-}
-
-// Documented in spec.
-FUN_IMPL_DECL(ifValues) {
-    zvalue testFunctions = args[0];
-    zvalue valueFunction = args[1];
-    zvalue voidFunction = (argCount == 3) ? args[2] : NULL;
-    zint size = get_size(testFunctions);
-    zvalue testArr[size];
-    zvalue results[size];
-
-    arrayFromList(testArr, testFunctions);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = results[i] = funCall(testArr[i], i, results);
-        if (one == NULL) {
-            return voidFunction ? FUN_CALL(voidFunction) : NULL;
-        }
-    }
-
-    return funCall(valueFunction, size, results);
 }
 
 // Documented in spec.

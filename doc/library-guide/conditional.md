@@ -73,6 +73,34 @@ this function calls the consequent function with an argument, whereas
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
 
+#### `ifValueAnd(functions+) -> . | void`
+
+Primitive logic conditional. This calls each of the given `functions`
+in order, as long as each returns a value (not void). The previous call
+results are passed as arguments to each subsequent test function. That is,
+the first call gets passed no arguments, the second gets passed the first
+result, the third gets passed the first and second result, and so on.
+
+Should all of the `functions` return a value, then this function returns
+the result of the *last* of `functions`. Should any of the calls return
+void, then this function immediately returns void.
+
+**Syntax Note:** Used in the translation of some `&` forms and
+multiple-binding `if` forms.
+
+#### `ifValueAndElse(functions*, thenFunction, elseFunction) -> . | void`
+
+Primitive logic conditional. This is like `ifValueAnd`, except that the
+function must accept at least two arguments, and the final two arguments
+are treated specially.
+
+In particular, if all of the `functions` returns a value, then this calls
+the `thenFunction` and returns its value. Otherwise &mdash; that is, if
+any of the `functions` returns void &mdash; then this calls the
+`elseFunction` and returns its value.
+
+**Syntax Note:** Used in the translation of some multiple-binding `if` forms.
+
 #### `ifValueOr(functions+) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions` in
@@ -84,28 +112,6 @@ This function is meant as the primitive that higher-layer logical-or
 expressions bottom out into, hence the name.
 
 **Syntax Note:** Used in the translation of `expression | expression` forms.
-
-#### `ifValues([testFunctions*], valueFunction, voidFunction?) -> . | void`
-
-Primitive logic conditional. This calls each of the given `testFunctions`
-in order, as long as each returns a value (not void). The list of previous
-results are passed to each subsequent test function. Should all of the
-`testFunctions` return a value, this then calls the `valueFunction`
-passing it a full list of test results. Should any of the `testFunctions`
-return void, this then calls the `voidFunction` (if any) with no arguments.
-
-The return value from this function is whatever was returned by the
-consequent function that was called (including void). If no consequent
-was called, this returns void.
-
-**Note:** There is a key difference between the final element of
-`testFunctions` and the `valueFunction`: If the last `testFunctions`
-element returns void, then the `voidFunction` will get called. However,
-if the `valueFunction` returns void, then the `voidFunction` will *not*
-get called.
-
-**Syntax Note:** Used in the translation of some `&` forms and
-multiple-binding `if` forms.
 
 #### `loop(function) -> void`
 

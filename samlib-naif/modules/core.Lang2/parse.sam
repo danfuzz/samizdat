@@ -1743,16 +1743,15 @@ def parLogicAndClause = {:
 ## ```
 ## (def var1 = expr1) & expr2 & (def var3 = expr3) & expr4
 ## =>
-## ifValues(
-##     makeList(
-##         { expr1 },
-##         { var1 -> expr2 },
-##         { var1, . -> expr3 }),
+## ifValueAnd
+##     { expr1 }
+##     { var1 -> expr2 }
+##     { var1, . -> expr3 }
 ##     { var1, ., var3 -> expr4 }
 ## ```
 ##
 ## That is, a single `ifIs` or `ifValue` call if there's only one `&`, or an
-## `ifValues` call if there is a chain of three or more clauses.
+## `ifValueAnd` call if there is a chain of three or more clauses.
 def parLogicAndExpression = {:
     ## This is done with the `*` on the list head (that is, most-then-last
     ## instead of the more usual arrangement of first-then-rest), since the
@@ -1798,9 +1797,9 @@ def parLogicAndExpression = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Construct the overall `ifValues` call.
-            makeCall(REFS::ifValues,
-                makeCall(REFS::makeList, testThunks*),
+            ## Construct the overall `ifValueAnd` call.
+            makeCall(REFS::ifValueAnd,
+                testThunks*,
                 withFormals(makeThunk(last), formals))
         }
     )
@@ -1850,15 +1849,24 @@ def parLogicOrExpression = {:
 ## ```
 ##
 ## ```
-## (def name1 = expr1, unboundExpr, def name3 = expr3)
+## (def name1 = expr1, unboundExpr, def name3 = expr3)  ## no else
 ## =>
-## ifValues(
-##     makeList(
-##         { expr1 },
-##         { name1 -> unboundExpr },
-##         { name1, . -> expr3 }),
+## ifValueAnd
+##     { expr1 }
+##     { name1 -> unboundExpr }
+##     { name1, . -> expr3 }
 ##     { name1, ., name3 -> ... then ... }
-##     { ... else ... })
+## ```
+##
+## ```
+## (def name1 = expr1, unboundExpr, def name3 = expr3) ... else ...
+## =>
+## ifValueAndElse
+##     { expr1 }
+##     { name1 -> unboundExpr }
+##     { name1, . -> expr3 }
+##     { name1, ., name3 -> ... then ... }
+##     { ... else ... }
 ## ```
 def parMultiTest = {:
     clauses = parParenTestClauseList
@@ -1897,10 +1905,13 @@ def parMultiTest = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Result function which constructs the overall `ifValues` call.
+            ## Result function which constructs the overall `ifValueAnd*` call.
             { thenThunk, elseThunk? ->
-                makeCall(REFS::ifValues,
-                    makeCall(REFS::makeList, testThunks*),
+                def func = ifIs { elseThunk* }
+                    { REFS::ifValueAndElse }
+                    { REFS::ifValueAnd };
+                makeCall(func,
+                    testThunks*,
                     withFormals(thenThunk, formals),
                     elseThunk*)
             }
@@ -1930,12 +1941,11 @@ def parMultiTest = {:
 ##             ifIs { expr2 }
 ##                 { name2 -> thenStat2 }
 ##                 {
-##                     ifValues(
-##                         makeList(
-##                             { expr3 },
-##                             { name3 -> expr4 }),
+##                     ifValueAndElse
+##                         { expr3 }
+##                         { name3 -> expr4 }
 ##                         { name3, name4 -> thenStat34 },
-##                         { elseStat })
+##                         { elseStat }
 ##                 }
 ##         }
 ## }()
@@ -1946,8 +1956,8 @@ def parMultiTest = {:
 ## * omitting the final `elseStat` if there was no `else` clause.
 ## * `ifIs` instead of `ifValue` and no then-clause argument declaration for
 ##   any clause where no name binding was present.
-## * `ifValues` instead of `ifValue` (with incremental formals binding) for
-##   any clause that uses multiple tests.
+## * `ifValueAnd` or `ifValueAndElse` instead of `ifValue` (with incremental
+##   formals binding) for any clause that uses multiple tests.
 ## * arbitrary nesting of additional clauses.
 def parIfExpression = {:
     @if
@@ -2171,7 +2181,7 @@ def parOptBreakDef = {:
 ## * the body argument declaration changed to `.` if there is no
 ##   test expression name binding.
 ## * `ifIs` instead of `ifValue` if there is no name binding.
-## * `ifValues` instead of `ifValue` if there are multiple tests.
+## * `ifValueAnd` instead of `ifValue` if there are multiple tests.
 def parWhileExpression = {:
     @while
     breakDef = parOptBreakDef

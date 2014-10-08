@@ -38,14 +38,12 @@ fn expandYield(table) {
     ## If the exit's `function` is a variable fetch of the same variable as
     ## this node's yield name, then skip the expansion and just return the
     ## exit's `value` directly.
-    ifValues(
-        [
-            { -> function.hasName(@fetch) },
-            { . -> function::target.hasName(@varRef) },
-            { ., . -> table::yieldDef },
-            { ., target, yieldDef -> eq(target::name, yieldDef) }
-        ],
-        { ., ., ., . -> return value });
+    ifValueAnd
+        { -> function.hasName(@fetch) }
+        { . -> function::target.hasName(@varRef) }
+        { ., . -> table::yieldDef }
+        { ., target, yieldDef -> eq(target::name, yieldDef) }
+        { ., ., ., . -> return value };
 
     def exitCall = ifValueOr
         { ifIs { value.hasName(@void) } { makeCall(function) } }
