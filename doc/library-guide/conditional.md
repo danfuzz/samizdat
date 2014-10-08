@@ -73,6 +73,18 @@ this function calls the consequent function with an argument, whereas
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
 
+#### `ifValueAnd(functions+) -> . | void`
+
+Primitive logic conditional. This calls each of the given `functions`
+in order, as long as each returns a value (not void). The previous call
+results are passed as arguments to each subsequent test function. That is,
+the first call gets passed no arguments, the second gets passed the first
+result, the third gets passed the first and second result, and so on.
+
+Should all of the `functions` return a value, then this function returns
+the result of the *last* of `functions`. Should any of the calls return
+void, then this function immediately returns void.
+
 #### `ifValueOr(functions+) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions` in
