@@ -66,15 +66,10 @@ fn convertPex(node, formals) {
                 def closurePayload = @{(node.get_data())*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
-                ifValueOr
-                    {
-                        ifValueAnd
-                            { eq(fullClosure::statements, []) }
-                            { . -> fullClosure::yield.hasName(@literal) }
-                            { ., yNode ->
-                                makeCall(REFS::Peg_makeResult, yNode)
-                            }
-                    }
+                ifValueAndElse
+                    { eq(fullClosure::statements, []) }
+                    { . -> fullClosure::yield.hasName(@literal) }
+                    { ., yNode -> makeCall(REFS::Peg_makeResult, yNode) }
                     {
                         makeCall(REFS::Peg_makeCode, convertPexIn(fullClosure))
                     };
