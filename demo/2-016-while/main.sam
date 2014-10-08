@@ -54,20 +54,20 @@ def result2 = while /out (v < 40) {
 
 note("Result 2 is \%q(result2).");
 
-while (def value = (45 > v)) {
+while (def value = (v < 45)) {
     def nextVal = value + 1;
     v := nextVal;
     note("Value F is \%q(nextVal).")
 };
 
 ## First test will be the one that fails.
-while (def value1 = (50 > v), def value2 = value1 + 100) {
+while (def value1 = (v < 50), def value2 = value1 + 100) {
     v := value1 + 1;
     note("Value G is \%q(v); \%q(value1) \%q(value2)");
 };
 
 ## Second test will be the one that fails.
-while (def value1 = v, def value2 = (55 > value1)) {
+while (def value1 = v, def value2 = (value1 < 55)) {
     v := value1 + 1;
     note("Value H is \%q(v); \%q(value1) \%q(value2)");
 };
