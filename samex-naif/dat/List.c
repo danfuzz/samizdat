@@ -85,6 +85,24 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
     return result;
 }
 
+/**
+ * Helper that does most of the work of the `slice*` methods.
+ */
+static zvalue doSlice(zvalue ths, bool inclusive,
+        zvalue startArg, zvalue endArg) {
+    ListInfo *info = getInfo(ths);
+    zint start;
+    zint end;
+
+    seqConvertSliceArgs(&start, &end, inclusive, info->size, startArg, endArg);
+
+    if (start == -1) {
+        return NULL;
+    } else {
+        return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
+    }
+}
+
 
 //
 // Exported Definitions
@@ -143,10 +161,7 @@ zvalue listFromArray(zint size, const zvalue *values) {
 // Class Definition
 //
 
-// Documented in header.
-zvalue EMPTY_LIST = NULL;
-
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(List, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -172,7 +187,7 @@ METH_IMPL_rest(List, cat, args) {
     return listFrom(size, elems, NULL, 0, NULL);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0_1(List, collect, function) {
     if (function == NULL) {
         // Collecting a list (without filtering) results in that same list.
@@ -197,7 +212,7 @@ METH_IMPL_0_1(List, collect, function) {
     return listFromArray(at, result);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(List, del, key) {
     ListInfo *info = getInfo(ths);
     zvalue *elems = info->elems;
@@ -211,7 +226,7 @@ METH_IMPL_1(List, del, key) {
     return listFrom(index, elems, NULL, size - index - 1, &elems[index + 1]);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(List, fetch) {
     ListInfo *info = getInfo(ths);
 
@@ -241,12 +256,12 @@ METH_IMPL_0(List, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(List, get_size) {
     return intFromZint(getInfo(ths)->size);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(List, nextValue, box) {
     ListInfo *info = getInfo(ths);
     zint size = info->size;
@@ -263,7 +278,7 @@ METH_IMPL_1(List, nextValue, box) {
     return listFrom(size - 1, &info->elems[1], NULL, 0, NULL);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(List, nth, n) {
     ListInfo *info = getInfo(ths);
     zint index = seqNthIndexStrict(info->size, n);
@@ -271,7 +286,7 @@ METH_IMPL_1(List, nth, n) {
     return (index < 0) ? NULL : info->elems[index];
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_2(List, put, key, value) {
     ListInfo *info = getInfo(ths);
     zvalue *elems = info->elems;
@@ -286,7 +301,7 @@ METH_IMPL_2(List, put, key, value) {
     return listFrom(index, elems, value, size - index - 1, &elems[index + 1]);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(List, reverse) {
     ListInfo *info = getInfo(ths);
     zint size = info->size;
@@ -300,33 +315,18 @@ METH_IMPL_0(List, reverse) {
     return listFrom(size, arr, NULL, 0, NULL);
 }
 
-// Documented in header.
-static zvalue doSlice(zvalue ths, bool inclusive,
-        zvalue startArg, zvalue endArg) {
-    ListInfo *info = getInfo(ths);
-    zint start;
-    zint end;
 
-    seqConvertSliceArgs(&start, &end, inclusive, info->size, startArg, endArg);
-
-    if (start == -1) {
-        return NULL;
-    } else {
-        return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
-    }
-}
-
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1_2(List, sliceExclusive, start, end) {
     return doSlice(ths, false, start, end);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1_2(List, sliceInclusive, start, end) {
     return doSlice(ths, true, start, end);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(List, totalEq, other) {
     assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
     ListInfo *info1 = getInfo(ths);
@@ -350,7 +350,7 @@ METH_IMPL_1(List, totalEq, other) {
     return ths;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(List, totalOrder, other) {
     assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
     ListInfo *info1 = getInfo(ths);
@@ -375,7 +375,7 @@ METH_IMPL_1(List, totalOrder, other) {
     return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(List, valueList) {
     return ths;
 }
@@ -413,3 +413,6 @@ MOD_INIT(List) {
 
 // Documented in header.
 zvalue CLS_List = NULL;
+
+// Documented in header.
+zvalue EMPTY_LIST = NULL;

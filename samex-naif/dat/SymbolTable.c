@@ -243,7 +243,7 @@ zint symbolTableSize(zvalue symbolTable) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 FUNC_IMPL_rest(SymbolTable_makeSymbolTable, args) {
     if ((argsSize & 1) != 0) {
         die("Odd argument count for symbol table construction.");
@@ -264,7 +264,7 @@ FUNC_IMPL_rest(SymbolTable_makeSymbolTable, args) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 FUNC_IMPL_1_rest(SymbolTable_makeValueSymbolTable, first, args) {
     // Since the arguments are "stretchy" in the front instead of the
     // usual rear, we do a bit of non-obvious rearranging here.
@@ -287,7 +287,7 @@ FUNC_IMPL_1_rest(SymbolTable_makeValueSymbolTable, first, args) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(SymbolTable, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -311,7 +311,7 @@ METH_IMPL_rest(SymbolTable, cat, args) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(SymbolTable, del, key) {
     SymbolTableInfo *info = getInfo(ths);
     zint arraySize = info->arraySize;
@@ -347,17 +347,17 @@ METH_IMPL_0(SymbolTable, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(SymbolTable, get, key) {
     return infoGet(getInfo(ths), key);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(SymbolTable, get_size) {
     return intFromZint(getInfo(ths)->size);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_2(SymbolTable, put, key, value) {
     zvalue result = allocClone(ths);
     SymbolTableInfo *info = getInfo(result);
@@ -366,7 +366,7 @@ METH_IMPL_2(SymbolTable, put, key, value) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(SymbolTable, totalEq, other) {
     if (ths == other) {
         return ths;
@@ -402,7 +402,7 @@ METH_IMPL_1(SymbolTable, totalEq, other) {
     return ths;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(SymbolTable, totalOrder, other) {
     if (ths == other) {
         return INT_0;

@@ -291,10 +291,7 @@ zvalue symbolTableFromMap(zvalue map) {
 // Class Definition
 //
 
-// Documented in header.
-zvalue EMPTY_MAP = NULL;
-
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(Map, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -326,7 +323,7 @@ METH_IMPL_rest(Map, cat, args) {
     return mapFromArray(size, elems);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0_1(Map, collect, function) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
@@ -349,7 +346,7 @@ METH_IMPL_0_1(Map, collect, function) {
     return listFromArray(at, result);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, del, key) {
     zint index = mapFind(ths, key);
 
@@ -373,7 +370,7 @@ METH_IMPL_1(Map, del, key) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Map, fetch) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
@@ -405,13 +402,13 @@ METH_IMPL_0(Map, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, get, key) {
     zint index = mapFind(ths, key);
     return (index < 0) ? NULL : getInfo(ths)->elems[index].value;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Map, get_key) {
     MapInfo *info = getInfo(ths);
 
@@ -422,12 +419,12 @@ METH_IMPL_0(Map, get_key) {
     return info->elems[0].key;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Map, get_size) {
     return intFromZint(getInfo(ths)->size);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Map, get_value) {
     MapInfo *info = getInfo(ths);
 
@@ -438,7 +435,7 @@ METH_IMPL_0(Map, get_value) {
     return info->elems[0].value;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Map, keyList) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
@@ -452,7 +449,7 @@ METH_IMPL_0(Map, keyList) {
     return listFromArray(size, arr);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, nextValue, box) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
@@ -478,7 +475,7 @@ METH_IMPL_1(Map, nextValue, box) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, nthMapping, n) {
     MapInfo *info = getInfo(ths);
     zint index = seqNthIndexStrict(info->size, n);
@@ -495,7 +492,7 @@ METH_IMPL_1(Map, nthMapping, n) {
     return makeMapping(m->key, m->value);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_2(Map, put, key, value) {
     MapInfo *info = getInfo(ths);
     zmapping *elems = info->elems;
@@ -542,7 +539,7 @@ METH_IMPL_2(Map, put, key, value) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, totalEq, other) {
     assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
     MapInfo *info1 = getInfo(ths);
@@ -568,7 +565,7 @@ METH_IMPL_1(Map, totalEq, other) {
     return ths;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, totalOrder, other) {
     assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
     MapInfo *info1 = getInfo(ths);
@@ -602,7 +599,7 @@ METH_IMPL_1(Map, totalOrder, other) {
     return INT_0;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Map, valueList) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
@@ -649,3 +646,6 @@ MOD_INIT(Map) {
 
 // Documented in header.
 zvalue CLS_Map = NULL;
+
+// Documented in header.
+zvalue EMPTY_MAP = NULL;

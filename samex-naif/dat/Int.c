@@ -75,15 +75,6 @@ zint zintFromInt(zvalue intval) {
 // Class Definition
 //
 
-// Documented in header.
-zvalue INT_0 = NULL;
-
-// Documented in header.
-zvalue INT_1 = NULL;
-
-// Documented in header.
-zvalue INT_NEG1 = NULL;
-
 /**
  * Helper for defining unary operations as methods.
  */
@@ -139,7 +130,7 @@ BINARY_IMPL(shr,   zintShr);
 BINARY_IMPL(sub,   zintSub);
 BINARY_IMPL(xor,   zintXor);
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Int, debugString) {
     char arr[22];  // Big enough for the longest possible result.
 
@@ -147,17 +138,17 @@ METH_IMPL_0(Int, debugString) {
     return stringFromUtf8(-1, arr);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Int, toInt) {
     return ths;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Int, toNumber) {
     return ths;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Int, toString) {
     zint n = zintValue(ths);
     zchar result;
@@ -169,13 +160,13 @@ METH_IMPL_0(Int, toString) {
     return stringFromZchar(result);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Int, totalEq, other) {
     // Note: `other` not guaranteed to be an `Int`.
     return (zintValue(ths) == zintFromInt(other)) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Int, totalOrder, other) {
     zint int1 = zintValue(ths);
     zint int2 = zintFromInt(other);  // Note: not guaranteed to be an `Int`.
@@ -233,3 +224,12 @@ MOD_INIT(Int) {
 
 // Documented in header.
 zvalue CLS_Int = NULL;
+
+// Documented in header.
+zvalue INT_0 = NULL;
+
+// Documented in header.
+zvalue INT_1 = NULL;
+
+// Documented in header.
+zvalue INT_NEG1 = NULL;

@@ -97,7 +97,7 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 // methods are bound on a couple classes.
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Sequence, get, key) {
     if (seqNthIndexLenient(key) >= 0) {
         return METH_CALL(nth, ths, key);
@@ -106,7 +106,7 @@ METH_IMPL_1(Sequence, get, key) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Sequence, keyList) {
     zint size = get_size(ths);
     zvalue elems[size];
@@ -118,7 +118,7 @@ METH_IMPL_0(Sequence, keyList) {
     return listFromArray(size, elems);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Sequence, nthMapping, n) {
     zvalue value = METH_CALL(nth, ths, n);
 

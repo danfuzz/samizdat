@@ -61,14 +61,14 @@ zbool zboolFromBool(zvalue boolval) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, and, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 & bool2);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, bit, n) {
     zint ni = zintFromInt(n);
 
@@ -81,29 +81,29 @@ METH_IMPL_1(Bool, bit, n) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Bool, bitSize) {
     return INT_1;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Bool, debugString) {
     return stringFromUtf8(-1, zboolValue(ths) ? "true" : "false");
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, or, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
     return boolFromZbool(bool1 | bool2);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Bool, not) {
     return boolFromZbool(!zboolValue(ths));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, shl, n) {
     zint ni = zintFromInt(n);
 
@@ -121,7 +121,7 @@ METH_IMPL_1(Bool, shl, n) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, shr, n) {
     zint ni = zintFromInt(n);
 
@@ -139,24 +139,24 @@ METH_IMPL_1(Bool, shr, n) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Bool, toInt) {
     return intFromZint(zboolValue(ths));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Bool, toNumber) {
     return intFromZint(zboolValue(ths));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, totalEq, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
     return (bool1 == bool2) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, totalOrder, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
@@ -170,7 +170,7 @@ METH_IMPL_1(Bool, totalOrder, other) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, xor, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.

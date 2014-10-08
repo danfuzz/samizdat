@@ -66,12 +66,12 @@ zvalue makeJump(void) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(Jump, call, args) {
     return jumpCall(ths, argsSize, args);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Jump, debugString) {
     JumpInfo *info = getInfo(ths);
     zvalue validStr = info->valid ? EMPTY_STRING : stringFromUtf8(-1, "in");

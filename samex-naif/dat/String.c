@@ -150,6 +150,33 @@ static zorder uncheckedZorder(zvalue string1, zvalue string2) {
     return zstringOrder(getInfo(string1)->s, getInfo(string2)->s);
 }
 
+/**
+ * Helper that does most of the work of the `slice*` methods.
+ */
+static zvalue doSlice(zvalue ths, bool inclusive,
+        zvalue startArg, zvalue endArg) {
+    StringInfo *info = getInfo(ths);
+    zint start;
+    zint end;
+
+    seqConvertSliceArgs(&start, &end, inclusive, info->s.size,
+        startArg, endArg);
+
+    if (start == -1) {
+        return NULL;
+    }
+
+    zint size = end - start;
+
+    if (size > 16) {
+        // Share storage for large results.
+        return makeIndirectString(ths, start, size);
+    } else {
+        zstring s = { size, &info->s.chars[start] };
+        return stringFromZstring(s);
+    }
+}
+
 
 //
 // Exported Definitions
@@ -262,10 +289,7 @@ zstring zstringFromString(zvalue string) {
 // Class Definition
 //
 
-// Documented in header.
-zvalue EMPTY_STRING = NULL;
-
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(String, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -303,7 +327,7 @@ METH_IMPL_rest(String, cat, args) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0_1(String, collect, function) {
     StringInfo *info = getInfo(ths);
     const zchar *chars = info->s.chars;
@@ -324,7 +348,7 @@ METH_IMPL_0_1(String, collect, function) {
     return listFromArray(at, result);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(String, del, key) {
     StringInfo *info = getInfo(ths);
     const zchar *chars = info->s.chars;
@@ -345,13 +369,13 @@ METH_IMPL_1(String, del, key) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, debugString) {
     zvalue quote = stringFromUtf8(1, "\"");
     return cm_cat(quote, ths, quote);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, fetch) {
     StringInfo *info = getInfo(ths);
 
@@ -372,12 +396,12 @@ METH_IMPL_0(String, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, get_size) {
     return intFromZint(getInfo(ths)->s.size);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(String, nextValue, box) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -403,7 +427,7 @@ METH_IMPL_1(String, nextValue, box) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(String, nth, n) {
     StringInfo *info = getInfo(ths);
     zint index = seqNthIndexStrict(info->s.size, n);
@@ -415,7 +439,7 @@ METH_IMPL_1(String, nth, n) {
     return stringFromZchar(info->s.chars[index]);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_2(String, put, key, value) {
     assertStringSize1(value);
 
@@ -438,7 +462,7 @@ METH_IMPL_2(String, put, key, value) {
     return result;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, reverse) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -455,68 +479,43 @@ METH_IMPL_0(String, reverse) {
     return result;
 }
 
-// Documented in header.
-static zvalue doSlice(zvalue ths, bool inclusive,
-        zvalue startArg, zvalue endArg) {
-    StringInfo *info = getInfo(ths);
-    zint start;
-    zint end;
-
-    seqConvertSliceArgs(&start, &end, inclusive, info->s.size,
-        startArg, endArg);
-
-    if (start == -1) {
-        return NULL;
-    }
-
-    zint size = end - start;
-
-    if (size > 16) {
-        // Share storage for large results.
-        return makeIndirectString(ths, start, size);
-    } else {
-        zstring s = { size, &info->s.chars[start] };
-        return stringFromZstring(s);
-    }
-}
-
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1_2(String, sliceExclusive, start, end) {
     return doSlice(ths, false, start, end);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1_2(String, sliceInclusive, start, end) {
     return doSlice(ths, true, start, end);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, toInt) {
     return intFromZint(zcharFromString(ths));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, toNumber) {
     return intFromZint(zcharFromString(ths));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, toString) {
     return ths;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, toSymbol) {
     return symbolFromZstring(getInfo(ths)->s);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(String, totalEq, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     return uncheckedEq(ths, other) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(String, totalOrder, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     switch (uncheckedZorder(ths, other)) {
@@ -526,7 +525,7 @@ METH_IMPL_1(String, totalOrder, other) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(String, valueList) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -578,3 +577,6 @@ MOD_INIT(String) {
 
 // Documented in header.
 zvalue CLS_String = NULL;
+
+// Documented in header.
+zvalue EMPTY_STRING = NULL;

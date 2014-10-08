@@ -292,12 +292,12 @@ zstring zstringFromSymbol(zvalue symbol) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(Symbol, call, args) {
     return symbolCall(ths, argsSize, args);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(Symbol, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -329,7 +329,7 @@ METH_IMPL_rest(Symbol, cat, args) {
     return symbolFromZstring(s);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Symbol, debugString) {
     SymbolInfo *info = getInfo(ths);
     const char *prefix = info->interned ? "@" : "@+";
@@ -337,34 +337,34 @@ METH_IMPL_0(Symbol, debugString) {
     return cm_cat(stringFromUtf8(-1, prefix), cm_toString(ths));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Symbol, debugSymbol) {
     return ths;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Symbol, isInterned) {
     return (getInfo(ths)->interned) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Symbol, toUnlisted) {
     SymbolInfo *info = getInfo(ths);
     return makeSymbol0(info->s, false);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Symbol, toString) {
     return stringFromZstring(getInfo(ths)->s);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Symbol, totalEq, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
     return uncheckedEq(ths, other) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Symbol, totalOrder, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
 

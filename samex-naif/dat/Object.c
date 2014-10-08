@@ -92,12 +92,12 @@ zvalue makeObjectClass(zvalue name, zvalue secret,
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 FUNC_IMPL_2_3(Object_makeObject, cls, secret, data) {
     return makeObject(cls, secret, data);
 }
 
-// Documented in header.
+// Documented in spec.
 FUNC_IMPL_2_4(Object_makeObjectClass, name, secret,
         classMethods, instanceMethods) {
     return makeObjectClass(name, secret, classMethods, instanceMethods);

@@ -123,12 +123,12 @@ BuiltinState builtinGetState(zvalue builtin) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_rest(Builtin, call, args) {
     return builtinCall(ths, argsSize, args);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Builtin, debugSymbol) {
     BuiltinInfo *info = getInfo(ths);
     return info->name;

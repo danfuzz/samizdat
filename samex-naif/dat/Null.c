@@ -14,12 +14,12 @@
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Null, debugString) {
     return stringFromUtf8(-1, "null");
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Null, totalEq, other) {
     // Note: `other` not guaranteed to be `null`.
     if (ths == other) {
@@ -29,7 +29,7 @@ METH_IMPL_1(Null, totalEq, other) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Null, totalOrder, other) {
     // Note: `other` not guaranteed to be `null`.
     if (ths == other) {

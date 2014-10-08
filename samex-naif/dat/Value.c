@@ -77,7 +77,7 @@ zvalue valOrder(zvalue value, zvalue other) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Value, debugString) {
     zvalue cls = get_class(ths);
     zvalue name = METH_CALL(debugSymbol, ths);
@@ -103,7 +103,7 @@ METH_IMPL_0(Value, debugString) {
         stringFromUtf8(-1, ">"));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Value, debugSymbol) {
     return NULL;
 }
@@ -114,17 +114,17 @@ METH_IMPL_0(Value, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Value, perEq, other) {
     return valEq(ths, other);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Value, perOrder, other) {
     return valOrder(ths, other);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Value, totalEq, other) {
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
@@ -134,7 +134,7 @@ METH_IMPL_1(Value, totalEq, other) {
     return (ths == other) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Value, totalOrder, other) {
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {

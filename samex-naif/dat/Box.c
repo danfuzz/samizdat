@@ -111,7 +111,7 @@ zvalue makeResult(zvalue value) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0_1(Box, collect, function) {
     zvalue value = doFetch(ths);
 
@@ -122,12 +122,12 @@ METH_IMPL_0_1(Box, collect, function) {
     return (value == NULL) ? EMPTY_LIST : listFromArray(1, &value);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Box, fetch) {
     return doFetch(ths);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Box, gcMark) {
     BoxInfo *info = getInfo(ths);
 
@@ -135,7 +135,7 @@ METH_IMPL_0(Box, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Box, nextValue, out) {
     zvalue value = doFetch(ths);
 
@@ -147,7 +147,7 @@ METH_IMPL_1(Box, nextValue, out) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0_1(Box, store, value) {
     return doStore(ths, value);
 }

@@ -79,12 +79,12 @@ zint recNameIndex(zvalue record) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
     return makeRecord(cls, value);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
@@ -108,27 +108,27 @@ METH_IMPL_0(Record, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Record, get, key) {
     return cm_get(getInfo(ths)->data, key);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Record, get_data) {
     return getInfo(ths)->data;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Record, get_name) {
     return getInfo(ths)->name;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Record, hasName, name) {
     return symbolEq(getInfo(ths)->name, name) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Record, totalEq, other) {
     assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 
@@ -142,7 +142,7 @@ METH_IMPL_1(Record, totalEq, other) {
     }
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Record, totalOrder, other) {
     assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 

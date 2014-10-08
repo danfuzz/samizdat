@@ -309,7 +309,7 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Class, debugString) {
     ClassInfo *info = getInfo(ths);
     const char *label;
@@ -330,7 +330,7 @@ METH_IMPL_0(Class, debugString) {
         stringFromUtf8(-1, ">"));
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Class, debugSymbol) {
     return getInfo(ths)->name;
 }
@@ -349,17 +349,17 @@ METH_IMPL_0(Class, gcMark) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Class, get_name) {
     return getInfo(ths)->name;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_0(Class, get_parent) {
     return getInfo(ths)->parent;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Class, perOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
@@ -399,13 +399,13 @@ METH_IMPL_1(Class, perOrder, other) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Class, totalEq, other) {
     assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
     return classEqUnchecked(ths, other) ? ths : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Class, totalOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
