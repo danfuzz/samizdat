@@ -43,7 +43,6 @@ PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueAnd,             1, -1);
 PRIM_FUNC(ifValueAndElse,         2, -1);
 PRIM_FUNC(ifValueOr,              1, -1);
-PRIM_FUNC(ifValues,               2, 3);
 PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(makeList,               0, -1);
 PRIM_FUNC(makeMap,                0, -1);
