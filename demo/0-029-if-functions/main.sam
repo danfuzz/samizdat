@@ -79,94 +79,52 @@ def v12 = ifValueOr
     { "Yes: v12" };
 note(v12);
 
-## Admittedly odd edge case.
-def v13 = ifValues([],
-    { "Yes: v13" },
-    { die("No.") });
+def v13 = ifValueAnd
+    { "Yes: v13" }
+    { args* -> $Format::source(args) };
 note(v13);
 
-## Admittedly odd edge case.
-def v14 = ifValues([],
-    { "Yes: v14" });
-note(v14);
+def v14 = maybeValue { ifValueAnd { -> } };
+note($Format::source(v14));  ## Should be `[]`.
 
-def v15 = ifValues(
-    [
-        { "Yes: v15" }
-    ],
-    { args* -> $Format::source(args) });
+def v15 = ifValueAnd
+    { "v" }
+    { x -> x.cat("15") };
 note(v15);
 
-def v16 = ifValues(
-    [
-        { "Yes: v16" }
-    ],
-    { args* -> $Format::source(args) },
-    { die("No.") });
-note(v16);
+def v16 = maybeValue { ifValueAnd { "1" } { x -> } };
+note($Format::source(v16));  ## Should be `[]`.
 
-def v17 = ifValues(
-    [
-        { -> }
-    ],
-    { x -> die("No.") },
-    { "Yes: v17" });
+def v17 = ifValueAnd
+    { "1" }
+    { x -> x.cat("2") }
+    { x, y -> x.cat(y, "3") }
+    { x, y, z -> x.cat(y, z, "4") }
+    { args* -> $Format::source(args) };
 note(v17);
 
-def v18 = maybeValue { ifValues([ { -> } ], { x -> die("No.") }) };
-note($Format::source(v18));
-
-def v19 = ifValues(
-    [
-        { "1" },
-        { x -> x.cat("2") }
-    ],
-    { args* -> $Format::source(args) },
-    { die("No.") });
-note(v19);
-
-def v20 = ifValues(
-    [
-        { "1" },
-        { x -> }
-    ],
-    { die("No.") },
-    { "Yes: v20" });
-note(v20);
-
-def v21 = ifValues(
-    [
-        { "1" },
-        { x -> x.cat("2") },
-        { x, y -> x.cat(y, "3") },
-        { x, y, z -> x.cat(y, z, "4") }
-    ],
-    { args* -> $Format::source(args) },
-    { die("No.") });
-note(v21);
-
-def v22 = ifSwitch(
-    { -> "v22" },
+def v18 = ifSwitch(
+    { -> "v18" },
     {
         x: { . -> die("No.") }
     },
     { v -> "Yes: ".cat(v) });
-note(v22);
+note(v18);
 
-def v23 = ifSwitch(
+def v19 = ifSwitch(
     { -> @y },
     {
         x: { . -> die("No.") },
         y: { . -> }
     },
     { . -> die("No.") })?;
-note($Format::source(v23));  ## Should be `[]`.
+note($Format::source(v19));  ## Should be `[]`.
 
-def v24 = ifSwitch(
+def v20 = ifSwitch(
     { -> @Yes },
     {
         x: { . -> die("No.") },
-        Yes: { v -> "".cat(v, ": v24") }
+        Yes: { v -> "".cat(v, ": v20") }
     },
     { . -> die("No.") });
-note(v24);
+note(v20);
