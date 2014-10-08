@@ -24,6 +24,7 @@ def NAMES = [
     @ifNot,
     @ifSwitch,
     @ifValue,
+    @ifValueAnd,
     @ifValueOr,
     @ifValues,
     @le,

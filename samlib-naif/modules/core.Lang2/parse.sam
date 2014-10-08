@@ -1743,16 +1743,15 @@ def parLogicAndClause = {:
 ## ```
 ## (def var1 = expr1) & expr2 & (def var3 = expr3) & expr4
 ## =>
-## ifValues(
-##     makeList(
-##         { expr1 },
-##         { var1 -> expr2 },
-##         { var1, . -> expr3 }),
+## ifValueAnd
+##     { expr1 }
+##     { var1 -> expr2 }
+##     { var1, . -> expr3 }
 ##     { var1, ., var3 -> expr4 }
 ## ```
 ##
 ## That is, a single `ifIs` or `ifValue` call if there's only one `&`, or an
-## `ifValues` call if there is a chain of three or more clauses.
+## `ifValueAnd` call if there is a chain of three or more clauses.
 def parLogicAndExpression = {:
     ## This is done with the `*` on the list head (that is, most-then-last
     ## instead of the more usual arrangement of first-then-rest), since the
@@ -1798,9 +1797,9 @@ def parLogicAndExpression = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Construct the overall `ifValues` call.
-            makeCall(REFS::ifValues,
-                makeCall(REFS::makeList, testThunks*),
+            ## Construct the overall `ifValueAnd` call.
+            makeCall(REFS::ifValueAnd,
+                testThunks*,
                 withFormals(makeThunk(last), formals))
         }
     )
