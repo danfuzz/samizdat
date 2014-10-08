@@ -14,12 +14,27 @@
 ##
 
 ## Checks an expected result.
-fn expect(name, result, func, args*) {
-    def got = func(args*);
-    ifNot { eq(got, result) }
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
         {
-            note("Unexpected result: ", $Format::source(got));
-            die("For: ", name, " ", $Format::source(args));
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
         }
 };
 
@@ -32,58 +47,64 @@ note("Booleans");
 note($Format::source(false));
 note($Format::source(true));
 
-expect("and", false, @and, false, false);
-expect("and", false, @and, false, true);
-expect("and", false, @and, true,  false);
-expect("and", true,  @and, true,  true);
+expect("and1", false, { false.and(false) });
+expect("and2", false, { false.and(true) });
+expect("and3", false, { true.and(false) });
+expect("and4", true,  { true.and(true) });
 
-expect("or", false, @or, false, false);
-expect("or", true,  @or, false, true);
-expect("or", true,  @or, true,  false);
-expect("or", true,  @or, true,  true);
+expect("or1", false, { false.or(false) });
+expect("or2", true,  { false.or(true) });
+expect("or3", true,  { true.or(false) });
+expect("or4", true,  { true.or(true) });
 
-expect("xor", false, @xor, false, false);
-expect("xor", true,  @xor, false, true);
-expect("xor", true,  @xor, true,  false);
-expect("xor", false, @xor, true,  true);
+expect("xor1", false, { false.xor(false) });
+expect("xor2", true,  { false.xor(true) });
+expect("xor3", true,  { true.xor(false) });
+expect("xor4", false, { true.xor(true) });
 
-expect("not", true,  @not, false);
-expect("not", false, @not, true);
+expect("not1", true,  { false.not() });
+expect("not2", false, { true.not() });
 
-expect("bit", 0, @bit, false, 0);
-expect("bit", 1, @bit, true,  0);
-expect("bit", 0, @bit, false, 1);
-expect("bit", 0, @bit, true,  1);
-expect("bit", 0, @bit, false, 2);
-expect("bit", 0, @bit, true,  2);
+expect("bit1", 0, { false.bit(0) });
+expect("bit2", 1, { true.bit(0) });
+expect("bit3", 0, { false.bit(1) });
+expect("bit4", 0, { true.bit(1) });
+expect("bit5", 0, { false.bit(2) });
+expect("bit6", 0, { true.bit(2) });
 
-expect("bitSize", 1, @bitSize, false);
-expect("bitSize", 1, @bitSize, true);
+expect("bitSize1", 1, { false.bitSize() });
+expect("bitSize2", 1, { true.bitSize() });
 
-expect("shl", false, @shl, false, 0);
-expect("shl", false, @shl, false, 1);
-expect("shl", false, @shl, false, 2);
-expect("shl", false, @shl, false, -1);
-expect("shl", false, @shl, false, -2);
+expect("shl1", false, { false.shl(0) });
+expect("shl2", false, { false.shl(1) });
+expect("shl3", false, { false.shl(2) });
+expect("shl4", false, { false.shl(-1) });
+expect("shl5", false, { false.shl(-2) });
+expect("shl6", true,  { true.shl(0) });
+expect("shl7", false, { true.shl(-1) });
+expect("shl8", false, { true.shl(-2) });
 
-expect("shl", true,  @shl, true, 0);
-expect("shl", false, @shl, true, -1);
-expect("shl", false, @shl, true, -2);
+expect("shr1", false, { false.shr(0) });
+expect("shr2", false, { false.shr(-1) });
+expect("shr3", false, { false.shr(-2) });
+expect("shr4", false, { false.shr(1) });
+expect("shr5", false, { false.shr(2) });
+expect("shr6", true,  { true.shr(0) });
+expect("shr7", false, { true.shr(1) });
+expect("shr8", false, { true.shr(2) });
 
-expect("shr", false, @shr, false, 0);
-expect("shr", false, @shr, false, -1);
-expect("shr", false, @shr, false, -2);
-expect("shr", false, @shr, false, 1);
-expect("shr", false, @shr, false, 2);
+expect("toInt1", 0, { false.toInt() });
+expect("toInt2", 1, { true.toInt() });
 
-expect("shr", true,  @shr, true, 0);
-expect("shr", false, @shr, true, 1);
-expect("shr", false, @shr, true, 2);
+expectVoid("toLogic1", { false.toLogic() });
+expect("toLogic2", true, { true.toLogic() });
 
-expect("toInt", 0, @toInt, false);
-expect("toInt", 1, @toInt, true);
+expect("toNumber1", 0, { false.toNumber() });
+expect("toNumber2", 1, { true.toNumber() });
 
-expect("toNumber", 0, @toNumber, false);
-expect("toNumber", 1, @toNumber, true);
+expect("fromLogic1", false, { Bool.fromLogic() });
+expect("fromLogic2", true, { Bool.fromLogic(true) });
+expect("fromLogic3", true, { Bool.fromLogic(false) });
+expect("fromLogic4", true, { Bool.fromLogic("blort") });
 
 note("All good.");

@@ -117,8 +117,11 @@
 //
 // Method implementation declarations and associated binder. Each of the
 // `METH_IMPL*` macros expands to a `FUNC_IMPL*` macro with one extra
-// argument, `ths`.
+// argument `ths`. Similarly, each of the `CMETH_IMPL*` results takes
+// an extra argument `thsClass`.
 //
+
+// Instance method implementation macros.
 
 /**
  * Expands to a comma-separated pair of symbol and builtin function,
@@ -137,6 +140,16 @@
 #define METH_IMPL_0_1(cls, name, a0)   FUNC_IMPL_1_2(cls##_##name, ths, a0)
 #define METH_IMPL_1_2(cls, name, a0, a1) \
     FUNC_IMPL_2_3(cls##_##name, ths, a0, a1)
+
+// Class method implementation macros. Structure is identical to the instance
+// method macros, above.
+
+#define CMETH_BIND(cls, name) \
+    symbolFromUtf8(-1, #name), \
+    FUNC_VALUE(class_##cls##_##name)
+
+#define CMETH_IMPL_0_1(cls, name, a0) \
+    FUNC_IMPL_1_2(class_##cls##_##name, thsClass, a0)
 
 
 //

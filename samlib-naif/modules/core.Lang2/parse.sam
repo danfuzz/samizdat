@@ -1624,10 +1624,16 @@ def parIndexPostfix = {:
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {:
     @"**"
-    { { node -> makeCall(REFS::ne, node, LITS::false) } }
+    { { node -> makeCall(SYMS::toLogic, node) } }
 |
+    ## Expansion is essentially `expr??` -> `Bool.fromLogic(expr?*)`.
     @"??"
-    { { node -> makeCallThunks(REFS::ifIs, node, LITS::true, LITS::false) } }
+    {
+        { node ->
+            makeCallOrApply(SYMS::fromLogic, REFS::Bool,
+                makeInterpolate(makeMaybeValue(node)))
+        }
+    }
 |
     @"["
     result = parIndexPostfix

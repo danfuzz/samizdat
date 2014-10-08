@@ -24,8 +24,8 @@ This function is identical to `ifValue`, except that in the value case,
 this function calls the consequent function with no arguments, whereas
 `ifValue` calls it with an argument.
 
-**Syntax Note:** Used in the translation of `if`, `expression??`,
-and `expression & expression` forms.
+**Syntax Note:** Used in the translation of `if` and `expression & expression`
+forms.
 
 #### `ifNot(testFunction, notFunction) -> . | void`
 
