@@ -190,21 +190,10 @@ void classBindMethods(zvalue cls, zvalue classMethods,
         zvalue instanceMethods) {
     ClassInfo *clsInfo = getInfo(cls);
     ClassInfo *metaInfo = getInfo(cls->cls);
-    zint cmethSize;
-    zint imethSize;
-
-    if (classMethods == NULL) {
-        cmethSize = 0;
-    } else {
-        assertHasClass(classMethods, CLS_SymbolTable);
-        cmethSize = symbolTableSize(classMethods);
-    }
-
-    if (instanceMethods == NULL) {
-        imethSize = 0;
-    } else {
-        imethSize = symbolTableSize(instanceMethods);
-    }
+    zint cmethSize =
+        (classMethods == NULL) ? 0 : symbolTableSize(classMethods);
+    zint imethSize =
+        (instanceMethods == NULL) ? 0 : symbolTableSize(instanceMethods);
 
     if (clsInfo->parent != NULL) {
         // Initialize the method tables with whatever the parent defined.
@@ -215,7 +204,13 @@ void classBindMethods(zvalue cls, zvalue classMethods,
     }
 
     if (cmethSize != 0) {
-        die("No class methods allowed...yet.");
+        zmapping methods[cmethSize];
+        arrayFromSymbolTable(methods, classMethods);
+        for (zint i = 0; i < cmethSize; i++) {
+            zvalue sym = methods[i].key;
+            zint index = symbolIndex(methods[i].key);
+            metaInfo->methods[index] = methods[i].value;
+        }
     }
 
     if (imethSize != 0) {
