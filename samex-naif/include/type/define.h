@@ -155,29 +155,6 @@
 
 
 //
-// Strings
-//
-
-/** Variable definition for a string. */
-#define STRING_DEF(name) \
-    zvalue STRING_NAME(name) = NULL
-
-/**
- * Performs initialization of the indicated string, with the given content.
- */
-#define STRING_INIT_WITH(name, value) \
-    do { \
-        STRING_NAME(name) = datImmortalize(stringFromUtf8(-1, (value))); \
-    } while (0)
-
-/**
- * Performs initialization of the indicated string, where the content is
- * the same as the name.
- */
-#define STRING_INIT(name) STRING_INIT_WITH(name, #name)
-
-
-//
 // Symbols
 //
 
