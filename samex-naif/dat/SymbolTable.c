@@ -244,6 +244,50 @@ zint symbolTableSize(zvalue symbolTable) {
 //
 
 // Documented in spec.
+CMETH_IMPL_rest(SymbolTable, new, args) {
+    if ((argsSize & 1) != 0) {
+        die("Odd argument count for symbol table construction.");
+    }
+
+    if (argsSize == 0) {
+        return EMPTY_SYMBOL_TABLE;
+    }
+
+    zint size = argsSize >> 1;
+    zvalue result = allocInstance(size);
+    SymbolTableInfo *info = getInfo(result);
+
+    for (zint i = 0, at = 0; i < size; i++, at += 2) {
+        putInto(&result, &info, args[at], args[at + 1]);
+    }
+
+    return result;
+}
+
+// Documented in spec.
+CMETH_IMPL_1_rest(SymbolTable, singleValue, first, args) {
+    if (argsSize == 0) {
+        return EMPTY_SYMBOL_TABLE;
+    }
+
+    // Since the arguments are "stretchy" in the front instead of the usual
+    // rear, we pull out the `value` and manually enter the first key into
+    // the result.
+
+    zvalue value = args[argsSize - 1];
+    zvalue result = allocInstance(argsSize);
+    SymbolTableInfo *info = getInfo(result);
+
+    putInto(&result, &info, first, value);
+
+    for (zint i = 1; i < argsSize; i++) {
+        putInto(&result, &info, args[i - 1], value);
+    }
+
+    return result;
+}
+
+// Documented in spec.
 FUNC_IMPL_rest(SymbolTable_makeSymbolTable, args) {
     if ((argsSize & 1) != 0) {
         die("Odd argument count for symbol table construction.");
@@ -461,7 +505,10 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
 // Documented in header.
 void bindMethodsForSymbolTable(void) {
     classBindMethods(CLS_SymbolTable,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(SymbolTable, new),
+            CMETH_BIND(SymbolTable, singleValue),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(SymbolTable, cat),
             METH_BIND(SymbolTable, del),
