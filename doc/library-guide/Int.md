@@ -32,10 +32,6 @@ manner.
 
 Returns the given argument.
 
-#### `.toNumber() -> int`
-
-Returns the given argument.
-
 #### `.toString() -> string`
 
 Returns a single-character string whose code point is the

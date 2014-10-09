@@ -59,10 +59,6 @@ returns `true` if given `true` and void if given `false`.
 
 **Syntax Note:** Used in the translation of `expr**` forms.
 
-#### `.toNumber() -> int`
-
-Same as `.toInt()`.
-
 
 <br><br>
 ### Method Definitions: `Bitwise` protocol

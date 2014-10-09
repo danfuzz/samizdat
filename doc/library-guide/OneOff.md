@@ -93,13 +93,6 @@ it is preferable to cause an error.
 
 It is also discouraged to use this method for lossy conversion.
 
-#### `.toNumber() -> number`
-
-Some values have an obvious correspondence to a numeric quantity. If
-so, then this method can be used to access it. It is discouraged to
-bind this to a function that sometimes returns void; it is preferable
-to cause an error.
-
 #### `.toString() -> string`
 
 Some values have an obvious correspondence to a string value. If

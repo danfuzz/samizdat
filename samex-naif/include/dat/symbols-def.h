@@ -82,7 +82,6 @@ DEF_SYMBOL(sliceInclusive);
 DEF_SYMBOL(store);
 DEF_SYMBOL(sub);
 DEF_SYMBOL(toInt);
-DEF_SYMBOL(toNumber);
 DEF_SYMBOL(toString);
 DEF_SYMBOL(toSymbol);
 DEF_SYMBOL(toUnlisted);
