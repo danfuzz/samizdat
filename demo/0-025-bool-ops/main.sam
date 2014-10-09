@@ -93,15 +93,28 @@ expect("shr 6", true,  { true.shr(0) });
 expect("shr 7", false, { true.shr(1) });
 expect("shr 8", false, { true.shr(2) });
 
-expect("toInt 1", 0, { false.toInt() });
-expect("toInt 2", 1, { true.toInt() });
+expect("fromLogic 1", false, { Bool.fromLogic() });
+expect("fromLogic 2", true,  { Bool.fromLogic(true) });
+expect("fromLogic 3", true,  { Bool.fromLogic(false) });
+expect("fromLogic 4", true,  { Bool.fromLogic("blort") });
 
-expectVoid("toLogic 1", { false.toLogic() });
+expectVoid("toLogic 1",   { false.toLogic() });
 expect("toLogic 2", true, { true.toLogic() });
 
-expect("fromLogic 1", false, { Bool.fromLogic() });
-expect("fromLogic 2", true, { Bool.fromLogic(true) });
-expect("fromLogic 3", true, { Bool.fromLogic(false) });
-expect("fromLogic 4", true, { Bool.fromLogic("blort") });
+expect("castFrom 1", true,  { Bool.castFrom(true) });
+expect("castFrom 2", false, { Core.castFrom(false) });
+expect("castFrom 3", false, { Value.castFrom(false) });
+expect("castFrom 4", false, { Bool.castFrom(0) });
+expect("castFrom 5", true,  { Bool.castFrom(1) });
+expectVoid("castFrom 6",    { Bool.castFrom(2) });
+expectVoid("castFrom 7",    { Bool.castFrom(null) });
+
+expect("castToward 1", false, { false.castToward(Bool) });
+expect("castToward 2", false, { false.castToward(Core) });
+expect("castToward 3", true,  { true.castToward(Value) });
+expect("castToward 4", 0,     { false.castToward(Int) });
+expect("castToward 5", 1,     { true.castToward(Int) });
+expectVoid("castToward 6",    { false.castToward(String) });
+expectVoid("castToward 7",    { true.castToward(Symbol) });
 
 note("All good.");
