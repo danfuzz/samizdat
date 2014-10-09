@@ -35,7 +35,6 @@ PRIM_DEF(makeValueSymbolTable,    FUN_SymbolTable_makeValueSymbolTable);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(get_class,              1, 1);
-PRIM_FUNC(hasClass,               2, 2);
 PRIM_FUNC(ifIs,                   2, 3);
 PRIM_FUNC(ifNot,                  2, 2);
 PRIM_FUNC(ifSwitch,               2, 3);

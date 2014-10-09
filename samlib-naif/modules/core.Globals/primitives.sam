@@ -30,7 +30,6 @@ export
     die,
     eq,
     get_class,
-    hasClass,
     ifIs,
     ifNot,
     ifSwitch,

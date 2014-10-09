@@ -164,13 +164,6 @@ argument, per se, to represent logical-true.
 Returns the class of the given arbitrary `value`. The return value is always
 of class `Class`.
 
-#### `hasClass(value, cls) -> logic`
-
-Returns `value` if it has class `cls`. Otherwise returns void.
-
-In order to "have the class," `value` must either be an instance of class
-`cls` per se, or be an instance of a subclass of `cls`.
-
 #### `maybeCast(cls, value) -> . | void`
 
 "Soft" cast operation. This attempts to cast (convert in a maximally
