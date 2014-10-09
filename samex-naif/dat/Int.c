@@ -139,18 +139,6 @@ METH_IMPL_0(Int, debugString) {
 }
 
 // Documented in spec.
-METH_IMPL_0(Int, toString) {
-    zint n = zintValue(ths);
-    zchar result;
-
-    if (!zcharFromZint(&result, n)) {
-        die("Invalid int value for char: %lld", n);
-    }
-
-    return stringFromZchar(result);
-}
-
-// Documented in spec.
 METH_IMPL_1(Int, totalEq, other) {
     // Note: `other` not guaranteed to be an `Int`.
     return (zintValue(ths) == zintFromInt(other)) ? ths : NULL;
@@ -196,7 +184,6 @@ MOD_INIT(Int) {
             METH_BIND(Int, sign),
             METH_BIND(Int, sub),
             METH_BIND(Int, xor),
-            METH_BIND(Int, toString),
             METH_BIND(Int, totalEq),
             METH_BIND(Int, totalOrder),
             NULL));

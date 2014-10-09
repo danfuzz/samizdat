@@ -83,7 +83,6 @@ DEF_SYMBOL(sliceInclusive);
 DEF_SYMBOL(store);
 DEF_SYMBOL(sub);
 DEF_SYMBOL(toLogic);
-DEF_SYMBOL(toString);
 DEF_SYMBOL(toUnlisted);
 DEF_SYMBOL(totalEq);
 DEF_SYMBOL(totalOrder);

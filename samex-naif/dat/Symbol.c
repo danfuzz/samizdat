@@ -355,11 +355,6 @@ METH_IMPL_0(Symbol, toUnlisted) {
 }
 
 // Documented in spec.
-METH_IMPL_0(Symbol, toString) {
-    return stringFromZstring(getInfo(ths)->s);
-}
-
-// Documented in spec.
 METH_IMPL_1(Symbol, totalEq, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
     return uncheckedEq(ths, other) ? ths : NULL;
@@ -406,7 +401,6 @@ void bindMethodsForSymbol(void) {
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, isInterned),
-            METH_BIND(Symbol, toString),
             METH_BIND(Symbol, toUnlisted),
             METH_BIND(Symbol, totalEq),
             METH_BIND(Symbol, totalOrder),

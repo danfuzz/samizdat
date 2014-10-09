@@ -67,14 +67,6 @@ before its longer brethren.
 
 
 <br><br>
-### Method Definitions: One-Offs
-
-#### `.toString() -> string`
-
-Returns `this`.
-
-
-<br><br>
 ### Method Definitions: `Collection` and `Sequence` protocols
 
 #### `.cat(more*) -> string`

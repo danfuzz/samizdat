@@ -21,10 +21,6 @@ of all the arguments, in argument order. Arguments must all be symbols.
 Returns `this` if it is interned (that is, *not* unlisted). Returns void
 otherwise.
 
-#### `.toString() -> string`
-
-Returns the name of the symbol as a string.
-
 #### `.toUnlisted() -> symbol`
 
 Returns a new unlisted symbol whose name is the same as `this`'s. This

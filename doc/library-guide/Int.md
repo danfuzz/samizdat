@@ -26,16 +26,6 @@ manner.
 
 
 <br><br>
-### Method Definitions: One-Offs
-
-#### `.toString() -> string`
-
-Returns a single-character string whose code point is the
-value is as given. If the value is out of the range of a 32-bit
-unsigned integer, this terminates the runtime with an error.
-
-
-<br><br>
 ### Method Definitions: `Bitwise` protocol
 
 #### `.and(other) -> int`
