@@ -62,18 +62,17 @@ fn expandYield(table) {
 ## Helper for `makeMapExpression` and `makeSymbolTableExpression`, which
 ## is parameterized on the "empty" value and the two required constructor
 ## functions.
-export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
-        makeOneValue) {
+export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     ifIs { eq(mappings, []) }
         {
             ## No mappings. Easy out.
-            return emptyLiteral
+            return emptyLit
         };
 
     ## Convert the mappings as if it has to be nontrivial. If in the end, it's
     ## possible to use a single call to `makeMap`, then just do that.
 
-    var singleArgs = [];  ## Single-value mappings, to be `makeMap`ed.
+    var singleArgs = [];  ## Single-value mappings, to be `Map.new()`ed.
     var catArgs = [];     ## Arguments ready to be `cat`ed.
 
     fn addToCat(arg) {
@@ -83,7 +82,7 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
     fn addSingleToCat() {
         ifIs { perNe(singleArgs, []) }
             {
-                addToCat(makeCall(makeMultiValue, singleArgs*));
+                addToCat(makeCall(SYMS::new, classLit, singleArgs*));
                 singleArgs := []
             }
     };
@@ -108,7 +107,8 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
                 ifIs { eq(handled, false) }
                     {
                         addSingleToCat();
-                        addToCat(makeCallOrApply(makeOneValue, keys*, value))
+                        addToCat(makeCallOrApply(SYMS::singleValue,
+                            classLit, keys*, value))
                     };
             }
             {
@@ -129,7 +129,7 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
     ## ensure a result of the proper type.
 
     addSingleToCat();
-    return makeCall(SYMS::cat, emptyLiteral, catArgs*)
+    return makeCall(SYMS::cat, emptyLit, catArgs*)
 };
 
 
@@ -434,8 +434,7 @@ export fn makeInterpolate(node) {
 
 ## Documented in spec.
 export fn makeMapExpression(mappings*) {
-    return makeMapLikeExpression(
-        mappings, LITS::EMPTY_MAP, REFS::makeMap, REFS::makeValueMap)
+    return makeMapLikeExpression(mappings, LITS::Map, LITS::EMPTY_MAP)
 };
 
 ## Documented in spec.
@@ -446,8 +445,7 @@ export fn makeMaybeValue(node) {
 ## Documented in spec.
 export fn makeSymbolTableExpression(mappings*) {
     return makeMapLikeExpression(
-        mappings, LITS::EMPTY_SYMBOL_TABLE,
-        REFS::makeSymbolTable, REFS::makeValueSymbolTable)
+        mappings, LITS::SymbolTable, LITS::EMPTY_SYMBOL_TABLE)
 };
 
 ## Documented in spec.

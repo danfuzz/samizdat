@@ -38,6 +38,7 @@ def SYMBOLS = [
     @perEq,
     @reverse,
     @shl,
+    @singleValue,
     @sliceExclusive,
     @sliceInclusive,
     @shr,
@@ -61,7 +62,9 @@ def VALUES = {
 
     ## Classes
     Bool,
-    List
+    List,
+    Map,
+    SymbolTable
 };
 
 
