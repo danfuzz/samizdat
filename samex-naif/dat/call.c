@@ -28,9 +28,9 @@
  * a symbol; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
-    if (hasClass(value, CLS_String)) {
+    if (classAccepts(CLS_String, value)) {
         return value;
-    } else if (hasClass(value, CLS_Symbol)) {
+    } else if (classAccepts(CLS_Symbol, value)) {
         return cm_toString(value);
     } else {
         return METH_CALL(debugString, value);

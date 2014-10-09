@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 
     zvalue result = funApply(runFunc, argsList);
 
-    if ((result != NULL) && (hasClass(result, CLS_Int))) {
+    if ((result != NULL) && (classAccepts(CLS_Int, result))) {
         exit((int) zintFromInt(result));
     }
 

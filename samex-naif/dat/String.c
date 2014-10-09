@@ -302,7 +302,7 @@ METH_IMPL_rest(String, cat, args) {
     zint size = thsSize;
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        if (hasClass(one, CLS_Symbol)) {
+        if (classAccepts(CLS_Symbol, one)) {
             one = cm_toString(one);
         } else {
             assertString(one);

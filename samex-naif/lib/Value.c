@@ -30,7 +30,7 @@ FUN_IMPL_DECL(hasClass) {
     zvalue value = args[0];
     zvalue cls = args[1];
 
-    return hasClass(value, cls) ? value : NULL;
+    return classAccepts(cls, value) ? value : NULL;
 }
 
 // Documented in spec.

@@ -252,10 +252,16 @@ zvalue classFindMethodUnchecked(zvalue cls, zint index) {
 
 // Documented in header.
 void assertHasClass(zvalue value, zvalue cls) {
-    if (!hasClass(value, cls)) {
+    if (!classAccepts(cls, value)) {
         die("Expected class %s; got %s.",
             cm_debugString(cls), cm_debugString(value));
     }
+}
+
+// Documented in header.
+bool classAccepts(zvalue cls, zvalue value) {
+    assertIsClass(cls);
+    return acceptsUnchecked(cls, value);
 }
 
 // Documented in header.

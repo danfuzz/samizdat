@@ -697,7 +697,7 @@ DEF_PARSE(unaryExpression) {
     zint size = get_size(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = cm_nth(postfixes, i);
-        if (hasClass(one, CLS_List)) {
+        if (classAccepts(CLS_List, one)) {
             // Regular function call.
             result = makeCallOrApply(result, one);
         } else switch (recordEvalType(one)) {
@@ -1324,7 +1324,7 @@ DEF_PARSE(program) {
 zvalue langParseExpression0(zvalue expression) {
     zvalue tokens;
 
-    if (hasClass(expression, CLS_String)) {
+    if (classAccepts(CLS_String, expression)) {
         tokens = langTokenize0(expression);
     } else {
         tokens = expression;
@@ -1345,7 +1345,7 @@ zvalue langParseExpression0(zvalue expression) {
 zvalue langParseProgram0(zvalue program) {
     zvalue tokens;
 
-    if (hasClass(program, CLS_String)) {
+    if (classAccepts(CLS_String, program)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;

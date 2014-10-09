@@ -527,7 +527,7 @@ zvalue makeExportSelection(zvalue names) {
 
 // Documented in spec.
 zvalue makeFullClosure(zvalue baseData) {
-    zvalue table = hasClass(baseData, CLS_SymbolTable)
+    zvalue table = classAccepts(CLS_SymbolTable, baseData)
         ? baseData : get_data(baseData);
     zvalue formals = cm_get(table, SYM(formals));
     zvalue statements = cm_get(table, SYM(statements));

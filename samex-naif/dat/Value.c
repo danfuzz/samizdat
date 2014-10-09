@@ -85,7 +85,7 @@ METH_IMPL_0(Value, debugString) {
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!hasClass(name, CLS_Symbol)) {
+    } else if (!classAccepts(CLS_Symbol, name)) {
         // Suppress a non-symbol name.
         name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
