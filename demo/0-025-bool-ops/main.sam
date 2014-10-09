@@ -47,61 +47,61 @@ note("Booleans");
 note($Format::source(false));
 note($Format::source(true));
 
-expect("and1", false, { false.and(false) });
-expect("and2", false, { false.and(true) });
-expect("and3", false, { true.and(false) });
-expect("and4", true,  { true.and(true) });
+expect("and 1", false, { false.and(false) });
+expect("and 2", false, { false.and(true) });
+expect("and 3", false, { true.and(false) });
+expect("and 4", true,  { true.and(true) });
 
-expect("or1", false, { false.or(false) });
-expect("or2", true,  { false.or(true) });
-expect("or3", true,  { true.or(false) });
-expect("or4", true,  { true.or(true) });
+expect("or 1", false, { false.or(false) });
+expect("or 2", true,  { false.or(true) });
+expect("or 3", true,  { true.or(false) });
+expect("or 4", true,  { true.or(true) });
 
-expect("xor1", false, { false.xor(false) });
-expect("xor2", true,  { false.xor(true) });
-expect("xor3", true,  { true.xor(false) });
-expect("xor4", false, { true.xor(true) });
+expect("xor 1", false, { false.xor(false) });
+expect("xor 2", true,  { false.xor(true) });
+expect("xor 3", true,  { true.xor(false) });
+expect("xor 4", false, { true.xor(true) });
 
-expect("not1", true,  { false.not() });
-expect("not2", false, { true.not() });
+expect("not 1", true,  { false.not() });
+expect("not 2", false, { true.not() });
 
-expect("bit1", 0, { false.bit(0) });
-expect("bit2", 1, { true.bit(0) });
-expect("bit3", 0, { false.bit(1) });
-expect("bit4", 0, { true.bit(1) });
-expect("bit5", 0, { false.bit(2) });
-expect("bit6", 0, { true.bit(2) });
+expect("bit 1", 0, { false.bit(0) });
+expect("bit 2", 1, { true.bit(0) });
+expect("bit 3", 0, { false.bit(1) });
+expect("bit 4", 0, { true.bit(1) });
+expect("bit 5", 0, { false.bit(2) });
+expect("bit 6", 0, { true.bit(2) });
 
-expect("bitSize1", 1, { false.bitSize() });
-expect("bitSize2", 1, { true.bitSize() });
+expect("bitSize 1", 1, { false.bitSize() });
+expect("bitSize 2", 1, { true.bitSize() });
 
-expect("shl1", false, { false.shl(0) });
-expect("shl2", false, { false.shl(1) });
-expect("shl3", false, { false.shl(2) });
-expect("shl4", false, { false.shl(-1) });
-expect("shl5", false, { false.shl(-2) });
-expect("shl6", true,  { true.shl(0) });
-expect("shl7", false, { true.shl(-1) });
-expect("shl8", false, { true.shl(-2) });
+expect("shl1 ", false, { false.shl(0) });
+expect("shl2 ", false, { false.shl(1) });
+expect("shl3 ", false, { false.shl(2) });
+expect("shl4 ", false, { false.shl(-1) });
+expect("shl5 ", false, { false.shl(-2) });
+expect("shl6 ", true,  { true.shl(0) });
+expect("shl7 ", false, { true.shl(-1) });
+expect("shl8 ", false, { true.shl(-2) });
 
-expect("shr1", false, { false.shr(0) });
-expect("shr2", false, { false.shr(-1) });
-expect("shr3", false, { false.shr(-2) });
-expect("shr4", false, { false.shr(1) });
-expect("shr5", false, { false.shr(2) });
-expect("shr6", true,  { true.shr(0) });
-expect("shr7", false, { true.shr(1) });
-expect("shr8", false, { true.shr(2) });
+expect("shr 1", false, { false.shr(0) });
+expect("shr 2", false, { false.shr(-1) });
+expect("shr 3", false, { false.shr(-2) });
+expect("shr 4", false, { false.shr(1) });
+expect("shr 5", false, { false.shr(2) });
+expect("shr 6", true,  { true.shr(0) });
+expect("shr 7", false, { true.shr(1) });
+expect("shr 8", false, { true.shr(2) });
 
-expect("toInt1", 0, { false.toInt() });
-expect("toInt2", 1, { true.toInt() });
+expect("toInt 1", 0, { false.toInt() });
+expect("toInt 2", 1, { true.toInt() });
 
-expectVoid("toLogic1", { false.toLogic() });
-expect("toLogic2", true, { true.toLogic() });
+expectVoid("toLogic 1", { false.toLogic() });
+expect("toLogic 2", true, { true.toLogic() });
 
-expect("fromLogic1", false, { Bool.fromLogic() });
-expect("fromLogic2", true, { Bool.fromLogic(true) });
-expect("fromLogic3", true, { Bool.fromLogic(false) });
-expect("fromLogic4", true, { Bool.fromLogic("blort") });
+expect("fromLogic 1", false, { Bool.fromLogic() });
+expect("fromLogic 2", true, { Bool.fromLogic(true) });
+expect("fromLogic 3", true, { Bool.fromLogic(false) });
+expect("fromLogic 4", true, { Bool.fromLogic("blort") });
 
 note("All good.");
