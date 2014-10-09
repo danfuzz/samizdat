@@ -19,6 +19,21 @@ or (if you know the name statically) `@foo.toUnlisted()`.
 <br><br>
 ### Method Definitions: `Value` protocol
 
+#### `.castToward(cls) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Int` &mdash; Returns the Unicode code point of the sole character of
+  `this`. Only works on single-character strings.
+
+* `String` &mdash; Returns `this`.
+
+* `Symbol` &mdash; Returns an interned symbol whose name is `this`.
+
+  **Note:** If you want an unlisted symbol, call `.toUnlisted()` on a
+  symbol with the desired name, e.g. `name.toSymbol().toUnlisted()`
+  or (if you know the name statically) `@foo.toUnlisted()`.
+
 #### `.perEq(other) -> string | void`
 
 Default implementation.

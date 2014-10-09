@@ -289,6 +289,23 @@ zstring zstringFromString(zvalue string) {
 // Class Definition
 //
 
+// Documented in header.
+METH_IMPL_1(String, castToward, cls) {
+    StringInfo *info = getInfo(ths);
+
+    if (valEq(cls, CLS_Int)) {
+        if (info->s.size == 1) {
+            return intFromZint(zcharFromString(ths));
+        }
+    } else if (valEq(cls, CLS_String)) {
+        return ths;
+    } else if (valEq(cls, CLS_Symbol)) {
+        return symbolFromZstring(info->s);
+    }
+
+    return NULL;
+}
+
 // Documented in spec.
 METH_IMPL_rest(String, cat, args) {
     if (argsSize == 0) {
@@ -547,6 +564,7 @@ MOD_INIT(String) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(String, cat),
+            METH_BIND(String, castToward),
             METH_BIND(String, collect),
             METH_BIND(String, debugString),
             METH_BIND(String, del),
