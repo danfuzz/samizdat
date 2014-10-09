@@ -295,7 +295,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeCallOrApply(SYMS::new, REFS::List, expressions*) }
+            { makeCallOrApply(SYMS::new, LITS::List, expressions*) }
     }
 :};
 

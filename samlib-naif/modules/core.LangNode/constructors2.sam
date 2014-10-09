@@ -166,7 +166,7 @@ export fn makeCallOrApply(function, values*) {
     fn addPendingToCooked() {
         ifIs { perNe(pending, []) }
             {
-                addToCooked(makeCall(SYMS::new, REFS::List, pending*));
+                addToCooked(makeCall(SYMS::new, LITS::List, pending*));
                 pending := [];
             }
     };
