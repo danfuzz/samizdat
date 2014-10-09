@@ -1580,7 +1580,7 @@ def parIndexPostfix = {:
                 def startNode =
                     makeCall(REFS::makeRecord,
                         makeLiteral(start::origin),
-                        makeCall(REFS::makeSymbolTable,
+                        makeCall(SYMS::new, LITS::SymbolTable,
                             SYMS::value, start::value));
 
                 def optEndNode = (
@@ -1588,7 +1588,7 @@ def parIndexPostfix = {:
                         {
                             makeCall(REFS::makeRecord,
                                 makeLiteral(end::origin),
-                                makeCall(REFS::makeSymbolTable,
+                                makeCall(SYMS::new, LITS::SymbolTable,
                                     SYMS::value, end::value))
                         }
                 )?;
