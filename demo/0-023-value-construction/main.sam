@@ -32,14 +32,14 @@ fn expectDifferent(v1, v2) {
 
 ## Expects the value to be a core value.
 fn expectCore(v) {
-    ifIs { hasClass(v, Record) }
+    ifIs { Record.accepts(v) }
         { die("Record: ", $Format::source(v)) }
         { note("Yes.") }
 };
 
 ## Expects the value to be a record.
 fn expectRecord(v) {
-    ifIs { hasClass(v, Record) }
+    ifIs { Record.accepts(v) }
         { note("Yes.") }
         { die("Opaque: ", $Format::source(v)) }
 };
