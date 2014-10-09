@@ -180,6 +180,22 @@ static bool isCoreClass(ClassInfo *info) {
     return info->secret == theCoreSecret;
 }
 
+/**
+ * Shared implementation of `accepts`, which doesn't check to see if `cls`
+ * is in fact a class.
+ */
+static bool acceptsUnchecked(zvalue cls, zvalue value) {
+    for (zvalue valueCls = get_class(value);
+            valueCls != NULL;
+            valueCls = getInfo(valueCls)->parent) {
+        if (classEqUnchecked(valueCls, cls)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 //
 // Module Definitions
@@ -264,16 +280,7 @@ bool classHasSecret(zvalue cls, zvalue secret) {
 // Documented in header.
 bool hasClass(zvalue value, zvalue cls) {
     assertIsClass(cls);
-
-    for (zvalue valueCls = get_class(value);
-            valueCls != NULL;
-            valueCls = getInfo(valueCls)->parent) {
-        if (classEqUnchecked(valueCls, cls)) {
-            return true;
-        }
-    }
-
-    return false;
+    return acceptsUnchecked(cls, value);
 }
 
 // Documented in header.
@@ -306,15 +313,7 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 
 // Documented in spec.
 METH_IMPL_1(Class, accepts, value) {
-    for (zvalue valueCls = get_class(value);
-            valueCls != NULL;
-            valueCls = getInfo(valueCls)->parent) {
-        if (classEqUnchecked(valueCls, ths)) {
-            return value;
-        }
-    }
-
-    return NULL;
+    return acceptsUnchecked(ths, value) ? value : NULL;
 }
 
 // Documented in spec.
