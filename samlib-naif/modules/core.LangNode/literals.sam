@@ -32,6 +32,7 @@ def SYMBOLS = [
     @modEu,
     @mul,
     @neg,
+    @new,
     @not,
     @or,
     @perEq,

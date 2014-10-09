@@ -239,7 +239,7 @@ def parList = makeMainSequence(
     makeCode { ., expressions, . ->
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeCallOrApply(REFS::makeList, expressions*) }
+            { makeCallOrApply(SYMS::new, REFS::List, expressions*) }
     });
 
 ## Documented in spec.

@@ -16,6 +16,7 @@ import ./literals :: SYMS;
 ## Global variable names / regular variable references.
 def NAMES = [
     @Bool,
+    @List,
     @break,
     @continue,
     @eq,
