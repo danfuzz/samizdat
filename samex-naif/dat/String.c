@@ -302,10 +302,10 @@ CMETH_IMPL_1(String, castFrom, value) {
         } else {
             return stringFromZchar(result);
         }
-    } else if (valEq(cls, CLS_String)) {
-        return value;
     } else if (valEq(cls, CLS_Symbol)) {
         return stringFromZstring(zstringFromSymbol(value));
+    } else if (classAccepts(CLS_String, value)) {
+        return value;
     }
 
     return NULL;
@@ -319,10 +319,10 @@ METH_IMPL_1(String, castToward, cls) {
         if (info->s.size == 1) {
             return intFromZint(zcharFromString(ths));
         }
-    } else if (valEq(cls, CLS_String)) {
-        return ths;
     } else if (valEq(cls, CLS_Symbol)) {
         return symbolFromZstring(info->s);
+    } else if (classAccepts(cls, ths)) {
+        return ths;
     }
 
     return NULL;

@@ -12,12 +12,16 @@ String
 
 This class knows how to cast as follows:
 
+* `Core` &mdash; Returns `value`.
+
 * `Int` &mdash; Returns a single-character string with the Unicode code
   point `value`.
 
-* `String` &mdash; Returns `this`.
+* `String` &mdash; Returns `value`.
 
 * `Symbol` &mdash; Returns the name of `value` as a string.
+
+* `Value` &mdash; Returns `value`.
 
 
 <br><br>
@@ -39,6 +43,8 @@ or (if you know the name statically) `@foo.toUnlisted()`.
 
 This class knows how to cast as follows:
 
+* `Core` &mdash; Returns `this`.
+
 * `Int` &mdash; Returns the Unicode code point of the sole character of
   `this`. Only works on single-character strings.
 
@@ -49,6 +55,8 @@ This class knows how to cast as follows:
   **Note:** If you want an unlisted symbol, call `.toUnlisted()` on a
   symbol with the desired name, e.g. `name.toSymbol().toUnlisted()`
   or (if you know the name statically) `@foo.toUnlisted()`.
+
+* `Value` &mdash; Returns `this`.
 
 #### `.perEq(other) -> string | void`
 
