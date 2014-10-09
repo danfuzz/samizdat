@@ -17,12 +17,6 @@ extern zvalue CLS_SymbolTable;
 /** The standard empty symbol table value. */
 extern zvalue EMPTY_SYMBOL_TABLE;
 
-/** Global function `makeSymbolTable`: Documented in spec. */
-extern zvalue FUN_SymbolTable_makeSymbolTable;
-
-/** Global function `makeValueSymbolTable`: Documented in spec. */
-extern zvalue FUN_SymbolTable_makeValueSymbolTable;
-
 
 /**
  * Copies all the values of the given symbol table into the given result

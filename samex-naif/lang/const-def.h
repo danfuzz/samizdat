@@ -69,8 +69,6 @@ DEF_SYMBOL(loadResource,          "loadResource");
 DEF_SYMBOL(lvalue,                "lvalue");
 DEF_SYMBOL(makeObjectClass,       "makeObjectClass");
 DEF_SYMBOL(makeRecord,            "makeRecord");
-DEF_SYMBOL(makeSymbolTable,       "makeSymbolTable");
-DEF_SYMBOL(makeValueSymbolTable,  "makeValueSymbolTable");
 DEF_SYMBOL(mapping,               "mapping");
 DEF_SYMBOL(maybe,                 "maybe");
 DEF_SYMBOL(maybeValue,            "maybeValue");

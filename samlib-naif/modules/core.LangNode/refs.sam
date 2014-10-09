@@ -34,8 +34,6 @@ def NAMES = [
     @lt,
     @makeObjectClass,
     @makeRecord,
-    @makeSymbolTable,
-    @makeValueSymbolTable,
     @maybeValue,
     @ne,
     @perGe,

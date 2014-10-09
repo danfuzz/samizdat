@@ -30,8 +30,6 @@ PRIM_DEF(Value,                   CLS_Value);
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
 PRIM_DEF(makeRecord,              FUN_Record_makeRecord);
-PRIM_DEF(makeSymbolTable,         FUN_SymbolTable_makeSymbolTable);
-PRIM_DEF(makeValueSymbolTable,    FUN_SymbolTable_makeValueSymbolTable);
 PRIM_FUNC(cast,                   2, 2);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);

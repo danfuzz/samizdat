@@ -103,20 +103,7 @@ in cases where `key` was not already bound.
 <br><br>
 ### Primitive Definitions
 
-#### `makeValueSymbolTable(keys*, value) -> symbolTable`
-
-This makes a symbol table which maps any number of keys (including none)
-to the same value. If no keys are specified, then this function returns
-the empty symbol table. This function is meant to be exactly parallel to
-`makeValueMap` (see which).
-
-Note that the argument list is "stretchy" in front, which isn't really
-representable in Samizdat syntax as presented.
-
-#### `makeSymbolTable(mappings*) -> symbolTable`
-
-This makes a symbol table from a series of mappings, given as pairs of
-symbol-then-value arguments.
+(none)
 
 
 <br><br>

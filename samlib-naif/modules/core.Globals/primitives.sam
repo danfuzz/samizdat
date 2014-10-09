@@ -42,8 +42,6 @@ export
     makeObject,
     makeObjectClass,
     makeRecord,
-    makeSymbolTable,
-    makeValueSymbolTable,
     maybeCast,
     maybeValue,
     note,
