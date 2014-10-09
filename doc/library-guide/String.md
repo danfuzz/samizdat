@@ -25,18 +25,6 @@ This class knows how to cast as follows:
 
 
 <br><br>
-### Method Definitions: `String` protocol
-
-#### `.toSymbol() -> symbol`
-
-Returns an interned symbol whose name is `this`.
-
-**Note:** If you want an unlisted symbol, call `.toUnlisted()` on a
-symbol with the desired name, e.g. `name.toSymbol().toUnlisted()`
-or (if you know the name statically) `@foo.toUnlisted()`.
-
-
-<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.castToward(cls) -> . | void`
@@ -53,7 +41,7 @@ This class knows how to cast as follows:
 * `Symbol` &mdash; Returns an interned symbol whose name is `this`.
 
   **Note:** If you want an unlisted symbol, call `.toUnlisted()` on a
-  symbol with the desired name, e.g. `name.toSymbol().toUnlisted()`
+  symbol with the desired name, e.g. `cast(Symbol, name).toUnlisted()`
   or (if you know the name statically) `@foo.toUnlisted()`.
 
 * `Value` &mdash; Returns `this`.

@@ -539,11 +539,6 @@ METH_IMPL_0(String, toString) {
 }
 
 // Documented in spec.
-METH_IMPL_0(String, toSymbol) {
-    return symbolFromZstring(getInfo(ths)->s);
-}
-
-// Documented in spec.
 METH_IMPL_1(String, totalEq, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     return uncheckedEq(ths, other) ? ths : NULL;
@@ -598,7 +593,6 @@ MOD_INIT(String) {
             METH_BIND(String, sliceInclusive),
             METH_BIND(String, toInt),
             METH_BIND(String, toString),
-            METH_BIND(String, toSymbol),
             METH_BIND(String, totalEq),
             METH_BIND(String, totalOrder),
             METH_BIND(String, valueList),
