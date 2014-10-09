@@ -126,6 +126,10 @@ Topics
   * Precise Garbage Collection for C (by automated rewriting) &mdash;
     <http://www.cs.utah.edu/~regehr/papers/ismm15-rafkind.pdf>
 
+* Meta-Object Protocol
+  * Metaclass (Wikipedia article) &mdash;
+    <https://en.wikipedia.org/wiki/Metaclass>
+
 * Parsing and Pattern Matching
   * Compiling Pattern Matching to good Decision Trees &mdash;
     <http://www.cs.tufts.edu/~nr/cs257/archive/luc-maranget/jun08.pdf>
