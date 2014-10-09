@@ -9,6 +9,45 @@ keys to values, where the keys are ordered by the total order of values
 as defined by the global function `order()`.
 
 <br><br>
+### Class Method Definitions
+
+#### `.new(values*) -> map`
+
+This makes a map from a series of mappings, given as pairs of
+key-then-value arguments. For example:
+
+```
+{a: 10}           is equivalent to Map.new(@a, 10, @b, 20)
+{a: 10, "x": 20}  is equivalent to Map.new(@a, 10, "x", 20)
+[etc.]
+```
+
+It is a fatal error (terminating the runtime) to pass an odd number of
+arguments to this function.
+
+**Syntax Note:** Used in the translation of `{key: value, ...}`
+and `switch` forms.
+
+#### `.singleValue(keys*, value) -> map`
+
+This makes a map which maps any number of keys (including none)
+to the same value. If no keys are specified, then this function returns
+the empty map. For example:
+
+```
+v = {(k1): v};      is equivalent to  v = Map.singleValue(k1, v);
+v = {[k1, k2]*: v}; is equivalent to  v = Map.singleValue(k1, k2, v);
+[etc.]
+```
+
+Note that the argument list is "stretchy" in front, which isn't
+representable in real Samizdat syntax.
+
+**Syntax Note:** Used in the translation of `{key: value, ...}`
+and `switch` forms.
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.perEq(other) -> map | void`
