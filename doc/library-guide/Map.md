@@ -157,41 +157,7 @@ a map of the remaining mappings. On an empty map, this just returns void.
 <br><br>
 ### Primitive Definitions
 
-#### `makeMap(mappings*) -> map`
-
-This makes a symbol table from a series of mappings, given as pairs of
-symbol-then-value arguments. For example:
-
-```
-{a: 10}         is equivalent to makeMap(@a, 10, @b, 20)
-{a: 10, b: 20}  is equivalent to makeMap(@a, 10, @b, 20)
-[etc.]
-```
-
-It is a fatal error (terminating the runtime) to pass an odd number of
-arguments to this function.
-
-**Syntax Note:** Used in the translation of `{key: value, ...}`
-and `switch` forms.
-
-#### `makeValueMap(keys*, value) -> map`
-
-This makes a map which maps any number of keys (including none)
-to the same value. If no keys are specified, then this function returns
-the empty map. For example:
-
-```
-v = {(k1): v};      is equivalent to  v = makeValueMap(k1, v);
-v = {[k1, k2]*: v}; is equivalent to  v = makeValueMap(k1, k2, v);
-[etc.]
-```
-
-Note that the argument list is "stretchy" in front, which isn't really
-representable in Samizdat syntax as presented.
-
-**Syntax Note:** Used in the translation of `{key: value, ...}`
-and `switch` forms.
-
+(none)
 
 <br><br>
 ### In-Language Definitions
