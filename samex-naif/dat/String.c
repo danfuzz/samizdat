@@ -289,6 +289,28 @@ zstring zstringFromString(zvalue string) {
 // Class Definition
 //
 
+// Documented in spec.
+CMETH_IMPL_1(String, castFrom, value) {
+    zvalue cls = get_class(value);
+
+    if (valEq(cls, CLS_Int)) {
+        zint n = zintFromInt(value);
+        zchar result;
+
+        if (!zcharFromZint(&result, n)) {
+            die("Invalid int value for char: %lld", n);
+        } else {
+            return stringFromZchar(result);
+        }
+    } else if (valEq(cls, CLS_String)) {
+        return value;
+    } else if (valEq(cls, CLS_Symbol)) {
+        return stringFromZstring(zstringFromSymbol(value));
+    }
+
+    return NULL;
+}
+
 // Documented in header.
 METH_IMPL_1(String, castToward, cls) {
     StringInfo *info = getInfo(ths);
@@ -556,7 +578,9 @@ MOD_INIT(String) {
     MOD_USE(Sequence);
 
     CLS_String = makeCoreClass(SYM(String), CLS_Core,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(String, castFrom),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(String, cat),
             METH_BIND(String, castToward),

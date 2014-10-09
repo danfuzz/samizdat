@@ -4,6 +4,22 @@ Samizdat Layer 0: Core Library
 String
 ------
 
+
+<br><br>
+### Class Method Definitions
+
+#### `.castFrom(value) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Int` &mdash; Returns a single-character string with the Unicode code
+  point `value`.
+
+* `String` &mdash; Returns `this`.
+
+* `Symbol` &mdash; Returns the name of `value` as a string.
+
+
 <br><br>
 ### Method Definitions: `String` protocol
 
