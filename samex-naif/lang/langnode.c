@@ -909,11 +909,11 @@ zvalue withModuleDefs(zvalue node) {
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeRecord),
         listFrom2(
-            makeLiteral(SYM(module)),
+            SYMS(module),
             makeCall(REFS(makeSymbolTable),
                 listFrom4(
-                    makeLiteral(SYM(exports)), yieldExports,
-                    makeLiteral(SYM(info)),    yieldInfo))));
+                    SYMS(exports), yieldExports,
+                    SYMS(info),    yieldInfo))));
 
     return makeRecord(
         get_name(node),
