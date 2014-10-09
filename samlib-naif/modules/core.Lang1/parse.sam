@@ -803,7 +803,7 @@ def parPexSet = makeMainSequence(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
-                "".cat(strings*).collect { ch -> ch.toSymbol() }
+                "".cat(strings*).collect { ch -> cast(Symbol, ch) }
             }),
         makeMainSequence(
             makeRepeat(parPexToken, 1),

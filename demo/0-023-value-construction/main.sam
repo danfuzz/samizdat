@@ -213,7 +213,7 @@ note("\nRecord");
 
 expectSame(@eek{x: 10}, @(@eek){x: 10});
 expectSame(@eek{x: 10}, @eek{x: (5).add(5)});
-expectSame(@eek{x: 10}, @("eek".toSymbol()){x: 10});
+expectSame(@eek{x: 10}, @(cast(Symbol, "eek")){x: 10});
 
 expectDifferent(@x{}, @x{a: 1});
 expectDifferent(@x{a: 1}, @x{a: 2});

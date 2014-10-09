@@ -125,7 +125,7 @@ fn processYieldDef(clo) {
             ],
             cleanups: ["jumpRetire(jump)"],
             vars: {(name): {
-                    origName: "<\(name)>".toSymbol(),
+                    origName: cast(Symbol, "<\(name)>"),
                     kind:     "yield",
                     name:     safeName("yield", name),
                     init:     "makeResult(jump)"

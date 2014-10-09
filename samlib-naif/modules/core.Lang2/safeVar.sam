@@ -152,8 +152,8 @@ fn safeIndex(node, baseStr) {
 ## where `index` is `-1` consistently with the other functions exported here.
 export fn makeVarName(baseStr, index) {
     return ifIs { eq(index, -1) }
-        { baseStr.toSymbol() }
-        { baseStr.cat($Format::int(index)).toSymbol() }
+        { cast(Symbol, baseStr) }
+        { cast(Symbol, baseStr.cat($Format::int(index))) }
 };
 
 ## Returns an unused variable name within `node`, either the given `baseStr` or
