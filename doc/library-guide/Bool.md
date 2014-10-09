@@ -64,7 +64,7 @@ Compares the given boolean values, ordering `false` before `true`.
 
 
 <br><br>
-### Method Definitions: One-Offs
+### Method Definitions: `Bool` protocol
 
 #### `.toLogic() -> true | void`
 
