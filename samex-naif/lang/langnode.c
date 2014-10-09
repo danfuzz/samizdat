@@ -466,7 +466,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
         listFrom4(
             makeLiteral(name),
             access,
-            makeLiteral(EMPTY_SYMBOL_TABLE),
+            LITS(EMPTY_SYMBOL_TABLE),
             instanceMethodTable));
 
     return withTop(makeVarDef(name, call));
@@ -711,7 +711,7 @@ zvalue makeLiteral(zvalue value) {
 // Documented in spec.
 zvalue makeMapExpression(zvalue mappings) {
     return makeMapLikeExpression(
-        mappings, makeLiteral(EMPTY_MAP), REFS(makeMap), REFS(makeValueMap));
+        mappings, LITS(EMPTY_MAP), REFS(makeMap), REFS(makeValueMap));
 };
 
 // Documented in spec.
@@ -744,7 +744,7 @@ zvalue makeSymbolLiteral(zvalue name) {
 // Documented in spec.
 zvalue makeSymbolTableExpression(zvalue mappings) {
     return makeMapLikeExpression(
-        mappings, makeLiteral(EMPTY_SYMBOL_TABLE),
+        mappings, LITS(EMPTY_SYMBOL_TABLE),
         REFS(makeSymbolTable), REFS(makeValueSymbolTable));
 };
 
@@ -904,7 +904,7 @@ zvalue withModuleDefs(zvalue node) {
     }
 
     zvalue yieldExports = (exSize == 0)
-        ? makeLiteral(EMPTY_SYMBOL_TABLE)
+        ? LITS(EMPTY_SYMBOL_TABLE)
         : makeCall(REFS(makeSymbolTable), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeRecord),

@@ -8,6 +8,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
+#include "type/SymbolTable.h"
 #include "type/define.h"
 
 #include "const.h"

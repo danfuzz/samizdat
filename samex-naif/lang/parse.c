@@ -568,7 +568,7 @@ DEF_PARSE(list) {
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return (get_size(expressions) == 0)
-        ? makeLiteral(EMPTY_LIST)
+        ? LITS(EMPTY_LIST)
         : makeCallOrApply(SYMS(new), listPrepend(LITS(List), expressions));
 }
 
