@@ -15,10 +15,9 @@ keywords `true` and `false` refer to the only two values of this class.
 
 This class knows how to cast as follows:
 
+* `Bool` &mdash; Returns `value`.
 * `Core` &mdash; Returns `value`.
-
 * `Int` &mdash; Returns `false` given `0`, or `1` given `true`.
-
 * `Value` &mdash; Returns `value`.
 
 #### `.fromLogic(value?) -> bool`
@@ -37,11 +36,10 @@ given no argument, this returns `false`.
 
 This class knows how to cast as follows:
 
-* `Core` &mdash; Returns `value`.
-
+* `Bool` &mdash; Returns `this`.
+* `Core` &mdash; Returns `this`.
 * `Int` &mdash; Returns `0` given `false`, or `true` given `1`.
-
-* `Value` &mdash; Returns `value`.
+* `Value` &mdash; Returns `this`.
 
 #### `.debugString() -> string`
 
