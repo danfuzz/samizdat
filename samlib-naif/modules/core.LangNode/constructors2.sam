@@ -153,10 +153,10 @@ export fn makeCallOrApply(function, values*) {
 
     ## Convert the values as if interpolation needs to be handled. If in the
     ## end it doesn't, then the original values are used as-is. This converts
-    ## runs of non-interpolated values to `makeList(ac, ac, ...)`, which
+    ## runs of non-interpolated values to `List.new(ac, ac, ...)`, which
     ## converts cleanly at runtime as part of the ultimate call to `cat`.
 
-    var pending = [];       ## Non-interpolated values, to be `makeList`ed.
+    var pending = [];       ## Non-interpolated values, to be `List.new()`ed.
     var cookedValues = [];  ## Fully-processed values (of either type).
 
     fn addToCooked(actual) {
@@ -166,7 +166,7 @@ export fn makeCallOrApply(function, values*) {
     fn addPendingToCooked() {
         ifIs { perNe(pending, []) }
             {
-                addToCooked(makeCall(REFS::makeList, pending*));
+                addToCooked(makeCall(SYMS::new, REFS::List, pending*));
                 pending := [];
             }
     };
