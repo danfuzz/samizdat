@@ -123,12 +123,12 @@ static zvalue expandYield(zvalue table) {
 };
 
 // Documented in `LangNode` source.
-static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
-        zvalue makeMultiValue, zvalue makeOneValue) {
+static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
+        zvalue emptyLit) {
     zint size = get_size(mappings);
 
     if (size == 0) {
-        return emptyLiteral;
+        return emptyLit;
     }
 
     zvalue singleArgs[size * 2];
@@ -143,8 +143,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
 
     #define addSingleToCat() do { \
         if (singleAt != 0) { \
-            addToCat(makeCall(makeMultiValue, \
-                listFromArray(singleAt, singleArgs))); \
+            addToCat(makeCall(SYMS(new), \
+                listPrepend(clsLit, listFromArray(singleAt, singleArgs)))); \
             singleAt = 0; \
         } \
     } while (0)
@@ -166,8 +166,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
             }
             if (!handled) {
                 addSingleToCat();
-                addToCat(makeCallOrApply(makeOneValue,
-                    listAppend(keys, value)));
+                addToCat(makeCallOrApply(SYMS(singleValue),
+                    listPrepend(clsLit, listAppend(keys, value))));
             }
         } else {
             addSingleToCat();
@@ -182,7 +182,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
 
     addSingleToCat();
     return makeCall(SYMS(cat),
-        listPrepend(emptyLiteral, listFromArray(catAt, catArgs)));
+        listPrepend(emptyLit, listFromArray(catAt, catArgs)));
 };
 
 
@@ -710,8 +710,7 @@ zvalue makeLiteral(zvalue value) {
 
 // Documented in spec.
 zvalue makeMapExpression(zvalue mappings) {
-    return makeMapLikeExpression(
-        mappings, LITS(EMPTY_MAP), REFS(makeMap), REFS(makeValueMap));
+    return makeMapLikeExpression(mappings, LITS(Map), LITS(EMPTY_MAP));
 };
 
 // Documented in spec.
@@ -744,8 +743,7 @@ zvalue makeSymbolLiteral(zvalue name) {
 // Documented in spec.
 zvalue makeSymbolTableExpression(zvalue mappings) {
     return makeMapLikeExpression(
-        mappings, LITS(EMPTY_SYMBOL_TABLE),
-        REFS(makeSymbolTable), REFS(makeValueSymbolTable));
+        mappings, LITS(SymbolTable), LITS(EMPTY_SYMBOL_TABLE));
 };
 
 // Documented in spec.

@@ -116,7 +116,7 @@
 #define FUNC_IMPL_2_rest(name, a0, a1, aRest) \
     static zvalue IMPL_##name(zvalue, zvalue, zint, const zvalue *); \
     FUNC_IMPL_MIN_MAX(name, 2, -1) { \
-        return IMPL_##name(_args[0], _args[1], _argsSize - 1, &_args[2]); \
+        return IMPL_##name(_args[0], _args[1], _argsSize - 2, &_args[2]); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, \
             zint aRest##Size, const zvalue *aRest)
