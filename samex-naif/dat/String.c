@@ -304,7 +304,7 @@ CMETH_IMPL_1(String, castFrom, value) {
         }
     } else if (valEq(cls, CLS_Symbol)) {
         return stringFromZstring(zstringFromSymbol(value));
-    } else if (classAccepts(CLS_String, value)) {
+    } else if (classAccepts(thsClass, value)) {
         return value;
     }
 
