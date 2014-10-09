@@ -322,7 +322,7 @@ tokInt2 := {:
 ## parsing.
 def tokHexChar = {:
     digits = tokHexDigit+
-    { intFromDigits(16, digits).toString() }
+    { cast(String, intFromDigits(16, digits)) }
 :};
 
 ## Parses a single entity-named character. This is called during `\&...;`
@@ -336,11 +336,11 @@ def tokNamedChar = {:
 |
     "#x"
     digits = tokHexDigit+
-    { intFromDigits(16, digits).toString() }
+    { cast(String, intFromDigits(16, digits)) }
 |
     "#"
     digits = tokDecDigit+
-    { intFromDigits(10, digits).toString() }
+    { cast(String, intFromDigits(10, digits)) }
 :};
 
 ## Parses the inner portion of a string interpolation expression. This

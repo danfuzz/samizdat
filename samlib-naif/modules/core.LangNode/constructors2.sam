@@ -216,7 +216,7 @@ export fn makeClassDef(name, attributes, methods) {
 
     filterPump(attribMap.keyList()) { key ->
         ifNot { CLASS_ATTRIBUTES.get(key) }
-            { die("Invalid attribute: ", key.toString()) }
+            { die("Invalid attribute: ", cast(String, key)) }
     };
 
     def access = ifValueOr { attribMap.get(@access) }
@@ -228,7 +228,7 @@ export fn makeClassDef(name, attributes, methods) {
     filterPump(methods) { one ->
         def name = one::name;
         ifIs { instanceMethods.get(name) }
-            { die("Duplicate method: ", name.toString()) };
+            { die("Duplicate method: ", cast(String, name)) };
         instanceMethods := {instanceMethods*, (name): [makeLiteral(name), one]}
     };
 

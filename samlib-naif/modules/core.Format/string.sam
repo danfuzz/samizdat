@@ -14,27 +14,27 @@ import ./int :: intWithBase;
 
 
 ## The first Unicode surrogate code point.
-def CHAR_SURROGATE_START = (55296).toString();  ## U+D800
+def CHAR_SURROGATE_START = cast(String, 55296);  ## U+D800
 
 ## The last Unicode surrogate code point.
-def CHAR_SURROGATE_END = (57343).toString();  ## U+DFFF
+def CHAR_SURROGATE_END = cast(String, 57343);    ## U+DFFF
 
 ## The last Unicode code point.
-def CHAR_UNICODE_END = (1114111).toString();  ## U+10FFFF
+def CHAR_UNICODE_END = cast(String, 1114111);   ## U+10FFFF
 
 ## Map of special-case characters to either their stringified forms or
 ## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
-    (makeInclusiveRange((1).toString(), (31).toString()))*: "x",
-    (makeInclusiveRange((127).toString(), (159).toString()))*: "x",
-    ((65534).toString()): "x",
-    ((65535).toString()): "x",
-    ("\0"): "\\0",
-    ("\n"): "\\n",
-    ("\r"): "\\r",
-    ("\t"): "\\t",
-    ("\""): "\\\"",
-    ("\\"): "\\\\"
+    (makeInclusiveRange(cast(String, 1), cast(String, 31)))*: "x",
+    (makeInclusiveRange(cast(String, 127), cast(String, 159)))*: "x",
+    cast(String, 65534): "x",
+    cast(String, 65535): "x",
+    "\0": "\\0",
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
+    "\"": "\\\"",
+    "\\": "\\\\"
 };
 
 ## Does hex character conversion.

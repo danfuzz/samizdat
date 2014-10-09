@@ -28,7 +28,7 @@ export fn isIdentifier(symbol) {
     ifNot { Symbol.accepts(symbol) }
         { return };
 
-    def string = symbol.toString();
+    def string = cast(String, symbol);
 
     ifIs { eq(string, "") }
         { return };
