@@ -45,12 +45,6 @@ bool classHasParent(zvalue cls, zvalue parent);
 bool classHasSecret(zvalue cls, zvalue secret);
 
 /**
- * Returns true iff the class of the given value (that is, `get_class(value)`)
- * is either the given class or is a subclass of the given class.
- */
-bool hasClass(zvalue value, zvalue cls);
-
-/**
  * Returns true iff the classes of the given values (that is, `get_class()` on
  * each) are the same.
  */

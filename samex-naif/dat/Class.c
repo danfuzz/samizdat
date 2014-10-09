@@ -284,12 +284,6 @@ bool classHasSecret(zvalue cls, zvalue secret) {
 }
 
 // Documented in header.
-bool hasClass(zvalue value, zvalue cls) {
-    assertIsClass(cls);
-    return acceptsUnchecked(cls, value);
-}
-
-// Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
     return classEqUnchecked(get_class(value), get_class(other));
 }
