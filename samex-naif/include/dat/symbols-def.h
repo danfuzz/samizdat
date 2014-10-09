@@ -33,6 +33,7 @@ DEF_SYMBOL(Value);
 
 // The following are all method names. See the spec for details.
 DEF_SYMBOL(abs);
+DEF_SYMBOL(accepts);
 DEF_SYMBOL(add);
 DEF_SYMBOL(and);
 DEF_SYMBOL(bit);

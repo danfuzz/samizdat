@@ -36,6 +36,11 @@ Returns the parent class (that is, the superclass) of the given class. This
 returns a class for all classes except `Value`. For `Value`, this returns
 void.
 
+#### `.accepts(value) -> . | void`
+
+Returns `value` if it is of `this` class (including being of a sublass
+of `this`), or void if not.
+
 
 <br><br>
 ### Method Definitions: `Value` protocol

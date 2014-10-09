@@ -305,6 +305,19 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 //
 
 // Documented in spec.
+METH_IMPL_1(Class, accepts, value) {
+    for (zvalue valueCls = get_class(value);
+            valueCls != NULL;
+            valueCls = getInfo(valueCls)->parent) {
+        if (classEqUnchecked(valueCls, ths)) {
+            return value;
+        }
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
 METH_IMPL_0(Class, debugString) {
     ClassInfo *info = getInfo(ths);
     const char *label;
@@ -521,6 +534,7 @@ void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
         NULL,
         symbolTableFromArgs(
+            METH_BIND(Class, accepts),
             METH_BIND(Class, debugString),
             METH_BIND(Class, debugSymbol),
             METH_BIND(Class, gcMark),
