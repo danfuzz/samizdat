@@ -387,8 +387,8 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
     #define addPendingToCooked() do { \
         if (pendAt != 0) { \
-            addToCooked(makeCall(REFS(makeList), \
-                listFromArray(pendAt, pending))); \
+            addToCooked(makeCall(SYMS(new), \
+                listPrepend(LITS(List), listFromArray(pendAt, pending)))); \
             pendAt = 0; \
         } \
     } while (0)
