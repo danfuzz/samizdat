@@ -39,6 +39,8 @@ DEF_SYMBOL(and);
 DEF_SYMBOL(bit);
 DEF_SYMBOL(bitSize);
 DEF_SYMBOL(call);
+DEF_SYMBOL(castFrom);
+DEF_SYMBOL(castToward);
 DEF_SYMBOL(cat);
 DEF_SYMBOL(collect);
 DEF_SYMBOL(debugString);

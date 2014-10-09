@@ -316,6 +316,11 @@ METH_IMPL_1(Class, accepts, value) {
     return acceptsUnchecked(ths, value) ? value : NULL;
 }
 
+// Documented in header.
+METH_IMPL_1(Class, castFrom, value) {
+    return acceptsUnchecked(ths, value) ? value : NULL;
+}
+
 // Documented in spec.
 METH_IMPL_0(Class, debugString) {
     ClassInfo *info = getInfo(ths);
@@ -534,6 +539,7 @@ void bindMethodsForClass(void) {
         NULL,
         symbolTableFromArgs(
             METH_BIND(Class, accepts),
+            METH_BIND(Class, castFrom),
             METH_BIND(Class, debugString),
             METH_BIND(Class, debugSymbol),
             METH_BIND(Class, gcMark),
