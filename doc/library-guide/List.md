@@ -7,6 +7,14 @@ List
 A `List` is a kind of `Sequence`.
 
 <br><br>
+### Class Method Definitions
+
+#### `.new(values*) -> list`
+
+Constructs a list consisting of the given values, in order.
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.perEq(other) -> list | void`

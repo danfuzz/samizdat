@@ -64,6 +64,7 @@ DEF_SYMBOL(mod);
 DEF_SYMBOL(modEu);
 DEF_SYMBOL(mul);
 DEF_SYMBOL(neg);
+DEF_SYMBOL(new);
 DEF_SYMBOL(nextValue);
 DEF_SYMBOL(not);
 DEF_SYMBOL(nth);

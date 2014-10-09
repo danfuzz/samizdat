@@ -150,6 +150,8 @@
 
 #define CMETH_IMPL_1(cls, name, a0) \
     FUNC_IMPL_2(class_##cls##_##name, thsClass, a0)
+#define CMETH_IMPL_rest(cls, name, aRest) \
+    FUNC_IMPL_1_rest(class_##cls##_##name, ths, aRest)
 #define CMETH_IMPL_0_1(cls, name, a0) \
     FUNC_IMPL_1_2(class_##cls##_##name, thsClass, a0)
 
