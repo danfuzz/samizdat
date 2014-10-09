@@ -298,7 +298,7 @@ CMETH_IMPL_1(String, castFrom, value) {
         zchar result;
 
         if (!zcharFromZint(&result, n)) {
-            die("Invalid int value for char: %lld", n);
+            return NULL;
         } else {
             return stringFromZchar(result);
         }
