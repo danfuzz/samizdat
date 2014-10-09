@@ -54,33 +54,6 @@ returns void.
 <br><br>
 ### Primitive Definitions
 
-#### `maybeValue(function) -> list`
-
-Function call helper, to deal with value-or-void situations. This calls
-`function` with no arguments, wrapping its return value in a list and in
-turn returning that list. That is, if `function` returns `value`, then this
-function returns `[value]` (a single-element list), and if `function` returns
-void, then this function returns `[]` (the empty list).
-
-This function could be implemented as:
-
-```
-fn maybeValue(function) {
-    return (def v = function()) & [v] | []
-}
-```
-
-or more primitively as:
-
-```
-fn maybeValue(function) {
-    return ifValue(function, { v -> [v] }, { -> [] })
-}
-```
-
-**Syntax Note:** Used in the translation of string interpolation and
-`expression?` forms.
-
 #### `stdCollect(generator, optFilterFunction?) -> list`
 
 "Standard" implementation of `collect`, in terms of `nextValue`. This
