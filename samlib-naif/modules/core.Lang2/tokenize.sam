@@ -235,7 +235,7 @@ fn processStringParts(parts) {
     $Generator::filterPump(parts) { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
-        ifIs { hasClass(part, Record) }
+        ifIs { Record.accepts(part) }
             {
                 ifIs { part.hasName(@error) }
                     { return part }
@@ -249,10 +249,10 @@ fn processStringParts(parts) {
                 yield /next
             };
 
-        ifIs { hasClass(part, String) }
+        ifIs { String.accepts(part) }
             {
                 def lastElem = reverseNth(elems, 0);
-                ifIs { hasClass(lastElem, String) }
+                ifIs { String.accepts(lastElem) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
@@ -270,7 +270,7 @@ fn processStringParts(parts) {
     ## Check for a simple result.
     ifIs { eq(elems.get_size(), 1) }
         {
-            ifValue { hasClass(elems*, String) }
+            ifValue { String.accepts(elems*) }
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.

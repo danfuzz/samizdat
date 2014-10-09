@@ -1315,7 +1315,7 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = filterAll(token::value) { elem ->
-            ifIs { hasClass(elem, String) }
+            ifIs { String.accepts(elem) }
                 { makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
@@ -2126,7 +2126,7 @@ def parSwitchExpression = {:
         def caseClauses = filterAll(cases) { case ->
             def keys = case::keys;
             def code = finishCode(case);
-            ifIs { hasClass(keys, List) }
+            ifIs { List.accepts(keys) }
                 { makeCallOrApply(REFS::makeValueMap, keys*, code) }
         };
         def caseMap = makeCallOrApply(SYMS::cat,
@@ -2325,7 +2325,7 @@ parExpression2 := {:
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { hasClass(expression, String) }
+    def tokens = ifIs { String.accepts(expression) }
         { tokenize(expression) }
         { expression };
 
@@ -2334,7 +2334,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { hasClass(program, String) }
+    def tokens = ifIs { String.accepts(program) }
         { tokenize(program) }
         { program };
 

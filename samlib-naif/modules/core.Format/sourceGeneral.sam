@@ -68,7 +68,7 @@ fn nameString(prefix, name) {
 
 ## Stringifies a map key.
 fn keyString(key) {
-    ifIs { hasClass(key, Symbol) }
+    ifIs { Symbol.accepts(key) }
         { return nameString("", key) };
 
     ifValue { SPECIAL_VALUES.get(key) }

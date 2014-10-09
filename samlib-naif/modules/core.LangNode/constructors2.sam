@@ -285,7 +285,7 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(baseData) {
-    def table = ifValueOr { hasClass(baseData, SymbolTable) }
+    def table = ifValueOr { SymbolTable.accepts(baseData) }
         { baseData.get_data() };
     def formals = ifValueOr { table::formals } { [] };
     var statements = ifValueOr { table::statements } { [] };

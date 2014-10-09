@@ -902,7 +902,7 @@ parOpExpression := parUnaryExpression;
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { hasClass(expression, String) }
+    def tokens = ifIs { String.accepts(expression) }
         { tokenize(expression) }
         { expression };
 
@@ -911,7 +911,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { hasClass(program, String) }
+    def tokens = ifIs { String.accepts(program) }
         { tokenize(program) }
         { program };
 

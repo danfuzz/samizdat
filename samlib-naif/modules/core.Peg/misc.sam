@@ -34,7 +34,7 @@ fn nameListFromString(string) {
 ## Documented in spec.
 export fn apply(rule, input) {
     def result;
-    def generator = ifIs { hasClass(input, String) }
+    def generator = ifIs { String.accepts(input) }
         {
             ## This converts generated characters into tokens with the
             ## characters as the class name.
