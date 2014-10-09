@@ -4,15 +4,20 @@
 
 #include <stddef.h>
 
+#include "type/List.h"
 #include "type/Map.h"
 #include "type/define.h"
 
 #include "const.h"
+#include "langnode.h"
 
 
 //
 // Define globals for all of the constants.
 //
+
+#define DEF_LITERAL(name, value) \
+    zvalue LIT_##name = NULL
 
 #define DEF_STRING(name, str) \
     zvalue STR_##name = NULL
@@ -26,6 +31,7 @@
 
 #include "const-def.h"
 
+#undef DEF_LITERAL
 #undef DEF_STRING
 #undef DEF_TOKEN
 #undef DEF_SYMBOL
@@ -40,6 +46,9 @@ MOD_INIT(lang_const) {
     zstackPointer save = datFrameStart();
 
     MOD_USE(Value);
+
+    #define DEF_LITERAL(name, value) \
+        LIT_##name = datImmortalize(makeLiteral(value))
 
     #define DEF_STRING(name, str) \
         STR_##name = datImmortalize(stringFromUtf8(-1, str))

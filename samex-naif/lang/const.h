@@ -15,6 +15,10 @@
 // Declare globals for all of the constants.
 //
 
+#define DEF_LITERAL(name, value) \
+    extern zvalue LIT_##name \
+    // No semicolon here, so that use sites require it.
+
 #define DEF_STRING(name, str) \
     extern zvalue STR_##name \
     // No semicolon here, so that use sites require it.
@@ -30,6 +34,7 @@
 
 #include "const-def.h"
 
+#undef DEF_LITERAL
 #undef DEF_STRING
 #undef DEF_TOKEN
 #undef DEF_SYMBOL

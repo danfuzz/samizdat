@@ -569,7 +569,7 @@ DEF_PARSE(list) {
 
     return (get_size(expressions) == 0)
         ? makeLiteral(EMPTY_LIST)
-        : makeCallOrApply(SYMS(new), listPrepend(REFS(List), expressions));
+        : makeCallOrApply(SYMS(new), listPrepend(LITS(List), expressions));
 }
 
 // Documented in spec.
