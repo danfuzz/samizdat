@@ -216,7 +216,7 @@ export fn makeClassDef(name, attributes, methods) {
 
     filterPump(attribMap.keyList()) { key ->
         ifNot { CLASS_ATTRIBUTES.get(key) }
-            { die("Invalid attribute: ", key.toString()) }
+            { die("Invalid attribute: ", cast(String, key)) }
     };
 
     def access = ifValueOr { attribMap.get(@access) }
@@ -228,7 +228,7 @@ export fn makeClassDef(name, attributes, methods) {
     filterPump(methods) { one ->
         def name = one::name;
         ifIs { instanceMethods.get(name) }
-            { die("Duplicate method: ", name.toString()) };
+            { die("Duplicate method: ", cast(String, name)) };
         instanceMethods := {instanceMethods*, (name): [makeLiteral(name), one]}
     };
 
@@ -285,7 +285,7 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(baseData) {
-    def table = ifValueOr { hasClass(baseData, SymbolTable) }
+    def table = ifValueOr { SymbolTable.accepts(baseData) }
         { baseData.get_data() };
     def formals = ifValueOr { table::formals } { [] };
     var statements = ifValueOr { table::statements } { [] };
@@ -347,7 +347,7 @@ export fn makeImport(baseData) {
             ## No `name` provided, so figure out a default one.
             data := @{
                 data*,
-                name: "$".cat(get_baseName(data::source)).toSymbol()
+                name: cast(Symbol, "$".cat(get_baseName(data::source)))
             }
         };
 

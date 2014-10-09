@@ -82,31 +82,3 @@ Returns void if `n < 0` or `n >= #value`. It is an error
 
 This function is intended for "sequence-like" values which have
 strongly-ordered constituent parts of some sort.
-
-#### `.toInt() -> int`
-
-Some values have an obvious correspondence to an integer quantity. If
-so, then this method can be used to access it.
-
-It is discouraged to bind this to a function that sometimes returns void;
-it is preferable to cause an error.
-
-It is also discouraged to use this method for lossy conversion.
-
-#### `.toNumber() -> number`
-
-Some values have an obvious correspondence to a numeric quantity. If
-so, then this method can be used to access it. It is discouraged to
-bind this to a function that sometimes returns void; it is preferable
-to cause an error.
-
-#### `.toString() -> string`
-
-Some values have an obvious correspondence to a string value. If
-so, then this method can be used to access it.
-
-It is discouraged to bind this to a function that sometimes returns void;
-it is preferable to cause an error.
-
-It is discouraged to use this method for textual conversion of a value
-to a string (e.g. turning the int value 242 into the string `"242"`).

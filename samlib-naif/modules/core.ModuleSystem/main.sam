@@ -129,7 +129,7 @@ fn checkExternalSource(source) {
     def name = ifValueOr { source::name }
         { die("Invalid external source: no `name`") };
 
-    ifNot { hasClass(name, String) }
+    ifNot { String.accepts(name) }
         { die("Invalid external source: `name` not a string") };
     ifIs { eq(name, "") }
         { die("Invalid external source: empty `name`") };
@@ -182,7 +182,7 @@ fn checkInternalSource(source) {
     def name = ifValueOr { source::name }
         { die("Invalid internal source: no `name`") };
 
-    ifNot { hasClass(name, String) }
+    ifNot { String.accepts(name) }
         { die("Invalid internal source: `name` not a string") };
     ifIs { eq(name, "") }
         { die("Invalid internal source: empty `name`") };
@@ -205,7 +205,7 @@ fn checkInternalSource(source) {
 fn checkAbsolutePath(path) {
     ifIs { eq(path, "") }
         { die("Invalid file path: empty string") };
-    ifNot { hasClass(path, String) }
+    ifNot { String.accepts(path) }
         { die("Invalid file path: not a string") };
     ifNot { eq(path.get(0), "/") }
         { die("Invalid file path: not absolute") }

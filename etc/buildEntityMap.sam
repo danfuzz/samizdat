@@ -50,7 +50,7 @@ def parCodePoint = {:
         $Generator::filterPump(digits) { digit ->
             value := value * 16 + digit
         };
-        value.toString();
+        cast(String, value)
     }
 :};
 

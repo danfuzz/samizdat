@@ -125,7 +125,7 @@ fn processYieldDef(clo) {
             ],
             cleanups: ["jumpRetire(jump)"],
             vars: {(name): {
-                    origName: "<\(name)>".toSymbol(),
+                    origName: cast(Symbol, "<\(name)>"),
                     kind:     "yield",
                     name:     safeName("yield", name),
                     init:     "makeResult(jump)"
@@ -156,7 +156,7 @@ fn processFreeVars(clo) {
 ## (must be safe), an arbitrary original `name`, and an optional `optIndex`
 ## (an unsigned int).
 fn safeName(prefix, name, optIndex?) {
-    def nameStr = hasClass(name, Symbol) & name.toString() | "\(name)";
+    def nameStr = Symbol.accepts(name) & cast(String, name) | "\(name)";
     def chars = ( ch in nameStr -> C_IDENT_CHARS[ch] & ch | "_" );
     def index = (def i = optIndex*) & [i, "_"] | "";
 
@@ -206,7 +206,7 @@ export fn processVars(clo) {
     def varStats = ( name in names ->
         def binding = vars[name];
         $CodeGen::genComment(
-            "\%q(binding::origName.toString())",
+            "\%q(cast(String, binding::origName))",
             $CodeGen::genAssign("zvalue \(binding::name)", binding::init));
     );
 

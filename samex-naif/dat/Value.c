@@ -77,6 +77,11 @@ zvalue valOrder(zvalue value, zvalue other) {
 // Class Definition
 //
 
+// Documented in header.
+METH_IMPL_1(Value, castToward, cls) {
+    return classAccepts(cls, ths) ? ths : NULL;
+}
+
 // Documented in spec.
 METH_IMPL_0(Value, debugString) {
     zvalue cls = get_class(ths);
@@ -85,7 +90,7 @@ METH_IMPL_0(Value, debugString) {
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!hasClass(name, CLS_Symbol)) {
+    } else if (!classAccepts(CLS_Symbol, name)) {
         // Suppress a non-symbol name.
         name = stringFromUtf8(-1, " (non-symbol name)");
     } else {
@@ -149,6 +154,7 @@ void bindMethodsForValue(void) {
     classBindMethods(CLS_Value,
         NULL,
         symbolTableFromArgs(
+            METH_BIND(Value, castToward),
             METH_BIND(Value, debugString),
             METH_BIND(Value, debugSymbol),
             METH_BIND(Value, gcMark),

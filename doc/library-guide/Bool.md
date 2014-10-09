@@ -11,6 +11,15 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Class Method Definitions
 
+#### `.castFrom(value) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Bool` &mdash; Returns `value`.
+* `Core` &mdash; Returns `value`.
+* `Int` &mdash; Returns `false` given `0`, or `1` given `true`.
+* `Value` &mdash; Returns `value`.
+
 #### `.fromLogic(value?) -> bool`
 
 Returns the boolean equivalent of the argument-or-not. This is a bridge
@@ -22,6 +31,15 @@ given no argument, this returns `false`.
 
 <br><br>
 ### Method Definitions: `Value` protocol
+
+#### `.castToward(cls) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Bool` &mdash; Returns `this`.
+* `Core` &mdash; Returns `this`.
+* `Int` &mdash; Returns `0` given `false`, or `true` given `1`.
+* `Value` &mdash; Returns `this`.
 
 #### `.debugString() -> string`
 
@@ -46,11 +64,7 @@ Compares the given boolean values, ordering `false` before `true`.
 
 
 <br><br>
-### Method Definitions: One-Offs
-
-#### `.toInt() -> int`
-
-Returns `0` given `false`, or `1` given `true`.
+### Method Definitions: `Bool` protocol
 
 #### `.toLogic() -> true | void`
 
@@ -58,10 +72,6 @@ Converts `this` into a value useful for logic operations. In particular, this
 returns `true` if given `true` and void if given `false`.
 
 **Syntax Note:** Used in the translation of `expr**` forms.
-
-#### `.toNumber() -> int`
-
-Same as `.toInt()`.
 
 
 <br><br>

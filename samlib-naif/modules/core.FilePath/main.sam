@@ -15,7 +15,7 @@
 
 ## Does a type / content check on `path`.
 fn checkPath(path) {
-    ifNot { hasClass(path, String) }
+    ifNot { String.accepts(path) }
         { die("Invalid non-string path.") };
     ifIs { eq(path, "") }
         { die("Invalid empty path.") };

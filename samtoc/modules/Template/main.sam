@@ -57,7 +57,7 @@ export fn apply(templateString, defs) {
     def items = $Peg::apply(parTemplate, templateString);
 
     def texts = [ item in items ->
-        hasClass(item, String) |
+        String.accepts(item) |
             $Format::formatterFor(item::format)(
                 defs[item::name] | "<MISSING \%q(item::name)>")
     ];

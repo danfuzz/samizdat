@@ -25,10 +25,10 @@ def IDENTIFIER_CHARS = {
 ## Checks to see if the given value is a symbol with the form of an
 ## in-language identifier. Returns the given `symbol` if so.
 export fn isIdentifier(symbol) {
-    ifNot { hasClass(symbol, Symbol) }
+    ifNot { Symbol.accepts(symbol) }
         { return };
 
-    def string = symbol.toString();
+    def string = cast(String, symbol);
 
     ifIs { eq(string, "") }
         { return };

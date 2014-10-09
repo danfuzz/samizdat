@@ -56,7 +56,7 @@ void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
 
 // Documented in header.
 zint seqNthIndexLenient(zvalue key) {
-    if (hasClass(key, CLS_Int)) {
+    if (classAccepts(CLS_Int, key)) {
         zint index = zintFromInt(key);
         return (index >= 0) ? index : -1;
     } else {
@@ -66,7 +66,7 @@ zint seqNthIndexLenient(zvalue key) {
 
 // Documented in header.
 zint seqNthIndexStrict(zint size, zvalue n) {
-    if (hasClass(n, CLS_Int)) {
+    if (classAccepts(CLS_Int, n)) {
         zint index = zintFromInt(n);
         return ((index >= 0) && (index < size)) ? index : -1;
     } else {
@@ -76,7 +76,7 @@ zint seqNthIndexStrict(zint size, zvalue n) {
 
 // Documented in header.
 zint seqPutIndexStrict(zint size, zvalue n) {
-    if (hasClass(n, CLS_Int)) {
+    if (classAccepts(CLS_Int, n)) {
         zint index = zintFromInt(n);
         if (index < 0) {
             die("Invalid index for `put` (negative).");

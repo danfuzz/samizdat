@@ -180,6 +180,22 @@ static bool isCoreClass(ClassInfo *info) {
     return info->secret == theCoreSecret;
 }
 
+/**
+ * Shared implementation of `accepts`, which doesn't check to see if `cls`
+ * is in fact a class.
+ */
+static bool acceptsUnchecked(zvalue cls, zvalue value) {
+    for (zvalue valueCls = get_class(value);
+            valueCls != NULL;
+            valueCls = getInfo(valueCls)->parent) {
+        if (classEqUnchecked(valueCls, cls)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 //
 // Module Definitions
@@ -236,10 +252,16 @@ zvalue classFindMethodUnchecked(zvalue cls, zint index) {
 
 // Documented in header.
 void assertHasClass(zvalue value, zvalue cls) {
-    if (!hasClass(value, cls)) {
+    if (!classAccepts(cls, value)) {
         die("Expected class %s; got %s.",
             cm_debugString(cls), cm_debugString(value));
     }
+}
+
+// Documented in header.
+bool classAccepts(zvalue cls, zvalue value) {
+    assertIsClass(cls);
+    return acceptsUnchecked(cls, value);
 }
 
 // Documented in header.
@@ -259,21 +281,6 @@ bool classHasSecret(zvalue cls, zvalue secret) {
     // one whose `totalEq` method is used. The given `secret` can't be
     // trusted to behave.
     return valEq(info->secret, secret);
-}
-
-// Documented in header.
-bool hasClass(zvalue value, zvalue cls) {
-    assertIsClass(cls);
-
-    for (zvalue valueCls = get_class(value);
-            valueCls != NULL;
-            valueCls = getInfo(valueCls)->parent) {
-        if (classEqUnchecked(valueCls, cls)) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 // Documented in header.
@@ -305,12 +312,22 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 //
 
 // Documented in spec.
+METH_IMPL_1(Class, accepts, value) {
+    return acceptsUnchecked(ths, value) ? value : NULL;
+}
+
+// Documented in header.
+METH_IMPL_1(Class, castFrom, value) {
+    return acceptsUnchecked(ths, value) ? value : NULL;
+}
+
+// Documented in spec.
 METH_IMPL_0(Class, debugString) {
     ClassInfo *info = getInfo(ths);
     const char *label;
 
     if (info->secret == theCoreSecret) {
-        return cm_toString(info->name);
+        return cm_castFrom(CLS_String, info->name);
     } else if (info->secret != NULL) {
         label = "object";
     } else {
@@ -321,7 +338,7 @@ METH_IMPL_0(Class, debugString) {
         stringFromUtf8(-1, "@<"),
         stringFromUtf8(-1, label),
         stringFromUtf8(-1, " class "),
-        METH_CALL(debugString, cm_toString(info->name)),
+        METH_CALL(debugString, cm_castFrom(CLS_String, info->name)),
         stringFromUtf8(-1, ">"));
 }
 
@@ -521,6 +538,8 @@ void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
         NULL,
         symbolTableFromArgs(
+            METH_BIND(Class, accepts),
+            METH_BIND(Class, castFrom),
             METH_BIND(Class, debugString),
             METH_BIND(Class, debugSymbol),
             METH_BIND(Class, gcMark),

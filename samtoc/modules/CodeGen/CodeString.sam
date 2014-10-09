@@ -45,7 +45,7 @@ export fn genCodeString(text) {
 ## Fixes a tree constructor argument, so that strings (per se) are
 ## transformed into `CodeString`s.
 export fn fix(treeOrString) {
-    return hasClass(treeOrString, String)
+    return String.accepts(treeOrString)
         & genCodeString(treeOrString)
         | treeOrString
 };

@@ -47,5 +47,5 @@ print("\["a".."z"]");
 
 ## Test all the void/empty conversions.
 print("[\{}] [\%s{}] [\%q{}]");
-print("[\%Q(hasClass(1, String))]");
+print("[\%Q(String.accepts(1))]");
 print("[\[]] [\%q[]]");

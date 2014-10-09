@@ -63,7 +63,6 @@ export fn main(selfPath, name?, rest*) {
     process($Format::int(71, 10));
     process($Format::int(71, 16));
     process($Format::int(71, 36));
-    process((1).toString().cat((31).toString(), (127).toString()));
 
     blort(1);
     blort(1, 2);

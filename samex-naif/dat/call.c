@@ -24,14 +24,14 @@
 //
 
 /**
- * Returns `value` if it is a string. Returns `cm_toString(value)` if it is
- * a symbol; otherwise calls `debugString` on it.
+ * Returns `value` if it is a string. Returns `String.castFrom(value)` if it
+ * is a symbol; otherwise calls `debugString` on it.
  */
 static zvalue ensureString(zvalue value) {
-    if (hasClass(value, CLS_String)) {
+    if (classAccepts(CLS_String, value)) {
         return value;
-    } else if (hasClass(value, CLS_Symbol)) {
-        return cm_toString(value);
+    } else if (classAccepts(CLS_Symbol, value)) {
+        return cm_castFrom(CLS_String, value);
     } else {
         return METH_CALL(debugString, value);
     }

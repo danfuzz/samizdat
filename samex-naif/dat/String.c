@@ -290,6 +290,45 @@ zstring zstringFromString(zvalue string) {
 //
 
 // Documented in spec.
+CMETH_IMPL_1(String, castFrom, value) {
+    zvalue cls = get_class(value);
+
+    if (valEq(cls, CLS_Int)) {
+        zint n = zintFromInt(value);
+        zchar result;
+
+        if (!zcharFromZint(&result, n)) {
+            return NULL;
+        } else {
+            return stringFromZchar(result);
+        }
+    } else if (valEq(cls, CLS_Symbol)) {
+        return stringFromZstring(zstringFromSymbol(value));
+    } else if (classAccepts(thsClass, value)) {
+        return value;
+    }
+
+    return NULL;
+}
+
+// Documented in header.
+METH_IMPL_1(String, castToward, cls) {
+    StringInfo *info = getInfo(ths);
+
+    if (valEq(cls, CLS_Int)) {
+        if (info->s.size == 1) {
+            return intFromZint(zcharFromString(ths));
+        }
+    } else if (valEq(cls, CLS_Symbol)) {
+        return symbolFromZstring(info->s);
+    } else if (classAccepts(cls, ths)) {
+        return ths;
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
 METH_IMPL_rest(String, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -302,8 +341,8 @@ METH_IMPL_rest(String, cat, args) {
     zint size = thsSize;
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        if (hasClass(one, CLS_Symbol)) {
-            one = cm_toString(one);
+        if (classAccepts(CLS_Symbol, one)) {
+            one = cm_castFrom(CLS_String, one);
         } else {
             assertString(one);
         }
@@ -490,26 +529,6 @@ METH_IMPL_1_2(String, sliceInclusive, start, end) {
 }
 
 // Documented in spec.
-METH_IMPL_0(String, toInt) {
-    return intFromZint(zcharFromString(ths));
-}
-
-// Documented in spec.
-METH_IMPL_0(String, toNumber) {
-    return intFromZint(zcharFromString(ths));
-}
-
-// Documented in spec.
-METH_IMPL_0(String, toString) {
-    return ths;
-}
-
-// Documented in spec.
-METH_IMPL_0(String, toSymbol) {
-    return symbolFromZstring(getInfo(ths)->s);
-}
-
-// Documented in spec.
 METH_IMPL_1(String, totalEq, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     return uncheckedEq(ths, other) ? ths : NULL;
@@ -544,9 +563,12 @@ MOD_INIT(String) {
     MOD_USE(Sequence);
 
     CLS_String = makeCoreClass(SYM(String), CLS_Core,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(String, castFrom),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(String, cat),
+            METH_BIND(String, castToward),
             METH_BIND(String, collect),
             METH_BIND(String, debugString),
             METH_BIND(String, del),
@@ -559,10 +581,6 @@ MOD_INIT(String) {
             METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),
-            METH_BIND(String, toInt),
-            METH_BIND(String, toNumber),
-            METH_BIND(String, toString),
-            METH_BIND(String, toSymbol),
             METH_BIND(String, totalEq),
             METH_BIND(String, totalOrder),
             METH_BIND(String, valueList),

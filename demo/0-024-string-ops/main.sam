@@ -14,11 +14,27 @@
 ##
 
 ## Checks an expected result.
-fn expect(name, result, got) {
-    ifNot { eq(got, result) }
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
         {
-            note("Unexpected result: ", $Format::source(got));
+            note("Unexpected void result.");
             die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
         }
 };
 
@@ -31,19 +47,53 @@ note("Strings");
 
 note($Format::source("This is a string.\n"));
 
-expect("cat 1", "blort", "blort".cat());
-expect("cat 2", "blort", "blort".cat(""));
-expect("cat 3", "blort", "blo".cat("rt"));
-expect("cat 4", "blort", "b".cat("lor", "t"));
-expect("cat 5", "blort", "b".cat("", "lor", "", "t", ""));
-expect("cat 6", "blort", "".cat("blort"));
-expect("cat 7", "blort", "".cat(@blort));
-expect("cat 8", "blort", "b".cat(@lort));
-expect("cat 9", "blort", "b".cat(@lor, @t));
-expect("cat 10", "blort", "b".cat(@lor, "t"));
+expect("cat 1", "blort", { "blort".cat() });
+expect("cat 2", "blort", { "blort".cat("") });
+expect("cat 3", "blort", { "blo".cat("rt") });
+expect("cat 4", "blort", { "b".cat("lor", "t") });
+expect("cat 5", "blort", { "b".cat("", "lor", "", "t", "") });
+expect("cat 6", "blort", { "".cat("blort") });
+expect("cat 7", "blort", { "".cat(@blort) });
+expect("cat 8", "blort", { "b".cat(@lort) });
+expect("cat 9", "blort", { "b".cat(@lor, @t) });
+expect("cat 10", "blort", { "b".cat(@lor, "t") });
 
-expect("del", "muffins", "mufxfins".del(3));
-expect("keyList", [0, 1, 2, 3, 4], "blort".keyList());
-expect("valueList", ["b", "l", "o", "r", "t"], "blort".valueList());
+expect("del", "muffins", { "mufxfins".del(3) });
+
+expect("keyList", [0, 1, 2, 3, 4], { "blort".keyList() });
+
+expect("valueList", ["b", "l", "o", "r", "t"], { "blort".valueList() });
+
+expect("castFrom 1", "fizmo", { String.castFrom("fizmo") });
+expect("castFrom 2", "fizmo", { Core.castFrom("fizmo") });
+expect("castFrom 3", "fizmo", { Value.castFrom("fizmo") });
+expect("castFrom 4", "fizmo", { String.castFrom(@fizmo) });
+expect("castFrom 5", "B",     { String.castFrom(66) });
+expectVoid("castFrom 6",      { String.castFrom(null) });
+
+expect("castToward 1", "igram", { "igram".castToward(String) });
+expect("castToward 2", "igram", { "igram".castToward(Core) });
+expect("castToward 3", "igram", { "igram".castToward(Value) });
+expect("castToward 4", @igram,  { "igram".castToward(Symbol) });
+expect("castToward 5", 68,      { "D".castToward(Int) });
+expectVoid("castToward 6",      { "igram".castToward(Int) });
+expectVoid("castToward 7",      { "igram".castToward(Record) });
+
+expect("maybeCast 1", "frotz", { maybeCast(String, "frotz") });
+expect("maybeCast 2", "frotz", { maybeCast(Core, "frotz") });
+expect("maybeCast 3", "frotz", { maybeCast(Value, "frotz") });
+expect("maybeCast 4", "frotz", { maybeCast(String, @frotz) });
+expect("maybeCast 5", "F",     { maybeCast(String, 70) });
+expect("maybeCast 6", 70,      { maybeCast(Int, "F") });
+expect("maybeCast 7", @frotz,  { maybeCast(Symbol, "frotz") });
+expectVoid("maybeCast 8",      { maybeCast(String, null) });
+
+expect("cast 1", "frotz", { cast(String, "frotz") });
+expect("cast 2", "frotz", { cast(Core, "frotz") });
+expect("cast 3", "frotz", { cast(Value, "frotz") });
+expect("cast 4", "frotz", { cast(String, @frotz) });
+expect("cast 5", "F",     { cast(String, 70) });
+expect("cast 6", 70,      { cast(Int, "F") });
+expect("cast 7", @frotz,  { cast(Symbol, "frotz") });
 
 note("All good.");

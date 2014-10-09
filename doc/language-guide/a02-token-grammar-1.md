@@ -151,7 +151,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier{value: s::value.toSymbol()} }
+    { @identifier{value: cast(Symbol, s::value)} }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further

@@ -105,7 +105,7 @@ def tokIdentifier = makeMainSequence(
 def tokQuotedIdentifier = makeMainSequence(
     makeString("\\"),
     tokString,
-    makeCode { ., s -> @identifier{value: s::value.toSymbol()} });
+    makeCode { ., s -> @identifier{value: cast(Symbol, s::value)} });
 
 ## Documented in spec.
 def tokError = makeMainSequence(

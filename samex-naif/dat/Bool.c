@@ -62,6 +62,23 @@ zbool zboolFromBool(zvalue boolval) {
 //
 
 // Documented in spec.
+CMETH_IMPL_1(Bool, castFrom, value) {
+    zvalue cls = get_class(value);
+
+    if (valEq(cls, CLS_Int)) {
+        zint n = zintFromInt(value);
+        switch (n) {
+            case 0: return BOOL_FALSE;
+            case 1: return BOOL_TRUE;
+        }
+    } else if (classAccepts(thsClass, value)) {
+        return value;
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
 CMETH_IMPL_0_1(Bool, fromLogic, value) {
     return (value == NULL) ? BOOL_FALSE : BOOL_TRUE;
 }
@@ -89,6 +106,17 @@ METH_IMPL_1(Bool, bit, n) {
 // Documented in spec.
 METH_IMPL_0(Bool, bitSize) {
     return INT_1;
+}
+
+// Documented in header.
+METH_IMPL_1(Bool, castToward, cls) {
+    if (valEq(cls, CLS_Int)) {
+        return intFromZint(zboolValue(ths));
+    } else if (classAccepts(cls, ths)) {
+        return ths;
+    }
+
+    return NULL;
 }
 
 // Documented in spec.
@@ -145,18 +173,8 @@ METH_IMPL_1(Bool, shr, n) {
 }
 
 // Documented in spec.
-METH_IMPL_0(Bool, toInt) {
-    return intFromZint(zboolValue(ths));
-}
-
-// Documented in spec.
 METH_IMPL_0(Bool, toLogic) {
     return zboolValue(ths) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_0(Bool, toNumber) {
-    return intFromZint(zboolValue(ths));
 }
 
 // Documented in spec.
@@ -193,21 +211,21 @@ MOD_INIT(Bool) {
 
     CLS_Bool = makeCoreClass(SYM(Bool), CLS_Core,
         symbolTableFromArgs(
+            CMETH_BIND(Bool, castFrom),
             CMETH_BIND(Bool, fromLogic),
             NULL),
         symbolTableFromArgs(
             METH_BIND(Bool, and),
             METH_BIND(Bool, bit),
             METH_BIND(Bool, bitSize),
+            METH_BIND(Bool, castToward),
             METH_BIND(Bool, debugString),
             METH_BIND(Bool, not),
             METH_BIND(Bool, or),
             METH_BIND(Bool, shl),
             METH_BIND(Bool, shr),
             METH_BIND(Bool, xor),
-            METH_BIND(Bool, toInt),
             METH_BIND(Bool, toLogic),
-            METH_BIND(Bool, toNumber),
             METH_BIND(Bool, totalEq),
             METH_BIND(Bool, totalOrder),
             NULL));

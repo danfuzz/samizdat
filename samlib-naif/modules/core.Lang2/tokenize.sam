@@ -166,7 +166,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier{value: s::value.toSymbol()} }
+    { @identifier{value: cast(Symbol, s::value)} }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further
@@ -235,7 +235,7 @@ fn processStringParts(parts) {
     $Generator::filterPump(parts) { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
-        ifIs { hasClass(part, Record) }
+        ifIs { Record.accepts(part) }
             {
                 ifIs { part.hasName(@error) }
                     { return part }
@@ -249,10 +249,10 @@ fn processStringParts(parts) {
                 yield /next
             };
 
-        ifIs { hasClass(part, String) }
+        ifIs { String.accepts(part) }
             {
                 def lastElem = reverseNth(elems, 0);
-                ifIs { hasClass(lastElem, String) }
+                ifIs { String.accepts(lastElem) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
@@ -270,7 +270,7 @@ fn processStringParts(parts) {
     ## Check for a simple result.
     ifIs { eq(elems.get_size(), 1) }
         {
-            ifValue { hasClass(elems*, String) }
+            ifValue { String.accepts(elems*) }
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.
@@ -322,7 +322,7 @@ tokInt2 := {:
 ## parsing.
 def tokHexChar = {:
     digits = tokHexDigit+
-    { intFromDigits(16, digits).toString() }
+    { cast(String, intFromDigits(16, digits)) }
 :};
 
 ## Parses a single entity-named character. This is called during `\&...;`
@@ -336,11 +336,11 @@ def tokNamedChar = {:
 |
     "#x"
     digits = tokHexDigit+
-    { intFromDigits(16, digits).toString() }
+    { cast(String, intFromDigits(16, digits)) }
 |
     "#"
     digits = tokDecDigit+
-    { intFromDigits(10, digits).toString() }
+    { cast(String, intFromDigits(10, digits)) }
 :};
 
 ## Parses the inner portion of a string interpolation expression. This

@@ -303,7 +303,7 @@ METH_IMPL_rest(Map, cat, args) {
     zint size = thsSize;
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        if (hasClass(one, CLS_SymbolTable)) {
+        if (classAccepts(CLS_SymbolTable, one)) {
             one = mapFromSymbolTable(one);
         } else {
             assertHasClass(one, CLS_Map);

@@ -7,6 +7,20 @@ Value (the base class)
 <br><br>
 ### Method Definitions: `Value` protocol (applies to all values)
 
+#### `.castToward(cls) -> . | void`
+
+Returns a value representing `this` cast either to the given `cls` or
+to a value which `cls` is known (or expected to) be able to cast to itself
+from. If `this` does not know how to cast to / toward `cls`, this returns
+void.
+
+The default implementation of this method merely checks to see if `this` is
+already of class `cls`. If so, it returns `this`; if not, it returns `void`.
+
+**Note:** This method is used by the global functions `cast()` and `optCast()`
+as part of the more general casting mechanism.
+
+
 #### `.debugString() -> string`
 
 Returns a string representation of the given value, meant to aid in debugging.
@@ -126,6 +140,12 @@ of all cross-class ordering functions.
 <br><br>
 ### Primitive Definitions
 
+#### `cast(cls, value) -> .`
+
+"Hard" cast operation. This is like `optCast()`, except that this terminates
+the runtime with an error if the cast could not complete, instead of returning
+void.
+
 #### `eq(value, other) -> logic`
 
 Checks for equality, using the total order of values. Returns `value` if the
@@ -144,12 +164,24 @@ argument, per se, to represent logical-true.
 Returns the class of the given arbitrary `value`. The return value is always
 of class `Class`.
 
-#### `hasClass(value, cls) -> logic`
+#### `maybeCast(cls, value) -> . | void`
 
-Returns `value` if it has class `cls`. Otherwise returns void.
+"Soft" cast operation. This attempts to cast (convert in a maximally
+data-preserving fashion) the given `value` to the indicated class `cls`.
 
-In order to "have the class," `value` must either be an instance of class
-`cls` per se, or be an instance of a subclass of `cls`.
+This function operates by first checking to see if `value` is already of
+a proper class, and returning it directly if so.
+
+If not, this function calls `value.castToward(cls)` to give `value` "first
+dibs" on conversion. If it results in a value of an appropriate class, then
+that value is then returned.
+
+If not, this function then calls `cls.castFrom(value)`, passing it the
+non-void result of the previous step (if any) or the original value (if not).
+If this call results in a value of an appropriate class, then that value is
+then returned.
+
+If not, this function returns void.
 
 #### `order(value, other) -> int`
 

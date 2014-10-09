@@ -280,7 +280,7 @@ zvalue get_definedNames(zvalue node) {
 
             zvalue prefix = cm_get(node, SYM(prefix));
             if (prefix != NULL) {
-                zvalue prefixStr = cm_toString(prefix);
+                zvalue prefixStr = cm_castFrom(CLS_String, prefix);
                 zint size = get_size(select);
                 zvalue arr[size];
                 arrayFromList(arr, select);
@@ -527,7 +527,7 @@ zvalue makeExportSelection(zvalue names) {
 
 // Documented in spec.
 zvalue makeFullClosure(zvalue baseData) {
-    zvalue table = hasClass(baseData, CLS_SymbolTable)
+    zvalue table = classAccepts(CLS_SymbolTable, baseData)
         ? baseData : get_data(baseData);
     zvalue formals = cm_get(table, SYM(formals));
     zvalue statements = cm_get(table, SYM(statements));

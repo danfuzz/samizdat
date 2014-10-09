@@ -4,20 +4,47 @@ Samizdat Layer 0: Core Library
 String
 ------
 
+
 <br><br>
-### Method Definitions: `String` protocol
+### Class Method Definitions
 
-#### `.toSymbol() -> symbol`
+#### `.castFrom(value) -> . | void`
 
-Returns an interned symbol whose name is `this`.
+This class knows how to cast as follows:
 
-**Note:** If you want an unlisted symbol, call `.toUnlisted()` on a
-symbol with the desired name, e.g. `name.toSymbol().toUnlisted()`
-or (if you know the name statically) `@foo.toUnlisted()`.
+* `Core` &mdash; Returns `value`.
+
+* `Int` &mdash; Returns a single-character string with the Unicode code
+  point `value`.
+
+* `String` &mdash; Returns `value`.
+
+* `Symbol` &mdash; Returns the name of `value` as a string.
+
+* `Value` &mdash; Returns `value`.
 
 
 <br><br>
 ### Method Definitions: `Value` protocol
+
+#### `.castToward(cls) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Core` &mdash; Returns `this`.
+
+* `Int` &mdash; Returns the Unicode code point of the sole character of
+  `this`. Only works on single-character strings.
+
+* `String` &mdash; Returns `this`.
+
+* `Symbol` &mdash; Returns an interned symbol whose name is `this`.
+
+  **Note:** If you want an unlisted symbol, call `.toUnlisted()` on a
+  symbol with the desired name, e.g. `cast(Symbol, name).toUnlisted()`
+  or (if you know the name statically) `@foo.toUnlisted()`.
+
+* `Value` &mdash; Returns `this`.
 
 #### `.perEq(other) -> string | void`
 
@@ -37,24 +64,6 @@ identical orders.
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
-
-
-<br><br>
-### Method Definitions: One-Offs
-
-#### `.toInt() -> int`
-
-Given a single-character string, returns the character code
-of its sole character, as an int. It is an error (terminating
-the runtime) if `string` is not a string of size 1.
-
-#### `.toNumber() -> int`
-
-Same as `.toInt()`.
-
-#### `.toString() -> string`
-
-Returns `this`.
 
 
 <br><br>

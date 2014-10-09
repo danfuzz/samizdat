@@ -129,7 +129,7 @@
  * `symbolTableFromArgs`.
  */
 #define METH_BIND(cls, name) \
-    symbolFromUtf8(-1, #name), \
+    SYM(name), \
     FUNC_VALUE(cls##_##name)
 
 #define METH_IMPL_0(cls, name)         FUNC_IMPL_1(cls##_##name, ths)
@@ -145,9 +145,11 @@
 // method macros, above.
 
 #define CMETH_BIND(cls, name) \
-    symbolFromUtf8(-1, #name), \
+    SYM(name), \
     FUNC_VALUE(class_##cls##_##name)
 
+#define CMETH_IMPL_1(cls, name, a0) \
+    FUNC_IMPL_2(class_##cls##_##name, thsClass, a0)
 #define CMETH_IMPL_0_1(cls, name, a0) \
     FUNC_IMPL_1_2(class_##cls##_##name, thsClass, a0)
 

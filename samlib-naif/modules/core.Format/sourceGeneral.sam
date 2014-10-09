@@ -57,7 +57,7 @@ def SPECIAL_VALUES = {
 ## the prefix is empty and the symbol does not look like an identifier, then
 ## the result is backslash-prefixed in addition to being quoted.
 fn nameString(prefix, name) {
-    def nameString = name.toString();
+    def nameString = cast(String, name);
 
     ifIs { isIdentifier(name) }
         { return prefix.cat(nameString) };
@@ -68,7 +68,7 @@ fn nameString(prefix, name) {
 
 ## Stringifies a map key.
 fn keyString(key) {
-    ifIs { hasClass(key, Symbol) }
+    ifIs { Symbol.accepts(key) }
         { return nameString("", key) };
 
     ifValue { SPECIAL_VALUES.get(key) }
@@ -128,7 +128,7 @@ fn String_source(value, adorn) {
 ## Stringifies a symbol.
 fn Symbol_source(value, adorn) {
     ifIs { eq(adorn, false) }
-        { return sourceGeneral(value.toString(), false) };
+        { return sourceGeneral(cast(String, value), false) };
 
     def prefix = ifIs { value.isInterned() } { "@" } { "@+" };
     return nameString(prefix, value);
