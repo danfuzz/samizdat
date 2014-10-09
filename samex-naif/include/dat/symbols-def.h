@@ -79,6 +79,7 @@ DEF_SYMBOL(reverse);
 DEF_SYMBOL(shl);
 DEF_SYMBOL(shr);
 DEF_SYMBOL(sign);
+DEF_SYMBOL(singleValue);
 DEF_SYMBOL(sliceExclusive);
 DEF_SYMBOL(sliceInclusive);
 DEF_SYMBOL(store);

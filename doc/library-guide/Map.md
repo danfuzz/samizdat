@@ -11,7 +11,7 @@ as defined by the global function `order()`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(values*) -> map`
+#### `.new(args*) -> map`
 
 This makes a map from a series of mappings, given as pairs of
 key-then-value arguments. For example:

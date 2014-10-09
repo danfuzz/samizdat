@@ -292,6 +292,45 @@ zvalue symbolTableFromMap(zvalue map) {
 //
 
 // Documented in spec.
+CMETH_IMPL_rest(Map, new, args) {
+    if ((argsSize & 1) != 0) {
+        die("Odd argument count for map construction.");
+    }
+
+    zint size = argsSize >> 1;
+    zmapping mappings[size];
+    for (zint i = 0, at = 0; i < size; i++, at += 2) {
+        mappings[i].key = args[at];
+        mappings[i].value = args[at + 1];
+    }
+
+    return mapFromArray(size, mappings);
+}
+
+// Documented in spec.
+CMETH_IMPL_1_rest(Map, singleValue, first, args) {
+    if (argsSize == 0) {
+        return EMPTY_MAP;
+    }
+
+    // The value is passed at the end of the argument list. We pull out the
+    // value here, and manually set up the first mapping.
+
+    zmapping mappings[argsSize];
+    zvalue value = args[argsSize - 1];
+
+    mappings[0].key = first;
+    mappings[0].value = value;
+
+    for (zint i = 1; i < argsSize; i++) {
+        mappings[i].key = args[i - 1];
+        mappings[i].value = value;
+    }
+
+    return mapFromArray(argsSize, mappings);
+}
+
+// Documented in spec.
 METH_IMPL_rest(Map, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -620,7 +659,10 @@ MOD_INIT(Map) {
     MOD_USE(MapCache);
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(Map, new),
+            CMETH_BIND(Map, singleValue),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(Map, cat),
             METH_BIND(Map, collect),

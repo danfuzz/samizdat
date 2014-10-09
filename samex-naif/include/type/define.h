@@ -113,6 +113,14 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2, zvalue a3)
 
+#define FUNC_IMPL_2_rest(name, a0, a1, aRest) \
+    static zvalue IMPL_##name(zvalue, zvalue, zint, const zvalue *); \
+    FUNC_IMPL_MIN_MAX(name, 2, -1) { \
+        return IMPL_##name(_args[0], _args[1], _argsSize - 1, &_args[2]); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zvalue a1, \
+            zint aRest##Size, const zvalue *aRest)
+
 
 //
 // Method implementation declarations and associated binder. Each of the
@@ -154,6 +162,8 @@
     FUNC_IMPL_1_rest(class_##cls##_##name, ths, aRest)
 #define CMETH_IMPL_0_1(cls, name, a0) \
     FUNC_IMPL_1_2(class_##cls##_##name, thsClass, a0)
+#define CMETH_IMPL_1_rest(cls, name, a0, aRest) \
+    FUNC_IMPL_2_rest(class_##cls##_##name, ths, a0, aRest)
 
 
 //
