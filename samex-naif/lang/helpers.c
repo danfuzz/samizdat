@@ -38,6 +38,12 @@ zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
 }
 
 // Documented in header.
+zvalue listFrom5(zvalue e1, zvalue e2, zvalue e3, zvalue e4, zvalue e5) {
+    zvalue elems[5] = { e1, e2, e3, e4, e5 };
+    return listFromArray(5, elems);
+}
+
+// Documented in header.
 zvalue listAppend(zvalue list, zvalue elem) {
     return cm_cat(list, listFrom1(elem));
 }

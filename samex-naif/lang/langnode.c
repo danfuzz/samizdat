@@ -458,9 +458,11 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
             name, listFrom2(makeLiteral(name), one));
     }
 
-    zvalue instanceMethodTable = makeCall(REFS(makeSymbolTable),
+    zvalue instanceMethodTable = makeCall(SYMS(new),
         METH_APPLY(cat,
-            listPrepend(EMPTY_LIST, METH_CALL(valueList, instanceMethods))));
+            listPrepend(
+                listFrom1(LITS(SymbolTable)),
+                METH_CALL(valueList, instanceMethods))));
 
     zvalue call = makeCall(REFS(makeObjectClass),
         listFrom4(
@@ -903,13 +905,14 @@ zvalue withModuleDefs(zvalue node) {
 
     zvalue yieldExports = (exSize == 0)
         ? LITS(EMPTY_SYMBOL_TABLE)
-        : makeCall(REFS(makeSymbolTable), exportValues);
+        : makeCall(SYMS(new), listPrepend(LITS(SymbolTable), exportValues));
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeRecord),
         listFrom2(
             SYMS(module),
-            makeCall(REFS(makeSymbolTable),
-                listFrom4(
+            makeCall(SYMS(new),
+                listFrom5(
+                    LITS(SymbolTable),
                     SYMS(exports), yieldExports,
                     SYMS(info),    yieldInfo))));
 
