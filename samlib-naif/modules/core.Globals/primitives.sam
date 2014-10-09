@@ -27,6 +27,7 @@ export
     Symbol,
     SymbolTable,
     Value,
+    cast,
     die,
     eq,
     get_class,
@@ -46,6 +47,7 @@ export
     makeSymbolTable,
     makeValueMap,
     makeValueSymbolTable,
+    maybeCast,
     maybeValue,
     note,
     order;
