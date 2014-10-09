@@ -39,7 +39,6 @@ export
     ifValueAndElse,
     ifValueOr,
     loop,
-    makeList,
     makeMap,
     makeObject,
     makeObjectClass,

@@ -12,6 +12,19 @@ A `List` is a kind of `Sequence`.
 #### `.new(values*) -> list`
 
 Constructs a list consisting of the given values, in order.
+These equivalences hold for Samizdat Layer 0 source code:
+
+```
+v = [v1];      is equivalent to  v = List.new(v1);
+v = [v1, v2];  is equivalent to  v = List.new(v1, v2);
+[etc.]
+```
+
+**Note:** The equivalence requires at least one argument, even though
+the function is happy to operate given zero arguments.
+
+**Syntax Note:** Used in the translation of `[item, ...]`,
+`{key: value, ...}`, `switch`, and multiple-binding `if` forms.
 
 
 <br><br>
@@ -117,33 +130,7 @@ On a non-empty list, calls `box.store(this[0])` and returns
 <br><br>
 ### Primitive Definitions
 
-#### `makeList(elems*) -> list`
-
-Returns a list with the given elements (in argument order).
-These equivalences hold for Samizdat Layer 0 source code:
-
-```
-v = [v1];      is equivalent to  v = makeList(v1);
-v = [v1, v2];  is equivalent to  v = makeList(v1, v2);
-[etc.]
-```
-
-**Note:** The equivalence requires at least one argument, even though
-the function is happy to operate given zero arguments.
-
-**Note:** Technically, this function could be defined in-language as the
-following, but for practical reasons &mdash; e.g. and in particular,
-expected ordering of human operations during the course of
-bootstrapping an implementation, as well as efficiency of
-implementation (without sacrificing clarity) &mdash; it makes sense to
-keep this defined as a core primitive:
-
-```
-fn makeList(elems*) { return elems };
-```
-
-**Syntax Note:** Used in the translation of `[item, ...]`,
-`{key: value, ...}`, `switch`, and multiple-binding `if` forms.
+(none)
 
 
 <br><br>
