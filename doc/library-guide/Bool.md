@@ -11,6 +11,16 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Class Method Definitions
 
+#### `.castFrom(value) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Core` &mdash; Returns `value`.
+
+* `Int` &mdash; Returns `false` given `0`, or `1` given `true`.
+
+* `Value` &mdash; Returns `value`.
+
 #### `.fromLogic(value?) -> bool`
 
 Returns the boolean equivalent of the argument-or-not. This is a bridge
@@ -22,6 +32,16 @@ given no argument, this returns `false`.
 
 <br><br>
 ### Method Definitions: `Value` protocol
+
+#### `.castToward(cls) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Core` &mdash; Returns `value`.
+
+* `Int` &mdash; Returns `0` given `false`, or `true` given `1`.
+
+* `Value` &mdash; Returns `value`.
 
 #### `.debugString() -> string`
 
