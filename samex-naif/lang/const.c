@@ -4,8 +4,10 @@
 
 #include <stddef.h>
 
+#include "type/Bool.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/Null.h"
 #include "type/define.h"
 
 #include "const.h"

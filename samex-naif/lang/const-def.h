@@ -109,4 +109,7 @@ DEF_TOKEN(store, "store");
 
 // Literals have to be defined after everything else, in particular after the
 // constants used during calls to `makeLiteral()`.
-DEF_LITERAL(List, CLS_List);
+DEF_LITERAL(List,   CLS_List);
+DEF_LITERAL(null,   THE_NULL);
+DEF_LITERAL(zfalse, BOOL_FALSE);  // `z` avoids clash with C.
+DEF_LITERAL(ztrue,  BOOL_TRUE);   // `z` avoids clash with C.
