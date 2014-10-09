@@ -70,9 +70,9 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
         };
 
     ## Convert the mappings as if it has to be nontrivial. If in the end, it's
-    ## possible to use a single call to `makeMap`, then just do that.
+    ## possible to use a single call to `new()`, then just do that.
 
-    var singleArgs = [];  ## Single-value mappings, to be `Map.new()`ed.
+    var singleArgs = [];  ## Single-value mappings, to be `new()`ed.
     var catArgs = [];     ## Arguments ready to be `cat`ed.
 
     fn addToCat(arg) {

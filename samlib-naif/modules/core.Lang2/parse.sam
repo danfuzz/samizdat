@@ -2127,7 +2127,7 @@ def parSwitchExpression = {:
             def keys = case::keys;
             def code = finishCode(case);
             ifIs { List.accepts(keys) }
-                { makeCallOrApply(REFS::makeValueMap, keys*, code) }
+                { makeCallOrApply(SYMS::singleValue, LITS::Map, keys*, code) }
         };
         def caseMap = makeCallOrApply(SYMS::cat,
             LITS::EMPTY_MAP,
