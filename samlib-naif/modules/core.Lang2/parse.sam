@@ -1630,7 +1630,7 @@ parPostfixOperator2 := {:
     @"??"
     {
         { node ->
-            makeCallOrApply(SYMS::fromLogic, REFS::Bool,
+            makeCallOrApply(SYMS::fromLogic, LITS::Bool,
                 makeInterpolate(makeMaybeValue(node)))
         }
     }
