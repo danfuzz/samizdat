@@ -327,7 +327,7 @@ METH_IMPL_0(Class, debugString) {
     const char *label;
 
     if (info->secret == theCoreSecret) {
-        return cm_toString(info->name);
+        return cm_castFrom(CLS_String, info->name);
     } else if (info->secret != NULL) {
         label = "object";
     } else {
@@ -338,7 +338,7 @@ METH_IMPL_0(Class, debugString) {
         stringFromUtf8(-1, "@<"),
         stringFromUtf8(-1, label),
         stringFromUtf8(-1, " class "),
-        METH_CALL(debugString, cm_toString(info->name)),
+        METH_CALL(debugString, cm_castFrom(CLS_String, info->name)),
         stringFromUtf8(-1, ">"));
 }
 

@@ -342,7 +342,7 @@ METH_IMPL_rest(String, cat, args) {
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         if (classAccepts(CLS_Symbol, one)) {
-            one = cm_toString(one);
+            one = cm_castFrom(CLS_String, one);
         } else {
             assertString(one);
         }

@@ -46,7 +46,8 @@ void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue newVars = cm_put(vars, name, box);
 
     if (get_size(vars) == get_size(newVars)) {
-        die("Variable already defined: %s", cm_debugString(cm_toString(name)));
+        zvalue nameStr = cm_castFrom(CLS_String, name);
+        die("Variable already defined: %s", cm_debugString(nameStr));
     }
 
     frame->vars = newVars;
@@ -62,7 +63,8 @@ zvalue frameGet(Frame *frame, zvalue name) {
         }
     }
 
-    die("Variable not defined: %s", cm_debugString(cm_toString(name)));
+    zvalue nameStr = cm_castFrom(CLS_String, name);
+    die("Variable not defined: %s", cm_debugString(nameStr));
 }
 
 // Documented in header.
