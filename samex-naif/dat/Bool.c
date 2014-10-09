@@ -173,11 +173,6 @@ METH_IMPL_1(Bool, shr, n) {
 }
 
 // Documented in spec.
-METH_IMPL_0(Bool, toInt) {
-    return intFromZint(zboolValue(ths));
-}
-
-// Documented in spec.
 METH_IMPL_0(Bool, toLogic) {
     return zboolValue(ths) ? ths : NULL;
 }
@@ -230,7 +225,6 @@ MOD_INIT(Bool) {
             METH_BIND(Bool, shl),
             METH_BIND(Bool, shr),
             METH_BIND(Bool, xor),
-            METH_BIND(Bool, toInt),
             METH_BIND(Bool, toLogic),
             METH_BIND(Bool, totalEq),
             METH_BIND(Bool, totalOrder),

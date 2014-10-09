@@ -139,11 +139,6 @@ METH_IMPL_0(Int, debugString) {
 }
 
 // Documented in spec.
-METH_IMPL_0(Int, toInt) {
-    return ths;
-}
-
-// Documented in spec.
 METH_IMPL_0(Int, toString) {
     zint n = zintValue(ths);
     zchar result;
@@ -201,7 +196,6 @@ MOD_INIT(Int) {
             METH_BIND(Int, sign),
             METH_BIND(Int, sub),
             METH_BIND(Int, xor),
-            METH_BIND(Int, toInt),
             METH_BIND(Int, toString),
             METH_BIND(Int, totalEq),
             METH_BIND(Int, totalOrder),

@@ -69,12 +69,6 @@ before its longer brethren.
 <br><br>
 ### Method Definitions: One-Offs
 
-#### `.toInt() -> int`
-
-Given a single-character string, returns the character code
-of its sole character, as an int. It is an error (terminating
-the runtime) if `string` is not a string of size 1.
-
 #### `.toString() -> string`
 
 Returns `this`.

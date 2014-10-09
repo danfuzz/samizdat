@@ -66,10 +66,6 @@ Compares the given boolean values, ordering `false` before `true`.
 <br><br>
 ### Method Definitions: One-Offs
 
-#### `.toInt() -> int`
-
-Returns `0` given `false`, or `1` given `true`.
-
 #### `.toLogic() -> true | void`
 
 Converts `this` into a value useful for logic operations. In particular, this

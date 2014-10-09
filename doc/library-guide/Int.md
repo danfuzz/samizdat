@@ -28,10 +28,6 @@ manner.
 <br><br>
 ### Method Definitions: One-Offs
 
-#### `.toInt() -> int`
-
-Returns the given argument.
-
 #### `.toString() -> string`
 
 Returns a single-character string whose code point is the

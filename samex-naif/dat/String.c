@@ -529,11 +529,6 @@ METH_IMPL_1_2(String, sliceInclusive, start, end) {
 }
 
 // Documented in spec.
-METH_IMPL_0(String, toInt) {
-    return intFromZint(zcharFromString(ths));
-}
-
-// Documented in spec.
 METH_IMPL_0(String, toString) {
     return ths;
 }
@@ -591,7 +586,6 @@ MOD_INIT(String) {
             METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),
-            METH_BIND(String, toInt),
             METH_BIND(String, toString),
             METH_BIND(String, totalEq),
             METH_BIND(String, totalOrder),
