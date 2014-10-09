@@ -54,7 +54,7 @@ fn hexEscape(values*) {
 ## UTF-8 encode the given character, returning a representation as a list of
 ## C-style `\xNN` escapes.
 fn utf8Char(ch) {
-    def value = ch.toInt();
+    def value = cast(Int, ch);
 
     return if (value < 0) {
         die("Out of range for UTF-8 encoding: 0x\%x(value)");
@@ -124,7 +124,7 @@ fn stringChar(ch) {
         return utf8Char(ch)
     } else if (def special = SPECIAL_CHARS[ch]) {
         if (special == "x") {
-            return hexEscape(ch.toInt())
+            return hexEscape(cast(Int, ch))
         } else {
             return [special]
         }

@@ -39,7 +39,7 @@ def SPECIAL_CHARS = {
 
 ## Does hex character conversion.
 fn hexStringChar(ch) {
-    return "\\x".cat(intWithBase(ch.toInt(), 16), ";")
+    return "\\x".cat(intWithBase(cast(Int, ch), 16), ";")
 };
 
 ## Helper for stringifying strings: Returns the converted form of the

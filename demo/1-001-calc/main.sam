@@ -100,7 +100,7 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { ch.get_name().toString().toInt().sub("0".toInt()) }
+    { cast(Int, cast(String, ch.get_name())).sub(cast(Int, "0")) }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.
