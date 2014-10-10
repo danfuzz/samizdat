@@ -141,6 +141,8 @@ Topics
 * Programming language design
   * Bootstrapping a simple compiler from nothing (a real tour de force!)
     &mdash; <http://www.rano.org/bcompiler.html>
+  * Cognitive dimensions of notations (Wikipedia article) &mdash;
+    <https://en.wikipedia.org/wiki/Cognitive_dimensions_of_notations>
   * Out of the Tar Pit (approximately, a case for, and definition of,
     functional-relational programming) &mdash;
     <http://shaffner.us/cs/papers/tarpit.pdf>
