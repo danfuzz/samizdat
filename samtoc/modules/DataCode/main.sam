@@ -155,7 +155,7 @@ fn Map_convert(value) {
         [convert(mapping.key), convert(mapping.value)]
     ];
 
-    return genCall("mapFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
+    return genCall("VA_METH_CALL", "new", "CLS_Map", [].cat(mapPairs*)*)
 };
 
 ## Converts a record.
@@ -200,7 +200,8 @@ fn SymbolTable_convert(value) {
         [convert(mapping.key), convert(mapping.value)]
     ];
 
-    return genCall("symbolTableFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
+    return genCall("VA_METH_CALL", "new", "CLS_SymbolTable",
+        [].cat(mapPairs*)*)
 };
 
 ## Converts an opaque value. Or rather, always complains that it can't
