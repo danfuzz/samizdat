@@ -6,8 +6,8 @@
 // Function / method calling
 //
 
+#include <stdarg.h>
 #include <stdio.h>   // For `asprintf`.
-#include <stdlib.h>  // For `free`.
 
 #include "type/Builtin.h"
 #include "type/Jump.h"
@@ -15,6 +15,7 @@
 #include "type/String.h"
 #include "type/Symbol.h"
 #include "type/define.h"
+#include "util.h"
 
 #include "impl.h"
 
@@ -53,7 +54,7 @@ static char *callReporter(void *state) {
     char *result;
 
     asprintf(&result, "anonymous %s", clsString);
-    free(clsString);
+    utilFree(clsString);
 
     return result;
 }
@@ -119,6 +120,31 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     UTIL_TRACE_END();
 
     return result;
+}
+
+// Documented in header.
+zvalue vaFunCall(zvalue function, ...) {
+    zint size = 0;
+    va_list rest;
+
+    va_start(rest, function);
+    for (;;) {
+        if (va_arg(rest, zvalue) == NULL) {
+            break;
+        }
+        size++;
+    }
+    va_end(rest);
+
+    zvalue values[size];
+
+    va_start(rest, function);
+    for (zint i = 0; i < size; i++) {
+        values[i] = va_arg(rest, zvalue);
+    }
+    va_end(rest);
+
+    return funCall(function, size, values);
 }
 
 // All documented in header.

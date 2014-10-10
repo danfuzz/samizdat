@@ -30,6 +30,12 @@ zvalue funApply(zvalue function, zvalue args);
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
+ * Calls a function, with a variable number of arguments passed in the usual
+ * C style, except that `NULL` must be passed at the end.
+ */
+zvalue vaFunCall(zvalue function, ...);
+
+/**
  * Function which should never get called. This is used to wrap calls which
  * aren't allowed to return. Should they return, this function gets called
  * and promptly dies with a fatal error.
@@ -80,6 +86,15 @@ zvalue mustNotYield(zvalue value)
  * with a variable number of arguments passed in the usual C style.
  */
 #define METH_CALL(name, ...) FUN_CALL(SYM(name), __VA_ARGS__)
+
+/**
+ * `VA_METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,
+ * with a variable number of arguments passed in the usual C style. Under
+ * the covers, this calls `vaFunCall()` to "parse" the call, and as such it
+ * is less efficient than `METH_CALL()`, but unlike that macro, this one can
+ * handle any number of arguments.
+ */
+#define VA_METH_CALL(name, ...) vaFunCall(SYM(name), __VA_ARGS__, NULL)
 
 
 //
