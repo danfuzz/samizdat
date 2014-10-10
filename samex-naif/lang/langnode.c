@@ -690,11 +690,10 @@ zvalue makeInfoTable(zvalue node) {
         }
     }
 
-    return symbolTableFromArgs(
+    return tableFrom3(
         SYM(exports),   exports,
         SYM(imports),   imports,
-        SYM(resources), resources,
-        NULL);
+        SYM(resources), resources);
 }
 
 // Documented in spec.
