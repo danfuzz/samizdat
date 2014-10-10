@@ -252,7 +252,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(REFS::makeRecord, name, value) }
+    { makeCall(SYMS::new, LITS::Record, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -1578,7 +1578,7 @@ def parIndexPostfix = {:
                     { SYMS::exclusive };
 
                 def startNode =
-                    makeCall(REFS::makeRecord,
+                    makeCall(SYMS::new, LITS::Record,
                         makeLiteral(start::origin),
                         makeCall(SYMS::new, LITS::SymbolTable,
                             SYMS::value, start::value));
@@ -1586,7 +1586,7 @@ def parIndexPostfix = {:
                 def optEndNode = (
                     ifNot { eq(end, INDEX_AT_END_0) }
                         {
-                            makeCall(REFS::makeRecord,
+                            makeCall(SYMS::new, LITS::Record,
                                 makeLiteral(end::origin),
                                 makeCall(SYMS::new, LITS::SymbolTable,
                                     SYMS::value, end::value))

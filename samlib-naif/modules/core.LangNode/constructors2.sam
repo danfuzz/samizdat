@@ -518,7 +518,7 @@ export fn withModuleDefs(node) {
         { LITS::EMPTY_SYMBOL_TABLE }
         { makeCall(SYMS::new, LITS::SymbolTable, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
-    def yieldNode = makeCall(REFS::makeRecord,
+    def yieldNode = makeCall(SYMS::new, LITS::Record,
         makeLiteral(@module),
         makeCall(SYMS::new, LITS::SymbolTable,
             SYMS::exports, yieldExports,

@@ -64,6 +64,7 @@ def VALUES = {
     Bool,
     List,
     Map,
+    Record,
     SymbolTable
 };
 

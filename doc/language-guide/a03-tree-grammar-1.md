@@ -257,7 +257,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(REFS::makeRecord, name, value) }
+    { makeCall(SYMS::new, LITS::Record, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
