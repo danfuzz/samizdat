@@ -93,10 +93,11 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 
 // Documented in header.
 zvalue funApply(zvalue function, zvalue args) {
-    if (args == NULL) {
+    zint argCount = (args == NULL) ? 0 : get_size(args);
+
+    if (argCount == 0) {
         return funCall(function, 0, NULL);
     } else {
-        zint argCount = get_size(args);
         zvalue argsArray[argCount];
         arrayFromList(argsArray, args);
         return funCall(function, argCount, argsArray);
