@@ -16,12 +16,6 @@
 extern zvalue CLS_Record;
 
 /**
- * C version of class method `Record.new()`. `data` is allowed to be `NULL`,
- * which is treated as `@{}`.
- */
-zvalue makeRecord(zvalue name, zvalue data);
-
-/**
  * Returns whether the given `record` has the given `name`.
  */
 bool recHasName(zvalue record, zvalue name);

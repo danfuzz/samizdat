@@ -43,26 +43,6 @@ static RecordInfo *getInfo(zvalue value) {
 //
 
 // Documented in header.
-zvalue makeRecord(zvalue name, zvalue data) {
-    zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
-
-    if (data == NULL) {
-        data = EMPTY_SYMBOL_TABLE;
-    } else {
-        assertHasClass(data, CLS_SymbolTable);
-    }
-
-    zvalue result = datAllocValue(CLS_Record, sizeof(RecordInfo));
-    RecordInfo *info = getInfo(result);
-
-    info->name = name;
-    info->nameIndex = index;
-    info->data = data;
-
-    return result;
-}
-
-// Documented in header.
 bool recHasName(zvalue record, zvalue name) {
     assertHasClass(record, CLS_Record);
     return symbolEq(getInfo(record)->name, name);
@@ -81,7 +61,22 @@ zint recNameIndex(zvalue record) {
 
 // Documented in spec.
 CMETH_IMPL_1_2(Record, new, name, data) {
-    return makeRecord(name, data);
+    zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
+
+    if (data == NULL) {
+        data = EMPTY_SYMBOL_TABLE;
+    } else {
+        assertHasClass(data, CLS_SymbolTable);
+    }
+
+    zvalue result = datAllocValue(CLS_Record, sizeof(RecordInfo));
+    RecordInfo *info = getInfo(result);
+
+    info->name = name;
+    info->nameIndex = index;
+    info->data = data;
+
+    return result;
 }
 
 // Documented in spec.
