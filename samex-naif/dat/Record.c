@@ -85,11 +85,6 @@ CMETH_IMPL_1_2(Record, new, name, data) {
 }
 
 // Documented in spec.
-FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
-    return makeRecord(cls, value);
-}
-
-// Documented in spec.
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
@@ -179,12 +174,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, totalEq),
             METH_BIND(Record, totalOrder),
             NULL));
-
-    FUN_Record_makeRecord = datImmortalize(FUNC_VALUE(Record_makeRecord));
 }
 
 // Documented in header.
 zvalue CLS_Record = NULL;
-
-// Documented in header.
-zvalue FUN_Record_makeRecord = NULL;
