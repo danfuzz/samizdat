@@ -348,7 +348,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue table) {
-    return makeRecord(SYM(closure),
+    return cm_new(Record, SYM(closure),
         cm_cat(
             tableFrom2(SYM(formals), EMPTY_LIST, SYM(statements), EMPTY_LIST),
             table));
@@ -560,7 +560,7 @@ zvalue makeFullClosure(zvalue baseData) {
         yieldNode = TOK_void;
     }
 
-    return makeRecord(SYM(closure),
+    return cm_new(Record, SYM(closure),
         cm_cat(
             table,
             tableFrom3(
@@ -590,7 +590,7 @@ zvalue makeImport(zvalue baseData) {
             data = METH_CALL(del, data, SYM(select));
         }
 
-        return makeRecord(SYM(importModuleSelection), data);
+        return cm_new(Record, SYM(importModuleSelection), data);
     }
 
     if (cm_get(data, SYM(name)) == NULL) {
@@ -606,11 +606,11 @@ zvalue makeImport(zvalue baseData) {
         if (recordEvalTypeIs(cm_get(data, SYM(source)), EVAL_external)) {
             die("Cannot import external resource.");
         }
-        return makeRecord(SYM(importResource), data);
+        return cm_new(Record, SYM(importResource), data);
     }
 
     // It's a whole-module import.
-    return makeRecord(SYM(importModule), data);
+    return cm_new(Record, SYM(importModule), data);
 }
 
 // Documented in spec.
@@ -843,8 +843,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             } else {
                 // It's a wildcard select.
                 select = METH_CALL(keyList, exports);
-                return makeRecord(
-                    SYM(importModuleSelection),
+                return cm_new(Record, SYM(importModuleSelection),
                     cm_put(get_data(node), SYM(select), select));
             }
         }
@@ -856,8 +855,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
-    return makeRecord(
-        get_name(node),
+    return cm_new(Record, get_name(node),
         cm_put(get_data(node), SYM(formals), formals));
 }
 
@@ -917,8 +915,7 @@ zvalue withModuleDefs(zvalue node) {
                     SYMS(exports), yieldExports,
                     SYMS(info),    yieldInfo))));
 
-    return makeRecord(
-        get_name(node),
+    return cm_new(Record, get_name(node),
         cm_cat(
             get_data(node),
             tableFrom3(
@@ -929,8 +926,7 @@ zvalue withModuleDefs(zvalue node) {
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
-    return makeRecord(
-        get_name(node),
+    return cm_new(Record, get_name(node),
         cm_put(get_data(node), SYM(name), name));
 }
 
@@ -967,8 +963,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     zvalue converted = listFromArray(size, arr);
 
-    return makeRecord(
-        get_name(node),
+    return cm_new(Record, get_name(node),
         cm_cat(
             get_data(node),
             tableFrom1(SYM(statements), converted)));
@@ -976,8 +971,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
-    return makeRecord(
-        get_name(node),
+    return cm_new(Record, get_name(node),
         cm_put(get_data(node), SYM(top), BOOL_TRUE));
 }
 
@@ -997,15 +991,12 @@ zvalue withYieldDef(zvalue node, zvalue name) {
         newBindings = tableFrom1(SYM(yieldDef), name);
     }
 
-    return makeRecord(
-        get_name(node),
-        cm_cat(table, newBindings));
+    return cm_new(Record, get_name(node), cm_cat(table, newBindings));
 };
 
 // Documented in spec.
 zvalue withoutInterpolate(zvalue node) {
-    return makeRecord(
-        get_name(node),
+    return cm_new(Record, get_name(node),
         METH_CALL(del, get_data(node), SYM(interpolate)));
 }
 
@@ -1063,8 +1054,7 @@ zvalue withoutTops(zvalue node) {
         ? EMPTY_LIST
         : listFrom1(makeExportSelection(exports));
 
-    return makeRecord(
-        get_name(node),
+    return cm_new(Record, get_name(node),
         cm_cat(
             get_data(node),
             tableFrom1(

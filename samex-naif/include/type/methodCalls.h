@@ -55,6 +55,12 @@ char *cm_debugString(zvalue x);
 #define cm_get(x, key) (METH_CALL(get, (x), (key)))
 
 /**
+ * Calls `ClassName.new(...)`. `ClassName` is fixed to be a proper C name
+ * for a class. **Note:** This is a macro.
+ */
+#define cm_new(clsName, ...) (METH_CALL(new, (CLS_##clsName), __VA_ARGS__))
+
+/**
  * Calls `x.nth(index)`, converting the given `zint` index to an `Int`.
  */
 zvalue cm_nth(zvalue x, zint index);
