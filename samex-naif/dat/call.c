@@ -151,14 +151,3 @@ zvalue vaFunCall(zvalue function, ...) {
 zvalue mustNotYield(zvalue value) {
     die("Improper yield from `noYield` expression.");
 }
-
-//
-// Class Definition
-//
-
-/** Initializes the module. */
-MOD_INIT(call) {
-    MOD_USE(Builtin);
-    MOD_USE(Jump);
-    MOD_USE(Symbol);
-}
