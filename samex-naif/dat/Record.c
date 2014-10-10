@@ -80,6 +80,11 @@ zint recNameIndex(zvalue record) {
 //
 
 // Documented in spec.
+CMETH_IMPL_1_2(Record, new, name, data) {
+    return makeRecord(name, data);
+}
+
+// Documented in spec.
 FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
     return makeRecord(cls, value);
 }
@@ -161,7 +166,9 @@ MOD_INIT(Record) {
     MOD_USE(Core);
 
     CLS_Record = makeCoreClass(SYM(Record), CLS_Core,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(Record, new),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(Record, debugString),
             METH_BIND(Record, gcMark),
