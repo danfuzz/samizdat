@@ -27,10 +27,9 @@ static zvalue lookup(zvalue env, const char *name) {
 }
 
 static zvalue externalSource(const char *name) {
-    zvalue data = symbolTableFromArgs(
-        symbolFromUtf8(-1, "name"), stringFromUtf8(-1, name),
-        NULL);
-    return cm_new(Record, symbolFromUtf8(-1, "external"), data);
+    return cm_new(Record, symbolFromUtf8(-1, "external"),
+        cm_new(SymbolTable,
+            symbolFromUtf8(-1, "name"), stringFromUtf8(-1, name)));
 }
 
 zvalue eval(zvalue env) {
