@@ -907,8 +907,9 @@ zvalue withModuleDefs(zvalue node) {
         ? LITS(EMPTY_SYMBOL_TABLE)
         : makeCall(SYMS(new), listPrepend(LITS(SymbolTable), exportValues));
     zvalue yieldInfo = makeLiteral(info);
-    zvalue yieldNode = makeCall(REFS(makeRecord),
-        listFrom2(
+    zvalue yieldNode = makeCall(SYMS(new),
+        listFrom3(
+            LITS(Record),
             SYMS(module),
             makeCall(SYMS(new),
                 listFrom5(

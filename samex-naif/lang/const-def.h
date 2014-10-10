@@ -110,6 +110,7 @@ DEF_LITERAL(EMPTY_MAP,          EMPTY_MAP);
 DEF_LITERAL(EMPTY_SYMBOL_TABLE, EMPTY_SYMBOL_TABLE);
 DEF_LITERAL(List,               CLS_List);
 DEF_LITERAL(Map,                CLS_Map);
+DEF_LITERAL(Record,             CLS_Record);
 DEF_LITERAL(SymbolTable,        CLS_SymbolTable);
 DEF_LITERAL(null,               THE_NULL);
 DEF_LITERAL(zfalse,             BOOL_FALSE);  // `z` avoids clash with C.
