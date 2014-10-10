@@ -147,67 +147,6 @@ zvalue vaFunCall(zvalue function, ...) {
     return funCall(function, size, values);
 }
 
-// All documented in header.
-extern zvalue funCallWith0(zvalue function);
-extern zvalue funCallWith1(zvalue function, zvalue arg0);
-extern zvalue funCallWith2(zvalue function, zvalue arg0, zvalue arg1);
-extern zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2);
-extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3);
-extern zvalue funCallWith5(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4);
-extern zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5);
-extern zvalue funCallWith7(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6);
-extern zvalue funCallWith8(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7);
-extern zvalue funCallWith9(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8);
-extern zvalue funCallWith10(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9);
-extern zvalue funCallWith11(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10);
-extern zvalue funCallWith12(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11);
-extern zvalue funCallWith13(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12);
-extern zvalue funCallWith14(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13);
-extern zvalue funCallWith15(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14);
-extern zvalue funCallWith16(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15);
-extern zvalue funCallWith17(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-    zvalue arg16);
-extern zvalue funCallWith18(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-    zvalue arg16, zvalue arg17);
-extern zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-    zvalue arg16, zvalue arg17, zvalue arg18);
-
 // Documented in header.
 zvalue mustNotYield(zvalue value) {
     die("Improper yield from `noYield` expression.");
