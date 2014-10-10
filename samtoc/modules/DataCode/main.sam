@@ -160,7 +160,9 @@ fn Map_convert(value) {
 
 ## Converts a record.
 fn Record_convert(value) {
-    return genCall("makeRecord", convert(value.name), convert(value.data))
+    def dataConv = ((value.data != @{}) & convert(value.data))?;
+    return genCall("METH_CALL", "new", "CLS_Record",
+        convert(value.name), dataConv*)
 };
 
 ## Converts a string.
