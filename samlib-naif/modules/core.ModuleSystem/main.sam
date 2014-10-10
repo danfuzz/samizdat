@@ -45,7 +45,7 @@ def $Lang0 = {
 fn makeBootstrapEntry(exports) {
     return @module{
         exports,
-        info: {
+        info: @{
             exports:   @{exports.keyList()*: Value},
             imports:   @{},
             resources: @{}
