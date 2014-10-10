@@ -32,11 +32,13 @@ def SYMBOLS = [
     @modEu,
     @mul,
     @neg,
+    @new,
     @not,
     @or,
     @perEq,
     @reverse,
     @shl,
+    @singleValue,
     @sliceExclusive,
     @sliceInclusive,
     @shr,
@@ -56,7 +58,13 @@ def VALUES = {
     INT_1:              1,
     false:              false,
     null:               null,
-    true:               true
+    true:               true,
+
+    ## Classes
+    Bool,
+    List,
+    Map,
+    SymbolTable
 };
 
 

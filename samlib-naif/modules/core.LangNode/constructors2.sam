@@ -62,18 +62,17 @@ fn expandYield(table) {
 ## Helper for `makeMapExpression` and `makeSymbolTableExpression`, which
 ## is parameterized on the "empty" value and the two required constructor
 ## functions.
-export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
-        makeOneValue) {
+export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     ifIs { eq(mappings, []) }
         {
             ## No mappings. Easy out.
-            return emptyLiteral
+            return emptyLit
         };
 
     ## Convert the mappings as if it has to be nontrivial. If in the end, it's
-    ## possible to use a single call to `makeMap`, then just do that.
+    ## possible to use a single call to `new()`, then just do that.
 
-    var singleArgs = [];  ## Single-value mappings, to be `makeMap`ed.
+    var singleArgs = [];  ## Single-value mappings, to be `new()`ed.
     var catArgs = [];     ## Arguments ready to be `cat`ed.
 
     fn addToCat(arg) {
@@ -83,7 +82,7 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
     fn addSingleToCat() {
         ifIs { perNe(singleArgs, []) }
             {
-                addToCat(makeCall(makeMultiValue, singleArgs*));
+                addToCat(makeCall(SYMS::new, classLit, singleArgs*));
                 singleArgs := []
             }
     };
@@ -108,7 +107,8 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
                 ifIs { eq(handled, false) }
                     {
                         addSingleToCat();
-                        addToCat(makeCallOrApply(makeOneValue, keys*, value))
+                        addToCat(makeCallOrApply(SYMS::singleValue,
+                            classLit, keys*, value))
                     };
             }
             {
@@ -129,7 +129,7 @@ export fn makeMapLikeExpression(mappings, emptyLiteral, makeMultiValue,
     ## ensure a result of the proper type.
 
     addSingleToCat();
-    return makeCall(SYMS::cat, emptyLiteral, catArgs*)
+    return makeCall(SYMS::cat, emptyLit, catArgs*)
 };
 
 
@@ -153,10 +153,10 @@ export fn makeCallOrApply(function, values*) {
 
     ## Convert the values as if interpolation needs to be handled. If in the
     ## end it doesn't, then the original values are used as-is. This converts
-    ## runs of non-interpolated values to `makeList(ac, ac, ...)`, which
+    ## runs of non-interpolated values to `List.new(ac, ac, ...)`, which
     ## converts cleanly at runtime as part of the ultimate call to `cat`.
 
-    var pending = [];       ## Non-interpolated values, to be `makeList`ed.
+    var pending = [];       ## Non-interpolated values, to be `List.new()`ed.
     var cookedValues = [];  ## Fully-processed values (of either type).
 
     fn addToCooked(actual) {
@@ -166,7 +166,7 @@ export fn makeCallOrApply(function, values*) {
     fn addPendingToCooked() {
         ifIs { perNe(pending, []) }
             {
-                addToCooked(makeCall(REFS::makeList, pending*));
+                addToCooked(makeCall(SYMS::new, LITS::List, pending*));
                 pending := [];
             }
     };
@@ -223,7 +223,7 @@ export fn makeClassDef(name, attributes, methods) {
         { makeCall(SYMS::toUnlisted, SYMS::access) };
 
     ## This makes `instanceMethods` into a map of `[name, closure]` pairs.
-    ## These pairs then get interpolated into a call to `makeSymbolTable`.
+    ## These pairs then get interpolated into a call to `SymbolTable.new()`.
     var instanceMethods = {};
     filterPump(methods) { one ->
         def name = one::name;
@@ -232,7 +232,7 @@ export fn makeClassDef(name, attributes, methods) {
         instanceMethods := {instanceMethods*, (name): [makeLiteral(name), one]}
     };
 
-    def instanceMethodTable = makeCall(REFS::makeSymbolTable,
+    def instanceMethodTable = makeCall(SYMS::new, LITS::SymbolTable,
         ([].cat(instanceMethods.valueList()*))*);
 
     def call = makeCall(REFS::makeObjectClass,
@@ -434,8 +434,7 @@ export fn makeInterpolate(node) {
 
 ## Documented in spec.
 export fn makeMapExpression(mappings*) {
-    return makeMapLikeExpression(
-        mappings, LITS::EMPTY_MAP, REFS::makeMap, REFS::makeValueMap)
+    return makeMapLikeExpression(mappings, LITS::Map, LITS::EMPTY_MAP)
 };
 
 ## Documented in spec.
@@ -446,8 +445,7 @@ export fn makeMaybeValue(node) {
 ## Documented in spec.
 export fn makeSymbolTableExpression(mappings*) {
     return makeMapLikeExpression(
-        mappings, LITS::EMPTY_SYMBOL_TABLE,
-        REFS::makeSymbolTable, REFS::makeValueSymbolTable)
+        mappings, LITS::SymbolTable, LITS::EMPTY_SYMBOL_TABLE)
 };
 
 ## Documented in spec.
@@ -510,7 +508,7 @@ export fn withModuleDefs(node) {
     };
 
     ## This is a list of mapping argument pairs, to be combined with
-    ## `makeSymbolTable` to become the exports table.
+    ## `SymbolTable.new()` to become the exports table.
     def exportValues = filterAll(info::exports) { mapping ->
         def name = mapping.get_key();
         [makeLiteral(name), makeVarFetch(name)]
@@ -518,11 +516,11 @@ export fn withModuleDefs(node) {
 
     def yieldExports = ifIs { eq(exportValues, []) }
         { LITS::EMPTY_SYMBOL_TABLE }
-        { makeCall(REFS::makeSymbolTable, [].cat(exportValues*)*) };
+        { makeCall(SYMS::new, LITS::SymbolTable, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
     def yieldNode = makeCall(REFS::makeRecord,
         makeLiteral(@module),
-        makeCall(REFS::makeSymbolTable,
+        makeCall(SYMS::new, LITS::SymbolTable,
             SYMS::exports, yieldExports,
             SYMS::info,    yieldInfo));
 

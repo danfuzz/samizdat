@@ -123,12 +123,12 @@ static zvalue expandYield(zvalue table) {
 };
 
 // Documented in `LangNode` source.
-static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
-        zvalue makeMultiValue, zvalue makeOneValue) {
+static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
+        zvalue emptyLit) {
     zint size = get_size(mappings);
 
     if (size == 0) {
-        return emptyLiteral;
+        return emptyLit;
     }
 
     zvalue singleArgs[size * 2];
@@ -143,8 +143,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
 
     #define addSingleToCat() do { \
         if (singleAt != 0) { \
-            addToCat(makeCall(makeMultiValue, \
-                listFromArray(singleAt, singleArgs))); \
+            addToCat(makeCall(SYMS(new), \
+                listPrepend(clsLit, listFromArray(singleAt, singleArgs)))); \
             singleAt = 0; \
         } \
     } while (0)
@@ -166,8 +166,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
             }
             if (!handled) {
                 addSingleToCat();
-                addToCat(makeCallOrApply(makeOneValue,
-                    listAppend(keys, value)));
+                addToCat(makeCallOrApply(SYMS(singleValue),
+                    listPrepend(clsLit, listAppend(keys, value))));
             }
         } else {
             addSingleToCat();
@@ -182,7 +182,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue emptyLiteral,
 
     addSingleToCat();
     return makeCall(SYMS(cat),
-        listPrepend(emptyLiteral, listFromArray(catAt, catArgs)));
+        listPrepend(emptyLit, listFromArray(catAt, catArgs)));
 };
 
 
@@ -387,8 +387,8 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
     #define addPendingToCooked() do { \
         if (pendAt != 0) { \
-            addToCooked(makeCall(REFS(makeList), \
-                listFromArray(pendAt, pending))); \
+            addToCooked(makeCall(SYMS(new), \
+                listPrepend(LITS(List), listFromArray(pendAt, pending)))); \
             pendAt = 0; \
         } \
     } while (0)
@@ -458,15 +458,17 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
             name, listFrom2(makeLiteral(name), one));
     }
 
-    zvalue instanceMethodTable = makeCall(REFS(makeSymbolTable),
+    zvalue instanceMethodTable = makeCall(SYMS(new),
         METH_APPLY(cat,
-            listPrepend(EMPTY_LIST, METH_CALL(valueList, instanceMethods))));
+            listPrepend(
+                listFrom1(LITS(SymbolTable)),
+                METH_CALL(valueList, instanceMethods))));
 
     zvalue call = makeCall(REFS(makeObjectClass),
         listFrom4(
             makeLiteral(name),
             access,
-            makeLiteral(EMPTY_SYMBOL_TABLE),
+            LITS(EMPTY_SYMBOL_TABLE),
             instanceMethodTable));
 
     return withTop(makeVarDef(name, call));
@@ -710,8 +712,7 @@ zvalue makeLiteral(zvalue value) {
 
 // Documented in spec.
 zvalue makeMapExpression(zvalue mappings) {
-    return makeMapLikeExpression(
-        mappings, makeLiteral(EMPTY_MAP), REFS(makeMap), REFS(makeValueMap));
+    return makeMapLikeExpression(mappings, LITS(Map), LITS(EMPTY_MAP));
 };
 
 // Documented in spec.
@@ -744,8 +745,7 @@ zvalue makeSymbolLiteral(zvalue name) {
 // Documented in spec.
 zvalue makeSymbolTableExpression(zvalue mappings) {
     return makeMapLikeExpression(
-        mappings, makeLiteral(EMPTY_SYMBOL_TABLE),
-        REFS(makeSymbolTable), REFS(makeValueSymbolTable));
+        mappings, LITS(SymbolTable), LITS(EMPTY_SYMBOL_TABLE));
 };
 
 // Documented in spec.
@@ -904,16 +904,17 @@ zvalue withModuleDefs(zvalue node) {
     }
 
     zvalue yieldExports = (exSize == 0)
-        ? makeLiteral(EMPTY_SYMBOL_TABLE)
-        : makeCall(REFS(makeSymbolTable), exportValues);
+        ? LITS(EMPTY_SYMBOL_TABLE)
+        : makeCall(SYMS(new), listPrepend(LITS(SymbolTable), exportValues));
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(REFS(makeRecord),
         listFrom2(
-            makeLiteral(SYM(module)),
-            makeCall(REFS(makeSymbolTable),
-                listFrom4(
-                    makeLiteral(SYM(exports)), yieldExports,
-                    makeLiteral(SYM(info)),    yieldInfo))));
+            SYMS(module),
+            makeCall(SYMS(new),
+                listFrom5(
+                    LITS(SymbolTable),
+                    SYMS(exports), yieldExports,
+                    SYMS(info),    yieldInfo))));
 
     return makeRecord(
         get_name(node),

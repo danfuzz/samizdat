@@ -392,11 +392,11 @@ DEF_PARSE(literal) {
     } else if ((token = MATCH(string))) {
         return makeLiteral(cm_get(token, SYM(value)));
     } else if (MATCH(zfalse)) {
-        return makeLiteral(BOOL_FALSE);
+        return LITS(zfalse);
     } else if (MATCH(ztrue)) {
-        return makeLiteral(BOOL_TRUE);
+        return LITS(ztrue);
     } else if (MATCH(null)) {
-        return makeLiteral(THE_NULL);
+        return LITS(null);
     } else if (MATCH(CH_AT)) {
         zvalue symbol = PARSE_OR_REJECT(identifierSymbol);
         REJECT_IF(PARSE_LOOKAHEAD(literal1));
@@ -568,8 +568,8 @@ DEF_PARSE(list) {
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return (get_size(expressions) == 0)
-        ? makeLiteral(EMPTY_LIST)
-        : makeCallOrApply(REFS(makeList), expressions);
+        ? LITS(EMPTY_LIST)
+        : makeCallOrApply(SYMS(new), listPrepend(LITS(List), expressions));
 }
 
 // Documented in spec.

@@ -244,7 +244,7 @@ zint symbolTableSize(zvalue symbolTable) {
 //
 
 // Documented in spec.
-FUNC_IMPL_rest(SymbolTable_makeSymbolTable, args) {
+CMETH_IMPL_rest(SymbolTable, new, args) {
     if ((argsSize & 1) != 0) {
         die("Odd argument count for symbol table construction.");
     }
@@ -265,13 +265,14 @@ FUNC_IMPL_rest(SymbolTable_makeSymbolTable, args) {
 }
 
 // Documented in spec.
-FUNC_IMPL_1_rest(SymbolTable_makeValueSymbolTable, first, args) {
-    // Since the arguments are "stretchy" in the front instead of the
-    // usual rear, we do a bit of non-obvious rearranging here.
-
+CMETH_IMPL_1_rest(SymbolTable, singleValue, first, args) {
     if (argsSize == 0) {
         return EMPTY_SYMBOL_TABLE;
     }
+
+    // Since the arguments are "stretchy" in the front instead of the usual
+    // rear, we pull out the `value` and manually enter the first key into
+    // the result.
 
     zvalue value = args[argsSize - 1];
     zvalue result = allocInstance(argsSize);
@@ -279,9 +280,8 @@ FUNC_IMPL_1_rest(SymbolTable_makeValueSymbolTable, first, args) {
 
     putInto(&result, &info, first, value);
 
-    argsSize--;
-    for (zint i = 0; i < argsSize; i++) {
-        putInto(&result, &info, args[i], value);
+    for (zint i = 1; i < argsSize; i++) {
+        putInto(&result, &info, args[i - 1], value);
     }
 
     return result;
@@ -461,7 +461,10 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
 // Documented in header.
 void bindMethodsForSymbolTable(void) {
     classBindMethods(CLS_SymbolTable,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(SymbolTable, new),
+            CMETH_BIND(SymbolTable, singleValue),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(SymbolTable, cat),
             METH_BIND(SymbolTable, del),
@@ -472,12 +475,6 @@ void bindMethodsForSymbolTable(void) {
             METH_BIND(SymbolTable, totalEq),
             METH_BIND(SymbolTable, totalOrder),
             NULL));
-
-    FUN_SymbolTable_makeSymbolTable =
-        datImmortalize(FUNC_VALUE(SymbolTable_makeSymbolTable));
-
-    FUN_SymbolTable_makeValueSymbolTable =
-        datImmortalize(FUNC_VALUE(SymbolTable_makeValueSymbolTable));
 
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance(0));
 }
@@ -495,9 +492,3 @@ zvalue CLS_SymbolTable = NULL;
 
 // Documented in header.
 zvalue EMPTY_SYMBOL_TABLE = NULL;
-
-// Documented in header.
-zvalue FUN_SymbolTable_makeSymbolTable;
-
-// Documented in header.
-zvalue FUN_SymbolTable_makeValueSymbolTable;

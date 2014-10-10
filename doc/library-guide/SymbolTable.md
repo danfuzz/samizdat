@@ -11,6 +11,30 @@ methods of `Collection`.
 
 
 <br><br>
+### Class Method Definitions
+
+#### `.new(args*) -> map`
+
+This makes a symbol table from a series of mappings, given as pairs of
+symbol-then-value arguments. This function is meant to be exactly parallel to
+`Map.new()` (see which).
+
+**Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
+
+#### `.singleValue(keys*, value) -> map`
+
+This makes a symbol table which maps any number of keys (including none)
+to the same value. If no keys are specified, then this function returns
+the empty symbol table. This function is meant to be exactly parallel to
+`Map.singleValue()` (see which).
+
+Note that the argument list is "stretchy" in front, which isn't
+representable in real Samizdat syntax.
+
+**Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.perEq(other) -> symbolTable | void`
@@ -79,20 +103,7 @@ in cases where `key` was not already bound.
 <br><br>
 ### Primitive Definitions
 
-#### `makeValueSymbolTable(keys*, value) -> symbolTable`
-
-This makes a symbol table which maps any number of keys (including none)
-to the same value. If no keys are specified, then this function returns
-the empty symbol table. This function is meant to be exactly parallel to
-`makeValueMap` (see which).
-
-Note that the argument list is "stretchy" in front, which isn't really
-representable in Samizdat syntax as presented.
-
-#### `makeSymbolTable(mappings*) -> symbolTable`
-
-This makes a symbol table from a series of mappings, given as pairs of
-symbol-then-value arguments.
+(none)
 
 
 <br><br>

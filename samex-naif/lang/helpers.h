@@ -33,6 +33,11 @@ zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3);
 zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4);
 
 /**
+ * Makes a 5 element list.
+ */
+zvalue listFrom5(zvalue e1, zvalue e2, zvalue e3, zvalue e4, zvalue e5);
+
+/**
  * Appends an element to a list.
  */
 zvalue listAppend(zvalue list, zvalue elem);

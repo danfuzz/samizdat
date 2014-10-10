@@ -285,10 +285,10 @@ Makes a `literal` node.
 
 Makes an expression node that represents the construction of a map
 consisting of the given `mappings`. Arguments that are `mapping`
-values are restructured into appropriate calls to `makeMap` or
-`makeValueMap`. Other arguments are taken to be interpolated arguments.
+values are restructured into appropriate calls to `Map.new()` or
+`Map.singleValue()`. Other arguments are taken to be interpolated arguments.
 In trivial cases, the result is a simple `call` node for a call to
-`makeMap` or `makeValueMap`. In other cases, the result is a call to
+`Map.new()` or `Map.singleValue()`. In other cases, the result is a call to
 `cat` with less trivial internal structure.
 
 #### `makeMaybe(value) -> node`
@@ -328,11 +328,11 @@ Makes a literal node that represents the symbol with the given `name`.
 
 Makes an expression node that represents the construction of a symbol table
 consisting of the given `mappings`. Arguments that are `mapping`
-values are restructured into appropriate calls to `makeSymbolTable` or
-`makeValueSymbolTable`. Other arguments are taken to be interpolated
+values are restructured into appropriate calls to `SymbolTable.new()` or
+`SymbolTable.singleValue()`. Other arguments are taken to be interpolated
 arguments. In trivial cases, the result is a simple `call` node for a call to
-`makeSymbolTable` or `makeValueSymbolTable`. In other cases, the result is
-a call to `cat` with less trivial internal structure.
+`SymbolTable.new()` or `SymbolTable.singleValue()`. In other cases, the result
+is a call to `cat` with less trivial internal structure.
 
 #### `makeThunk(node) -> node`
 

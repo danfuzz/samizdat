@@ -162,6 +162,11 @@ zvalue listFromArray(zint size, const zvalue *values) {
 //
 
 // Documented in spec.
+CMETH_IMPL_rest(List, new, values) {
+    return listFromArray(valuesSize, values);
+}
+
+// Documented in spec.
 METH_IMPL_rest(List, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -385,7 +390,9 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
 
     CLS_List = makeCoreClass(SYM(List), CLS_Core,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(List, new),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(List, cat),
             METH_BIND(List, collect),

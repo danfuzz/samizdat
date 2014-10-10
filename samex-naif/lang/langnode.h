@@ -14,6 +14,9 @@
 #include "type/Value.h"
 
 
+/** Equivalent to `LITS::<name>` in the spec. */
+#define LITS(name) (LIT_##name)
+
 /** Equivalent to `REFS::<name>` in the spec. */
 #define REFS(name) (makeVarFetch(SYM(name)))
 

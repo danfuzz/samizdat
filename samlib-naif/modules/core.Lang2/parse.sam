@@ -290,7 +290,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeCallOrApply(REFS::makeList, expressions*) }
+            { makeCallOrApply(SYMS::new, LITS::List, expressions*) }
     }
 :};
 
@@ -1494,7 +1494,7 @@ def parRangeExpression = {:
 
     ## The test here is to prevent open ranges from being allowed.
     { ne(body::function, REFS::Range_makeOpenRange) }
-    { makeCallOrApply(REFS::makeList, makeInterpolate(body)) }
+    { makeCallOrApply(SYMS::new, LITS::List, makeInterpolate(body)) }
 :};
 
 ## Parses the `term` variants introduced in Layer 2.
@@ -1580,7 +1580,7 @@ def parIndexPostfix = {:
                 def startNode =
                     makeCall(REFS::makeRecord,
                         makeLiteral(start::origin),
-                        makeCall(REFS::makeSymbolTable,
+                        makeCall(SYMS::new, LITS::SymbolTable,
                             SYMS::value, start::value));
 
                 def optEndNode = (
@@ -1588,7 +1588,7 @@ def parIndexPostfix = {:
                         {
                             makeCall(REFS::makeRecord,
                                 makeLiteral(end::origin),
-                                makeCall(REFS::makeSymbolTable,
+                                makeCall(SYMS::new, LITS::SymbolTable,
                                     SYMS::value, end::value))
                         }
                 )?;
@@ -1630,7 +1630,7 @@ parPostfixOperator2 := {:
     @"??"
     {
         { node ->
-            makeCallOrApply(SYMS::fromLogic, REFS::Bool,
+            makeCallOrApply(SYMS::fromLogic, LITS::Bool,
                 makeInterpolate(makeMaybeValue(node)))
         }
     }
@@ -2127,13 +2127,13 @@ def parSwitchExpression = {:
             def keys = case::keys;
             def code = finishCode(case);
             ifIs { List.accepts(keys) }
-                { makeCallOrApply(REFS::makeValueMap, keys*, code) }
+                { makeCallOrApply(SYMS::singleValue, LITS::Map, keys*, code) }
         };
         def caseMap = makeCallOrApply(SYMS::cat,
             LITS::EMPTY_MAP,
             makeInterpolate(
                 makeCall(SYMS::reverse,
-                    makeCallOrApply(REFS::makeList, caseClauses*))));
+                    makeCallOrApply(SYMS::new, LITS::List, caseClauses*))));
 
         def ifCall = makeCall(REFS::ifSwitch,
             testClause::testThunk,

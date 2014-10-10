@@ -6,6 +6,7 @@
 // **Note:** This file gets `#include`d multiple times, and so does not
 // have the usual guard macros.
 //
+// `DEF_LITERAL(name, value)` -- an arbitrary literal value.
 // `DEF_STRING(name, "string")` -- a string constant.
 // `DEF_SYMBOL(name, "string")` -- an interned symbol and token (empty record).
 // `DEF_TOKEN(name, "string")` -- just a token; symbol assumed to exist.
@@ -66,13 +67,8 @@ DEF_SYMBOL(literal,               "literal");
 DEF_SYMBOL(loadModule,            "loadModule");
 DEF_SYMBOL(loadResource,          "loadResource");
 DEF_SYMBOL(lvalue,                "lvalue");
-DEF_SYMBOL(makeList,              "makeList");
-DEF_SYMBOL(makeMap,               "makeMap");
 DEF_SYMBOL(makeObjectClass,       "makeObjectClass");
 DEF_SYMBOL(makeRecord,            "makeRecord");
-DEF_SYMBOL(makeSymbolTable,       "makeSymbolTable");
-DEF_SYMBOL(makeValueMap,          "makeValueMap");
-DEF_SYMBOL(makeValueSymbolTable,  "makeValueSymbolTable");
 DEF_SYMBOL(mapping,               "mapping");
 DEF_SYMBOL(maybe,                 "maybe");
 DEF_SYMBOL(maybeValue,            "maybeValue");
@@ -106,3 +102,15 @@ DEF_SYMBOL(ztrue,                 "true");   // `z` avoids clash with C.
 DEF_TOKEN(call,  "call");
 DEF_TOKEN(fetch, "fetch");
 DEF_TOKEN(store, "store");
+
+// Literals have to be defined after everything else, in particular after the
+// constants used during calls to `makeLiteral()`.
+DEF_LITERAL(EMPTY_LIST,         EMPTY_LIST);
+DEF_LITERAL(EMPTY_MAP,          EMPTY_MAP);
+DEF_LITERAL(EMPTY_SYMBOL_TABLE, EMPTY_SYMBOL_TABLE);
+DEF_LITERAL(List,               CLS_List);
+DEF_LITERAL(Map,                CLS_Map);
+DEF_LITERAL(SymbolTable,        CLS_SymbolTable);
+DEF_LITERAL(null,               THE_NULL);
+DEF_LITERAL(zfalse,             BOOL_FALSE);  // `z` avoids clash with C.
+DEF_LITERAL(ztrue,              BOOL_TRUE);   // `z` avoids clash with C.
