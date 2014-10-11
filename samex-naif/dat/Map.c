@@ -182,42 +182,6 @@ void arrayFromMap(zmapping *result, zvalue map) {
 }
 
 // Documented in header.
-zvalue mapFromArgs(zvalue first, ...) {
-    if (first == NULL) {
-        return EMPTY_MAP;
-    }
-
-    zint size = 1;
-    va_list rest;
-
-    va_start(rest, first);
-    for (;;) {
-        if (va_arg(rest, zvalue) == NULL) {
-            break;
-        }
-        size++;
-    }
-    va_end(rest);
-
-    if ((size & 1) != 0) {
-        die("Odd argument count: %lld", size);
-    }
-
-    size >>= 1;
-
-    zmapping mappings[size];
-
-    va_start(rest, first);
-    for (zint i = 0; i < size; i++) {
-        mappings[i].key = (i == 0) ? first : va_arg(rest, zvalue);
-        mappings[i].value = va_arg(rest, zvalue);
-    }
-    va_end(rest);
-
-    return mapFromArray(size, mappings);
-}
-
-// Documented in header.
 zvalue mapFromArray(zint size, zmapping *mappings) {
     if (DAT_CONSTRUCTION_PARANOIA) {
         for (zint i = 0; i < size; i++) {
@@ -268,28 +232,26 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
     return mapFromArrayUnchecked(at, mappings);
 }
 
-// Documented in header.
-zvalue mapFromSymbolTable(zvalue symbolTable) {
-    zint size = symbolTableSize(symbolTable);
-    zmapping mappings[size];
-
-    arrayFromSymbolTable(mappings, symbolTable);
-    return mapFromArray(size, mappings);
-}
-
-// Documented in header.
-zvalue symbolTableFromMap(zvalue map) {
-    zint size = get_size(map);
-    zmapping mappings[size];
-
-    arrayFromMap(mappings, map);
-    return symbolTableFromArray(size, mappings);
-}
-
 
 //
 // Class Definition
 //
+
+// Documented in spec.
+CMETH_IMPL_1(Map, castFrom, value) {
+    zvalue cls = get_class(value);
+
+    if (valEq(cls, CLS_SymbolTable)) {
+        zint size = symbolTableSize(value);
+        zmapping mappings[size];
+        arrayFromSymbolTable(mappings, value);
+        return mapFromArray(size, mappings);
+    } else if (classAccepts(thsClass, value)) {
+        return value;
+    }
+
+    return NULL;
+}
 
 // Documented in spec.
 CMETH_IMPL_rest(Map, new, args) {
@@ -330,6 +292,20 @@ CMETH_IMPL_1_rest(Map, singleValue, first, args) {
     return mapFromArray(argsSize, mappings);
 }
 
+// Documented in header.
+METH_IMPL_1(Map, castToward, cls) {
+    MapInfo *info = getInfo(ths);
+
+    if (valEq(cls, CLS_SymbolTable)) {
+        zint size = info->size;
+        return symbolTableFromArray(info->size, info->elems);
+    } else if (classAccepts(cls, ths)) {
+        return ths;
+    }
+
+    return NULL;
+}
+
 // Documented in spec.
 METH_IMPL_rest(Map, cat, args) {
     if (argsSize == 0) {
@@ -343,7 +319,7 @@ METH_IMPL_rest(Map, cat, args) {
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         if (classAccepts(CLS_SymbolTable, one)) {
-            one = mapFromSymbolTable(one);
+            one = METH_CALL(castFrom, CLS_Map, one);
         } else {
             assertHasClass(one, CLS_Map);
         }
@@ -660,10 +636,12 @@ MOD_INIT(Map) {
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
         symbolTableFromArgs(
+            CMETH_BIND(Map, castFrom),
             CMETH_BIND(Map, new),
             CMETH_BIND(Map, singleValue),
             NULL),
         symbolTableFromArgs(
+            METH_BIND(Map, castToward),
             METH_BIND(Map, cat),
             METH_BIND(Map, collect),
             METH_BIND(Map, del),

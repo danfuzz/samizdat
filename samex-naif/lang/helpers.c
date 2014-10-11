@@ -87,7 +87,7 @@ zvalue recordFrom3(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
 // Documented in header.
 zvalue recordFrom4(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
-    return makeRecord(name, tableFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
+    return cm_new(Record, name, tableFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
 }
 
 // Documented in header.

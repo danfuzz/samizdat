@@ -146,7 +146,7 @@ fn Int_convert(value) {
 ## Converts a list.
 fn List_convert(value) {
     def listElems = [ elem in value -> convert(elem) ];
-    return genCall("listFromArgs", listElems*, CODE_C_NULL)
+    return genCall("VA_METH_CALL", "new", "CLS_List", listElems*)
 };
 
 ## Converts a map.
@@ -155,12 +155,14 @@ fn Map_convert(value) {
         [convert(mapping.key), convert(mapping.value)]
     ];
 
-    return genCall("mapFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
+    return genCall("VA_METH_CALL", "new", "CLS_Map", [].cat(mapPairs*)*)
 };
 
 ## Converts a record.
 fn Record_convert(value) {
-    return genCall("makeRecord", convert(value.name), convert(value.data))
+    def dataConv = ((value.data != @{}) & convert(value.data))?;
+    return genCall("METH_CALL", "new", "CLS_Record",
+        convert(value.name), dataConv*)
 };
 
 ## Converts a string.
@@ -198,7 +200,8 @@ fn SymbolTable_convert(value) {
         [convert(mapping.key), convert(mapping.value)]
     ];
 
-    return genCall("symbolTableFromArgs", [].cat(mapPairs*)*, CODE_C_NULL)
+    return genCall("VA_METH_CALL", "new", "CLS_SymbolTable",
+        [].cat(mapPairs*)*)
 };
 
 ## Converts an opaque value. Or rather, always complains that it can't

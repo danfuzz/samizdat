@@ -207,7 +207,7 @@ def parRecord = makeMainSequence(
                 makeSymbolTableExpression(mappings*)
             })),
     makeCode { ., name, value ->
-        makeCall(REFS::makeRecord, name, value)
+        makeCall(SYMS::new, LITS::Record, name, value)
     });
 
 ## Documented in spec.

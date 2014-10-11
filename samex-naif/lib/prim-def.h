@@ -29,7 +29,6 @@ PRIM_DEF(Value,                   CLS_Value);
 // Primitive functions: directly exported.
 PRIM_DEF(makeObject,              FUN_Object_makeObject);
 PRIM_DEF(makeObjectClass,         FUN_Object_makeObjectClass);
-PRIM_DEF(makeRecord,              FUN_Record_makeRecord);
 PRIM_FUNC(cast,                   2, 2);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(eq,                     2, 2);

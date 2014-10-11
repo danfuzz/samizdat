@@ -30,6 +30,12 @@ zvalue funApply(zvalue function, zvalue args);
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
+ * Calls a function, with a variable number of arguments passed in the usual
+ * C style, except that `NULL` must be passed at the end.
+ */
+zvalue vaFunCall(zvalue function, ...);
+
+/**
  * Function which should never get called. This is used to wrap calls which
  * aren't allowed to return. Should they return, this function gets called
  * and promptly dies with a fatal error.
@@ -58,6 +64,8 @@ zvalue mustNotYield(zvalue value)
  * a numbered argument.
  */
 #define DAT_CONCAT(x, y) x##y
+#define DAT_FIRST(x, ...) x
+#define DAT_REST(x, ...) __VA_ARGS__
 #define DAT_ARG_COUNT(...) \
     DAT_ARG_COUNT0(__VA_ARGS__, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, \
         9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
@@ -65,9 +73,8 @@ zvalue mustNotYield(zvalue value)
 #define DAT_ARG_COUNT1(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, \
     x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, n, ...) n
 #define FUN_CALL(...) \
-    FUN_CALL0(DAT_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
-#define FUN_CALL0(argCount, ...) \
-    DAT_CONCAT(funCallWith, argCount)(__VA_ARGS__)
+    funCall(DAT_FIRST(__VA_ARGS__), \
+        DAT_ARG_COUNT(__VA_ARGS__), (zvalue[]) { DAT_REST(__VA_ARGS__) })
 
 /**
  * `METH_APPLY(name, args)`: Calls a method by (unadorned) name,
@@ -81,175 +88,13 @@ zvalue mustNotYield(zvalue value)
  */
 #define METH_CALL(name, ...) FUN_CALL(SYM(name), __VA_ARGS__)
 
-
-//
-// Helpers for `FUN_CALL` and `METH_CALL`. Each of these calls a given
-// function with a different number of (particular) arguments.
-//
-
-inline zvalue funCallWith0(zvalue function) {
-    return funCall(function, 0, NULL);
-}
-
-inline zvalue funCallWith1(zvalue function, zvalue arg0) {
-    return funCall(function, 1, &arg0);
-}
-
-inline zvalue funCallWith2(zvalue function, zvalue arg0, zvalue arg1) {
-    zvalue args[] = { arg0, arg1 };
-    return funCall(function, 2, args);
-}
-
-inline zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2) {
-    zvalue args[] = { arg0, arg1, arg2 };
-    return funCall(function, 3, args);
-}
-
-inline zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3) {
-    zvalue args[] = { arg0, arg1, arg2, arg3 };
-    return funCall(function, 4, args);
-}
-
-inline zvalue funCallWith5(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4) {
-    zvalue args[] = { arg0, arg1, arg2, arg3, arg4 };
-    return funCall(function, 5, args);
-}
-
-inline zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5) {
-    zvalue args[] = { arg0, arg1, arg2, arg3, arg4, arg5 };
-    return funCall(function, 6, args);
-}
-
-inline zvalue funCallWith7(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6) {
-    zvalue args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6 };
-    return funCall(function, 7, args);
-}
-
-inline zvalue funCallWith8(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7) {
-    zvalue args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 };
-    return funCall(function, 8, args);
-}
-
-inline zvalue funCallWith9(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8) {
-    zvalue args[] = { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 };
-    return funCall(function, 9, args);
-}
-
-inline zvalue funCallWith10(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9
-    };
-    return funCall(function, 10, args);
-}
-
-inline zvalue funCallWith11(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10
-    };
-    return funCall(function, 11, args);
-}
-
-inline zvalue funCallWith12(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11
-    };
-    return funCall(function, 12, args);
-}
-
-inline zvalue funCallWith13(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-        zvalue arg12) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11, arg12
-    };
-    return funCall(function, 13, args);
-}
-
-inline zvalue funCallWith14(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-        zvalue arg12, zvalue arg13) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11, arg12, arg13
-    };
-    return funCall(function, 14, args);
-}
-
-inline zvalue funCallWith15(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-        zvalue arg12, zvalue arg13, zvalue arg14) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11, arg12, arg13, arg14
-    };
-    return funCall(function, 15, args);
-}
-
-inline zvalue funCallWith16(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11, arg12, arg13, arg14, arg15
-    };
-    return funCall(function, 16, args);
-}
-
-inline zvalue funCallWith17(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-        zvalue arg16) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11, arg12, arg13, arg14, arg15, arg16
-    };
-    return funCall(function, 17, args);
-}
-
-inline zvalue funCallWith18(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-        zvalue arg16, zvalue arg17) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11, arg12, arg13, arg14, arg15, arg16, arg17
-    };
-    return funCall(function, 18, args);
-}
-
-inline zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
-        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-        zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-        zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-        zvalue arg16, zvalue arg17, zvalue arg18) {
-    zvalue args[] = {
-        arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10,
-        arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18
-    };
-    return funCall(function, 19, args);
-}
+/**
+ * `VA_METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,
+ * with a variable number of arguments passed in the usual C style. Under
+ * the covers, this calls `vaFunCall()` to "parse" the call, and as such it
+ * is less efficient than `METH_CALL()`, but unlike that macro, this one can
+ * handle any number of arguments.
+ */
+#define VA_METH_CALL(name, ...) vaFunCall(SYM(name), __VA_ARGS__, NULL)
 
 #endif

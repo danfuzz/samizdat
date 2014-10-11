@@ -5,6 +5,31 @@ Record
 ------
 
 <br><br>
+### Class Method Definitions
+
+#### `.new(name, data?) -> record`
+
+Returns a record with the given name (a symbol) and optional `data` payload
+value (which must be a symbol table if present). If `data` is not specified,
+it defaults to `@{}` (the empty symbol table). These equivalences hold for
+Samizdat source code:
+
+```
+@x{}            is equivalent to  Record.new(@x)
+@(expr){}       is equivalent to  Record.new(expr)
+@x(value)       is equivalent to  Record.new(@x, value)
+@(expr)(value)  is equivalent to  Record.new(expr, value)
+@x{key: value}  is equivalent to  Record.new(@x, @{key: value})
+```
+
+It is a fatal error (terminating the runtime) to pass for `name` anything
+other than a symbol. It is also a fatal error to pass for `data` anything
+other than a symbol table.
+
+**Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
+
+
+<br><br>
 ### Method Definitions: `Record` protocol
 
 #### `.get_data() -> symbolTable`
@@ -44,24 +69,7 @@ and data payload as minor order.
 
 ### Primitive Definitions
 
-#### `makeRecord(name, value?) -> .`
-
-Returns a record with the given name (a symbol) and optional data payload
-value (which must be a symbol table if present). If `value` is not specified,
-it defaults to `@{}` (the empty symbol table). These equivalences hold for
-Samizdat source code:
-
-```
-@x(value)       is equivalent to  makeRecord(@x, value)
-@(expr)(value)  is equivalent to  makeRecord(expr, value)
-@x{key: value}  is equivalent to  makeRecord(@x, @{key: value})
-```
-
-It is a fatal error (terminating the runtime) to pass for `name` anything
-other than a symbol. It is also a fatal error to pass for `value`
-anything other than a symbol table.
-
-**Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
+(none)
 
 
 <br><br>

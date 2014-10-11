@@ -15,14 +15,6 @@
 /** Class value for in-model class `Record`. */
 extern zvalue CLS_Record;
 
-/** Global function `makeRecord()`: Documented in spec. */
-extern zvalue FUN_Record_makeRecord;
-
-/**
- * C version of library function `makeRecord()`. Documented in spec.
- */
-zvalue makeRecord(zvalue name, zvalue data);
-
 /**
  * Returns whether the given `record` has the given `name`.
  */

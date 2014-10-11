@@ -6,8 +6,8 @@
 // Function / method calling
 //
 
+#include <stdarg.h>
 #include <stdio.h>   // For `asprintf`.
-#include <stdlib.h>  // For `free`.
 
 #include "type/Builtin.h"
 #include "type/Jump.h"
@@ -15,6 +15,7 @@
 #include "type/String.h"
 #include "type/Symbol.h"
 #include "type/define.h"
+#include "util.h"
 
 #include "impl.h"
 
@@ -53,7 +54,7 @@ static char *callReporter(void *state) {
     char *result;
 
     asprintf(&result, "anonymous %s", clsString);
-    free(clsString);
+    utilFree(clsString);
 
     return result;
 }
@@ -92,10 +93,11 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 
 // Documented in header.
 zvalue funApply(zvalue function, zvalue args) {
-    if (args == NULL) {
+    zint argCount = (args == NULL) ? 0 : get_size(args);
+
+    if (argCount == 0) {
         return funCall(function, 0, NULL);
     } else {
-        zint argCount = get_size(args);
         zvalue argsArray[argCount];
         arrayFromList(argsArray, args);
         return funCall(function, argCount, argsArray);
@@ -121,79 +123,32 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     return result;
 }
 
-// All documented in header.
-extern zvalue funCallWith0(zvalue function);
-extern zvalue funCallWith1(zvalue function, zvalue arg0);
-extern zvalue funCallWith2(zvalue function, zvalue arg0, zvalue arg1);
-extern zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2);
-extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3);
-extern zvalue funCallWith5(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4);
-extern zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5);
-extern zvalue funCallWith7(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6);
-extern zvalue funCallWith8(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7);
-extern zvalue funCallWith9(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8);
-extern zvalue funCallWith10(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9);
-extern zvalue funCallWith11(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10);
-extern zvalue funCallWith12(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11);
-extern zvalue funCallWith13(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12);
-extern zvalue funCallWith14(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13);
-extern zvalue funCallWith15(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14);
-extern zvalue funCallWith16(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15);
-extern zvalue funCallWith17(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-    zvalue arg16);
-extern zvalue funCallWith18(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-    zvalue arg16, zvalue arg17);
-extern zvalue funCallWith19(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5, zvalue arg6,
-    zvalue arg7, zvalue arg8, zvalue arg9, zvalue arg10, zvalue arg11,
-    zvalue arg12, zvalue arg13, zvalue arg14, zvalue arg15,
-    zvalue arg16, zvalue arg17, zvalue arg18);
+// Documented in header.
+zvalue vaFunCall(zvalue function, ...) {
+    zint size = 0;
+    va_list rest;
+
+    va_start(rest, function);
+    for (;;) {
+        if (va_arg(rest, zvalue) == NULL) {
+            break;
+        }
+        size++;
+    }
+    va_end(rest);
+
+    zvalue values[size];
+
+    va_start(rest, function);
+    for (zint i = 0; i < size; i++) {
+        values[i] = va_arg(rest, zvalue);
+    }
+    va_end(rest);
+
+    return funCall(function, size, values);
+}
 
 // Documented in header.
 zvalue mustNotYield(zvalue value) {
     die("Improper yield from `noYield` expression.");
-}
-
-//
-// Class Definition
-//
-
-/** Initializes the module. */
-MOD_INIT(call) {
-    MOD_USE(Builtin);
-    MOD_USE(Jump);
-    MOD_USE(Symbol);
 }

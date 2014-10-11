@@ -97,7 +97,7 @@
     FUNC_IMPL_MIN_MAX(name, 2, 3) { \
         return IMPL_##name( \
             _args[0], \
-            (_argsSize > 1) ? _args[1] : NULL, \
+            _args[1], \
             (_argsSize > 2) ? _args[2] : NULL); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2)
@@ -107,7 +107,7 @@
     FUNC_IMPL_MIN_MAX(name, 2, 4) { \
         return IMPL_##name( \
             _args[0], \
-            (_argsSize > 1) ? _args[1] : NULL, \
+            _args[1], \
             (_argsSize > 2) ? _args[2] : NULL, \
             (_argsSize > 3) ? _args[3] : NULL); \
     } \
@@ -162,6 +162,8 @@
     FUNC_IMPL_1_rest(class_##cls##_##name, ths, aRest)
 #define CMETH_IMPL_0_1(cls, name, a0) \
     FUNC_IMPL_1_2(class_##cls##_##name, thsClass, a0)
+#define CMETH_IMPL_1_2(cls, name, a0, a1) \
+    FUNC_IMPL_2_3(class_##cls##_##name, thsClass, a0, a1)
 #define CMETH_IMPL_1_rest(cls, name, a0, aRest) \
     FUNC_IMPL_2_rest(class_##cls##_##name, ths, a0, aRest)
 

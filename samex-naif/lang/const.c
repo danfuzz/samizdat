@@ -8,6 +8,7 @@
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
+#include "type/Record.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
 
@@ -57,8 +58,7 @@ MOD_INIT(lang_const) {
         STR_##name = datImmortalize(stringFromUtf8(-1, str))
 
     #define DEF_TOKEN(name, str) \
-        TOK_##name = datImmortalize( \
-            makeRecord(SYM(name), EMPTY_SYMBOL_TABLE))
+        TOK_##name = datImmortalize(cm_new(Record, SYM(name)))
 
     #define DEF_SYMBOL(name, str) \
         SYM_INIT_WITH(name, str); \

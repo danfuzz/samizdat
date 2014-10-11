@@ -8,7 +8,7 @@ String
 <br><br>
 ### Class Method Definitions
 
-#### `.castFrom(value) -> . | void`
+#### `.castFrom(value) -> string | void`
 
 This class knows how to cast as follows:
 

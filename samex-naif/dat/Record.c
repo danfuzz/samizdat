@@ -43,26 +43,6 @@ static RecordInfo *getInfo(zvalue value) {
 //
 
 // Documented in header.
-zvalue makeRecord(zvalue name, zvalue data) {
-    zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
-
-    if (data == NULL) {
-        data = EMPTY_SYMBOL_TABLE;
-    } else {
-        assertHasClass(data, CLS_SymbolTable);
-    }
-
-    zvalue result = datAllocValue(CLS_Record, sizeof(RecordInfo));
-    RecordInfo *info = getInfo(result);
-
-    info->name = name;
-    info->nameIndex = index;
-    info->data = data;
-
-    return result;
-}
-
-// Documented in header.
 bool recHasName(zvalue record, zvalue name) {
     assertHasClass(record, CLS_Record);
     return symbolEq(getInfo(record)->name, name);
@@ -80,8 +60,23 @@ zint recNameIndex(zvalue record) {
 //
 
 // Documented in spec.
-FUNC_IMPL_1_2(Record_makeRecord, cls, value) {
-    return makeRecord(cls, value);
+CMETH_IMPL_1_2(Record, new, name, data) {
+    zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
+
+    if (data == NULL) {
+        data = EMPTY_SYMBOL_TABLE;
+    } else {
+        assertHasClass(data, CLS_SymbolTable);
+    }
+
+    zvalue result = datAllocValue(CLS_Record, sizeof(RecordInfo));
+    RecordInfo *info = getInfo(result);
+
+    info->name = name;
+    info->nameIndex = index;
+    info->data = data;
+
+    return result;
 }
 
 // Documented in spec.
@@ -161,7 +156,9 @@ MOD_INIT(Record) {
     MOD_USE(Core);
 
     CLS_Record = makeCoreClass(SYM(Record), CLS_Core,
-        NULL,
+        symbolTableFromArgs(
+            CMETH_BIND(Record, new),
+            NULL),
         symbolTableFromArgs(
             METH_BIND(Record, debugString),
             METH_BIND(Record, gcMark),
@@ -172,12 +169,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, totalEq),
             METH_BIND(Record, totalOrder),
             NULL));
-
-    FUN_Record_makeRecord = datImmortalize(FUNC_VALUE(Record_makeRecord));
 }
 
 // Documented in header.
 zvalue CLS_Record = NULL;
-
-// Documented in header.
-zvalue FUN_Record_makeRecord = NULL;

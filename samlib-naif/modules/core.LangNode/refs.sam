@@ -33,7 +33,6 @@ def NAMES = [
     @loop,
     @lt,
     @makeObjectClass,
-    @makeRecord,
     @maybeValue,
     @ne,
     @perGe,

@@ -19,12 +19,12 @@
 ## avoid the infinite regress of trying to load these modules as their
 ## own prerequisites.
 
-def $Code = {
+def $Code = @{
     eval:       Code_eval,
     evalBinary: Code_evalBinary
 };
 
-def $Io0 = {
+def $Io0 = @{
     cwd:           Io0_cwd,
     fileType:      Io0_fileType,
     readDirectory: Io0_readDirectory,
@@ -33,7 +33,7 @@ def $Io0 = {
     writeFileUtf8: Io0_writeFileUtf8
 };
 
-def $Lang0 = {
+def $Lang0 = @{
     languageOf:      Lang0_languageOf,
     parseExpression: Lang0_parseExpression,
     parseProgram:    Lang0_parseProgram,
@@ -43,10 +43,11 @@ def $Lang0 = {
 
 ## Makes an entry for `BOOTSTRAP_MODULES`.
 fn makeBootstrapEntry(exports) {
+    def exportKeys = Map.castFrom(exports).keyList();
     return @module{
         exports,
-        info: {
-            exports:   @{exports.keyList()*: Value},
+        info: @{
+            exports:   @{exportKeys*: Value},
             imports:   @{},
             resources: @{}
         }
