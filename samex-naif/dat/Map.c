@@ -232,24 +232,6 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
     return mapFromArrayUnchecked(at, mappings);
 }
 
-// Documented in header.
-zvalue mapFromSymbolTable(zvalue symbolTable) {
-    zint size = symbolTableSize(symbolTable);
-    zmapping mappings[size];
-
-    arrayFromSymbolTable(mappings, symbolTable);
-    return mapFromArray(size, mappings);
-}
-
-// Documented in header.
-zvalue symbolTableFromMap(zvalue map) {
-    zint size = get_size(map);
-    zmapping mappings[size];
-
-    arrayFromMap(mappings, map);
-    return symbolTableFromArray(size, mappings);
-}
-
 
 //
 // Class Definition

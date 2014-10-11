@@ -20,6 +20,8 @@ This class knows how to cast as follows:
 * `Map` &mdash; Returns `value`.
 
 * `SymbolTable` &mdash; Returns a map with the same bindings as `value`.
+  Only works if `value`s keys are all ordered. See `Symbol` documentation
+  for restrictions on symbol ordering.
 
 * `Value` &mdash; Returns `value`.
 

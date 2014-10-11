@@ -37,21 +37,4 @@ void arrayFromMap(zmapping *result, zvalue map);
  */
 zvalue mapFromArray(zint size, zmapping *mappings);
 
-/**
- * Gets the map whose bindings are identical to the given symbol table's.
- * This only works if the symbol table's bindings are fully ordered. Ordering
- * is *not* possible if there are two different unlisted symbols in the
- * table with the same name.
- */
-zvalue mapFromSymbolTable(zvalue symbolTable);
-
-/**
- * Gets the symbol table whose bindings are identical to the given map's.
- * This only works if the map's keys are all symbols.
- *
- * **Note:** This is defined as part of `Map` and not `SymbolTable`, as the
- * latter is meant to be lower layer and with minimal dependencies.
- */
-zvalue symbolTableFromMap(zvalue map);
-
 #endif
