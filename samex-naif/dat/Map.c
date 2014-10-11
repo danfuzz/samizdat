@@ -337,7 +337,7 @@ METH_IMPL_rest(Map, cat, args) {
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
         if (classAccepts(CLS_SymbolTable, one)) {
-            one = mapFromSymbolTable(one);
+            one = METH_CALL(castFrom, CLS_Map, one);
         } else {
             assertHasClass(one, CLS_Map);
         }
