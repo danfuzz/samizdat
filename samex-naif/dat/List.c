@@ -118,36 +118,6 @@ void arrayFromList(zvalue *result, zvalue list) {
 }
 
 // Documented in header.
-zvalue listFromArgs(zvalue first, ...) {
-    if (first == NULL) {
-        return EMPTY_LIST;
-    }
-
-    zint size = 1;
-    va_list rest;
-
-    va_start(rest, first);
-    for (;;) {
-        if (va_arg(rest, zvalue) == NULL) {
-            break;
-        }
-        size++;
-    }
-    va_end(rest);
-
-    zvalue values[size];
-    values[0] = first;
-
-    va_start(rest, first);
-    for (zint i = 1; i < size; i++) {
-        values[i] = va_arg(rest, zvalue);
-    }
-    va_end(rest);
-
-    return listFromArray(size, values);
-}
-
-// Documented in header.
 zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         assertValid(values[i]);
