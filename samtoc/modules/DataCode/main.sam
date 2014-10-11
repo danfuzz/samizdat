@@ -146,7 +146,7 @@ fn Int_convert(value) {
 ## Converts a list.
 fn List_convert(value) {
     def listElems = [ elem in value -> convert(elem) ];
-    return genCall("listFromArgs", listElems*, CODE_C_NULL)
+    return genCall("VA_METH_CALL", "new", "CLS_List", listElems*)
 };
 
 ## Converts a map.
