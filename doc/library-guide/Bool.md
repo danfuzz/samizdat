@@ -11,7 +11,7 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Class Method Definitions
 
-#### `.castFrom(value) -> . | void`
+#### `.castFrom(value) -> bool | void`
 
 This class knows how to cast as follows:
 

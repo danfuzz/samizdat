@@ -11,6 +11,18 @@ as defined by the global function `order()`.
 <br><br>
 ### Class Method Definitions
 
+#### `.castFrom(value) -> map | void`
+
+This class knows how to cast as follows:
+
+* `Core` &mdash; Returns `value`.
+
+* `Map` &mdash; Returns `value`.
+
+* `SymbolTable` &mdash; Returns a map with the same bindings as `value`.
+
+* `Value` &mdash; Returns `value`.
+
 #### `.new(args*) -> map`
 
 This makes a map from a series of mappings, given as pairs of
@@ -49,6 +61,19 @@ and `switch` forms.
 
 <br><br>
 ### Method Definitions: `Value` protocol
+
+#### `.castToward(cls) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Core` &mdash; Returns `this`.
+
+* `Map` &mdash; Returns `this`.
+
+* `SymbolTable` &mdash; Returns a symbol table with the same mappings as
+  `this`. Only works on maps where all the keys are symbols.
+
+* `Value` &mdash; Returns `this`.
 
 #### `.perEq(other) -> map | void`
 

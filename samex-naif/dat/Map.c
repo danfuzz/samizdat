@@ -256,6 +256,22 @@ zvalue symbolTableFromMap(zvalue map) {
 //
 
 // Documented in spec.
+CMETH_IMPL_1(Map, castFrom, value) {
+    zvalue cls = get_class(value);
+
+    if (valEq(cls, CLS_SymbolTable)) {
+        zint size = symbolTableSize(value);
+        zmapping mappings[size];
+        arrayFromSymbolTable(mappings, value);
+        return mapFromArray(size, mappings);
+    } else if (classAccepts(thsClass, value)) {
+        return value;
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
 CMETH_IMPL_rest(Map, new, args) {
     if ((argsSize & 1) != 0) {
         die("Odd argument count for map construction.");
@@ -292,6 +308,20 @@ CMETH_IMPL_1_rest(Map, singleValue, first, args) {
     }
 
     return mapFromArray(argsSize, mappings);
+}
+
+// Documented in header.
+METH_IMPL_1(Map, castToward, cls) {
+    MapInfo *info = getInfo(ths);
+
+    if (valEq(cls, CLS_SymbolTable)) {
+        zint size = info->size;
+        return symbolTableFromArray(info->size, info->elems);
+    } else if (classAccepts(cls, ths)) {
+        return ths;
+    }
+
+    return NULL;
 }
 
 // Documented in spec.
@@ -624,10 +654,12 @@ MOD_INIT(Map) {
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
         symbolTableFromArgs(
+            CMETH_BIND(Map, castFrom),
             CMETH_BIND(Map, new),
             CMETH_BIND(Map, singleValue),
             NULL),
         symbolTableFromArgs(
+            METH_BIND(Map, castToward),
             METH_BIND(Map, cat),
             METH_BIND(Map, collect),
             METH_BIND(Map, del),
