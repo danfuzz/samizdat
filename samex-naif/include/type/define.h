@@ -141,8 +141,7 @@
 
 /**
  * Expands to a comma-separated pair of symbol and builtin function,
- * for the indicated method. This is for use in calls to
- * `symbolTableFromArgs`.
+ * for the indicated method.
  */
 #define METH_BIND(cls, name) \
     SYM(name), \
