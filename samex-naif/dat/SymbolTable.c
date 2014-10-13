@@ -187,36 +187,6 @@ void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
 }
 
 // Documented in header.
-zvalue symbolTableFromArgs(zvalue first, ...) {
-    if (first == NULL) {
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    zvalue result = allocInstance(0);
-    SymbolTableInfo *info = getInfo(result);
-    va_list rest;
-
-    va_start(rest, first);
-    for (;;) {
-        zvalue symbol = (info->size == 0) ? first : va_arg(rest, zvalue);
-
-        if (symbol == NULL) {
-            break;
-        }
-
-        zvalue value = va_arg(rest, zvalue);
-        if (value == NULL) {
-            die("Odd argument count for symbol table construction.");
-        }
-
-        putInto(&result, &info, symbol, value);
-    }
-    va_end(rest);
-
-    return result;
-}
-
-// Documented in header.
 zvalue symbolTableFromArray(zint size, zmapping *mappings) {
     if (size == 0) {
         return EMPTY_SYMBOL_TABLE;

@@ -26,12 +26,6 @@ extern zvalue EMPTY_SYMBOL_TABLE;
 void arrayFromSymbolTable(zmapping *result, zvalue symbolTable);
 
 /**
- * Makes a symbol table from a series of individual arguments (symbol
- * then value), `NULL` terminated.
- */
-zvalue symbolTableFromArgs(zvalue first, ...);
-
-/**
  * Makes a symbol table from an array of mappings. The keys must all be
  * symbols (of course).
  */
