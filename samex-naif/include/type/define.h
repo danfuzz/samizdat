@@ -129,6 +129,14 @@
 // an extra argument `thsClass`.
 //
 
+// For both class and instance methods.
+
+/**
+ * Macro to create and return a method table. Arguments are expected to be
+ * calls to `METH_BIND` or `CMETH_BIND`.
+ */
+#define METH_TABLE(...) (cm_new_SymbolTable(__VA_ARGS__, NULL))
+
 // Instance method implementation macros.
 
 /**
