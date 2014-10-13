@@ -152,11 +152,10 @@ METH_IMPL_0(Builtin, gcMark) {
 void bindMethodsForBuiltin(void) {
     classBindMethods(CLS_Builtin,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Builtin, call),
             METH_BIND(Builtin, debugSymbol),
-            METH_BIND(Builtin, gcMark),
-            NULL));
+            METH_BIND(Builtin, gcMark)));
 }
 
 /** Initializes the module. */

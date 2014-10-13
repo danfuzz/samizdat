@@ -360,10 +360,9 @@ MOD_INIT(List) {
     MOD_USE(Sequence);
 
     CLS_List = makeCoreClass(SYM(List), CLS_Core,
-        symbolTableFromArgs(
-            CMETH_BIND(List, new),
-            NULL),
-        symbolTableFromArgs(
+        METH_TABLE(
+            CMETH_BIND(List, new)),
+        METH_TABLE(
             METH_BIND(List, cat),
             METH_BIND(List, collect),
             METH_BIND(List, del),
@@ -381,11 +380,9 @@ MOD_INIT(List) {
             METH_BIND(List, valueList),
             SYM(get),        FUN_Sequence_get,
             SYM(keyList),    FUN_Sequence_keyList,
-            SYM(nthMapping), FUN_Sequence_nthMapping,
-            NULL));
+            SYM(nthMapping), FUN_Sequence_nthMapping));
 
-    EMPTY_LIST = allocList(0);
-    datImmortalize(EMPTY_LIST);
+    EMPTY_LIST = datImmortalize(allocList(0));
 }
 
 // Documented in header.

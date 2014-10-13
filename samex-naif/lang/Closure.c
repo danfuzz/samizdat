@@ -360,11 +360,10 @@ MOD_INIT(Closure) {
 
     CLS_Closure = makeCoreClass(symbolFromUtf8(-1, "Closure"), CLS_Core,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Closure, call),
             METH_BIND(Closure, debugSymbol),
-            METH_BIND(Closure, gcMark),
-            NULL));
+            METH_BIND(Closure, gcMark)));
 
     nodeCache = EMPTY_MAP;
     nodeCacheBox = datImmortalize(makeCell(EMPTY_MAP));

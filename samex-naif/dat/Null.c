@@ -45,11 +45,10 @@ MOD_INIT(Null) {
 
     CLS_Null = makeCoreClass(SYM(Null), CLS_Core,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Null, debugString),
             METH_BIND(Null, totalEq),
-            METH_BIND(Null, totalOrder),
-            NULL));
+            METH_BIND(Null, totalOrder)));
 
     THE_NULL = datAllocValue(CLS_Null, 0);
     datImmortalize(THE_NULL);

@@ -635,12 +635,11 @@ MOD_INIT(Map) {
     MOD_USE(MapCache);
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
-        symbolTableFromArgs(
+        METH_TABLE(
             CMETH_BIND(Map, castFrom),
             CMETH_BIND(Map, new),
-            CMETH_BIND(Map, singleValue),
-            NULL),
-        symbolTableFromArgs(
+            CMETH_BIND(Map, singleValue)),
+        METH_TABLE(
             METH_BIND(Map, castToward),
             METH_BIND(Map, cat),
             METH_BIND(Map, collect),
@@ -657,11 +656,9 @@ MOD_INIT(Map) {
             METH_BIND(Map, put),
             METH_BIND(Map, totalEq),
             METH_BIND(Map, totalOrder),
-            METH_BIND(Map, valueList),
-            NULL));
+            METH_BIND(Map, valueList)));
 
-    EMPTY_MAP = allocMap(0);
-    datImmortalize(EMPTY_MAP);
+    EMPTY_MAP = datImmortalize(allocMap(0));
 }
 
 // Documented in header.
