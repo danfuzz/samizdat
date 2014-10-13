@@ -99,28 +99,26 @@ static zvalue infoGet(SymbolTableInfo *info, zvalue key) {
 /**
  * Mutates an instance, putting a mapping into it, possibly reallocating it
  * (hence the pointer arguments). As a minor convenience, this function
- * returns early (doing nothing) if given `NULL` for `key`.
+ * returns early (doing nothing) if given `NULL` for `elem.key`.
  */
-static void putInto(zvalue *result, SymbolTableInfo **info,
-        zvalue key, zvalue value) {
-    if (key == NULL) {
+static void putInto(zvalue *result, SymbolTableInfo **info, zmapping elem) {
+    if (elem.key == NULL) {
         return;
     }
 
     zint arraySize = (*info)->arraySize;
     zmapping *array = (*info)->array;
-    zint index = symbolIndex(key) % arraySize;
+    zint index = symbolIndex(elem.key) % arraySize;
 
     for (int i = 0; i < DAT_SYMTAB_MAX_PROBES; i++) {
         zvalue foundKey = array[index].key;
         if (foundKey == NULL) {
-            array[index].key = key;
-            array[index].value = value;
+            array[index] = elem;
             (*info)->size++;
             return;
-        } else if (foundKey == key) {
+        } else if (foundKey == elem.key) {
             // Update a pre-existing mapping for the key.
-            array[index].value = value;
+            array[index].value = elem.value;
             return;
         }
 
@@ -134,10 +132,10 @@ static void putInto(zvalue *result, SymbolTableInfo **info,
     SymbolTableInfo *newInfo = getInfo(newResult);
 
     for (int i = 0; i < arraySize; i++) {
-        putInto(&newResult, &newInfo, array[i].key, array[i].value);
+        putInto(&newResult, &newInfo, array[i]);
     }
 
-    putInto(&newResult, &newInfo, key, value);
+    putInto(&newResult, &newInfo, elem);
 
     *result = newResult;
     *info = newInfo;
@@ -178,8 +176,7 @@ void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
     for (zint i = 0, at = 0; i < arraySize; i++) {
         zvalue key = array[i].key;
         if (key != NULL) {
-            result[at].key = key;
-            result[at].value = array[i].value;
+            result[at] = (zmapping) {key, array[i].value};
             at++;
         }
     }
@@ -195,7 +192,7 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
     SymbolTableInfo *info = getInfo(result);
 
     for (zint i = 0; i < size; i++) {
-        putInto(&result, &info, mappings[i].key, mappings[i].value);
+        putInto(&result, &info, mappings[i]);
     }
 
     return result;
@@ -227,7 +224,7 @@ CMETH_IMPL_rest(SymbolTable, new, args) {
     SymbolTableInfo *info = getInfo(result);
 
     for (zint i = 0, at = 0; i < size; i++, at += 2) {
-        putInto(&result, &info, args[at], args[at + 1]);
+        putInto(&result, &info, (zmapping) {args[at], args[at + 1]});
     }
 
     return result;
@@ -247,10 +244,10 @@ CMETH_IMPL_1_rest(SymbolTable, singleValue, first, args) {
     zvalue result = allocInstance(argsSize);
     SymbolTableInfo *info = getInfo(result);
 
-    putInto(&result, &info, first, value);
+    putInto(&result, &info, (zmapping) {first, value});
 
     for (zint i = 1; i < argsSize; i++) {
-        putInto(&result, &info, args[i - 1], value);
+        putInto(&result, &info, (zmapping) {args[i - 1], value});
     }
 
     return result;
@@ -273,7 +270,7 @@ METH_IMPL_rest(SymbolTable, cat, args) {
         zmapping *array = oneInfo->array;
 
         for (zint j = 0; j < arraySize; j++) {
-            putInto(&result, &info, array[j].key, array[j].value);
+            putInto(&result, &info, array[j]);
         }
     }
 
@@ -331,7 +328,7 @@ METH_IMPL_2(SymbolTable, put, key, value) {
     zvalue result = allocClone(ths);
     SymbolTableInfo *info = getInfo(result);
 
-    putInto(&result, &info, key, value);
+    putInto(&result, &info, (zmapping) {key, value});
     return result;
 }
 
