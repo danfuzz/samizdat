@@ -461,11 +461,10 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
 // Documented in header.
 void bindMethodsForSymbolTable(void) {
     classBindMethods(CLS_SymbolTable,
-        symbolTableFromArgs(
+        METH_TABLE(
             CMETH_BIND(SymbolTable, new),
-            CMETH_BIND(SymbolTable, singleValue),
-            NULL),
-        symbolTableFromArgs(
+            CMETH_BIND(SymbolTable, singleValue)),
+        METH_TABLE(
             METH_BIND(SymbolTable, cat),
             METH_BIND(SymbolTable, del),
             METH_BIND(SymbolTable, gcMark),
@@ -473,8 +472,7 @@ void bindMethodsForSymbolTable(void) {
             METH_BIND(SymbolTable, get_size),
             METH_BIND(SymbolTable, put),
             METH_BIND(SymbolTable, totalEq),
-            METH_BIND(SymbolTable, totalOrder),
-            NULL));
+            METH_BIND(SymbolTable, totalOrder)));
 
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance(0));
 }

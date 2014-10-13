@@ -73,9 +73,8 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
 // Documented in header.
 zvalue makeObjectClass(zvalue name, zvalue secret,
         zvalue classMethods, zvalue instanceMethods) {
-    zvalue extraInstanceMethods = symbolTableFromArgs(
-        secret, FUNC_VALUE(Object_privateDataOf),
-        NULL);
+    zvalue extraInstanceMethods = METH_TABLE(
+        secret, FUNC_VALUE(Object_privateDataOf));
 
     if (instanceMethods == NULL) {
         instanceMethods = extraInstanceMethods;
@@ -119,9 +118,8 @@ MOD_INIT(Object) {
     // base for all non-core classes.
     CLS_Object = makeCoreClass(SYM(Object), CLS_Value,
         NULL,
-        symbolTableFromArgs(
-            METH_BIND(Object, gcMark),
-            NULL));
+        METH_TABLE(
+            METH_BIND(Object, gcMark)));
 
     FUN_Object_makeObject = datImmortalize(FUNC_VALUE(Object_makeObject));
     FUN_Object_makeObjectClass =
