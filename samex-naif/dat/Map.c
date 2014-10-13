@@ -65,12 +65,8 @@ static zvalue mapFromArrayUnchecked(zint size, zmapping *mappings) {
  * Constructs and returns a single-mapping map.
  */
 static zvalue makeMapping(zvalue key, zvalue value) {
-    zvalue result = allocMap(1);
-    zmapping *elems = getInfo(result)->elems;
-
-    elems->key = key;
-    elems->value = value;
-    return result;
+    zmapping elem = { key, value };
+    return mapFromArrayUnchecked(1, &elem);
 }
 
 /**
@@ -79,28 +75,19 @@ static zvalue makeMapping(zvalue key, zvalue value) {
  * the *second* value is used.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    zorder comp = cm_order(k1, k2);
-
-    if (comp == ZSAME) {
-        return makeMapping(k2, v2);
+    switch (cm_order(k1, k2)) {
+        case ZLESS: {
+            zmapping elems[2] = {{k1, v1}, {k2, v2}};
+            return mapFromArrayUnchecked(2, elems);
+        }
+        case ZMORE: {
+            zmapping elems[2] = {{k2, v2}, {k1, v1}};
+            return mapFromArrayUnchecked(2, elems);
+        }
+        default: {
+            return makeMapping(k2, v2);
+        }
     }
-
-    zvalue result = allocMap(2);
-    zmapping *elems = getInfo(result)->elems;
-
-    if (comp == ZLESS) {
-        elems[0].key = k1;
-        elems[0].value = v1;
-        elems[1].key = k2;
-        elems[1].value = v2;
-    } else {
-        elems[0].key = k2;
-        elems[0].value = v2;
-        elems[1].key = k1;
-        elems[1].value = v1;
-    }
-
-    return result;
 }
 
 /**
