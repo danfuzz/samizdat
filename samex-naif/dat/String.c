@@ -563,10 +563,9 @@ MOD_INIT(String) {
     MOD_USE(Sequence);
 
     CLS_String = makeCoreClass(SYM(String), CLS_Core,
-        symbolTableFromArgs(
-            CMETH_BIND(String, castFrom),
-            NULL),
-        symbolTableFromArgs(
+        METH_TABLE(
+            CMETH_BIND(String, castFrom)),
+        METH_TABLE(
             METH_BIND(String, cat),
             METH_BIND(String, castToward),
             METH_BIND(String, collect),
@@ -586,11 +585,9 @@ MOD_INIT(String) {
             METH_BIND(String, valueList),
             SYM(get),        FUN_Sequence_get,
             SYM(keyList),    FUN_Sequence_keyList,
-            SYM(nthMapping), FUN_Sequence_nthMapping,
-            NULL));
+            SYM(nthMapping), FUN_Sequence_nthMapping));
 
-    EMPTY_STRING = allocString(0);
-    datImmortalize(EMPTY_STRING);
+    EMPTY_STRING = datImmortalize(allocString(0));
 }
 
 // Documented in header.

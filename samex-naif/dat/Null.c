@@ -50,8 +50,7 @@ MOD_INIT(Null) {
             METH_BIND(Null, totalEq),
             METH_BIND(Null, totalOrder)));
 
-    THE_NULL = datAllocValue(CLS_Null, 0);
-    datImmortalize(THE_NULL);
+    THE_NULL = datImmortalize(datAllocValue(CLS_Null, 0));
 }
 
 // Documented in header.
