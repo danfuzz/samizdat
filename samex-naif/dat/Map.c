@@ -64,8 +64,7 @@ static zvalue mapFromArrayUnchecked(zint size, zmapping *mappings) {
 /**
  * Constructs and returns a single-mapping map.
  */
-static zvalue mapFrom1(zvalue key, zvalue value) {
-    zmapping elem = { key, value };
+static zvalue mapFrom1(zmapping elem) {
     return mapFromArrayUnchecked(1, &elem);
 }
 
@@ -85,7 +84,7 @@ static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
             return mapFromArrayUnchecked(2, elems);
         }
         default: {
-            return mapFrom1(k2, v2);
+            return mapFrom1((zmapping) {k2, v2});
         }
     }
 }
@@ -182,7 +181,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
             return EMPTY_MAP;
         }
         case 1: {
-            return mapFrom1(mappings[0].key, mappings[0].value);
+            return mapFrom1(mappings[0]);
         }
         case 2: {
             return mapFrom2(
@@ -469,7 +468,7 @@ METH_IMPL_1(Map, nextValue, box) {
             // Make a mapping for the first element, yield it, and return
             // a map of the remainder.
             zmapping *elems = info->elems;
-            zvalue mapping = mapFrom1(elems[0].key, elems[0].value);
+            zvalue mapping = mapFrom1(elems[0]);
             cm_store(box, mapping);
             return mapFromArrayUnchecked(size - 1, &elems[1]);
         }
@@ -483,14 +482,11 @@ METH_IMPL_1(Map, nthMapping, n) {
 
     if (index < 0) {
         return NULL;
-    }
-
-    if (info->size == 1) {
+    } else if (info->size == 1) {
         return ths;
+    } else {
+        return mapFrom1(info->elems[index]);
     }
-
-    zmapping *m = &info->elems[index];
-    return mapFrom1(m->key, m->value);
 }
 
 // Documented in spec.
@@ -507,7 +503,7 @@ METH_IMPL_2(Map, put, key, value) {
     switch (size) {
         case 0: {
             // `put({}, ...)`
-            return mapFrom1(key, value);
+            return mapFrom1((zmapping) {key, value});
         }
         case 1: {
             return mapFrom2(elems[0].key, elems[0].value, key, value);
