@@ -69,22 +69,20 @@ static zvalue mapFrom1(zmapping elem) {
 }
 
 /**
- * Allocates and returns a map with up to two mappings. This will
- * return a single-mapping map if the two keys are the same, in which case
- * the *second* value is used.
+ * Allocates and returns a map with up to two mappings. This will return a
+ * single-mapping map if the two keys are the same, in which case the *second*
+ * value is used.
  */
-static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    switch (cm_order(k1, k2)) {
+static zvalue mapFrom2(zmapping elem1, zmapping elem2) {
+    switch (cm_order(elem1.key, elem2.key)) {
         case ZLESS: {
-            zmapping elems[2] = {{k1, v1}, {k2, v2}};
-            return mapFromArrayUnchecked(2, elems);
+            return mapFromArrayUnchecked(2, (zmapping[]) {elem1, elem2});
         }
         case ZMORE: {
-            zmapping elems[2] = {{k2, v2}, {k1, v1}};
-            return mapFromArrayUnchecked(2, elems);
+            return mapFromArrayUnchecked(2, (zmapping[]) {elem2, elem1});
         }
         default: {
-            return mapFrom1((zmapping) {k2, v2});
+            return mapFrom1(elem2);
         }
     }
 }
@@ -177,17 +175,9 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     // Handle special cases that are particularly easy.
     switch (size) {
-        case 0: {
-            return EMPTY_MAP;
-        }
-        case 1: {
-            return mapFrom1(mappings[0]);
-        }
-        case 2: {
-            return mapFrom2(
-                mappings[0].key, mappings[0].value,
-                mappings[1].key, mappings[1].value);
-        }
+        case 0: { return EMPTY_MAP;                          }
+        case 1: { return mapFrom1(mappings[0]);              }
+        case 2: { return mapFrom2(mappings[0], mappings[1]); }
     }
 
     // Sort the mappings using mergesort. Mergesort is stable and operates
@@ -506,7 +496,7 @@ METH_IMPL_2(Map, put, key, value) {
             return mapFrom1((zmapping) {key, value});
         }
         case 1: {
-            return mapFrom2(elems[0].key, elems[0].value, key, value);
+            return mapFrom2(elems[0], (zmapping) {key, value});
         }
     }
 
