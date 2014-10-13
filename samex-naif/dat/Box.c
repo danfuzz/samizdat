@@ -159,13 +159,12 @@ MOD_INIT(Box) {
 
     CLS_Box = makeCoreClass(SYM(Box), CLS_Core,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Box, collect),
             METH_BIND(Box, fetch),
             METH_BIND(Box, gcMark),
             METH_BIND(Box, nextValue),
-            METH_BIND(Box, store),
-            NULL));
+            METH_BIND(Box, store)));
 }
 
 // Documented in header.

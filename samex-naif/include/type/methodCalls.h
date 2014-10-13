@@ -61,6 +61,14 @@ char *cm_debugString(zvalue x);
 #define cm_new(clsName, ...) (METH_CALL(new, (CLS_##clsName), __VA_ARGS__))
 
 /**
+ * Does the equivalent of calling `SymbolTable.new(...)`, except that this
+ * uses lower-layer functionality, making this function safe to use before
+ * the class `SymbolTable` is fully initialized. **Note:** This is a macro.
+ */
+#define cm_new_SymbolTable(...) (cm_new_SymbolTable0(__VA_ARGS__, NULL))
+zvalue cm_new_SymbolTable0(zvalue first, ...);
+
+/**
  * Calls `x.nth(index)`, converting the given `zint` index to an `Int`.
  */
 zvalue cm_nth(zvalue x, zint index);

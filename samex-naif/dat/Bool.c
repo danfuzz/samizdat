@@ -210,11 +210,10 @@ MOD_INIT(Bool) {
     MOD_USE(Int);
 
     CLS_Bool = makeCoreClass(SYM(Bool), CLS_Core,
-        symbolTableFromArgs(
+        METH_TABLE(
             CMETH_BIND(Bool, castFrom),
-            CMETH_BIND(Bool, fromLogic),
-            NULL),
-        symbolTableFromArgs(
+            CMETH_BIND(Bool, fromLogic)),
+        METH_TABLE(
             METH_BIND(Bool, and),
             METH_BIND(Bool, bit),
             METH_BIND(Bool, bitSize),
@@ -227,8 +226,7 @@ MOD_INIT(Bool) {
             METH_BIND(Bool, xor),
             METH_BIND(Bool, toLogic),
             METH_BIND(Bool, totalEq),
-            METH_BIND(Bool, totalOrder),
-            NULL));
+            METH_BIND(Bool, totalOrder)));
 
     BOOL_FALSE = datImmortalize(boolFrom(false));
     BOOL_TRUE = datImmortalize(boolFrom(true));

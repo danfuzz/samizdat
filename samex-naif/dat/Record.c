@@ -156,10 +156,9 @@ MOD_INIT(Record) {
     MOD_USE(Core);
 
     CLS_Record = makeCoreClass(SYM(Record), CLS_Core,
-        symbolTableFromArgs(
-            CMETH_BIND(Record, new),
-            NULL),
-        symbolTableFromArgs(
+        METH_TABLE(
+            CMETH_BIND(Record, new)),
+        METH_TABLE(
             METH_BIND(Record, debugString),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
@@ -167,8 +166,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, get_name),
             METH_BIND(Record, hasName),
             METH_BIND(Record, totalEq),
-            METH_BIND(Record, totalOrder),
-            NULL));
+            METH_BIND(Record, totalOrder)));
 }
 
 // Documented in header.

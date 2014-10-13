@@ -164,7 +164,7 @@ MOD_INIT(Int) {
 
     CLS_Int = makeCoreClass(SYM(Int), CLS_Core,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Int, abs),
             METH_BIND(Int, add),
             METH_BIND(Int, and),
@@ -185,8 +185,7 @@ MOD_INIT(Int) {
             METH_BIND(Int, sub),
             METH_BIND(Int, xor),
             METH_BIND(Int, totalEq),
-            METH_BIND(Int, totalOrder),
-            NULL));
+            METH_BIND(Int, totalOrder)));
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = datImmortalize(intFrom(i + DAT_SMALL_INT_MIN));

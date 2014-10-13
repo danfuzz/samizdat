@@ -153,7 +153,7 @@ METH_IMPL_1(Value, totalOrder, other) {
 void bindMethodsForValue(void) {
     classBindMethods(CLS_Value,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Value, castToward),
             METH_BIND(Value, debugString),
             METH_BIND(Value, debugSymbol),
@@ -161,8 +161,7 @@ void bindMethodsForValue(void) {
             METH_BIND(Value, perEq),
             METH_BIND(Value, perOrder),
             METH_BIND(Value, totalEq),
-            METH_BIND(Value, totalOrder),
-            NULL));
+            METH_BIND(Value, totalOrder)));
 }
 
 /** Initializes the module. */

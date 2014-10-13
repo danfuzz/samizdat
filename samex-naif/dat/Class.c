@@ -538,7 +538,7 @@ MOD_INIT(objectModel) {
 void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Class, accepts),
             METH_BIND(Class, castFrom),
             METH_BIND(Class, debugString),
@@ -548,8 +548,7 @@ void bindMethodsForClass(void) {
             METH_BIND(Class, get_parent),
             METH_BIND(Class, perOrder),
             METH_BIND(Class, totalEq),
-            METH_BIND(Class, totalOrder),
-            NULL));
+            METH_BIND(Class, totalOrder)));
 
     // `Metaclass` binds no methods itself. TODO: It probably wants at least
     // a couple.

@@ -2,7 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include <stdarg.h>
 #include <stdlib.h>
 
 #include "type/Builtin.h"
@@ -184,36 +183,6 @@ void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
             at++;
         }
     }
-}
-
-// Documented in header.
-zvalue symbolTableFromArgs(zvalue first, ...) {
-    if (first == NULL) {
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    zvalue result = allocInstance(0);
-    SymbolTableInfo *info = getInfo(result);
-    va_list rest;
-
-    va_start(rest, first);
-    for (;;) {
-        zvalue symbol = (info->size == 0) ? first : va_arg(rest, zvalue);
-
-        if (symbol == NULL) {
-            break;
-        }
-
-        zvalue value = va_arg(rest, zvalue);
-        if (value == NULL) {
-            die("Odd argument count for symbol table construction.");
-        }
-
-        putInto(&result, &info, symbol, value);
-    }
-    va_end(rest);
-
-    return result;
 }
 
 // Documented in header.
@@ -461,11 +430,10 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
 // Documented in header.
 void bindMethodsForSymbolTable(void) {
     classBindMethods(CLS_SymbolTable,
-        symbolTableFromArgs(
+        METH_TABLE(
             CMETH_BIND(SymbolTable, new),
-            CMETH_BIND(SymbolTable, singleValue),
-            NULL),
-        symbolTableFromArgs(
+            CMETH_BIND(SymbolTable, singleValue)),
+        METH_TABLE(
             METH_BIND(SymbolTable, cat),
             METH_BIND(SymbolTable, del),
             METH_BIND(SymbolTable, gcMark),
@@ -473,8 +441,7 @@ void bindMethodsForSymbolTable(void) {
             METH_BIND(SymbolTable, get_size),
             METH_BIND(SymbolTable, put),
             METH_BIND(SymbolTable, totalEq),
-            METH_BIND(SymbolTable, totalOrder),
-            NULL));
+            METH_BIND(SymbolTable, totalOrder)));
 
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance(0));
 }

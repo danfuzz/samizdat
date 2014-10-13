@@ -2,7 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include <stdarg.h>
 #include <stdlib.h>
 
 #include "type/Box.h"
@@ -65,43 +64,27 @@ static zvalue mapFromArrayUnchecked(zint size, zmapping *mappings) {
 /**
  * Constructs and returns a single-mapping map.
  */
-static zvalue makeMapping(zvalue key, zvalue value) {
-    zvalue result = allocMap(1);
-    zmapping *elems = getInfo(result)->elems;
-
-    elems->key = key;
-    elems->value = value;
-    return result;
+static zvalue mapFrom1(zmapping elem) {
+    return mapFromArrayUnchecked(1, &elem);
 }
 
 /**
- * Allocates and returns a map with up to two mappings. This will
- * return a single-mapping map if the two keys are the same, in which case
- * the *second* value is used.
+ * Allocates and returns a map with up to two mappings. This will return a
+ * single-mapping map if the two keys are the same, in which case the *second*
+ * value is used.
  */
-static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    zorder comp = cm_order(k1, k2);
-
-    if (comp == ZSAME) {
-        return makeMapping(k2, v2);
+static zvalue mapFrom2(zmapping elem1, zmapping elem2) {
+    switch (cm_order(elem1.key, elem2.key)) {
+        case ZLESS: {
+            return mapFromArrayUnchecked(2, (zmapping[]) {elem1, elem2});
+        }
+        case ZMORE: {
+            return mapFromArrayUnchecked(2, (zmapping[]) {elem2, elem1});
+        }
+        default: {
+            return mapFrom1(elem2);
+        }
     }
-
-    zvalue result = allocMap(2);
-    zmapping *elems = getInfo(result)->elems;
-
-    if (comp == ZLESS) {
-        elems[0].key = k1;
-        elems[0].value = v1;
-        elems[1].key = k2;
-        elems[1].value = v2;
-    } else {
-        elems[0].key = k2;
-        elems[0].value = v2;
-        elems[1].key = k1;
-        elems[1].value = v1;
-    }
-
-    return result;
 }
 
 /**
@@ -192,17 +175,9 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     // Handle special cases that are particularly easy.
     switch (size) {
-        case 0: {
-            return EMPTY_MAP;
-        }
-        case 1: {
-            return makeMapping(mappings[0].key, mappings[0].value);
-        }
-        case 2: {
-            return mapFrom2(
-                mappings[0].key, mappings[0].value,
-                mappings[1].key, mappings[1].value);
-        }
+        case 0: { return EMPTY_MAP;                          }
+        case 1: { return mapFrom1(mappings[0]);              }
+        case 2: { return mapFrom2(mappings[0], mappings[1]); }
     }
 
     // Sort the mappings using mergesort. Mergesort is stable and operates
@@ -483,7 +458,7 @@ METH_IMPL_1(Map, nextValue, box) {
             // Make a mapping for the first element, yield it, and return
             // a map of the remainder.
             zmapping *elems = info->elems;
-            zvalue mapping = makeMapping(elems[0].key, elems[0].value);
+            zvalue mapping = mapFrom1(elems[0]);
             cm_store(box, mapping);
             return mapFromArrayUnchecked(size - 1, &elems[1]);
         }
@@ -497,14 +472,11 @@ METH_IMPL_1(Map, nthMapping, n) {
 
     if (index < 0) {
         return NULL;
-    }
-
-    if (info->size == 1) {
+    } else if (info->size == 1) {
         return ths;
+    } else {
+        return mapFrom1(info->elems[index]);
     }
-
-    zmapping *m = &info->elems[index];
-    return makeMapping(m->key, m->value);
 }
 
 // Documented in spec.
@@ -521,10 +493,10 @@ METH_IMPL_2(Map, put, key, value) {
     switch (size) {
         case 0: {
             // `put({}, ...)`
-            return makeMapping(key, value);
+            return mapFrom1((zmapping) {key, value});
         }
         case 1: {
-            return mapFrom2(elems[0].key, elems[0].value, key, value);
+            return mapFrom2(elems[0], (zmapping) {key, value});
         }
     }
 
@@ -635,12 +607,11 @@ MOD_INIT(Map) {
     MOD_USE(MapCache);
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
-        symbolTableFromArgs(
+        METH_TABLE(
             CMETH_BIND(Map, castFrom),
             CMETH_BIND(Map, new),
-            CMETH_BIND(Map, singleValue),
-            NULL),
-        symbolTableFromArgs(
+            CMETH_BIND(Map, singleValue)),
+        METH_TABLE(
             METH_BIND(Map, castToward),
             METH_BIND(Map, cat),
             METH_BIND(Map, collect),
@@ -657,11 +628,9 @@ MOD_INIT(Map) {
             METH_BIND(Map, put),
             METH_BIND(Map, totalEq),
             METH_BIND(Map, totalOrder),
-            METH_BIND(Map, valueList),
-            NULL));
+            METH_BIND(Map, valueList)));
 
-    EMPTY_MAP = allocMap(0);
-    datImmortalize(EMPTY_MAP);
+    EMPTY_MAP = datImmortalize(allocMap(0));
 }
 
 // Documented in header.

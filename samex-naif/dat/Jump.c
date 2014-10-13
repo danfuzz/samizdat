@@ -96,11 +96,10 @@ MOD_INIT(Jump) {
 
     CLS_Jump = makeCoreClass(SYM(Jump), CLS_Core,
         NULL,
-        symbolTableFromArgs(
+        METH_TABLE(
             METH_BIND(Jump, call),
             METH_BIND(Jump, debugString),
-            METH_BIND(Jump, gcMark),
-            NULL));
+            METH_BIND(Jump, gcMark)));
 }
 
 // Documented in header.
