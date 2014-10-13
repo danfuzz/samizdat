@@ -237,8 +237,7 @@ CMETH_IMPL_rest(Map, new, args) {
     zint size = argsSize >> 1;
     zmapping mappings[size];
     for (zint i = 0, at = 0; i < size; i++, at += 2) {
-        mappings[i].key = args[at];
-        mappings[i].value = args[at + 1];
+        mappings[i] = (zmapping) {args[at], args[at + 1]};
     }
 
     return mapFromArray(size, mappings);
@@ -256,12 +255,10 @@ CMETH_IMPL_1_rest(Map, singleValue, first, args) {
     zmapping mappings[argsSize];
     zvalue value = args[argsSize - 1];
 
-    mappings[0].key = first;
-    mappings[0].value = value;
+    mappings[0] = (zmapping) {first, value};
 
     for (zint i = 1; i < argsSize; i++) {
-        mappings[i].key = args[i - 1];
-        mappings[i].value = value;
+        mappings[i] = (zmapping) {args[i - 1], value};
     }
 
     return mapFromArray(argsSize, mappings);
@@ -502,27 +499,25 @@ METH_IMPL_2(Map, put, key, value) {
 
     zint index = mapFind(ths, key);
     zvalue result;
+    zmapping *resultElems;
 
     if (index >= 0) {
         // The key exists in the given map, so we need to perform
         // a replacement.
         result = allocMap(size);
+        resultElems = getInfo(result)->elems;
         utilCpy(zmapping, getInfo(result)->elems, elems, size);
     } else {
         // The key wasn't found, so we need to insert a new one.
         index = ~index;
         result = allocMap(size + 1);
-
-        zmapping *resultElems = getInfo(result)->elems;
-
+        resultElems = getInfo(result)->elems;
         utilCpy(zmapping, resultElems, elems, index);
-        utilCpy(zmapping, &resultElems[index+1], &elems[index],
+        utilCpy(zmapping, &resultElems[index + 1], &elems[index],
             (size - index));
     }
 
-    zmapping *elem = &getInfo(result)->elems[index];
-    elem->key = key;
-    elem->value = value;
+    resultElems[index] = (zmapping) {key, value};
     return result;
 }
 
