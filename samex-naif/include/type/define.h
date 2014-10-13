@@ -135,7 +135,7 @@
  * Macro to create and return a method table. Arguments are expected to be
  * calls to `METH_BIND` or `CMETH_BIND`.
  */
-#define METH_TABLE(...) (cm_new_SymbolTable(__VA_ARGS__, NULL))
+#define METH_TABLE(...) (cm_new_SymbolTable(__VA_ARGS__))
 
 // Instance method implementation macros.
 

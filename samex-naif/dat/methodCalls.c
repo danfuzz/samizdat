@@ -52,7 +52,7 @@ zvalue cm_nth(zvalue x, zint index) {
 }
 
 // Documented in header.
-zvalue cm_new_SymbolTable(zvalue first, ...) {
+zvalue cm_new_SymbolTable0(zvalue first, ...) {
     if (first == NULL) {
         return EMPTY_SYMBOL_TABLE;
     }
