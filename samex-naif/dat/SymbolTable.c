@@ -114,8 +114,7 @@ static void putInto(zvalue *result, SymbolTableInfo **info,
     for (int i = 0; i < DAT_SYMTAB_MAX_PROBES; i++) {
         zvalue foundKey = array[index].key;
         if (foundKey == NULL) {
-            array[index].key = key;
-            array[index].value = value;
+            array[index] = (zmapping) {key, value};
             (*info)->size++;
             return;
         } else if (foundKey == key) {
@@ -178,8 +177,7 @@ void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
     for (zint i = 0, at = 0; i < arraySize; i++) {
         zvalue key = array[i].key;
         if (key != NULL) {
-            result[at].key = key;
-            result[at].value = array[i].value;
+            result[at] = (zmapping) {key, array[i].value};
             at++;
         }
     }
