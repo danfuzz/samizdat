@@ -398,7 +398,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
         @{
             basePath: path.cat("/"),
             globals,
-            loadedBox: Box_makeCell({}),
+            loadedBox: Cell.new({}),
             nextLoader: fixNullLoader(nextLoader)
         })
 };
@@ -536,7 +536,7 @@ export fn makeInternalLoader(path, globals, nextLoader) {
         @{
             basePath,
             globals:    fullGlobals,
-            loadedBox:  Box_makeCell({}),
+            loadedBox:  Cell.new({}),
             nextLoader: externLoader
         });
 
