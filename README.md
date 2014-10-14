@@ -231,7 +231,18 @@ made from scratch. Supported names are `naif` (pure interpreter) and `tot`
 
 In addition, the option `--compiler=name` can be added to any demo `run` or
 `run-all` command, to cause the demo to be compiled with the named compiler
-mode. See `samtoc` documentation for a list of modes.
+mode. And `--time` will cause the build / run to be timed. See `samtoc`
+documentation for more info.
+
+The "standard" shell command to build and run a full set of tests is:
+
+```shell
+$ cd samizdat
+$ ./demo/run-all --runtime=tot --compiler=simple --clean-build --time
+```
+
+As of this writing, running this command takes about 33 minutes on a
+mid-range laptop of recent vintage.
 
 
 More Info
