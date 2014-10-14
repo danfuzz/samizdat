@@ -38,9 +38,9 @@ fn msgInterp(box) {
 ## Main demos
 ##
 
-note("Mutable Box");
+note("Cell");
 
-def box1 = $Box::makeCell();
+def box1 = Cell.new();
 msg(box1);
 box1.store();
 msg(box1);
@@ -51,30 +51,30 @@ msg(box1);
 box1.store();
 msg(box1);
 
-note("\nMutable Box, pre-set");
+note("\nCell, pre-set");
 
-def box2 = $Box::makeCell("blort");
+def box2 = Cell.new("blort");
 msg(box2);
 box2.store();
 msg(box2);
 box2.store("igram");
 msg(box2);
 
-note("\nYield Box");
+note("\nPromise");
 
-def box3 = $Box::makePromise();
+def box3 = Promise.new();
 msg(box3);
 box3.store("fizmo");
 msg(box3);
 
-note("\nResult Box, void");
+note("\nResult, void");
 
-def box4 = $Box::makeResult();
+def box4 = Result.new();
 msg(box4);
 
-note("\nResult Box, value");
+note("\nResult, value");
 
-def box5 = $Box::makeResult("blort");
+def box5 = Result.new("blort");
 msg(box5);
 
 note("\nnullBox");
@@ -86,5 +86,5 @@ msg(nullBox);
 note("\nInterpolation");
 
 msgInterp(nullBox);
-msgInterp($Box::makeCell());
-msgInterp($Box::makeCell("blort"));
+msgInterp(Cell.new());
+msgInterp(Cell.new("blort"));
