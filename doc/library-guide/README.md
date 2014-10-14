@@ -95,7 +95,6 @@ will be returned, or one of:
   * [One-Off Methods](OneOff.md)
 
 * Implementation Modules
-  * [core.Box](Box.md)
   * [core.Code](Code.md)
   * [core.CommandLine](CommandLine.md)
   * [core.EntityMap](EntityMap.md)
