@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Box` class
+// Concrete `Box` classes
 //
 
 #ifndef _TYPE_BOX_H_
@@ -15,21 +15,19 @@
 /** Class value for in-model class `Box`. */
 extern zvalue CLS_Box;
 
-/**
- * Constructs a mutable (re-settable) box, with the given initial value.
- * Pass `NULL` to leave it initially unset.
- */
-zvalue makeCell(zvalue value);
+/** Class value for in-model class `Cell`. */
+extern zvalue CLS_Cell;
 
-/**
- * Constructs a yield (set-once) box.
- */
-zvalue makePromise(void);
+/** Class value for in-model class `NullBox`. */
+extern zvalue CLS_NullBox;
 
-/**
- * Constructs a permanently-set box, with the given value. Pass `NULL` to
- * make it un-valued.
- */
-zvalue makeResult(zvalue value);
+/** Class value for in-model class `Promise`. */
+extern zvalue CLS_Promise;
+
+/** Class value for in-model class `Result`. */
+extern zvalue CLS_Result;
+
+/** The sole instance of class `NullBox`. */
+extern zvalue THE_NULL_BOX;
 
 #endif

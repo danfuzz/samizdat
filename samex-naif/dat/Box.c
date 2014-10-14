@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// Box manipulation
+// Concrete `Box` classes
 //
 
 #include "type/Box.h"
@@ -20,14 +20,11 @@
 //
 
 /**
- * Box state.
+ * Box state. Common across all the concrete subclasses.
  */
 typedef struct {
     /** Content value. */
     zvalue value;
-
-    /** True iff this is a set-once (yield) box. */
-    bool setOnce;
 
     /** True iff the box can be stored to (see spec for details). */
     bool canStore;
@@ -48,67 +45,18 @@ static zvalue doFetch(zvalue box) {
 }
 
 /**
- * Does the main action of storing, without checking the argument class.
+ * Makes a box of the given class, with the given instance state.
  */
-static zvalue doStore(zvalue box, zvalue value) {
-    BoxInfo *info = getInfo(box);
-
-    if (!info->canStore) {
-        die("Attempt to store to fixed box.");
-    }
-
-    if (info->setOnce) {
-        info->canStore = false;
-    }
-
-    info->value = value;
-    return value;
-}
-
-
-//
-// Exported Definitions
-//
-
-// Documented in header.
-zvalue makeCell(zvalue value) {
-    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
-    BoxInfo *info = getInfo(result);
-
-    info->value = value;
-    info->canStore = true;
-    info->setOnce = false;
-
-    return result;
-}
-
-// Documented in header.
-zvalue makePromise(void) {
-    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
-    BoxInfo *info = getInfo(result);
-
-    info->value = NULL;
-    info->canStore = true;
-    info->setOnce = true;
-
-    return result;
-}
-
-// Documented in header.
-zvalue makeResult(zvalue value) {
-    zvalue result = datAllocValue(CLS_Box, sizeof(BoxInfo));
-    BoxInfo *info = getInfo(result);
-
-    info->value = value;
-    info->canStore = false;
-    info->setOnce = true;
+static zvalue newBox(zvalue cls, BoxInfo info) {
+    zvalue result = datAllocValue(cls, sizeof(BoxInfo));
+    *getInfo(result) = info;
 
     return result;
 }
 
 
 //
-// Class Definition
+// Class Definition: `Box`
 //
 
 // Documented in spec.
@@ -147,15 +95,13 @@ METH_IMPL_1(Box, nextValue, out) {
     }
 }
 
-// Documented in spec.
-METH_IMPL_0_1(Box, store, value) {
-    return doStore(ths, value);
-}
-
 /** Initializes the module. */
 MOD_INIT(Box) {
-    MOD_USE(Generator);
     MOD_USE(Core);
+    MOD_USE_NEXT(Cell);
+    MOD_USE_NEXT(NullBox);
+    MOD_USE_NEXT(Promise);
+    MOD_USE_NEXT(Result);
 
     CLS_Box = makeCoreClass(SYM(Box), CLS_Core,
         NULL,
@@ -163,9 +109,133 @@ MOD_INIT(Box) {
             METH_BIND(Box, collect),
             METH_BIND(Box, fetch),
             METH_BIND(Box, gcMark),
-            METH_BIND(Box, nextValue),
-            METH_BIND(Box, store)));
+            METH_BIND(Box, nextValue)));
 }
 
 // Documented in header.
 zvalue CLS_Box = NULL;
+
+
+//
+// Class Definition: `Cell`
+//
+
+// Documented in spec.
+CMETH_IMPL_0_1(Cell, new, value) {
+    return newBox(CLS_Cell, (BoxInfo) {value, true});
+}
+
+// Documented in spec.
+METH_IMPL_0_1(Cell, store, value) {
+    getInfo(ths)->value = value;
+    return value;
+}
+
+/** Initializes the module. */
+MOD_INIT(Cell) {
+    MOD_USE(Box);
+
+    CLS_Cell = makeCoreClass(SYM(Cell), CLS_Box,
+        METH_TABLE(
+            CMETH_BIND(Cell, new)),
+        METH_TABLE(
+            METH_BIND(Cell, store)));
+}
+
+// Documented in header.
+zvalue CLS_Cell = NULL;
+
+
+//
+// Class Definition: `NullBox`
+//
+
+// Documented in spec.
+METH_IMPL_0_1(NullBox, store, value) {
+    // Return `value`, but otherwise do nothing.
+    return value;
+}
+
+/** Initializes the module. */
+MOD_INIT(NullBox) {
+    MOD_USE(Box);
+
+    CLS_NullBox = makeCoreClass(SYM(NullBox), CLS_Box,
+        NULL,
+        METH_TABLE(
+            METH_BIND(NullBox, store)));
+
+    THE_NULL_BOX = datImmortalize(newBox(CLS_NullBox, (BoxInfo) {NULL, true}));
+}
+
+// Documented in header.
+zvalue CLS_NullBox = NULL;
+
+// Documented in header.
+zvalue THE_NULL_BOX = NULL;
+
+
+//
+// Class Definition: `Promise`
+//
+
+// Documented in spec.
+CMETH_IMPL_0(Promise, new) {
+    return newBox(CLS_Promise, (BoxInfo) {NULL, true});
+}
+
+// Documented in spec.
+METH_IMPL_0_1(Promise, store, value) {
+    BoxInfo *info = getInfo(ths);
+
+    if (!info->canStore) {
+        die("Cannot `store()` to resolved `Promise`.");
+    }
+
+    info->canStore = false;
+    info->value = value;
+    return value;
+}
+
+/** Initializes the module. */
+MOD_INIT(Promise) {
+    MOD_USE(Box);
+
+    CLS_Promise = makeCoreClass(SYM(Promise), CLS_Box,
+        METH_TABLE(
+            CMETH_BIND(Promise, new)),
+        METH_TABLE(
+            METH_BIND(Promise, store)));
+}
+
+// Documented in header.
+zvalue CLS_Promise = NULL;
+
+
+//
+// Class Definition: `Result`
+//
+
+// Documented in spec.
+CMETH_IMPL_0_1(Result, new, value) {
+    return newBox(CLS_Result, (BoxInfo) {value, false});
+}
+
+// Documented in spec.
+METH_IMPL_0_1(Result, store, value) {
+    die("Cannot `store()` to `Result`.");
+}
+
+/** Initializes the module. */
+MOD_INIT(Result) {
+    MOD_USE(Box);
+
+    CLS_Result = makeCoreClass(SYM(Result), CLS_Box,
+        METH_TABLE(
+            CMETH_BIND(Result, new)),
+        METH_TABLE(
+            METH_BIND(Result, store)));
+}
+
+// Documented in header.
+zvalue CLS_Result = NULL;

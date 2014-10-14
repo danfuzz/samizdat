@@ -159,7 +159,7 @@ fn mainClosureMaker(node, interner) {
             genCall("makeClosure_\(node::id)",
                 ( name in varRefs, id in ids ->
                     genComment("\%q(name)",
-                        genCall("makeResult",
+                        genCall("METH_CALL", "new", "CLS_Result",
                             genCall("cm_get", "GLOBALS", "LIT_\(id)")))
                 )*)));
 

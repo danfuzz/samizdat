@@ -36,20 +36,27 @@ fn collectionBody(elems) {
 
 ## Values with special conversions.
 def SPECIAL_VALUES = {
-    (Bool) :       "Bool",
+    (Bool):        "Bool",
+    (Box):         "Box",
+    (Cell):        "Cell",
     (Class):       "Class",
     (Core):        "Core",
     (Int):         "Int",
     (List):        "List",
     (Map):         "Map",
+    (Metaclass):   "Metaclass",
     (Null):        "Null",
+    (NullBox):     "NullBox",
+    (Promise):     "Promise",
     (Record):      "Record",
+    (Result):      "Result",
     (String):      "String",
     (Symbol):      "Symbol",
     (SymbolTable): "SymbolTable",
     (Value):       "Value",
     (false):       "false",
     (null):        "null",
+    (nullBox):     "nullBox",
     (true):        "true"
 };
 

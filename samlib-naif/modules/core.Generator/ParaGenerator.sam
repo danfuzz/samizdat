@@ -9,8 +9,6 @@
 
 #= language core.Lang0
 
-import core.Box :: nullBox;
-
 import ./ListWrapGenerator :: makeListWrapGenerator;
 import ./NullGenerator :: nullGenerator;
 

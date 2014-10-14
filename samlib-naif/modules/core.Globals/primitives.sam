@@ -16,13 +16,19 @@
 ## Documented in spec.
 export
     Bool,
+    Box,
+    Cell,
     Class,
     Core,
     Int,
     List,
     Map,
+    Metaclass,
     Null,
+    NullBox,
+    Promise,
     Record,
+    Result,
     String,
     Symbol,
     SymbolTable,
@@ -44,4 +50,5 @@ export
     maybeCast,
     maybeValue,
     note,
+    nullBox,
     order;

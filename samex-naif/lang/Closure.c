@@ -254,7 +254,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
 
         if (!ignore) {
             elems[elemAt].key = name;
-            elems[elemAt].value = makeResult(value);
+            elems[elemAt].value = cm_new(Result, value);
             elemAt++;
         }
     }
@@ -266,7 +266,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
 
     if (exitFunction != NULL) {
         elems[elemAt].key = info->yieldDef;
-        elems[elemAt].value = makeResult(exitFunction);
+        elems[elemAt].value = cm_new(Result, exitFunction);
         elemAt++;
     }
 
@@ -366,7 +366,7 @@ MOD_INIT(Closure) {
             METH_BIND(Closure, gcMark)));
 
     nodeCache = EMPTY_MAP;
-    nodeCacheBox = datImmortalize(makeCell(EMPTY_MAP));
+    nodeCacheBox = datImmortalize(cm_new(Cell, EMPTY_MAP));
 }
 
 // Documented in header.

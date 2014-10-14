@@ -163,6 +163,8 @@
     SYM(name), \
     FUNC_VALUE(class_##cls##_##name)
 
+#define CMETH_IMPL_0(cls, name) \
+    FUNC_IMPL_1(class_##cls##_##name, thsClass)
 #define CMETH_IMPL_1(cls, name, a0) \
     FUNC_IMPL_2(class_##cls##_##name, thsClass, a0)
 #define CMETH_IMPL_rest(cls, name, aRest) \

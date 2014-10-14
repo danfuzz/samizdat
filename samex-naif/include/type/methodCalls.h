@@ -33,7 +33,8 @@
 #define cm_castFrom(x, value) (METH_CALL(castFrom, (x), (value)))
 
 /**
- * Calls `x.cat(...)`. **Note:** This is a macro.
+ * Calls `x.cat(...)`. **Note:** This is a macro, and due to limitations on
+ * C macros, this must be passed at least one argument.
  */
 #define cm_cat(...) (METH_CALL(cat, __VA_ARGS__))
 
@@ -56,14 +57,24 @@ char *cm_debugString(zvalue x);
 
 /**
  * Calls `ClassName.new(...)`. `ClassName` is fixed to be a proper C name
- * for a class. **Note:** This is a macro.
+ * for a class. **Note:** This is a macro, and due to limitations on
+ * C macros, this must be passed at least one argument after the class name.
  */
 #define cm_new(clsName, ...) (METH_CALL(new, (CLS_##clsName), __VA_ARGS__))
 
 /**
+ * Calls `ClassName.new()` with no arguments. `ClassName` is fixed to be a
+ * proper C name for a class. **Note:** This is a macro, and exists only
+ * because of limitations on varargs macros (see `cm_new()`).
+ */
+#define cm_new0(clsName) (METH_CALL(new, (CLS_##clsName)))
+
+/**
  * Does the equivalent of calling `SymbolTable.new(...)`, except that this
  * uses lower-layer functionality, making this function safe to use before
- * the class `SymbolTable` is fully initialized. **Note:** This is a macro.
+ * the class `SymbolTable` is fully initialized. **Note:** This is a macro,
+ * and due to limitations on C macros, this must be passed at least one
+ * argument.
  */
 #define cm_new_SymbolTable(...) (cm_new_SymbolTable0(__VA_ARGS__, NULL))
 zvalue cm_new_SymbolTable0(zvalue first, ...);

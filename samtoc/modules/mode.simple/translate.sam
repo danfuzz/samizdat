@@ -117,19 +117,18 @@ export fn translate(node, varsBox) {
 
         @varDef: {
             def value = (def v = node::value)
-                & genCall("makeResult", nonVoid(translate(v, varsBox)))
-                | genCall("makePromise");
+                & genCall("METH_CALL", "new", "CLS_Result",
+                    nonVoid(translate(v, varsBox)))
+                | genCall("METH_CALL", "new", "CLS_Promise");
 
             varDefCommon(node::name, value, varsBox)
         };
 
         @varDefMutable: {
-            def value = (def v = node::value)
-                & translate(v, varsBox)
-                | "NULL";
-
-            varDefCommon(
-                node::name, nonVoid(genCall("makeCell", value)), varsBox)
+            def optValue = ((def v = node::value) & translate(v, varsBox))?;
+            varDefCommon(node::name,
+                nonVoid(genCall("METH_CALL", "new", "CLS_Cell", optValue*)),
+                varsBox)
         };
 
         @varRef: {
