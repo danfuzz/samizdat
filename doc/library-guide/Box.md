@@ -153,40 +153,7 @@ Calling this method always results in the runtime terminating with an error.
 <br><br>
 ### Primitive Definitions
 
-#### `makeCell(optValue?) -> cell`
-
-Creates a cell (a mutable box), with optional pre-set value. The result of
-a call to this function is a cell which can be set any number of times using
-`store`. The contents of the cell are accessible by calling `fetch`.
-
-The initial cell content value is the `optValue` given to this function. This
-is what is returned from `fetch` until `store` is called to replace it.
-If `optValue` is not supplied, `fetch` returns void until `store` is called.
-
-This function is meant to be the primary way to define (what amount to)
-mutable variables, in that Samizdat Layer 0 only provides immutably-bound
-variables. It is hoped that this facility will be used as minimally as
-possible, so as to not preclude the system from performing functional-style
-optimizations.
-
-#### `makePromise() -> promise`
-
-Creates a promise (set-at-most-once box). The result of a call to this
-function is a box which can be stored to at most once, using `store`.
-Subsequent attempts to call `store` will fail (terminating the runtime). The
-contents of the promise are accessible by calling `fetch`. `fetch` returns
-void until and unless `store` is called with a second argument.
-
-This function is meant to be the primary way to capture the yielded values
-from functions (such as object service functions and parser functions) which
-expect to yield values by calling a function.
-
-#### `makeResult(optValue?) -> promise`
-
-Creates a permanently-set or permanently valueless box. The result of a call
-to this function is a box which cannot be stored to, and which will always
-respond to `fetch` with the given `optValue`. If `optValue` is not supplied,
-`fetch` on the result will always return void.
+(none)
 
 
 <br><br>

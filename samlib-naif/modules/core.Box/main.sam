@@ -10,13 +10,3 @@
 
 ## Re-export. Documented in spec.
 export import ./NullBox :: nullBox;
-
-
-##
-## Exported Definitions
-##
-
-## Re-exported from primitive library.
-export def makeCell    = Box_makeCell;
-export def makePromise = Box_makePromise;
-export def makeResult  = Box_makeResult;

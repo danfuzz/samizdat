@@ -56,30 +56,6 @@ static zvalue newBox(zvalue cls, BoxInfo info) {
 
 
 //
-// Exported Definitions
-//
-
-// Documented in header.
-zvalue makeCell(zvalue value) {
-    return (value == NULL)
-        ? METH_CALL(new, CLS_Cell)
-        : METH_CALL(new, CLS_Cell, value);
-}
-
-// Documented in header.
-zvalue makePromise(void) {
-    return METH_CALL(new, CLS_Promise);
-}
-
-// Documented in header.
-zvalue makeResult(zvalue value) {
-    return (value == NULL)
-        ? METH_CALL(new, CLS_Result)
-        : METH_CALL(new, CLS_Result, value);
-}
-
-
-//
 // Class Definition: `Box`
 //
 
