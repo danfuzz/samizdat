@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import core.Box :: nullBox;
-
 export import ./FilterGenerator :: *;
 export import ./ListWrapGenerator :: *;
 export import ./NullGenerator :: *;
