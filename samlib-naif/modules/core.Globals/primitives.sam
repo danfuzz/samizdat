@@ -16,13 +16,17 @@
 ## Documented in spec.
 export
     Bool,
+    Box,
+    Cell,
     Class,
     Core,
     Int,
     List,
     Map,
     Null,
+    Promise,
     Record,
+    Result,
     String,
     Symbol,
     SymbolTable,

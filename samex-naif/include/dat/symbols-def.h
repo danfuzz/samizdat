@@ -15,6 +15,7 @@
 DEF_SYMBOL(Bool);
 DEF_SYMBOL(Box);
 DEF_SYMBOL(Builtin);
+DEF_SYMBOL(Cell);
 DEF_SYMBOL(Class);
 DEF_SYMBOL(Core);
 DEF_SYMBOL(Int);
@@ -25,7 +26,9 @@ DEF_SYMBOL(MapCache);
 DEF_SYMBOL(Metaclass);
 DEF_SYMBOL(Null);
 DEF_SYMBOL(Object);
+DEF_SYMBOL(Promise);
 DEF_SYMBOL(Record);
+DEF_SYMBOL(Result);
 DEF_SYMBOL(String);
 DEF_SYMBOL(Symbol);
 DEF_SYMBOL(SymbolTable);

@@ -14,13 +14,17 @@
 
 // Classes.
 PRIM_DEF(Bool,                    CLS_Bool);
+PRIM_DEF(Box,                     CLS_Box);
+PRIM_DEF(Cell,                    CLS_Cell);
 PRIM_DEF(Class,                   CLS_Class);
 PRIM_DEF(Core,                    CLS_Core);
 PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);
 PRIM_DEF(Null,                    CLS_Null);
+PRIM_DEF(Promise,                 CLS_Promise);
 PRIM_DEF(Record,                  CLS_Record);
+PRIM_DEF(Result,                  CLS_Result);
 PRIM_DEF(String,                  CLS_String);
 PRIM_DEF(Symbol,                  CLS_Symbol);
 PRIM_DEF(SymbolTable,             CLS_SymbolTable);

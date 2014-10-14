@@ -3,7 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// `Box` class
+// Concrete `Box` classes
 //
 
 #ifndef _TYPE_BOX_H_
@@ -14,6 +14,15 @@
 
 /** Class value for in-model class `Box`. */
 extern zvalue CLS_Box;
+
+/** Class value for in-model class `Cell`. */
+extern zvalue CLS_Cell;
+
+/** Class value for in-model class `Promise`. */
+extern zvalue CLS_Promise;
+
+/** Class value for in-model class `Result`. */
+extern zvalue CLS_Result;
 
 /**
  * Constructs a mutable (re-settable) box, with the given initial value.
