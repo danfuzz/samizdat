@@ -15,7 +15,7 @@ classes that implement the `Box` protocol:
 
 * `Cell` &mdash; A box whose value can be changed an arbitrary number
   of times.
-* `NullBox` &mdashl; A box which always indicates it holds void, and which can
+* `NullBox` &mdash; A box which always indicates it holds void, and which can
   be stored to any number of times without effect. The global value `nullBox`
   is an instance of this class.
 * `Promise` &mdash; A box whose value (or voidness) can be set only once.
