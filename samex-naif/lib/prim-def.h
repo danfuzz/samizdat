@@ -21,6 +21,7 @@ PRIM_DEF(Core,                    CLS_Core);
 PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);
+PRIM_DEF(Metaclass,               CLS_Metaclass);
 PRIM_DEF(Null,                    CLS_Null);
 PRIM_DEF(NullBox,                 CLS_NullBox);
 PRIM_DEF(Promise,                 CLS_Promise);

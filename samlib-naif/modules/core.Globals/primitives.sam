@@ -23,6 +23,7 @@ export
     Int,
     List,
     Map,
+    Metaclass,
     Null,
     NullBox,
     Promise,
