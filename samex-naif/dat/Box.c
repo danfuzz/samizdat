@@ -99,6 +99,7 @@ METH_IMPL_1(Box, nextValue, out) {
 MOD_INIT(Box) {
     MOD_USE(Core);
     MOD_USE_NEXT(Cell);
+    MOD_USE_NEXT(NullBox);
     MOD_USE_NEXT(Promise);
     MOD_USE_NEXT(Result);
 
@@ -143,6 +144,35 @@ MOD_INIT(Cell) {
 
 // Documented in header.
 zvalue CLS_Cell = NULL;
+
+
+//
+// Class Definition: `NullBox`
+//
+
+// Documented in spec.
+METH_IMPL_0_1(NullBox, store, value) {
+    // Return `value`, but otherwise do nothing.
+    return value;
+}
+
+/** Initializes the module. */
+MOD_INIT(NullBox) {
+    MOD_USE(Box);
+
+    CLS_NullBox = makeCoreClass(SYM(NullBox), CLS_Box,
+        NULL,
+        METH_TABLE(
+            METH_BIND(NullBox, store)));
+
+    THE_NULL_BOX = datImmortalize(newBox(CLS_NullBox, (BoxInfo) {NULL, true}));
+}
+
+// Documented in header.
+zvalue CLS_NullBox = NULL;
+
+// Documented in header.
+zvalue THE_NULL_BOX = NULL;
 
 
 //

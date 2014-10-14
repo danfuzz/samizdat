@@ -25,6 +25,7 @@ DEF_SYMBOL(Map);
 DEF_SYMBOL(MapCache);
 DEF_SYMBOL(Metaclass);
 DEF_SYMBOL(Null);
+DEF_SYMBOL(NullBox);
 DEF_SYMBOL(Object);
 DEF_SYMBOL(Promise);
 DEF_SYMBOL(Record);

@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import core.Box :: nullBox;
-
 import ./PegAny :: any;
 import ./PegEof :: eof;
 import ./PegFail :: fail;

@@ -24,6 +24,7 @@ export
     List,
     Map,
     Null,
+    NullBox,
     Promise,
     Record,
     Result,
@@ -48,4 +49,5 @@ export
     maybeCast,
     maybeValue,
     note,
+    nullBox,
     order;

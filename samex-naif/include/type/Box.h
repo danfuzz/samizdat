@@ -18,10 +18,16 @@ extern zvalue CLS_Box;
 /** Class value for in-model class `Cell`. */
 extern zvalue CLS_Cell;
 
+/** Class value for in-model class `NullBox`. */
+extern zvalue CLS_NullBox;
+
 /** Class value for in-model class `Promise`. */
 extern zvalue CLS_Promise;
 
 /** Class value for in-model class `Result`. */
 extern zvalue CLS_Result;
+
+/** The sole instance of class `NullBox`. */
+extern zvalue THE_NULL_BOX;
 
 #endif

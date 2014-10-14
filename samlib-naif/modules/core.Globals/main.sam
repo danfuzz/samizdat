@@ -47,7 +47,6 @@ export fn fullEnvironment() {
     def $Sequence    = loadModule(@external{name: "core.Sequence"});
 
     ## Selected bindings exported.
-    def $Box         = loadModule(@external{name: "core.Box"});
     def $CommandLine = loadModule(@external{name: "core.CommandLine"});
 
     return @{
@@ -59,9 +58,6 @@ export fn fullEnvironment() {
         $Peg,
         $Range,
         $Sequence,
-
-        ## Special value.
-        nullBox: $Box::nullBox,
 
         ## The one higher-layer function that gets exported to the environment.
         runCommandLine: $CommandLine::runCommandLine
