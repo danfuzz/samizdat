@@ -27,7 +27,7 @@ FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
     zint at = 0;
 
     zstackPointer save = datFrameStart();
-    zvalue box = makeCell(NULL);
+    zvalue box = cm_new0(Cell);
 
     for (;;) {
         zvalue nextGen = METH_CALL(nextValue, generator, box);
@@ -76,7 +76,7 @@ FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
 FUNC_IMPL_1(Generator_stdFetch, generator) {
     zvalue result;
 
-    zvalue box = makeCell(NULL);
+    zvalue box = cm_new0(Cell);
     zvalue nextGen = METH_CALL(nextValue, generator, box);
 
     if (nextGen == NULL) {

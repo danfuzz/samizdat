@@ -122,8 +122,8 @@ static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue name = cm_get(varDef, SYM(name));
     zvalue valueExpression = cm_get(varDef, SYM(value));
     zvalue box = valueExpression
-        ? makeResult(execExpression(frame, valueExpression))
-        : makePromise();
+        ? cm_new(Result, execExpression(frame, valueExpression))
+        : cm_new0(Promise);
 
     frameDef(frame, name, box);
 }
@@ -139,7 +139,7 @@ static void execVarDefMutable(Frame *frame, zvalue varDef) {
         ? execExpression(frame, valueExpression)
         : NULL;
 
-    frameDef(frame, name, makeCell(value));
+    frameDef(frame, name, cm_new(Cell, value));
 }
 
 /**
@@ -235,7 +235,7 @@ zvalue langEval0(zvalue env, zvalue node) {
 
     arrayFromSymbolTable(mappings, env);
     for (zint i = 0; i < size; i++) {
-        mappings[i].value = makeResult(mappings[i].value);
+        mappings[i].value = cm_new(Result, mappings[i].value);
     }
     env = symbolTableFromArray(size, mappings);
 
