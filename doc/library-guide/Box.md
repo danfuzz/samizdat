@@ -10,14 +10,17 @@ and not by "happenstance content." That is, two boxes should only be
 considered "equal" if they are indistinguishable, even in the face of
 calling mutating operations.
 
-The `Box` module provides the methods of the `Box` protocol,
-as well as related constructors and constants.
+The system provides a `Box` abstract class as well as four concrete
+classes that implement the `Box` protocol:
 
-The `Box` protocol is defined in a `proto.` module as one
-would expect. However, as a special case, the `Box` methods and the
-special value `nullBox` are also exported to the global variable environment.
-This is because they are so commonly used (sometimes overtly, and sometimes
-"behind the scenes").
+* `Cell` &mdash; A box whose value can be changed an arbitrary number
+  of times.
+* `NullBox` &mdashl; A box which always indicates it holds void, and which can
+  be stored to any number of times without effect. The global value `nullBox`
+  is an instance of this class.
+* `Promise` &mdash; A box whose value (or voidness) can be set only once.
+* `Result` &mdash; A box whose value (or voidness) is set upon construction
+  and cannot be altered.
 
 As a protocol, `Box` consists of the `Generator` protocol with one additional
 function. As a generator, a box will generate either its sole stored value,
@@ -37,12 +40,13 @@ Default implementation.
 
 #### `.totalEq(other) -> box | void`
 
-Performs an identity comparison. No two boxes are alike.
+Performs an identity comparison. No two different boxes are ever considered
+equal.
 
 #### `.totalOrder(other) -> int | void`
 
-Performs an identity comparison. No two boxes are alike, and two
-different boxes have no defined order.
+Performs an identity comparison. No two different boxes are ever considered
+equal, and two different boxes have no defined order.
 
 
 <br><br>
@@ -73,8 +77,49 @@ Sets the value of a box to the given value, or to void if `value` is
 not supplied. This function always returns `value` (or void if `value` is
 not supplied).
 
-It is an error (terminating the runtime) for `this` to be a yield box on
-which `store` has already been called.
+Concrete subclasses have differing behavior in response to this method.
+
+
+<br><br>
+### Method Definitions: `Cell` class
+
+`Cell` inherits all its behavior from `Box`, except:
+
+#### `.store(value?) -> . | void`
+
+`Cell` implements the behavior as specified by `Box`, with no additions.
+
+
+<br><br>
+### Method Definitions: `NullBox` class
+
+`NullBox` inherits all its behavior from `Box`, except:
+
+#### `.store(value?) -> . | void`
+
+Calling this method always succeeds, but never causes the `this` box to
+refer to the so-specified value.
+
+
+<br><br>
+### Method Definitions: `Promise` class
+
+`Promise` inherits all its behavior from `Box`, except:
+
+#### `.store(value?) -> . | void`
+
+`Promise` implements the behavior as specified by `Box`, except that
+it is invalid to call this method twice on the same promise.
+
+
+<br><br>
+### Method Definitions: `Result` class
+
+`Result` inherits all its behavior from `Box`, except:
+
+#### `.store(value?) -> . | void`
+
+Calling this method always results in the runtime terminating with an error.
 
 
 <br><br>
