@@ -47,7 +47,6 @@ export
     ifValueOr,
     loop,
     makeObject,
-    makeObjectClass,
     maybeCast,
     maybeValue,
     note,

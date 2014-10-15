@@ -18,9 +18,6 @@ extern zvalue CLS_Object;
 /** Global function `makeObject`: Documented in spec. */
 extern zvalue FUN_Object_makeObject;
 
-/** Global function `makeObjectClass`: Documented in spec. */
-extern zvalue FUN_Object_makeObjectClass;
-
 /**
  * Returns an object value with the given class and with the given
  * optional data payload (`NULL` indicating a class-only value). `cls` must
@@ -28,13 +25,5 @@ extern zvalue FUN_Object_makeObjectClass;
  * a value of the indicated `cls`.
  */
 zvalue makeObject(zvalue cls, zvalue secret, zvalue data);
-
-/**
- * Makes a new object class with the given name, secret, and method
- * tables. If either method table is passed as `NULL`, it is treated as
- * the empty symbol table.
- */
-zvalue makeObjectClass(zvalue name, zvalue secret,
-        zvalue classMethods, zvalue instanceMethods);
 
 #endif

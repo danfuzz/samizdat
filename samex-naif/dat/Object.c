@@ -70,22 +70,6 @@ zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
     return result;
 }
 
-// Documented in header.
-zvalue makeObjectClass(zvalue name, zvalue secret,
-        zvalue classMethods, zvalue instanceMethods) {
-    zvalue extraInstanceMethods = METH_TABLE(
-        secret, FUNC_VALUE(Object_privateDataOf));
-
-    if (instanceMethods == NULL) {
-        instanceMethods = extraInstanceMethods;
-    } else {
-        instanceMethods = cm_cat(instanceMethods, extraInstanceMethods);
-    }
-
-    return makeClass(name, CLS_Object, secret,
-        classMethods, instanceMethods);
-}
-
 
 //
 // Class Definition
@@ -97,19 +81,22 @@ FUNC_IMPL_2_3(Object_makeObject, cls, secret, data) {
 }
 
 // Documented in spec.
-FUNC_IMPL_2_4(Object_makeObjectClass, name, secret,
-        classMethods, instanceMethods) {
-    return makeObjectClass(name, secret, classMethods, instanceMethods);
-}
-
-// Documented in spec.
 CMETH_IMPL_2_4(Object, subclass, name, secret,
         classMethods, instanceMethods) {
     if (thsClass != CLS_Object) {
         die("Invalid parent class: %s", cm_debugString(thsClass));
     }
 
-    return makeObjectClass(name, secret, classMethods, instanceMethods);
+    zvalue extraInstanceMethods = METH_TABLE(
+        secret, FUNC_VALUE(Object_privateDataOf));
+
+    if (instanceMethods == NULL) {
+        instanceMethods = extraInstanceMethods;
+    } else {
+        instanceMethods = cm_cat(instanceMethods, extraInstanceMethods);
+    }
+
+    return makeClass(name, CLS_Object, secret, classMethods, instanceMethods);
 }
 
 // Documented in header.
@@ -133,8 +120,6 @@ MOD_INIT(Object) {
             METH_BIND(Object, gcMark)));
 
     FUN_Object_makeObject = datImmortalize(FUNC_VALUE(Object_makeObject));
-    FUN_Object_makeObjectClass =
-        datImmortalize(FUNC_VALUE(Object_makeObjectClass));
 }
 
 // Documented in header.
@@ -142,6 +127,3 @@ zvalue CLS_Object = NULL;
 
 // Documented in header.
 zvalue FUN_Object_makeObject = NULL;
-
-// Documented in header.
-zvalue FUN_Object_makeObjectClass = NULL;
