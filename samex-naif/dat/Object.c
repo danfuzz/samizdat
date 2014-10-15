@@ -29,9 +29,25 @@ static ObjectInfo *getInfo(zvalue obj) {
 }
 
 /**
+ * Method to construct an instance. This is the function that's bound as the
+ * class method for the `secret` symbol.
+ */
+CMETH_IMPL_0_1(Object, new, data) {
+    if (data == NULL) {
+        data = EMPTY_SYMBOL_TABLE;
+    } else {
+        assertHasClass(data, CLS_SymbolTable);
+    }
+
+    zvalue result = datAllocValue(thsClass, sizeof(ObjectInfo));
+
+    getInfo(result)->data = data;
+    return result;
+}
+
+/**
  * Method to get the given object's data payload. This is the function
- * that's bound as the instance method for the `secret` symbol. It's not
- * bound directly on `Object` so as to provide data encapsulation.
+ * that's bound as the instance method for the `secret` symbol.
  */
 METH_IMPL_0(Object, privateDataOf) {
     return getInfo(ths)->data;
@@ -89,12 +105,15 @@ CMETH_IMPL_2_4(Object, subclass, name, secret,
 
     zvalue extraInstanceMethods = METH_TABLE(
         secret, FUNC_VALUE(Object_privateDataOf));
+    instanceMethods = (instanceMethods == NULL)
+        ? extraInstanceMethods
+        : cm_cat(instanceMethods, extraInstanceMethods);
 
-    if (instanceMethods == NULL) {
-        instanceMethods = extraInstanceMethods;
-    } else {
-        instanceMethods = cm_cat(instanceMethods, extraInstanceMethods);
-    }
+    zvalue extraClassMethods = METH_TABLE(
+        secret, FUNC_VALUE(class_Object_new));
+    classMethods = (classMethods == NULL)
+        ? extraClassMethods
+        : cm_cat(classMethods, extraClassMethods);
 
     return makeClass(name, CLS_Object, secret, classMethods, instanceMethods);
 }
