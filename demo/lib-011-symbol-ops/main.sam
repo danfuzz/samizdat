@@ -71,8 +71,8 @@ expectEq("eq 2", @boo, @"boo");
 expectNe("ne", @boo, @foo);
 
 expectEq("cat 1", @fooboo, @fooboo.cat());
-## expectEq("cat 2", @fooboo, @foo.cat(@boo));
-## expectEq("cat 3", @fooboo, @foo.cat(@b, @oo));
+expectEq("cat 2", @fooboo, @foo.cat(@boo));
+expectEq("cat 3", @fooboo, @foo.cat(@b, @oo));
 
 expectEq("isInterned 1", @foo, @foo.isInterned());
 expectVoid("isInterned 2", { @foo.toUnlisted().isInterned() });
