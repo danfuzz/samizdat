@@ -15,15 +15,4 @@
 /** Class value for in-model class `Object`. */
 extern zvalue CLS_Object;
 
-/** Global function `makeObject`: Documented in spec. */
-extern zvalue FUN_Object_makeObject;
-
-/**
- * Returns an object value with the given class and with the given
- * optional data payload (`NULL` indicating a class-only value). `cls` must
- * be an object class, and `secret` must match `cls`'s secret. The result is
- * a value of the indicated `cls`.
- */
-zvalue makeObject(zvalue cls, zvalue secret, zvalue data);
-
 #endif
