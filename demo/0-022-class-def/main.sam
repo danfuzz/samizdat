@@ -60,7 +60,7 @@ class Fizmo
 };
 
 print(Fizmo);
-def fizmo = makeObject(Fizmo, secret);
+def fizmo = secret(Fizmo);
 print(fizmo);
 print(secret(fizmo));
 
@@ -76,7 +76,7 @@ class Igram
 };
 
 print(Igram);
-def igram = makeObject(Igram, secret, @{effect: "purple -> invisible"});
+def igram = secret(Igram, @{effect: "purple -> invisible"});
 print(igram);
 print(secret(igram));
 igram.hello();

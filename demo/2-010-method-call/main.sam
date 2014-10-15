@@ -41,6 +41,6 @@ class Igram
     };
 };
 
-def obj = makeObject(Igram, theSecret);
+def obj = theSecret(Igram);
 note(obj.foo);
 obj.foo := "whatevs";
