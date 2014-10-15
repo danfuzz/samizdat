@@ -38,6 +38,26 @@ fn expectVoid(name, func) {
         }
 };
 
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
 
 ##
 ## Main demos
@@ -45,7 +65,18 @@ fn expectVoid(name, func) {
 
 note("Symbols");
 
-## TODO: Stuff!
-note("TODO!");
+expectEq("eq 1", @boo, @boo);
+expectEq("eq 2", @boo, @"boo");
+
+expectNe("ne", @boo, @foo);
+
+expectEq("cat 1", @fooboo, @fooboo.cat());
+## expectEq("cat 2", @fooboo, @foo.cat(@boo));
+## expectEq("cat 3", @fooboo, @foo.cat(@b, @oo));
+
+expectEq("isInterned 1", @foo, @foo.isInterned());
+expectVoid("isInterned 2", { @foo.toUnlisted().isInterned() });
+
+expectNe("toUnlisted", @foo.toUnlisted(), @foo.toUnlisted());
 
 note("All good.");

@@ -51,26 +51,6 @@ fn expectRecord(v) {
 ## Expect everything to be a "yes."
 ##
 
-
-## String
-
-note("\nString");
-
-expectSame("", "");
-expectSame("x", "x");
-expectSame("blort", "blort");
-expectSame("blort".cat("-fizmo", "-igram"), "blort-fizmo-igram");
-expectSame("frotz".nth(4), "z");
-
-expectDifferent("blort", "Blort");
-expectDifferent("blort", "blort ");
-expectDifferent("blort", "blort\0");
-
-expectCore("");
-expectCore("x");
-expectCore("muffins");
-
-
 ## Function
 
 note("\nFunction");
@@ -84,16 +64,6 @@ expectDifferent(fn1, fn2);
 expectDifferent(fn2, fn1);
 expectCore(fn1);
 expectCore(fn2);
-
-
-## Symbol
-
-note("\nSymbols");
-
-expectSame(@boo, @boo);
-expectSame(@boo, @"boo");
-
-expectCore(@boo);
 
 
 ## SymbolTable
@@ -116,20 +86,3 @@ expectSame(@{x: 10}, @{x: 10, y: 20}.del(@y));
 expectCore(@{});
 expectCore(@{blort: "splort"});
 
-
-## Record
-
-note("\nRecord");
-
-expectSame(@eek{x: 10}, @(@eek){x: 10});
-expectSame(@eek{x: 10}, @eek{x: (5).add(5)});
-expectSame(@eek{x: 10}, @(cast(Symbol, "eek")){x: 10});
-
-expectDifferent(@x{}, @x{a: 1});
-expectDifferent(@x{a: 1}, @x{a: 2});
-expectDifferent(@x{a: 1}, @y{a: 1});
-
-expectSame(@blort, @blort{}.get_name());
-expectSame(@{a: 1}, @blort{a: 1}.get_data());
-
-expectRecord(@fizmo{});
