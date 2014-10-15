@@ -24,6 +24,7 @@ PRIM_DEF(Map,                     CLS_Map);
 PRIM_DEF(Metaclass,               CLS_Metaclass);
 PRIM_DEF(Null,                    CLS_Null);
 PRIM_DEF(NullBox,                 CLS_NullBox);
+PRIM_DEF(Object,                  CLS_Object);
 PRIM_DEF(Promise,                 CLS_Promise);
 PRIM_DEF(Record,                  CLS_Record);
 PRIM_DEF(Result,                  CLS_Result);

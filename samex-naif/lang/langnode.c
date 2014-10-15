@@ -464,8 +464,9 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
                 listFrom1(LITS(SymbolTable)),
                 METH_CALL(valueList, instanceMethods))));
 
-    zvalue call = makeCall(REFS(makeObjectClass),
-        listFrom4(
+    zvalue call = makeCall(SYMS(subclass),
+        listFrom5(
+            LITS(Object),
             makeLiteral(name),
             access,
             LITS(EMPTY_SYMBOL_TABLE),

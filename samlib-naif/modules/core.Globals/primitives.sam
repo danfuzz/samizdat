@@ -26,6 +26,7 @@ export
     Metaclass,
     Null,
     NullBox,
+    Object,
     Promise,
     Record,
     Result,
