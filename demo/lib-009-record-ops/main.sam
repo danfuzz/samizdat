@@ -1,0 +1,80 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `Record` demo
+##
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+## Checks an expected result.
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
+        {
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+
+##
+## Main demos
+##
+
+note("Records");
+
+expectEq("eq 1", @eek{x: 10}, @(@eek){x: 10});
+expectEq("eq 2", @eek{x: 10}, @eek{x: (5).add(5)});
+expectEq("eq 3", @eek{x: 10}, @(cast(Symbol, "eek")){x: 10});
+
+expectNe("ne 1", @x{}, @x{a: 1});
+expectNe("ne 2", @x{a: 1}, @x{a: 2});
+expectNe("ne 3", @x{a: 1}, @y{a: 1});
+
+expectEq("get_name", @blort, @blort{}.get_name());
+
+expectEq("get_data", @{a: 1}, @blort{a: 1}.get_data());
+
+note("All good.");

@@ -1,0 +1,82 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `Symbol` demo
+##
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+## Checks an expected result.
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
+        {
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+
+##
+## Main demos
+##
+
+note("Symbols");
+
+expectEq("eq 1", @boo, @boo);
+expectEq("eq 2", @boo, @"boo");
+
+expectNe("ne", @boo, @foo);
+
+expectEq("cat 1", @fooboo, @fooboo.cat());
+expectEq("cat 2", @fooboo, @foo.cat(@boo));
+expectEq("cat 3", @fooboo, @foo.cat(@b, @oo));
+
+expectEq("isInterned 1", @foo, @foo.isInterned());
+expectVoid("isInterned 2", { @foo.toUnlisted().isInterned() });
+
+expectNe("toUnlisted", @foo.toUnlisted(), @foo.toUnlisted());
+
+note("All good.");

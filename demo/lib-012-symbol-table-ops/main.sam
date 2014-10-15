@@ -1,0 +1,83 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `SymbolTable` demo
+##
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+## Checks an expected result.
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
+        {
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+
+##
+## Main demos
+##
+
+note("SymbolTables");
+
+expectEq("eq 1", @{}, @{});
+expectEq("eq 2", @{blort: "splort"}, @{@blort: "splort"});
+
+expectNe("ne 1", @{blort: "splort"}, @{blort: "zlort"});
+expectNe("ne 2", @{blort: "splort"}, @{zlort: "splort"});
+
+expectEq("interpolate 1", @{x: 10}, @{@{x: 10}*});
+expectEq("interpolate 2", @{x: 10, y: 20}, @{y: 20, @{x: 10}*});
+
+expectEq("put 1", @{x: 10, y: 20}, @{x: 10}.put(@y, 20));
+expectEq("put 2", @{x: 10, y: 20}, @{x: 10, y: 10}.put(@y, 20));
+
+expectEq("del 1", @{x: 10}, @{x: 10}.del(@y));
+expectEq("del 2", @{x: 10}, @{x: 10, y: 20}.del(@y));
+
+note("All good.");

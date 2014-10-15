@@ -38,6 +38,26 @@ fn expectVoid(name, func) {
         }
 };
 
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
 
 ##
 ## Main demos
@@ -46,6 +66,16 @@ fn expectVoid(name, func) {
 note("Strings");
 
 note($Format::source("This is a string.\n"));
+
+expectEq("eq 1", "", "");
+expectEq("eq 2", "x", "x");
+expectEq("eq 3", "blort", "blort");
+expectEq("eq 4", "blort-fizmo-igram", "blort".cat("-fizmo", "-igram"));
+expectEq("eq 5", "z", "frotz".nth(4));
+
+expectNe("ne 1", "blort", "Blort");
+expectNe("ne 2", "blort", "blort ");
+expectNe("ne 3", "blort", "blort\0");
 
 expect("cat 1", "blort", { "blort".cat() });
 expect("cat 2", "blort", { "blort".cat("") });

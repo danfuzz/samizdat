@@ -1,0 +1,56 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `Class` demo
+##
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+## Checks an expected result.
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
+        {
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
+        }
+};
+
+
+##
+## Main demos
+##
+
+note("Classes");
+
+expect("eq 1", Value, { eq(Value, Value) });
+
+expect("get_name 1", @Value,  { Value.get_name() });
+expect("get_name 2", @String, { String.get_name() });
+
+expectVoid("get_parent 1", { Value.get_parent() });
+expect("get_parent 2", Core, { String.get_parent() });
+
+note("All good.");
