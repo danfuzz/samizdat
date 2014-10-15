@@ -328,15 +328,10 @@ the regular function statement syntax (as described above). The one notable
 difference is that the variable `this` is bound in the body of the method.
 
 The `access: SECRET` line is used to define the (effectively private)
-method used to get at instance state. `SECRET` must be a symbol and is
-usually an unlisted symbol, which can be created along the lines of:
+methods used to construct an instance and get at instance state. `SECRET`
+must be a symbol and is usually an unlisted symbol, which can be created
+along the lines of:
 
 ```
 def SECRET = @secret.toUnlisted();
-```
-
-The same secret is used when constructing instances of classes:
-
-```
-def anInstance = makeObject(NameOfClass, SECRET, @{...});
 ```
