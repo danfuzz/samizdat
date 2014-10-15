@@ -44,7 +44,7 @@ class SerialGenerator
 
                 ifValue { firstGen.nextValue(box) }
                     { nextGenerator ->
-                        makeObject(SerialGenerator, SECRET,
+                        SECRET(SerialGenerator,
                             @{generators: [nextGenerator, moreGens*]})
                     }
                     {
@@ -71,5 +71,5 @@ export fn makeSerialGenerator(generators*) {
     ifIs { eq(generators.get_size(), 1) }
         { return generators* };
 
-    return makeObject(SerialGenerator, SECRET, @{generators})
+    return SECRET(SerialGenerator, @{generators})
 };

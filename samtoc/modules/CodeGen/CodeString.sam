@@ -39,7 +39,7 @@ class CodeString
 ##
 
 export fn genCodeString(text) {
-    return makeObject(CodeString, SECRET, @{text});
+    return SECRET(CodeString, @{text});
 };
 
 ## Fixes a tree constructor argument, so that strings (per se) are

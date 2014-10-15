@@ -32,7 +32,6 @@ def NAMES = [
     @loadResource,
     @loop,
     @lt,
-    @makeObjectClass,
     @maybeValue,
     @ne,
     @perGe,

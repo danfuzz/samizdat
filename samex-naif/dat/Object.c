@@ -29,61 +29,28 @@ static ObjectInfo *getInfo(zvalue obj) {
 }
 
 /**
- * Method to get the given object's data payload. This is the function
- * that's bound as the instance method for the `secret` symbol. It's not
- * bound directly on `Object` so as to provide data encapsulation.
+ * Method to construct an instance. This is the function that's bound as the
+ * class method for the `secret` symbol.
  */
-METH_IMPL_0(Object, privateDataOf) {
-    return getInfo(ths)->data;
-}
-
-
-//
-// Exported Definitions
-//
-
-// Documented in header.
-zvalue makeObject(zvalue cls, zvalue secret, zvalue data) {
-    if (DAT_CONSTRUCTION_PARANOIA) {
-        assertValid(secret);
-        assertValidOrNull(data);
-    }
-
-    if (!classHasParent(cls, CLS_Object)) {
-        die("Attempt to call `makeObject` on an improper class.");
-    }
-
-    if (!classHasSecret(cls, secret)) {
-        die("Mismatched `secret` on call to `makeObject`.");
-    }
-
+CMETH_IMPL_0_1(Object, new, data) {
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
     } else {
         assertHasClass(data, CLS_SymbolTable);
     }
 
-    zvalue result = datAllocValue(cls, sizeof(ObjectInfo));
-    ObjectInfo *info = getInfo(result);
-    info->data = data;
+    zvalue result = datAllocValue(thsClass, sizeof(ObjectInfo));
 
+    getInfo(result)->data = data;
     return result;
 }
 
-// Documented in header.
-zvalue makeObjectClass(zvalue name, zvalue secret,
-        zvalue classMethods, zvalue instanceMethods) {
-    zvalue extraInstanceMethods = METH_TABLE(
-        secret, FUNC_VALUE(Object_privateDataOf));
-
-    if (instanceMethods == NULL) {
-        instanceMethods = extraInstanceMethods;
-    } else {
-        instanceMethods = cm_cat(instanceMethods, extraInstanceMethods);
-    }
-
-    return makeClass(name, CLS_Object, secret,
-        classMethods, instanceMethods);
+/**
+ * Method to get the given object's data payload. This is the function
+ * that's bound as the instance method for the `secret` symbol.
+ */
+METH_IMPL_0(Object, privateDataOf) {
+    return getInfo(ths)->data;
 }
 
 
@@ -92,14 +59,25 @@ zvalue makeObjectClass(zvalue name, zvalue secret,
 //
 
 // Documented in spec.
-FUNC_IMPL_2_3(Object_makeObject, cls, secret, data) {
-    return makeObject(cls, secret, data);
-}
-
-// Documented in spec.
-FUNC_IMPL_2_4(Object_makeObjectClass, name, secret,
+CMETH_IMPL_2_4(Object, subclass, name, secret,
         classMethods, instanceMethods) {
-    return makeObjectClass(name, secret, classMethods, instanceMethods);
+    if (thsClass != CLS_Object) {
+        die("Invalid parent class: %s", cm_debugString(thsClass));
+    }
+
+    zvalue extraInstanceMethods = METH_TABLE(
+        secret, FUNC_VALUE(Object_privateDataOf));
+    instanceMethods = (instanceMethods == NULL)
+        ? extraInstanceMethods
+        : cm_cat(instanceMethods, extraInstanceMethods);
+
+    zvalue extraClassMethods = METH_TABLE(
+        secret, FUNC_VALUE(class_Object_new));
+    classMethods = (classMethods == NULL)
+        ? extraClassMethods
+        : cm_cat(classMethods, extraClassMethods);
+
+    return makeClass(name, CLS_Object, secret, classMethods, instanceMethods);
 }
 
 // Documented in header.
@@ -117,20 +95,11 @@ MOD_INIT(Object) {
     // Note: This does *not* inherit from `Core`, as this class is the
     // base for all non-core classes.
     CLS_Object = makeCoreClass(SYM(Object), CLS_Value,
-        NULL,
+        METH_TABLE(
+            CMETH_BIND(Object, subclass)),
         METH_TABLE(
             METH_BIND(Object, gcMark)));
-
-    FUN_Object_makeObject = datImmortalize(FUNC_VALUE(Object_makeObject));
-    FUN_Object_makeObjectClass =
-        datImmortalize(FUNC_VALUE(Object_makeObjectClass));
 }
 
 // Documented in header.
 zvalue CLS_Object = NULL;
-
-// Documented in header.
-zvalue FUN_Object_makeObject = NULL;
-
-// Documented in header.
-zvalue FUN_Object_makeObjectClass = NULL;

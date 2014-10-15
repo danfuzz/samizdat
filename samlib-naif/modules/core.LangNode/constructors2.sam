@@ -235,7 +235,8 @@ export fn makeClassDef(name, attributes, methods) {
     def instanceMethodTable = makeCall(SYMS::new, LITS::SymbolTable,
         ([].cat(instanceMethods.valueList()*))*);
 
-    def call = makeCall(REFS::makeObjectClass,
+    def call = makeCall(SYMS::subclass,
+        LITS::Object,
         makeLiteral(name),
         access,
         LITS::EMPTY_SYMBOL_TABLE,  ## TODO: Class methods.

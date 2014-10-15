@@ -50,7 +50,7 @@ class FilterGenerator
                     ifValue { filterFunction(result*) }
                         { value ->
                             box* := value;
-                            return makeObject(FilterGenerator, SECRET,
+                            return SECRET(FilterGenerator,
                                 @{filterFunction, generator: nextGen})
                         }
                         {
@@ -75,7 +75,7 @@ class FilterGenerator
 
 ## Documented in spec.
 export fn makeFilterGenerator(filterFunction, generators*) {
-    return makeObject(FilterGenerator, SECRET,
+    return SECRET(FilterGenerator,
         @{
             filterFunction,
             generator: makeParaGenerator(generators*)

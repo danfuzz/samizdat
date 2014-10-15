@@ -59,8 +59,8 @@ class Comment
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        genWrapper(makeObject(Comment, SECRET, @{payload: fix(payload), text}))
+        genWrapper(SECRET(Comment, @{payload: fix(payload), text}))
     } else {
-        genWrapper(makeObject(Comment, SECRET, @{text}))
+        genWrapper(SECRET(Comment, @{text}))
     }
 };

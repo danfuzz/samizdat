@@ -47,6 +47,7 @@ def SPECIAL_VALUES = {
     (Metaclass):   "Metaclass",
     (Null):        "Null",
     (NullBox):     "NullBox",
+    (Object):      "Object",
     (Promise):     "Promise",
     (Record):      "Record",
     (Result):      "Result",

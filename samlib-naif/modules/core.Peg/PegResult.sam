@@ -34,7 +34,7 @@ class PegResult
 
 ## Documented in spec.
 export fn makeResult(value) {
-    return makeObject(PegResult, SECRET, @{value})
+    return SECRET(PegResult, @{value})
 };
 
 ## Documented in spec.

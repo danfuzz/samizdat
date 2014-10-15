@@ -47,5 +47,5 @@ class Return
 ##
 
 export fn genReturn(tree) {
-    return genWrapper(makeObject(Return, SECRET, @{tree: fix(tree)}))
+    return genWrapper(SECRET(Return, @{tree: fix(tree)}))
 };

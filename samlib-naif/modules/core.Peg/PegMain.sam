@@ -37,10 +37,10 @@ class PegMain
 
 ## Documented in spec.
 export fn makeMainChoice(rules*) {
-    return makeObject(PegMain, SECRET, @{rule: makeChoice(rules*)})
+    return SECRET(PegMain, @{rule: makeChoice(rules*)})
 };
 
 ## Documented in spec.
 export fn makeMainSequence(rules*) {
-    return makeObject(PegMain, SECRET, @{rule: makeSequence(rules*)})
+    return SECRET(PegMain, @{rule: makeSequence(rules*)})
 };

@@ -80,7 +80,7 @@ class InternalResolver
 ##
 
 export fn makeInternalResolver(path, nextResolver) {
-    return makeObject(InternalResolver, SECRET,
+    return SECRET(InternalResolver,
         @{
             cache: $cache::makeCache(),
             nextResolver,

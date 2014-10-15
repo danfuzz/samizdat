@@ -55,5 +55,5 @@ class OptGenerator
 
 ## Documented in spec.
 export fn makeOptGenerator(generator) {
-    return makeObject(OptGenerator, SECRET, @{generator})
+    return SECRET(OptGenerator, @{generator})
 };

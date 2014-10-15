@@ -43,5 +43,5 @@ class Statement
 ##
 
 export fn genStatement(tree) {
-    return genWrapper(makeObject(Statement, SECRET, @{tree: fix(tree)}))
+    return genWrapper(SECRET(Statement, @{tree: fix(tree)}))
 };

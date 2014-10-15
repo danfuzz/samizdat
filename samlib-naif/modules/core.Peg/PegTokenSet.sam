@@ -61,5 +61,5 @@ export fn makeTokenSet(names*) {
 
     def set = {names*: true};  ## A set-like map of all the token names.
 
-    return makeObject(PegTokenSet, SECRET, @{set})
+    return SECRET(PegTokenSet, @{set})
 };

@@ -34,5 +34,5 @@ class PegLookaheadSuccess
 
 ## Documented in spec.
 export fn makeLookaheadSuccess(rule) {
-    return makeObject(PegLookaheadSuccess, SECRET, @{rule})
+    return SECRET(PegLookaheadSuccess, @{rule})
 };

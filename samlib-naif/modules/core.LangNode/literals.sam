@@ -43,6 +43,7 @@ def SYMBOLS = [
     @sliceInclusive,
     @shr,
     @sub,
+    @subclass,
     @toLogic,
     @toUnlisted,
     @value,
@@ -64,6 +65,7 @@ def VALUES = {
     Bool,
     List,
     Map,
+    Object,
     Record,
     SymbolTable
 };

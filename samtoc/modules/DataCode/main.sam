@@ -29,6 +29,7 @@ def SPECIAL_VALUES = {
     (Metaclass):   genCodeString("CLS_Metaclass"),
     (Null):        genCodeString("CLS_Null"),
     (NullBox):     genCodeString("CLS_NullBox"),
+    (Object):      genCodeString("CLS_Object"),
     (Promise):     genCodeString("CLS_Promise"),
     (Record):      genCodeString("CLS_Record"),
     (Result):      genCodeString("CLS_Result"),

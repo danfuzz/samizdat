@@ -30,4 +30,4 @@ class NullResolver
 ## Exported Definitions
 ##
 
-export def nullResolver = makeObject(NullResolver, SECRET);
+export def nullResolver = SECRET(NullResolver);

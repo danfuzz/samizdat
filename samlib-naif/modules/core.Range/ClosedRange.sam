@@ -65,7 +65,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
         { die("`size` must be an int.") };
 
     return ifIs { gt(size, 0) }
-        { makeObject(ClosedRange, SECRET, @{firstValue, increment, size}) }
+        { SECRET(ClosedRange, @{firstValue, increment, size}) }
         { nullGenerator }
 };
 
