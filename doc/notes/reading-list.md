@@ -135,6 +135,8 @@ Topics
     <http://www.cs.tufts.edu/~nr/cs257/archive/luc-maranget/jun08.pdf>
   * Packrat parsing: Simple, Powerful, Lazy, Linear Time &mdash;
     <http://pdos.csail.mit.edu/~baford/packrat/icfp02/>
+  * Parsing With Derivatives (blog about the technique) &mdash;
+    <http://matt.might.net/articles/parsing-with-derivatives/>
   * Shunting-yard algorithm (operator-precedence parsing) &mdash;
     <http://en.wikipedia.org/wiki/Shunting-yard_algorithm>
 
