@@ -6,8 +6,16 @@ Object
 
 The class `Object` provides data and behavior encapsulation. Encapsulation
 is achieved by using a secret symbol (generally an unlisted symbol), which
-is required as an argument to `makeObject()` and which becomes a bound
-as a method to access a given class's private data.
+becomes bound as both a class and instance method:
+
+* As a class method, it is used to instantiate an object, taking a single
+  optional data payload argument, which must be a symbol table if present.
+  If not passed, the data of the constructed instance is `@{}` (the empty
+  symbol table).
+
+* As an instance method, it takes no arguments and returns the data
+  payload.
+
 
 <br><br>
 ### Class Method Definitions
@@ -29,15 +37,7 @@ results will be two *different* classes with the same `name`.
 <br><br>
 ### Primitive Definitions
 
-#### `makeObject(cls, secret, value?) -> object`
-
-Returns an object with the given class (a value of class `Class`)
-and optional data payload value (which must be a symbol table).
-If `value` is not specified, it defaults to `@{}` (the empty symbol table).
-
-It is a fatal error (terminating the runtime) to pass for `cls` something
-other than an object class, to pass a `secret` that doesn't match the
-secret of the given `cls`, or to pass a `value` that is not a symbol table.
+(none)
 
 
 <br><br>
