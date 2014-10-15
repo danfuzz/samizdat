@@ -66,23 +66,3 @@ expectCore(fn1);
 expectCore(fn2);
 
 
-## SymbolTable
-
-note("\nSymbol Tables");
-
-expectSame(@{}, @{});
-expectSame(@{blort: "splort"}, @{@blort: "splort"});
-expectDifferent(@{blort: "splort"}, @{blort: "zlort"});
-expectDifferent(@{blort: "splort"}, @{zlort: "splort"});
-
-expectSame(@{x: 10}, @{@{x: 10}*});
-expectSame(@{x: 10, y: 20}, @{y: 20, @{x: 10}*});
-expectSame(@{x: 10, y: 20}, @{x: 10}.put(@y, 20));
-expectSame(@{x: 10, y: 20}, @{x: 10, y: 10}.put(@y, 20));
-
-expectSame(@{x: 10}, @{x: 10}.del(@y));
-expectSame(@{x: 10}, @{x: 10, y: 20}.del(@y));
-
-expectCore(@{});
-expectCore(@{blort: "splort"});
-
