@@ -49,5 +49,5 @@ class Assign
 
 export fn genAssign(target, value) {
     return genWrapper(
-        makeObject(Assign, SECRET, @{target: fix(target), value: fix(value)}))
+        SECRET(Assign, @{target: fix(target), value: fix(value)}))
 };
