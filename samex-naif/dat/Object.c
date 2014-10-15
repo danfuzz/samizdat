@@ -102,6 +102,16 @@ FUNC_IMPL_2_4(Object_makeObjectClass, name, secret,
     return makeObjectClass(name, secret, classMethods, instanceMethods);
 }
 
+// Documented in spec.
+CMETH_IMPL_2_4(Object, subclass, name, secret,
+        classMethods, instanceMethods) {
+    if (thsClass != CLS_Object) {
+        die("Invalid parent class: %s", cm_debugString(thsClass));
+    }
+
+    return makeObjectClass(name, secret, classMethods, instanceMethods);
+}
+
 // Documented in header.
 METH_IMPL_0(Object, gcMark) {
     ObjectInfo *info = getInfo(ths);
@@ -117,7 +127,8 @@ MOD_INIT(Object) {
     // Note: This does *not* inherit from `Core`, as this class is the
     // base for all non-core classes.
     CLS_Object = makeCoreClass(SYM(Object), CLS_Value,
-        NULL,
+        METH_TABLE(
+            CMETH_BIND(Object, subclass)),
         METH_TABLE(
             METH_BIND(Object, gcMark)));
 
