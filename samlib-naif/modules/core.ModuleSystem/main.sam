@@ -310,7 +310,7 @@ class NullLoader
 };
 
 ## The one instance of the class.
-def nullLoader = makeObject(NullLoader, SECRET);
+def nullLoader = SECRET(NullLoader);
 
 ## Helper to "massage" `null` into `nullLoader` and pass everything
 ## else through as-is.
@@ -392,9 +392,8 @@ export fn makeExternalLoader(path, globals, nextLoader) {
     ifNot { eq(pathType, @directory) }
         { die("Module loader path exists but is not a directory: ", path) };
 
-    return makeObject(
+    return SECRET(
         ExternalLoader,
-        SECRET,
         @{
             basePath: path.cat("/"),
             globals,
@@ -530,9 +529,8 @@ export fn makeInternalLoader(path, globals, nextLoader) {
         thisLoader:   glo_thisLoader
     };
 
-    loader := makeObject(
+    loader := SECRET(
         InternalLoader,
-        SECRET,
         @{
             basePath,
             globals:    fullGlobals,

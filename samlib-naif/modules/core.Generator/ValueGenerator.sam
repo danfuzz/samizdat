@@ -48,5 +48,5 @@ class ValueGenerator
 
 ## Documented in spec.
 export fn makeValueGenerator(value) {
-    return makeObject(ValueGenerator, SECRET, @{value})
+    return SECRET(ValueGenerator, @{value})
 };

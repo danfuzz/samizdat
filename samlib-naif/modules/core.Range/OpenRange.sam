@@ -55,5 +55,5 @@ class OpenRange
 export fn makeOpenRange(firstValue, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    return makeObject(OpenRange, SECRET, @{firstValue, increment})
+    return SECRET(OpenRange, @{firstValue, increment})
 };

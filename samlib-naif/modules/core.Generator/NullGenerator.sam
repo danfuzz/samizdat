@@ -40,4 +40,4 @@ class NullGenerator
 ##
 
 ## Documented in spec.
-export def nullGenerator = makeObject(NullGenerator, SECRET);
+export def nullGenerator = SECRET(NullGenerator);
