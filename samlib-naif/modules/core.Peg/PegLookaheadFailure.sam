@@ -51,6 +51,6 @@ export fn makeLookaheadFailure(rule) {
         { return fail };
 
     ## The general case.
-    return makeObject(PegLookaheadFailure, SECRET, @{rule})
+    return SECRET(PegLookaheadFailure, @{rule})
 };
 

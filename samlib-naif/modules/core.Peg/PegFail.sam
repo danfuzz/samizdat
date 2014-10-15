@@ -30,4 +30,4 @@ class PegFail
 ##
 
 ## Documented in spec.
-export def fail = makeObject(PegFail, SECRET);
+export def fail = SECRET(PegFail);

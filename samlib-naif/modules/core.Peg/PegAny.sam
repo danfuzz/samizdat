@@ -30,4 +30,4 @@ class PegAny
 ##
 
 ## Documented in spec.
-export def any = makeObject(PegAny, SECRET);
+export def any = SECRET(PegAny);

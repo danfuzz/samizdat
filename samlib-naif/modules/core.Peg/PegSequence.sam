@@ -67,5 +67,5 @@ export fn makeSequence(rules*) {
         { return rules* };
 
     ## The general case.
-    return makeObject(PegSequence, SECRET, @{rules})
+    return SECRET(PegSequence, @{rules})
 };

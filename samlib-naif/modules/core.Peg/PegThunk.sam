@@ -34,7 +34,7 @@ class PegThunk
 
 ## Documented in spec.
 export fn makeParserThunk(function) {
-    return makeObject(PegThunk, SECRET, @{function})
+    return SECRET(PegThunk, @{function})
 };
 
 

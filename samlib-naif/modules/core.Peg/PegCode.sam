@@ -37,6 +37,6 @@ class PegCode
 
 ## Documented in spec.
 export fn makeCode(function) {
-    return makeObject(PegCode, SECRET, @{function})
+    return SECRET(PegCode, @{function})
 };
 

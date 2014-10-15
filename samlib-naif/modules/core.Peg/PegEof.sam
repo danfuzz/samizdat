@@ -34,4 +34,4 @@ class PegEof
 ##
 
 ## Documented in spec.
-export def eof = makeObject(PegEof, SECRET);
+export def eof = SECRET(PegEof);

@@ -74,5 +74,5 @@ class PegRepeat
 export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
     def minSize = ifValueOr { optMinSize* } { 0 };
     def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
-    return makeObject(PegRepeat, SECRET, @{maxMap*, minSize, rule})
+    return SECRET(PegRepeat, @{maxMap*, minSize, rule})
 };
