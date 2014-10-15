@@ -38,6 +38,26 @@ fn expectVoid(name, func) {
         }
 };
 
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
 
 ##
 ## Main demos
@@ -45,7 +65,16 @@ fn expectVoid(name, func) {
 
 note("Ints");
 
-## TODO: Stuff!
-note("TODO!");
+expectEq("eq 1", 0, 0);
+expectEq("eq 2", 100, 100);
+expectEq("eq 3", -1000, -1000);
+expectEq("eq 4", 12345678, 12345678);
+expectEq("eq 5", 0, -0);
+
+expectNe("ne 1", 0, 1);
+expectNe("ne 2", 99998888, -99998888);
+
+expectEq("add 1", 11, (1).add(10));
+expectEq("add 2", 99998888, (99998880).add(8));
 
 note("All good.");

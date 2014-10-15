@@ -47,6 +47,11 @@ note("Booleans");
 note($Format::source(false));
 note($Format::source(true));
 
+expect("eq 1", true, { eq(true, true) });
+expect("eq 2", false, { eq(false, false) });
+expectVoid("eq 3", { eq(true, false) });
+expectVoid("eq 4", { eq(false, true) });
+
 expect("and 1", false, { false.and(false) });
 expect("and 2", false, { false.and(true) });
 expect("and 3", false, { true.and(false) });

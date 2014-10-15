@@ -45,7 +45,12 @@ fn expectVoid(name, func) {
 
 note("Classes");
 
-## TODO: Stuff!
-note("TODO!");
+expect("eq 1", Value, { eq(Value, Value) });
+
+expect("get_name 1", @Value,  { Value.get_name() });
+expect("get_name 2", @String, { String.get_name() });
+
+expectVoid("get_parent 1", { Value.get_parent() });
+expect("get_parent 2", Core, { String.get_parent() });
 
 note("All good.");

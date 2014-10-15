@@ -38,6 +38,26 @@ fn expectVoid(name, func) {
         }
 };
 
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
 
 ##
 ## Main demos
@@ -45,7 +65,18 @@ fn expectVoid(name, func) {
 
 note("Lists");
 
-## TODO: Stuff!
-note("TODO!");
+expectEq("eq 1", [], []);
+expectEq("eq 2", [0], [0]);
+expectEq("eq 3", [[]], [[]]);
+expectEq("eq 4", [0, 0, 0], [0, 0, 0]);
+expectEq("eq 5", [[]*, 1], [1]);
+expectEq("eq 6", [1, 2, [3, 4]*], [1, [2, 3]*, 4]);
+
+expectNe("ne 1", [], [[]]);
+expectNe("ne 2", [1], [2]);
+
+expectEq("cat", [9, 8, 7, 6, 5, 4], [9, 8, 7].cat([6, 5, 4]));
+
+expectEq("sliceInclusive", [], [1].sliceInclusive(1));
 
 note("All good.");

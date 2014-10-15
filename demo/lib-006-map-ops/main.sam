@@ -38,6 +38,26 @@ fn expectVoid(name, func) {
         }
 };
 
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
 
 ##
 ## Main demos
@@ -45,7 +65,28 @@ fn expectVoid(name, func) {
 
 note("Maps");
 
-## TODO: Stuff!
-note("TODO!");
+expectEq("eq 1", {}, {});
+expectEq("eq 2", {a: 10}, {a: 10});
+expectEq("eq 3", {a: 10}, {@a: 10});
+expectEq("eq 4", {{}: {}}, {{}: {}});
+expectEq("eq 5", {x: 5, y: 7}, {y: 7, x: 5});
+expectEq("eq 6", {[@x, @y, @z]*: "blort"}, {x: "blort", y: "blort", z: "blort"});
+expectEq("eq 7", {{a: 1}*, b: 2}, {a: 1, b: 2});
+
+expectNe("ne 1", {[@x]: "blort"}, {x: "blort"});
+
+## The first map's keys are strings in the following.
+expectNe("ne 2", {null: 1}, {(null): 1});
+expectNe("ne 3", {true: 1}, {(true): 1});
+expectNe("ne 4", {false: 1}, {(false): 1});
+
+expectEq("cat", {10: 1, 20: 2, 30: 3}, {10: 1}.cat({30: 3}, {20: 2}));
+
+expectEq("nthMapping", {a: 10}, {a: 10, b: 20}.nthMapping(0));
+
+## Symbol table conversion.
+expectEq("symtab 1", {},             {}.cat(@{}));
+expectEq("symtab 2", {a: 10},        {}.cat(@{a: 10}));
+expectEq("symtab 3", {a: 10, b: 20}, {b: 20}.cat(@{a: 10}));
 
 note("All good.");
