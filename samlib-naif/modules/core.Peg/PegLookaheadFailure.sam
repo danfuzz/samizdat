@@ -19,14 +19,16 @@ import ./PegResult :: empty;
 ##
 ## Payload: {rule: rule}
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class PegLookaheadFailure
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? ifNot { data::rule.parse(nullBox, input, items*) }
             {
                 box* := null;
@@ -51,6 +53,6 @@ export fn makeLookaheadFailure(rule) {
         { return fail };
 
     ## The general case.
-    return SECRET(PegLookaheadFailure, @{rule})
+    return NEW(PegLookaheadFailure, @{rule})
 };
 

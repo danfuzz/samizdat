@@ -18,14 +18,16 @@ import ./PegFail :: fail;
 ##
 ## Payload: {rules: [rule*]}
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class PegChoice
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         filterPump(data::rules) { rule ->
             ifValue { rule.parse(box, input, items*) }
                 { newInput -> return newInput }
@@ -52,6 +54,6 @@ export fn makeChoice(rules*) {
         { return rules* };
 
     ## The general case.
-    return SECRET(PegChoice, @{rules})
+    return NEW(PegChoice, @{rules})
 };
 
