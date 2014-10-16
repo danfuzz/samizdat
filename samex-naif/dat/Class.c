@@ -94,8 +94,7 @@ static void assertIsClass(zvalue value) {
  * `NULL` means that the resulting classes will need to have more complete
  * initialization performed on them more "manually."
  */
-static zvalue makeClassPair(zvalue name, zvalue parent, zvalue secret,
-        bool isCore) {
+static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
     if (CLS_Symbol != NULL) {
         if (name == NULL) {
             die("Improper argument to `makeClassPair()`: null `name`");
@@ -271,11 +270,11 @@ bool haveSameClass(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
+zvalue makeClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
     assertIsClass(parent);
 
-    zvalue result = makeClassPair(name, parent, secret, false);
+    zvalue result = makeClassPair(name, parent, false);
     classBindMethods(result, classMethods, instanceMethods);
 
     return result;
@@ -286,7 +285,7 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
     assertIsClass(parent);
 
-    zvalue result = makeClassPair(name, parent, NULL, true);
+    zvalue result = makeClassPair(name, parent, true);
     classBindMethods(result, classMethods, instanceMethods);
 
     return result;
@@ -441,17 +440,17 @@ MOD_INIT(objectModel) {
     // `Class`, and the latter doesn't yet exist. The immediately-following
     // `cls` assignment is to set up the required circular is-a relationship
     // between `Metaclass` and its metaclass.
-    CLS_Metaclass = makeClassPair(NULL, NULL, NULL, true);
+    CLS_Metaclass = makeClassPair(NULL, NULL, true);
     CLS_Metaclass->cls->cls = CLS_Metaclass;
 
     // Similarly, `NULL` for `parent` here, because the superclass of `Class`
     // is `Value`.
-    CLS_Class = makeClassPair(NULL, NULL, NULL, true);
+    CLS_Class = makeClassPair(NULL, NULL, true);
 
     // `NULL` for `parent` here, because `Value` per se has no superclass.
     // However, `Value`'s metaclass *does* have a superclass, `Class`, so
     // we assign it explicitly, immediately below.
-    CLS_Value = makeClassPair(NULL, NULL, NULL, true);
+    CLS_Value = makeClassPair(NULL, NULL, true);
 
     // Finally, set up the missing the heritage relationships.
     getInfo(CLS_Value->cls)->parent = CLS_Class;
@@ -465,8 +464,8 @@ MOD_INIT(objectModel) {
     // classes to have `name`s.
 
     // Construct these with `NULL` `name` initially.
-    CLS_Core   = makeClassPair(NULL, CLS_Value, NULL, true);
-    CLS_Symbol = makeClassPair(NULL, CLS_Core,  NULL, true);
+    CLS_Core   = makeClassPair(NULL, CLS_Value, true);
+    CLS_Symbol = makeClassPair(NULL, CLS_Core,  true);
 
     // With `Symbol` barely initialized, it's now possible to make the
     // interned instances as needed by the rest of the core.
@@ -482,8 +481,8 @@ MOD_INIT(objectModel) {
     // Finally, construct the classes that are required in order for
     // methods to be bound to classes.
 
-    CLS_SymbolTable = makeClassPair(SYM(SymbolTable), CLS_Core, NULL, true);
-    CLS_Builtin     = makeClassPair(SYM(Builtin),     CLS_Core, NULL, true);
+    CLS_SymbolTable = makeClassPair(SYM(SymbolTable), CLS_Core, true);
+    CLS_Builtin     = makeClassPair(SYM(Builtin),     CLS_Core, true);
 
     // At this point, all of the "corest" classes exist but have no bound
     // methods. Their methods get bound by the following calls. The order of

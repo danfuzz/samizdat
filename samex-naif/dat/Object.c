@@ -77,7 +77,7 @@ CMETH_IMPL_2_4(Object, subclass, name, secret,
         ? extraClassMethods
         : cm_cat(classMethods, extraClassMethods);
 
-    return makeClass(name, CLS_Object, secret, classMethods, instanceMethods);
+    return makeClass(name, CLS_Object, classMethods, instanceMethods);
 }
 
 // Documented in header.

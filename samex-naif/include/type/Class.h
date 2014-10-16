@@ -47,17 +47,16 @@ bool haveSameClass(zvalue value, zvalue other);
 
 /**
  * Makes a new class. `name` is the class's name (a symbol or a string).
- * `parent` is its superclass. `secret` is the construction and access secret
- * (an arbitrary value). The two method table arguments must be
+ * `parent` is its superclass. The two method table arguments must be
  * `SymbolTable`s or `NULL`. `NULL` is treated as `@{}` (the empty symbol
  * table).
  */
-zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
+zvalue makeClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods);
 
 /**
  * Makes a new core class. This is just like `makeClass`, except that the
- * predefined core class secret is used.
+ * result is designated as a "core" class.
  */
 zvalue makeCoreClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods);
