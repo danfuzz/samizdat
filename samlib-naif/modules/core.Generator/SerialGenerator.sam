@@ -16,11 +16,13 @@ import ./NullGenerator :: nullGenerator;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class SerialGenerator
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -35,7 +37,7 @@ class SerialGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def subGens = data::generators;
 
         return? ifValue { subGens.nth(0) }
@@ -44,7 +46,7 @@ class SerialGenerator
 
                 ifValue { firstGen.nextValue(box) }
                     { nextGenerator ->
-                        SECRET(SerialGenerator,
+                        NEW(SerialGenerator,
                             @{generators: [nextGenerator, moreGens*]})
                     }
                     {
@@ -71,5 +73,5 @@ export fn makeSerialGenerator(generators*) {
     ifIs { eq(generators.get_size(), 1) }
         { return generators* };
 
-    return SECRET(SerialGenerator, @{generators})
+    return NEW(SerialGenerator, @{generators})
 };

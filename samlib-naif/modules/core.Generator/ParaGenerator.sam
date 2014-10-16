@@ -17,11 +17,13 @@ import ./NullGenerator :: nullGenerator;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class ParaGenerator
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -36,7 +38,7 @@ class ParaGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def subGens = data::generators;
 
         ifIs { eq(subGens, []) }
@@ -57,7 +59,7 @@ class ParaGenerator
         def nexts = generatorCalls.collect({ one -> one.nth(1) });
 
         box* := yields;
-        return SECRET(ParaGenerator, @{generators: nexts})
+        return NEW(ParaGenerator, @{generators: nexts})
     };
 };
 
@@ -77,5 +79,5 @@ export fn makeParaGenerator(generators*) {
     ifIs { eq(generators.get_size(), 1) }
         { return makeListWrapGenerator(generators*) };
 
-    return SECRET(ParaGenerator, @{generators})
+    return NEW(ParaGenerator, @{generators})
 };

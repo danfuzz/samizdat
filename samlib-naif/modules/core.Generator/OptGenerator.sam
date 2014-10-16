@@ -17,11 +17,13 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class OptGenerator
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         ## It is an "unbounded collect" error to call this.
@@ -36,7 +38,7 @@ class OptGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def result;
 
         return ifValue { data::generator.nextValue(var result) }
@@ -55,5 +57,5 @@ class OptGenerator
 
 ## Documented in spec.
 export fn makeOptGenerator(generator) {
-    return SECRET(OptGenerator, @{generator})
+    return NEW(OptGenerator, @{generator})
 };
