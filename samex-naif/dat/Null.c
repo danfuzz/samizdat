@@ -33,7 +33,7 @@ METH_IMPL_1(Null, totalEq, other) {
 METH_IMPL_1(Null, totalOrder, other) {
     // Note: `other` not guaranteed to be `null`.
     if (ths == other) {
-        return INT_0;
+        return SYM(same);
     } else {
         die("`totalOrder` called with incompatible arguments.");
     }

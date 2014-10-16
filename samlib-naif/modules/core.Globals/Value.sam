@@ -15,25 +15,25 @@
 
 ## Documented in spec.
 export fn ge(value, other) {
-    return? ifNot { order(value, other).perEq(-1) }
+    return? ifNot { order(value, other).perEq(@less) }
         { value }
 };
 
 ## Documented in spec.
 export fn gt(value, other) {
-    return? ifIs { order(value, other).perEq(1) }
+    return? ifIs { order(value, other).perEq(@more) }
         { value }
 };
 
 ## Documented in spec.
 export fn le(value, other) {
-    return? ifNot { order(value, other).perEq(1) }
+    return? ifNot { order(value, other).perEq(@more) }
         { value }
 };
 
 ## Documented in spec.
 export fn lt(value, other) {
-    return? ifIs { order(value, other).perEq(-1) }
+    return? ifIs { order(value, other).perEq(@less) }
         { value }
 };
 
@@ -45,25 +45,25 @@ export fn ne(value, other) {
 
 ## Documented in spec.
 export fn perGe(value, other) {
-    return? ifNot { value.perOrder(other).perEq(-1) }
+    return? ifNot { value.perOrder(other).perEq(@less) }
         { value }
 };
 
 ## Documented in spec.
 export fn perGt(value, other) {
-    return? ifIs { value.perOrder(other).perEq(1) }
+    return? ifIs { value.perOrder(other).perEq(@more) }
         { value }
 };
 
 ## Documented in spec.
 export fn perLe(value, other) {
-    return? ifNot { value.perOrder(other).perEq(1) }
+    return? ifNot { value.perOrder(other).perEq(@more) }
         { value }
 };
 
 ## Documented in spec.
 export fn perLt(value, other) {
-    return? ifIs { value.perOrder(other).perEq(-1) }
+    return? ifIs { value.perOrder(other).perEq(@less) }
         { value }
 };
 
@@ -75,25 +75,25 @@ export fn perNe(value, other) {
 
 ## Documented in spec.
 export fn totalGe(value, other) {
-    return? ifNot { value.totalOrder(other).perEq(-1) }
+    return? ifNot { value.totalOrder(other).perEq(@less) }
         { value }
 };
 
 ## Documented in spec.
 export fn totalGt(value, other) {
-    return? ifIs { value.totalOrder(other).perEq(1) }
+    return? ifIs { value.totalOrder(other).perEq(@more) }
         { value }
 };
 
 ## Documented in spec.
 export fn totalLe(value, other) {
-    return? ifNot { value.totalOrder(other).perEq(1) }
+    return? ifNot { value.totalOrder(other).perEq(@more) }
         { value }
 };
 
 ## Documented in spec.
 export fn totalLt(value, other) {
-    return? ifIs { value.totalOrder(other).perEq(-1) }
+    return? ifIs { value.totalOrder(other).perEq(@less) }
         { value }
 };
 

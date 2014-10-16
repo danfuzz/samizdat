@@ -561,24 +561,24 @@ METH_IMPL_1(Map, totalOrder, other) {
     for (zint i = 0; i < size; i++) {
         zorder result = cm_order(e1[i].key, e2[i].key);
         if (result != ZSAME) {
-            return intFromZint(result);
+            return symbolFromZorder(result);
         }
     }
 
     if (size1 < size2) {
-        return INT_NEG1;
+        return SYM(less);
     } else if (size1 > size2) {
-        return INT_1;
+        return SYM(more);
     }
 
     for (zint i = 0; i < size; i++) {
         zorder result = cm_order(e1[i].value, e2[i].value);
         if (result != ZSAME) {
-            return intFromZint(result);
+            return symbolFromZorder(result);
         }
     }
 
-    return INT_0;
+    return SYM(same);
 }
 
 // Documented in spec.

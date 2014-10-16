@@ -150,11 +150,11 @@ METH_IMPL_1(Int, totalOrder, other) {
     zint int2 = zintFromInt(other);  // Note: not guaranteed to be an `Int`.
 
     if (int1 < int2) {
-        return INT_NEG1;
+        return SYM(less);
     } else if (int1 > int2) {
-        return INT_1;
+        return SYM(more);
     } else {
-        return INT_0;
+        return SYM(same);
     }
 }
 

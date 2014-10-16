@@ -353,40 +353,37 @@ METH_IMPL_0(Class, get_parent) {
 METH_IMPL_1(Class, perOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
-        return INT_0;
+        return SYM(same);
     }
 
     assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
     ClassInfo *info1 = getInfo(ths);
     ClassInfo *info2 = getInfo(other);
-    zvalue name1 = info1->name;
-    zvalue name2 = info2->name;
     bool core1 = isCoreClass(info1);
     bool core2 = isCoreClass(info2);
 
     // Compare categories for major order.
 
     if (core1 && !core2) {
-        return INT_NEG1;
+        return SYM(less);
     } else if ((!core1) && core2) {
-        return INT_1;
+        return SYM(more);
     }
 
     // Compare names for minor order.
 
-    zorder nameOrder = cm_order(name1, name2);
-    if (nameOrder != ZSAME) {
-        return intFromZint(nameOrder);
+    switch (cm_order(info1->name, info2->name)) {
+        case ZLESS: { return SYM(less); }
+        case ZMORE: { return SYM(more); }
+        case ZSAME: {
+            // Names are the same. The order is not defined given two
+            // different non-core classes.
+            if (core1 || core2) {
+                die("Shouldn't happen: Same-name-but-different core classes.");
+            }
+            return NULL;
+        }
     }
-
-    // Names are the same. The order is not defined given two different
-    // non-core classes.
-
-    if (core1 || core2) {
-        die("Shouldn't happen: Same-name-but-different core classes.");
-    }
-
-    return NULL;
 }
 
 // Documented in spec.
@@ -399,7 +396,7 @@ METH_IMPL_1(Class, totalEq, other) {
 METH_IMPL_1(Class, totalOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
-        return INT_0;
+        return SYM(same);
     }
 
     if (!haveSameClass(ths, other)) {
@@ -413,11 +410,12 @@ METH_IMPL_1(Class, totalOrder, other) {
     // Sort by name, treating same-name as unordered (but not an error).
     ClassInfo *info1 = getInfo(ths);
     ClassInfo *info2 = getInfo(other);
-    zvalue name1 = info1->name;
-    zvalue name2 = info2->name;
-    zorder nameOrder = cm_order(name1, name2);
 
-    return (nameOrder == ZSAME) ? NULL : intFromZint(nameOrder);
+    switch (cm_order(info1->name, info2->name)) {
+        case ZLESS: { return SYM(less); }
+        case ZMORE: { return SYM(more); }
+        case ZSAME: { return NULL;      }
+    }
 }
 
 /**

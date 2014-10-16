@@ -337,15 +337,15 @@ METH_IMPL_1(List, totalOrder, other) {
     for (zint i = 0; i < size; i++) {
         zorder result = cm_order(e1[i], e2[i]);
         if (result != ZSAME) {
-            return intFromZint(result);
+            return symbolFromZorder(result);
         }
     }
 
     if (size1 == size2) {
-        return INT_0;
+        return SYM(same);
     }
 
-    return (size1 < size2) ? INT_NEG1 : INT_1;
+    return (size1 < size2) ? SYM(less): SYM(more);
 }
 
 // Documented in spec.

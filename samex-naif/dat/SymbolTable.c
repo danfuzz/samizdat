@@ -371,7 +371,7 @@ METH_IMPL_1(SymbolTable, totalEq, other) {
 // Documented in spec.
 METH_IMPL_1(SymbolTable, totalOrder, other) {
     if (ths == other) {
-        return INT_0;
+        return SYM(same);
     }
 
     // Note: `other` not guaranteed to be a `SymbolTable`.
@@ -383,9 +383,9 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
     // Major order: Size.
 
     if (size < info2->size) {
-        return INT_NEG1;
+        return SYM(less);
     } else if (size > info2->size) {
-        return INT_1;
+        return SYM(more);
     }
 
     // Next order: sorted key lists. In this case, we take both arrays of
@@ -415,13 +415,13 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
         zvalue value2 = array2[i].value;
         zorder order = cm_order(value1, value2);
         if (order != ZSAME) {
-            return intFromZint(order);
+            return symbolFromZorder(order);
         }
     }
 
     // They're equal!
 
-    return INT_0;
+    return SYM(same);
 }
 
 // Documented in header.

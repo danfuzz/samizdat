@@ -190,11 +190,11 @@ METH_IMPL_1(Bool, totalOrder, other) {
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
 
     if (bool1 == bool2) {
-        return INT_0;
+        return SYM(same);
     } else if (bool1) {
-        return INT_1;
+        return SYM(more);
     } else {
-        return INT_NEG1;
+        return SYM(less);
     }
 }
 
