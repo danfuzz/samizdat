@@ -116,14 +116,14 @@ function directly, so implementations must check to see if `other` has the
 same class as `this`. If a client calls with different-class values, it is a
 fatal error (terminating the runtime).
 
-The return value is one of `-1`, `0`, or `1` indicating how the two values
-sort with each other, using the reasonably standard meaning of those values:
+The return value is one of `@less`, `@same`, or `@more` indicating how the two
+values order with respect to each other:
 
-* `-1` &mdash; The first value orders before the second value.
+* `@less` &mdash; The first value orders before the second value.
 
-* `0` &mdash; The two values are identical.
+* `@same` &mdash; The two values are identical in terms of ordering.
 
-* `1` &mdash; The first value orders after the second value.
+* `@more` &mdash; The first value orders after the second value.
 
 If two values have no defined order, this returns void.
 
@@ -131,7 +131,7 @@ Each class specifies its own total-order ordering. See specific classes for
 details.
 
 The default implementation of this method uses `eq()` to check for sameness.
-It returns `0` if it sameness and returns void if not.
+It returns `@same` if `eq()` returns non-void, or void if not.
 
 **Note:** This is the method which underlies the implementation
 of all cross-class ordering functions.
@@ -187,8 +187,9 @@ If not, this function returns void.
 
 Returns the order of the two given values, using the total order of values.
 
-The return value is one of `-1 0 1` indicating how the two values sort with
-each other, just like `perOrder` and `totalOrder`.
+The return value is one of `@less` `@same` `@more` indicating how the two
+values order with respect to each other, just like `perOrder` and
+`totalOrder`.
 
 This function works by calling `perOrder` on the classes of the two arguments
 if they are different, or by calling `totalOrder` on the arguments themselves
