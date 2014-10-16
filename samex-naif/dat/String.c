@@ -291,7 +291,7 @@ zstring zstringFromString(zvalue string) {
 
 // Documented in spec.
 CMETH_IMPL_1(String, castFrom, value) {
-    zvalue cls = get_class(value);
+    zvalue cls = classOf(value);
 
     if (valEq(cls, CLS_Int)) {
         zint n = zintFromInt(value);

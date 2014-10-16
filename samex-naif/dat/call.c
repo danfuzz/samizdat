@@ -50,7 +50,7 @@ static char *callReporter(void *state) {
         return utf8DupFromString(ensureString(name));
     }
 
-    char *clsString = cm_debugString(get_class(value));
+    char *clsString = cm_debugString(classOf(value));
     char *result;
 
     asprintf(&result, "anonymous %s", clsString);
@@ -64,7 +64,7 @@ static char *callReporter(void *state) {
  * nor debug and local frame setup/teardown.
  */
 static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
-    zvalue funCls = get_class(function);
+    zvalue funCls = classOf(function);
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or

@@ -140,6 +140,11 @@ of all cross-class ordering functions.
 <br><br>
 ### Primitive Definitions
 
+#### `classOf(value) -> class`
+
+Returns the class of the given arbitrary `value`. The return value is always
+of class `Class`.
+
 #### `cast(cls, value) -> .`
 
 "Hard" cast operation. This is like `optCast()`, except that this terminates
@@ -158,11 +163,6 @@ non-void return value of `totalEq` and always returns the given `value`
 argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
-
-#### `get_class(value) -> class`
-
-Returns the class of the given arbitrary `value`. The return value is always
-of class `Class`.
 
 #### `maybeCast(cls, value) -> . | void`
 

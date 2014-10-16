@@ -63,7 +63,7 @@ zbool zboolFromBool(zvalue boolval) {
 
 // Documented in spec.
 CMETH_IMPL_1(Bool, castFrom, value) {
-    zvalue cls = get_class(value);
+    zvalue cls = classOf(value);
 
     if (valEq(cls, CLS_Int)) {
         zint n = zintFromInt(value);

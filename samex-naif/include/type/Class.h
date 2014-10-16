@@ -40,7 +40,7 @@ bool classAccepts(zvalue cls, zvalue value);
 bool classHasParent(zvalue cls, zvalue parent);
 
 /**
- * Returns true iff the classes of the given values (that is, `get_class()` on
+ * Returns true iff the classes of the given values (that is, `classOf()` on
  * each) are the same.
  */
 bool haveSameClass(zvalue value, zvalue other);

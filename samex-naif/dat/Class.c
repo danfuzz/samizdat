@@ -69,7 +69,7 @@ static bool classEqUnchecked(zvalue cls1, zvalue cls2) {
  * Asserts that `value` is an instance of `Class` or a subclass thereof.
  */
 static void assertIsClass(zvalue value) {
-    zvalue cls = get_class(value);
+    zvalue cls = classOf(value);
 
     while (cls != NULL) {
         if (classEqUnchecked(cls, CLS_Class)) {
@@ -177,7 +177,7 @@ static bool isCoreClass(ClassInfo *info) {
  * is in fact a class.
  */
 static bool acceptsUnchecked(zvalue cls, zvalue value) {
-    for (zvalue valueCls = get_class(value);
+    for (zvalue valueCls = classOf(value);
             valueCls != NULL;
             valueCls = getInfo(valueCls)->parent) {
         if (classEqUnchecked(valueCls, cls)) {
@@ -247,7 +247,7 @@ void assertHasClass(zvalue value, zvalue cls) {
     if (!classAccepts(cls, value)) {
         die("Expected class %s; got %s of class %s.",
             cm_debugString(cls), cm_debugString(value),
-            cm_debugString(get_class(value)));
+            cm_debugString(classOf(value)));
     }
 }
 
@@ -266,7 +266,7 @@ bool classHasParent(zvalue cls, zvalue parent) {
 
 // Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
-    return classEqUnchecked(get_class(value), get_class(other));
+    return classEqUnchecked(classOf(value), classOf(other));
 }
 
 // Documented in header.
