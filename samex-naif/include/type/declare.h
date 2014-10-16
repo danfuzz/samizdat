@@ -52,8 +52,12 @@
 /** Variable name for a symbol. */
 #define SYM(name) SYM_##name
 
+/** Variable name for a symbol index. */
+#define SYMIDX(name) SYMIDX_##name
+
 /** Declaration for a symbol. */
 #define SYM_DECL(name) \
+    extern zint SYMIDX(name); \
     extern zvalue SYM(name) \
     // No semicolon here, so that use sites require it.
 
