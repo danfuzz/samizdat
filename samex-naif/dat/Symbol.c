@@ -276,21 +276,6 @@ zint symbolIndex(zvalue symbol) {
 }
 
 // Documented in header.
-char *utf8DupFromSymbol(zvalue symbol) {
-    return utf8DupFromZstring(zstringFromSymbol(symbol));
-}
-
-// Documented in header.
-zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol) {
-    return utf8FromZstring(resultSize, result, zstringFromSymbol(symbol));
-}
-
-// Documented in header.
-zint utf8SizeFromSymbol(zvalue symbol) {
-    return utf8SizeFromZstring(zstringFromSymbol(symbol));
-}
-
-// Documented in header.
 zorder zorderFromSymbol(zvalue symbol) {
     zint index = symbolIndex(symbol);
 
