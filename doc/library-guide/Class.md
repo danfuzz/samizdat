@@ -53,7 +53,9 @@ Default implementation.
 
 Compares two classes for order, as follows:
 
-* Core (primitive) classes order earlier than other classes.
+* Core classes order earlier than other classes. The core classes are
+  `Class`, `Core`, `Metaclass`, `Object`, `Value`, their metaclasses, and
+  any class that inherits from either `Core` or `Core`'s metaclass.
 * Within each category (core or other), classes are ordered by name.
 * Given two different classes with the same name (which can happen only with
   non-core classes), the result of ordering is void (that is, the order
