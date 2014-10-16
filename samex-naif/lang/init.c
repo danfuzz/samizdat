@@ -42,37 +42,33 @@ MOD_INIT(lang) {
 
     memset(langSymbolMap, 0, sizeof(langSymbolMap));
 
-    #define REC_MAP(name) \
-        langSymbolMap[symbolIndex(SYM(name))] = EVAL_##name;
-    #define SYM_MAP(name) \
-        langSymbolMap[symbolIndex(SYM(name))] = EVAL_##name;
-
-    REC_MAP(apply);
-    REC_MAP(call);
-    REC_MAP(closure);
-    REC_MAP(directive);
-    REC_MAP(export);
-    REC_MAP(exportSelection);
-    REC_MAP(external);
-    REC_MAP(fetch);
-    REC_MAP(importModule);
-    REC_MAP(importModuleSelection);
-    REC_MAP(importResource);
-    REC_MAP(internal);
-    REC_MAP(literal);
-    REC_MAP(mapping);
-    REC_MAP(maybe);
-    REC_MAP(module);
-    REC_MAP(noYield);
-    REC_MAP(nonlocalExit);
-    REC_MAP(store);
-    REC_MAP(varRef);
-    REC_MAP(varDef);
-    REC_MAP(varDefMutable);
-    REC_MAP(void);
-    REC_MAP(yield);
+    #define SYM_MAP(name) langSymbolMap[SYMIDX(name)] = EVAL_##name;
 
     SYM_MAP(CH_PLUS);
     SYM_MAP(CH_QMARK);
     SYM_MAP(CH_STAR);
+    SYM_MAP(apply);
+    SYM_MAP(call);
+    SYM_MAP(closure);
+    SYM_MAP(directive);
+    SYM_MAP(export);
+    SYM_MAP(exportSelection);
+    SYM_MAP(external);
+    SYM_MAP(fetch);
+    SYM_MAP(importModule);
+    SYM_MAP(importModuleSelection);
+    SYM_MAP(importResource);
+    SYM_MAP(internal);
+    SYM_MAP(literal);
+    SYM_MAP(mapping);
+    SYM_MAP(maybe);
+    SYM_MAP(module);
+    SYM_MAP(noYield);
+    SYM_MAP(nonlocalExit);
+    SYM_MAP(store);
+    SYM_MAP(varRef);
+    SYM_MAP(varDef);
+    SYM_MAP(varDefMutable);
+    SYM_MAP(void);
+    SYM_MAP(yield);
 }
