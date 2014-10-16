@@ -42,7 +42,7 @@ def parCodePoint = {:
     "0"*
     digits = (
         ch = ["0".."9" "A".."F"]
-        { DIGIT_VALUES[ch] }
+        { DIGIT_VALUES[ch.get_name()] }
     )+
 
     {
@@ -94,7 +94,7 @@ def parFile = {:
     (
         extras = [! "\n"]+
         {
-            def string = stringFromTokenList(extras);
+            def string = $Peg::stringFromTokenList(extras);
             die("Unexpected line: \%q(string)")
         }
     )?
