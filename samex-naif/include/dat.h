@@ -29,7 +29,7 @@ enum {
 };
 
 /**
- * Partial definition of `DatHeader`, so that `get_class` and `datPayload`
+ * Partial definition of `DatHeader`, so that `classOf` and `datPayload`
  * can be defined as inlines.
  *
  * * **Note:** This must match the definition of `DatHeader` in `dat/impl.h`.
@@ -141,7 +141,7 @@ inline void *datPayload(zvalue value) {
  * Gets the class of the given value. `value` must be a valid value (in
  * particular, non-`NULL`). The return value is of class `Class`.
  */
-inline zvalue get_class(zvalue value) {
+inline zvalue classOf(zvalue value) {
     return ((DatHeaderExposed *) (void *) value)->cls;
 }
 

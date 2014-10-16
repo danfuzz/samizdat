@@ -28,7 +28,7 @@ void datNonVoidError(void) {
 extern void *datPayload(zvalue value);
 
 // This provides the non-inline version of this function.
-extern zvalue get_class(zvalue value);
+extern zvalue classOf(zvalue value);
 
 // Documented in header.
 zvalue valEq(zvalue value, zvalue other) {
@@ -62,8 +62,8 @@ zvalue valOrder(zvalue value, zvalue other) {
         return INT_0;
     }
 
-    zvalue valueCls = get_class(value);
-    zvalue otherCls = get_class(other);
+    zvalue valueCls = classOf(value);
+    zvalue otherCls = classOf(other);
 
     if (valueCls == otherCls) {
         return METH_CALL(totalOrder, value, other);
@@ -84,7 +84,7 @@ METH_IMPL_1(Value, castToward, cls) {
 
 // Documented in spec.
 METH_IMPL_0(Value, debugString) {
-    zvalue cls = get_class(ths);
+    zvalue cls = classOf(ths);
     zvalue name = METH_CALL(debugSymbol, ths);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 

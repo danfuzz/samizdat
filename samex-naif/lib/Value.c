@@ -65,8 +65,8 @@ FUN_IMPL_DECL(eq) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(get_class) {
-    return get_class(args[0]);
+FUN_IMPL_DECL(classOf) {
+    return classOf(args[0]);
 }
 
 // Documented in spec.

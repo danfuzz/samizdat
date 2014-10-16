@@ -12,7 +12,7 @@
 ## Increments an int or char by a given int amount.
 export fn rangeAdd(base, amount) {
     return ifSwitch(
-        { get_class(base) },
+        { classOf(base) },
         {
             (Int):    { . -> base.add(amount) },
             (String): { . -> cast(String, cast(Int, base).add(amount)) }

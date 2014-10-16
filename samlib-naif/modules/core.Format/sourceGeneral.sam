@@ -158,7 +158,7 @@ fn Value_source(value, adorn) {
 
     return "".cat(
         "@<",
-        nameString("", get_class(value).get_name()),
+        nameString("", classOf(value).get_name()),
         nameStr,
         ">")
 };
@@ -169,7 +169,7 @@ export fn sourceGeneral(value, adorn) {
     return ifValueOr
         { SPECIAL_VALUES.get(value) }
         {
-            ifSwitch({ get_class(value) },
+            ifSwitch({ classOf(value) },
                 {
                     (Class):       { . -> Class_source(value, adorn)       },
                     (Int):         { . -> Int_source(value, adorn)         },

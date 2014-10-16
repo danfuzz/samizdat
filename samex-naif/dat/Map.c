@@ -214,7 +214,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
 // Documented in spec.
 CMETH_IMPL_1(Map, castFrom, value) {
-    zvalue cls = get_class(value);
+    zvalue cls = classOf(value);
 
     if (valEq(cls, CLS_SymbolTable)) {
         zint size = symbolTableSize(value);
