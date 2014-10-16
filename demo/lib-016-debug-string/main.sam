@@ -32,11 +32,20 @@ msg([1, 2, 3]);
 msg({a: 1, b: 2});
 msg(@blort{fizmo: "zorch"});
 
-var foo = 10;
-msg(var foo);  ## a box
+def foo = 10;
+var bar = 10;
+def baz;
+msg(var foo);                 ## a Result
+msg(var bar);                 ## a Cell
+msg(var baz);                 ## a Promise
 
 msg(Value);                   ## a core class
-msg(get_class(@blort{}));     ## a record class
+
+class UserClass {
+    ## empty
+};
+msg(UserClass);               ## a user class
+
 msg(@blort);                  ## an interned symbol
 msg(@blort.toUnlisted());     ## an unlisted symbol
 msg(eq);                      ## a builtin function
