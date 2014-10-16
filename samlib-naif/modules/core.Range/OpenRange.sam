@@ -18,11 +18,13 @@ import ./rangeAdd :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class OpenRange
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         ## It is an "unbounded collect" error to call this.
@@ -37,7 +39,7 @@ class OpenRange
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def firstValue = data::firstValue;
         def increment = data::increment;
 
@@ -55,5 +57,5 @@ class OpenRange
 export fn makeOpenRange(firstValue, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    return SECRET(OpenRange, @{firstValue, increment})
+    return NEW(OpenRange, @{firstValue, increment})
 };
