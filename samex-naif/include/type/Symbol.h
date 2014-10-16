@@ -52,6 +52,11 @@ zvalue symbolFromString(zvalue name);
 zvalue symbolFromUtf8(zint utfBytes, const char *utf);
 
 /**
+ * Gets the interned symbol corresponding to a `zorder` value.
+ */
+zvalue symbolFromZorder(zorder order);
+
+/**
  * Makes an interned symbol from a `zstring`.
  */
 zvalue symbolFromZstring(zstring name);
@@ -86,6 +91,11 @@ zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol);
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
 zint utf8SizeFromSymbol(zvalue symbol);
+
+/**
+ * Gets the `zorder` value corresponding to the given interned symbol.
+ */
+zorder zorderFromSymbol(zvalue symbol);
 
 /**
  * Gets a `zstring` of the given symbol. The result `chars` shares storage

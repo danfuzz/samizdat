@@ -255,6 +255,15 @@ zvalue symbolFromUtf8(zint utfBytes, const char *utf) {
 }
 
 // Documented in header.
+zvalue symbolFromZorder(zorder order) {
+    switch (order) {
+        case ZLESS: { return SYM(less); }
+        case ZMORE: { return SYM(more); }
+        case ZSAME: { return SYM(same); }
+    }
+}
+
+// Documented in header.
 zvalue symbolFromZstring(zstring name) {
     zvalue result = findInternedSymbol(name);
     return (result != NULL) ? result : makeSymbol0(name, true);
@@ -279,6 +288,18 @@ zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol) {
 // Documented in header.
 zint utf8SizeFromSymbol(zvalue symbol) {
     return utf8SizeFromZstring(zstringFromSymbol(symbol));
+}
+
+// Documented in header.
+zorder zorderFromSymbol(zvalue symbol) {
+    zint index = symbolIndex(symbol);
+
+    // This can't be a `switch`, since the indices aren't constants.
+    if      (index == SYMIDX(less)) { return ZLESS; }
+    else if (index == SYMIDX(more)) { return ZMORE; }
+    else if (index == SYMIDX(same)) { return ZSAME; }
+
+    die("Invalid order symbol: %s", cm_debugString(symbol));
 }
 
 // Documented in header.
