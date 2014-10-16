@@ -23,14 +23,15 @@ import ./cache;
 ## Class definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 ## Does direct resolution on the given `source`. Only ever called when
 ## `source` is known to be `external` and so *might* be found directly
 ## in this resolver's directory of modules.
 fn directResolve(self, source) {
-    def data = SECRET(self);
+    def data = ACCESS(self);
     def name = source::name;
     def dirPath = "\(data::path)/\(name)";
     def infoPath = "\(dirPath).saminfo";
@@ -48,9 +49,10 @@ fn directResolve(self, source) {
 };
 
 class ExternalResolver
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn resolve(source) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
 
         if (def found = $cache::cacheGet(data::cache, source)) {
             ## `found` is always a list. See comment below.
@@ -86,7 +88,7 @@ export fn makeExternalResolver(path, nextResolver) {
         return nextResolver
     };
 
-    return SECRET(ExternalResolver,
+    return NEW(ExternalResolver,
         @{
             cache: $cache::makeCache(),
             nextResolver,

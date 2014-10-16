@@ -15,18 +15,20 @@ import ./indentation :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class Return
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn flatten() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return "return \(data::tree.flatten())"
     };
 
     fn indent(level, maxColumns) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def prefix = indentation(level);
 
         return "\
@@ -35,7 +37,7 @@ class Return
     };
 
     fn prefersFlat() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? data::tree.prefersFlat()
             & this
     };
@@ -47,5 +49,5 @@ class Return
 ##
 
 export fn genReturn(tree) {
-    return genWrapper(SECRET(Return, @{tree: fix(tree)}))
+    return genWrapper(NEW(Return, @{tree: fix(tree)}))
 };

@@ -15,13 +15,15 @@ import ./indentation :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class Comment
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn flatten() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def text = data::text;
 
         return (def payload = data::payload)
@@ -30,7 +32,7 @@ class Comment
     };
 
     fn indent(level, maxColumns) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def prefix = indentation(level);
 
         return if (def p = data::payload) {
@@ -44,7 +46,7 @@ class Comment
     };
 
     fn prefersFlat() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? (#data::text < 30)
             & (((def payload = data::payload)
                 & payload.prefersFlat()?
@@ -59,8 +61,8 @@ class Comment
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        genWrapper(SECRET(Comment, @{payload: fix(payload), text}))
+        genWrapper(NEW(Comment, @{payload: fix(payload), text}))
     } else {
-        genWrapper(SECRET(Comment, @{text}))
+        genWrapper(NEW(Comment, @{text}))
     }
 };

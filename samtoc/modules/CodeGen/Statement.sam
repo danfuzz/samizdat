@@ -15,23 +15,25 @@ import ./indentation :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class Statement
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn flatten() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return "\(data::tree.flatten());"
     };
 
     fn indent(level, maxColumns) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return "\(data::tree.indent(level, maxColumns));\n"
     };
 
     fn prefersFlat() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? data::tree.prefersFlat()
             & this
     };
@@ -43,5 +45,5 @@ class Statement
 ##
 
 export fn genStatement(tree) {
-    return genWrapper(SECRET(Statement, @{tree: fix(tree)}))
+    return genWrapper(NEW(Statement, @{tree: fix(tree)}))
 };

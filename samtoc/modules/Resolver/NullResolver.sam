@@ -11,11 +11,13 @@
 ## Class definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class NullResolver
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn resolve(source) {
         ## Return `void`, that is, fail to resolve. If we hit this point, then
         ## there is probably something actually wrong (e.g. insufficient
@@ -30,4 +32,4 @@ class NullResolver
 ## Exported Definitions
 ##
 
-export def nullResolver = SECRET(NullResolver);
+export def nullResolver = NEW(NullResolver);

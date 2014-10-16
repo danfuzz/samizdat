@@ -15,18 +15,20 @@ import ./indentation :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class Assign
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn flatten() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return "\(data::target.flatten()) = \(data::value.flatten())"
     };
 
     fn indent(level, maxColumns) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return "".cat(
             data::target.indent(level, maxColumns),
             " =\n",
@@ -35,7 +37,7 @@ class Assign
     };
 
     fn prefersFlat() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? data::target.prefersFlat()
             & data::value.prefersFlat()
             & this
@@ -49,5 +51,5 @@ class Assign
 
 export fn genAssign(target, value) {
     return genWrapper(
-        SECRET(Assign, @{target: fix(target), value: fix(value)}))
+        NEW(Assign, @{target: fix(target), value: fix(value)}))
 };
