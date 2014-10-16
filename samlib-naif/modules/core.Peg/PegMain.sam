@@ -17,15 +17,17 @@ import ./PegSequence :: makeSequence;
 ##
 ## Payload: {rule: rule}
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class PegMain
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn parse(box, input, .*) {
         ## The point of this implementation is to drop the `items` context.
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? data::rule.parse(box, input)
     };
 };
@@ -37,10 +39,10 @@ class PegMain
 
 ## Documented in spec.
 export fn makeMainChoice(rules*) {
-    return SECRET(PegMain, @{rule: makeChoice(rules*)})
+    return NEW(PegMain, @{rule: makeChoice(rules*)})
 };
 
 ## Documented in spec.
 export fn makeMainSequence(rules*) {
-    return SECRET(PegMain, @{rule: makeSequence(rules*)})
+    return NEW(PegMain, @{rule: makeSequence(rules*)})
 };

@@ -32,6 +32,11 @@ other than a symbol table.
 <br><br>
 ### Method Definitions: `Record` protocol
 
+#### `.get(symbol) -> . | void`
+
+Returns the value mapped to the given `symbol` (a symbol) in the given
+record. If there is no such mapping, then this returns void.
+
 #### `.get_data() -> symbolTable`
 
 Returns the data payload of the given record.

@@ -13,11 +13,13 @@
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class NullGenerator
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         return []
@@ -40,4 +42,4 @@ class NullGenerator
 ##
 
 ## Documented in spec.
-export def nullGenerator = SECRET(NullGenerator);
+export def nullGenerator = NEW(NullGenerator);

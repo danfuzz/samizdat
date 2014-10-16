@@ -65,13 +65,14 @@ fn expectNe(name, v1, v2) {
 
 note("Objects");
 
-def SECRET = @secret.toUnlisted();
-def Blort = Object.subclass(@Blort, SECRET);
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
+def Blort = Object.subclass(@Blort, {access: ACCESS, new: NEW});
 
-def b1 = SECRET(Blort);
-def b2 = SECRET(Blort, @{x: 10});
+def b1 = NEW(Blort);
+def b2 = NEW(Blort, @{x: 10});
 
-expectEq("access 1", @{}, SECRET(b1));
-expectEq("access 2", @{x: 10}, SECRET(b2));
+expectEq("access 1", @{}, ACCESS(b1));
+expectEq("access 2", @{x: 10}, ACCESS(b2));
 
 note("All good.");

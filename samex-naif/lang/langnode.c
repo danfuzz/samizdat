@@ -435,15 +435,27 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     zvalue keys = METH_CALL(keyList, attribMap);
     for (zint i = 0; i < attribSize; i++) {
         zvalue one = cm_nth(keys, i);
-        if (!valEq(one, SYM(access))) {
+        if (!(valEq(one, SYM(access)) || valEq(one, SYM(new)))) {
             die("Invalid attribute: %s", cm_debugString(one));
         }
     }
 
-    zvalue access = cm_get(attribMap, SYM(access));
-    if (access == NULL) {
-        access = makeCall(SYMS(toUnlisted), listFrom1(SYMS(access)));
+    zvalue accessSecret = cm_get(attribMap, SYM(access));
+    if (accessSecret != NULL) {
+        accessSecret = recordFrom2(SYM(mapping),
+            SYM(keys),  listFrom1(SYMS(access)),
+            SYM(value), accessSecret);
     }
+
+    zvalue newSecret = cm_get(attribMap, SYM(new));
+    if (newSecret != NULL) {
+        newSecret = recordFrom2(SYM(mapping),
+            SYM(keys),  listFrom1(SYMS(new)),
+            SYM(value), newSecret);
+    }
+
+    zvalue config = makeSymbolTableExpression(
+        listFrom2(accessSecret, newSecret));
 
     zvalue instanceMethods = EMPTY_MAP;
     zint methSize = get_size(methods);
@@ -468,7 +480,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
         listFrom5(
             LITS(Object),
             makeLiteral(name),
-            access,
+            config,
             LITS(EMPTY_SYMBOL_TABLE),
             instanceMethodTable));
 

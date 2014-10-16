@@ -13,18 +13,20 @@ import ./indentation :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class CodeString
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn flatten() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return data::text
     };
 
     fn indent(level, maxColumns) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return indentation(level).cat(data::text)
     };
 
@@ -39,7 +41,7 @@ class CodeString
 ##
 
 export fn genCodeString(text) {
-    return SECRET(CodeString, @{text});
+    return NEW(CodeString, @{text});
 };
 
 ## Fixes a tree constructor argument, so that strings (per se) are

@@ -23,14 +23,15 @@ import ./cache;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 ## Does direct resolution on the given `source`. Only ever called when
 ## `source` is known to be `internal` and so *might* be found directly
 ## in or under this resolver's directory.
 fn directResolve(self, source) {
-    def data = SECRET(self);
+    def data = ACCESS(self);
     def subPath = source::name;
     def basePath = "\(data::path)/\(subPath)";
     def infoPath = "\(basePath).saminfo";
@@ -50,9 +51,10 @@ fn directResolve(self, source) {
 };
 
 class InternalResolver
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn resolve(source) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
 
         if (def found = $cache::cacheGet(data::cache, source)) {
             ## `found` is always a list. See comment below.
@@ -80,7 +82,7 @@ class InternalResolver
 ##
 
 export fn makeInternalResolver(path, nextResolver) {
-    return SECRET(InternalResolver,
+    return NEW(InternalResolver,
         @{
             cache: $cache::makeCache(),
             nextResolver,

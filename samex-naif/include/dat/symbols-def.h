@@ -97,6 +97,12 @@ DEF_SYMBOL(valueList);
 DEF_SYMBOL(xor);
 
 
+/** Used as a key for class configuration in `.subclass()`. */
+DEF_SYMBOL(access);
+
+/** Used as a key when accessing modules. */
+DEF_SYMBOL(exports);
+
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
  *
@@ -104,9 +110,6 @@ DEF_SYMBOL(xor);
  * in any way to the higher layer environment.
  */
 DEF_SYMBOL(gcMark);
-
-/** Used as a key when accessing modules. */
-DEF_SYMBOL(exports);
 
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(imports);

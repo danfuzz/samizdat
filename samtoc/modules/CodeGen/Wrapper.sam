@@ -17,13 +17,15 @@ import ./indentation :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class Wrapper
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn flatten() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def flatBox = data::flatBox;
 
         return flatBox*
@@ -31,7 +33,7 @@ class Wrapper
     };
 
     fn indent(level, maxColumns) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def tree = data::tree;
 
         if (tree.prefersFlat()) {
@@ -46,7 +48,7 @@ class Wrapper
     };
 
     fn prefersFlat() {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? data::tree.prefersFlat() & this;
     };
 };
@@ -58,5 +60,5 @@ class Wrapper
 
 export fn genWrapper(tree) {
     def flat;
-    return SECRET(Wrapper, @{tree, flatBox: (var flat)})
+    return NEW(Wrapper, @{tree, flatBox: (var flat)})
 };

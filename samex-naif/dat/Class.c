@@ -33,8 +33,11 @@ typedef struct {
     /** Name of the class, as a symbol. */
     zvalue name;
 
-    /** Access secret of the class. Optional, and arbitrary if present. */
-    zvalue secret;
+    /**
+     * Whether the class is considered "core." See `Class.perOrder()` in the
+     * spec for details.
+     */
+    bool isCore;
 
     /**
      * Bindings from method symbols to functions, keyed off of symbol
@@ -42,9 +45,6 @@ typedef struct {
      */
     zvalue methods[DAT_MAX_SYMBOLS];
 } ClassInfo;
-
-/** The `secret` value used for all core classes. */
-static zvalue theCoreSecret = NULL;
 
 
 /**
@@ -84,9 +84,8 @@ static void assertIsClass(zvalue value) {
 /**
  * Allocates and partially initializes a class. Initialization includes
  * allocating a metaclass, setting up the correct is-a and heritage
- * relationships, and setting names and secrets. This does *not* set up
- * any method tables. `secret` is allowed to be `NULL`, but neither of the
- * other two arguments can be `NULL`.
+ * relationships, and setting names. This does *not* set up any method tables.
+ * Neither of the first two arguments can be `NULL`.
  *
  * As special cases, it is valid to pass `NULL` for the `parent` as long
  * as `Value` is not yet initialized, and it is valid to pass `NULL` for
@@ -95,7 +94,7 @@ static void assertIsClass(zvalue value) {
  * `NULL` means that the resulting classes will need to have more complete
  * initialization performed on them more "manually."
  */
-static zvalue makeClassPair(zvalue name, zvalue parent, zvalue secret) {
+static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
     if (CLS_Symbol != NULL) {
         if (name == NULL) {
             die("Improper argument to `makeClassPair()`: null `name`");
@@ -120,8 +119,8 @@ static zvalue makeClassPair(zvalue name, zvalue parent, zvalue secret) {
     ClassInfo *clsInfo = getInfo(cls);
     ClassInfo *metaInfo = getInfo(metacls);
 
-    clsInfo->secret = secret;
-    metaInfo->secret = secret;
+    clsInfo->isCore = isCore;
+    metaInfo->isCore = isCore;
 
     if (name != NULL) {
         clsInfo->name = name;
@@ -141,18 +140,11 @@ static zvalue makeClassPair(zvalue name, zvalue parent, zvalue secret) {
 
 /**
  * Performs the initialization that would have been done in `makeClassPair()`
- * except that the required classes weren't yet initialized. This includes
- * setting up the name and secret for both a class and its metaclass.
+ * except that the required classes weren't yet initialized.
  */
 static void initEarlyClass(zvalue cls, zvalue name) {
-    ClassInfo *clsInfo = getInfo(cls);
-    ClassInfo *metaInfo = getInfo(cls->cls);
-
-    clsInfo->secret = theCoreSecret;
-    metaInfo->secret = theCoreSecret;
-
-    clsInfo->name = name;
-    metaInfo->name = symbolCat(SYM(meta_), name);
+    getInfo(cls)->name = name;
+    getInfo(cls->cls)->name = symbolCat(SYM(meta_), name);
 }
 
 /**
@@ -177,7 +169,7 @@ static void reinheritMethods(zvalue cls) {
  * classes.
  */
 static bool isCoreClass(ClassInfo *info) {
-    return info->secret == theCoreSecret;
+    return info->isCore;
 }
 
 /**
@@ -273,28 +265,16 @@ bool classHasParent(zvalue cls, zvalue parent) {
 }
 
 // Documented in header.
-bool classHasSecret(zvalue cls, zvalue secret) {
-    assertIsClass(cls);
-
-    ClassInfo *info = getInfo(cls);
-
-    // Note: It's important to pass `info->secret` first, so that it's the
-    // one whose `totalEq` method is used. The given `secret` can't be
-    // trusted to behave.
-    return valEq(info->secret, secret);
-}
-
-// Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
     return classEqUnchecked(get_class(value), get_class(other));
 }
 
 // Documented in header.
-zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
+zvalue makeClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
     assertIsClass(parent);
 
-    zvalue result = makeClassPair(name, parent, secret);
+    zvalue result = makeClassPair(name, parent, false);
     classBindMethods(result, classMethods, instanceMethods);
 
     return result;
@@ -303,8 +283,12 @@ zvalue makeClass(zvalue name, zvalue parent, zvalue secret,
 // Documented in header.
 zvalue makeCoreClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods) {
-    return makeClass(name, parent, theCoreSecret,
-        classMethods, instanceMethods);
+    assertIsClass(parent);
+
+    zvalue result = makeClassPair(name, parent, true);
+    classBindMethods(result, classMethods, instanceMethods);
+
+    return result;
 }
 
 
@@ -325,22 +309,16 @@ METH_IMPL_1(Class, castFrom, value) {
 // Documented in spec.
 METH_IMPL_0(Class, debugString) {
     ClassInfo *info = getInfo(ths);
-    const char *label;
+    zvalue nameString = cm_castFrom(CLS_String, info->name);
 
-    if (info->secret == theCoreSecret) {
-        return cm_castFrom(CLS_String, info->name);
-    } else if (info->secret != NULL) {
-        label = "object";
+    if (info->isCore) {
+        return nameString;
     } else {
-        die("Shouldn't happen: non-core class without secret.");
+        return cm_cat(
+            stringFromUtf8(-1, "@<user class "),
+            nameString,
+            stringFromUtf8(-1, ">"));
     }
-
-    return cm_cat(
-        stringFromUtf8(-1, "@<"),
-        stringFromUtf8(-1, label),
-        stringFromUtf8(-1, " class "),
-        METH_CALL(debugString, cm_castFrom(CLS_String, info->name)),
-        stringFromUtf8(-1, ">"));
 }
 
 // Documented in spec.
@@ -353,7 +331,6 @@ METH_IMPL_0(Class, gcMark) {
     ClassInfo *info = getInfo(ths);
 
     datMark(info->name);
-    datMark(info->secret);
 
     for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
         datMark(info->methods[i]);
@@ -456,24 +433,24 @@ MOD_INIT(objectModel) {
 
     // Set up the "knotted" classes. These are the ones that have circular
     // is-a and/or heritage relationships with each other. This does *not*
-    // include setting up `Symbol`, which is why the `name` and `secret` of
-    // all of these start out as `NULL`.
+    // include setting up `Symbol`, which is why the `name` of all of these
+    // start out as `NULL`.
 
     // `NULL` for `parent` here, because the superclass of `Metaclass` is
     // `Class`, and the latter doesn't yet exist. The immediately-following
     // `cls` assignment is to set up the required circular is-a relationship
     // between `Metaclass` and its metaclass.
-    CLS_Metaclass = makeClassPair(NULL, NULL, NULL);
+    CLS_Metaclass = makeClassPair(NULL, NULL, true);
     CLS_Metaclass->cls->cls = CLS_Metaclass;
 
     // Similarly, `NULL` for `parent` here, because the superclass of `Class`
     // is `Value`.
-    CLS_Class = makeClassPair(NULL, NULL, NULL);
+    CLS_Class = makeClassPair(NULL, NULL, true);
 
     // `NULL` for `parent` here, because `Value` per se has no superclass.
     // However, `Value`'s metaclass *does* have a superclass, `Class`, so
     // we assign it explicitly, immediately below.
-    CLS_Value = makeClassPair(NULL, NULL, NULL);
+    CLS_Value = makeClassPair(NULL, NULL, true);
 
     // Finally, set up the missing the heritage relationships.
     getInfo(CLS_Value->cls)->parent = CLS_Class;
@@ -484,20 +461,17 @@ MOD_INIT(objectModel) {
 
     // With the "knotted" classes taken care of, now do the initial
     // special-case setup of `Core` and `Symbol`. These are required for
-    // classes to have `name`s and `secret`s.
+    // classes to have `name`s.
 
-    // Construct these with `NULL` `name` and `secret` initially.
-    CLS_Core   = makeClassPair(NULL, CLS_Value, NULL);
-    CLS_Symbol = makeClassPair(NULL, CLS_Core,  NULL);
+    // Construct these with `NULL` `name` initially.
+    CLS_Core   = makeClassPair(NULL, CLS_Value, true);
+    CLS_Symbol = makeClassPair(NULL, CLS_Core,  true);
 
-    // With `Symbol` barely initialized, it's now possible to make an
-    // unlisted instance of it to use as the core library secret, as well as
+    // With `Symbol` barely initialized, it's now possible to make the
     // interned instances as needed by the rest of the core.
-    theCoreSecret = datImmortalize(unlistedSymbolFromUtf8(-1, "coreSecret"));
     initCoreSymbols();
 
-    // And with that, initialize `name` and `secret` on all the classes
-    // constructed above.
+    // And with that, initialize `name` on all the classes constructed above.
     initEarlyClass(CLS_Class,     SYM(Class));
     initEarlyClass(CLS_Core,      SYM(Core));
     initEarlyClass(CLS_Metaclass, SYM(Metaclass));
@@ -507,8 +481,8 @@ MOD_INIT(objectModel) {
     // Finally, construct the classes that are required in order for
     // methods to be bound to classes.
 
-    CLS_SymbolTable = makeClassPair(SYM(SymbolTable), CLS_Core, theCoreSecret);
-    CLS_Builtin     = makeClassPair(SYM(Builtin),     CLS_Core, theCoreSecret);
+    CLS_SymbolTable = makeClassPair(SYM(SymbolTable), CLS_Core, true);
+    CLS_Builtin     = makeClassPair(SYM(Builtin),     CLS_Core, true);
 
     // At this point, all of the "corest" classes exist but have no bound
     // methods. Their methods get bound by the following calls. The order of

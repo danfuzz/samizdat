@@ -14,14 +14,16 @@
 ##
 ## Payload: {rule: rule, maxSize?: int, minSize: int}
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class PegRepeat
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         var remainingInput = input;
         var results = [];  ## Values that have been parsed by the inner rule.
 
@@ -74,5 +76,5 @@ class PegRepeat
 export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
     def minSize = ifValueOr { optMinSize* } { 0 };
     def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
-    return SECRET(PegRepeat, @{maxMap*, minSize, rule})
+    return NEW(PegRepeat, @{maxMap*, minSize, rule})
 };

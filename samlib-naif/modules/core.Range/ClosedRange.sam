@@ -18,11 +18,13 @@ import ./rangeAdd :: *;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class ClosedRange
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -37,7 +39,7 @@ class ClosedRange
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
 
         return? ifValue { ge(data::size, 0) }
             { size ->
@@ -65,7 +67,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
         { die("`size` must be an int.") };
 
     return ifIs { gt(size, 0) }
-        { SECRET(ClosedRange, @{firstValue, increment, size}) }
+        { NEW(ClosedRange, @{firstValue, increment, size}) }
         { nullGenerator }
 };
 

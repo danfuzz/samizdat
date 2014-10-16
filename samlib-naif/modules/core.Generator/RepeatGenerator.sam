@@ -16,11 +16,13 @@ import ./NullGenerator :: nullGenerator;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class RepeatGenerator
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -35,7 +37,7 @@ class RepeatGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def size = data::size;
 
         return? ifIs { perGt(size, 0) }
@@ -62,5 +64,5 @@ export fn makeRepeatGenerator(size, optValue?) {
         };
 
     def value = ifValueOr { optValue* } { null };
-    return SECRET(RepeatGenerator, @{size, value})
+    return NEW(RepeatGenerator, @{size, value})
 };

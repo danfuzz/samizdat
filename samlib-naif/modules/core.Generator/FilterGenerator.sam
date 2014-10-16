@@ -17,11 +17,13 @@ import ./ParaGenerator :: makeParaGenerator;
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class FilterGenerator
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -36,7 +38,7 @@ class FilterGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         var innerGen = data::generator;
         def filterFunction = data::filterFunction;
         var result;
@@ -50,7 +52,7 @@ class FilterGenerator
                     ifValue { filterFunction(result*) }
                         { value ->
                             box* := value;
-                            return SECRET(FilterGenerator,
+                            return NEW(FilterGenerator,
                                 @{filterFunction, generator: nextGen})
                         }
                         {
@@ -75,7 +77,7 @@ class FilterGenerator
 
 ## Documented in spec.
 export fn makeFilterGenerator(filterFunction, generators*) {
-    return SECRET(FilterGenerator,
+    return NEW(FilterGenerator,
         @{
             filterFunction,
             generator: makeParaGenerator(generators*)

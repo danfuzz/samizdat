@@ -30,9 +30,9 @@ msg((100).perEq(100));
 
 note("\nLayer 2:\n");
 
-def theSecret = @secret.toUnlisted();
+def NEW = @NEW.toUnlisted();
 class Igram
-        access: theSecret {
+        new: NEW {
     fn get_foo() {
         return "a foo"
     };
@@ -41,6 +41,6 @@ class Igram
     };
 };
 
-def obj = theSecret(Igram);
+def obj = NEW(Igram);
 note(obj.foo);
 obj.foo := "whatevs";

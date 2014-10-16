@@ -16,14 +16,16 @@ import ./PegFail :: fail;
 ##
 ## Payload: {set: {names*: null}}
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class PegTokenSet
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         def result;
 
         return? ifValue { input.nextValue(var result) }
@@ -61,5 +63,5 @@ export fn makeTokenSet(names*) {
 
     def set = {names*: true};  ## A set-like map of all the token names.
 
-    return SECRET(PegTokenSet, @{set})
+    return NEW(PegTokenSet, @{set})
 };

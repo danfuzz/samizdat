@@ -14,14 +14,16 @@
 ##
 ## Payload: {rule: rule}
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class PegLookaheadSuccess
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? ifIs { data::rule.parse(box, input, items*) }
             { input }
     };
@@ -34,5 +36,5 @@ class PegLookaheadSuccess
 
 ## Documented in spec.
 export fn makeLookaheadSuccess(rule) {
-    return SECRET(PegLookaheadSuccess, @{rule})
+    return NEW(PegLookaheadSuccess, @{rule})
 };

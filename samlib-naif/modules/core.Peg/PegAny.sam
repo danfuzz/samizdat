@@ -13,11 +13,13 @@
 ## Class Definition
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 class PegAny
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn parse(box, input, .*) {
         return? input.nextValue(box)
@@ -30,4 +32,4 @@ class PegAny
 ##
 
 ## Documented in spec.
-export def any = SECRET(PegAny);
+export def any = NEW(PegAny);
