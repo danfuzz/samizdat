@@ -20,7 +20,8 @@ import ./refs :: REFS;
 
 ## Set of allowed class attributes.
 def CLASS_ATTRIBUTES = @{
-    access: true
+    access: true,
+    new:    true
 };
 
 ## Expands the `yield` binding of `table` if it is `nonlocalExit`, including
@@ -219,8 +220,11 @@ export fn makeClassDef(name, attributes, methods) {
             { die("Invalid attribute: ", cast(String, key)) }
     };
 
-    def access = ifValueOr { attribMap.get(@access) }
-        { makeCall(SYMS::toUnlisted, SYMS::access) };
+    def accessSecret = (ifValue { attribMap.get(@access) }
+        { value -> @mapping{keys: [SYMS::access], value} })?;
+    def newSecret = (ifValue { attribMap.get(@new) }
+        { value -> @mapping{keys: [SYMS::new], value} })?;
+    def config = makeSymbolTableExpression(accessSecret*, newSecret*);
 
     ## This makes `instanceMethods` into a map of `[name, closure]` pairs.
     ## These pairs then get interpolated into a call to `SymbolTable.new()`.
@@ -238,7 +242,7 @@ export fn makeClassDef(name, attributes, methods) {
     def call = makeCall(SYMS::subclass,
         LITS::Object,
         makeLiteral(name),
-        access,
+        config,
         LITS::EMPTY_SYMBOL_TABLE,  ## TODO: Class methods.
         instanceMethodTable);
 

@@ -16,31 +16,36 @@
 
 // Documented in header.
 zvalue listFrom1(zvalue e1) {
-    return listFromArray(1, &e1);
+    return (e1 == NULL) ? EMPTY_LIST : listFromArray(1, &e1);
 }
 
 // Documented in header.
 zvalue listFrom2(zvalue e1, zvalue e2) {
-    zvalue elems[2] = { e1, e2 };
-    return listFromArray(2, elems);
+    return listFrom5(e1, e2, NULL, NULL, NULL);
 }
 
 // Documented in header.
 zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
-    zvalue elems[3] = { e1, e2, e3 };
-    return listFromArray(3, elems);
+    return listFrom5(e1, e2, e3, NULL, NULL);
 }
 
 // Documented in header.
 zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
-    zvalue elems[4] = { e1, e2, e3, e4 };
-    return listFromArray(4, elems);
+    return listFrom5(e1, e2, e3, e4, NULL);
 }
 
 // Documented in header.
 zvalue listFrom5(zvalue e1, zvalue e2, zvalue e3, zvalue e4, zvalue e5) {
-    zvalue elems[5] = { e1, e2, e3, e4, e5 };
-    return listFromArray(5, elems);
+    zvalue elems[5];
+    zint at = 0;
+
+    if (e1 != NULL) { elems[at] = e1; at++; }
+    if (e2 != NULL) { elems[at] = e2; at++; }
+    if (e3 != NULL) { elems[at] = e3; at++; }
+    if (e4 != NULL) { elems[at] = e4; at++; }
+    if (e5 != NULL) { elems[at] = e5; at++; }
+
+    return (at == 0) ? EMPTY_LIST : listFromArray(at, elems);
 }
 
 // Documented in header.

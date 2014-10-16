@@ -59,23 +59,35 @@ METH_IMPL_0(Object, privateDataOf) {
 //
 
 // Documented in spec.
-CMETH_IMPL_2_4(Object, subclass, name, secret,
+CMETH_IMPL_2_4(Object, subclass, name, config,
         classMethods, instanceMethods) {
     if (thsClass != CLS_Object) {
         die("Invalid parent class: %s", cm_debugString(thsClass));
     }
 
-    zvalue extraInstanceMethods = METH_TABLE(
-        secret, FUNC_VALUE(Object_privateDataOf));
-    instanceMethods = (instanceMethods == NULL)
-        ? extraInstanceMethods
-        : cm_cat(instanceMethods, extraInstanceMethods);
+    zvalue accessSecret = cm_get(config, SYM(access));
+    zvalue newSecret = cm_get(config, SYM(new));
 
-    zvalue extraClassMethods = METH_TABLE(
-        secret, FUNC_VALUE(class_Object_new));
-    classMethods = (classMethods == NULL)
-        ? extraClassMethods
-        : cm_cat(classMethods, extraClassMethods);
+    // TODO: Remove this temporary scaffolding.
+    if ((newSecret == NULL) && (accessSecret != NULL)) {
+        newSecret = accessSecret;
+    }
+
+    if (accessSecret != NULL) {
+        zvalue extraMethods = METH_TABLE(
+            accessSecret, FUNC_VALUE(Object_privateDataOf));
+        instanceMethods = (instanceMethods == NULL)
+            ? extraMethods
+            : cm_cat(instanceMethods, extraMethods);
+    }
+
+    if (newSecret != NULL) {
+        zvalue extraMethods = METH_TABLE(
+            newSecret, FUNC_VALUE(class_Object_new));
+        classMethods = (classMethods == NULL)
+            ? extraMethods
+            : cm_cat(classMethods, extraMethods);
+    }
 
     return makeClass(name, CLS_Object, classMethods, instanceMethods);
 }
