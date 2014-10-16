@@ -17,6 +17,9 @@
 //
 
 // This provides the non-inline version of this function.
+extern zvalue classOf(zvalue value);
+
+// This provides the non-inline version of this function.
 extern zvalue datNonVoid(zvalue value);
 
 // Documented in header.
@@ -26,9 +29,6 @@ void datNonVoidError(void) {
 
 // This provides the non-inline version of this function.
 extern void *datPayload(zvalue value);
-
-// This provides the non-inline version of this function.
-extern zvalue classOf(zvalue value);
 
 // Documented in header.
 zvalue valEq(zvalue value, zvalue other) {
