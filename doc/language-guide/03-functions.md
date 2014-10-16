@@ -315,7 +315,8 @@ Classes are defined using a `class` statement, which has the general form:
 
 ```
 class NameOfClass
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     fn methodName(arg) {
         ...
     };
@@ -327,11 +328,15 @@ Within a `class` definition, methods are defined using a syntax identical to
 the regular function statement syntax (as described above). The one notable
 difference is that the variable `this` is bound in the body of the method.
 
-The `access: SECRET` line is used to define the (effectively private)
-methods used to construct an instance and get at instance state. `SECRET`
-must be a symbol and is usually an unlisted symbol, which can be created
+The `access...` and `new...` lines are used to define the (effectively
+private) methods used to access instance state and construct an instance
+(respectively). The values they bind to (in the example `ACCESS` and `NEW`)
+must be symbols and are usually unlisted symbols, which can be created
 along the lines of:
 
 ```
-def SECRET = @secret.toUnlisted();
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 ```
+
+Neither of these two attributes is required.
