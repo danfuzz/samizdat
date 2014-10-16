@@ -340,9 +340,8 @@ is a symbol. There are four categories of class:
   that matches its name. For example, the global reference `String` refers to
   the core class named `String`.
 
-* All values have an "object class" as their class. These have a name and
-  secret. The secret is used to prevent creation of and inner access to values
-  of the class beyond the scope of the class's trusted implementation.
+* All values not defined by the system itself have an "object class" as their
+  class.
 
 * Every class covered by the previous two items is an *indirect* instance
   of the class `Class`, and is a *direct* instance of its own metaclass, which
