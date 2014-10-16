@@ -65,8 +65,9 @@ def BOOTSTRAP_MODULES = {
 ## Private Definitions
 ##
 
-## Secret used to control access to this class.
-def SECRET = @secret.toUnlisted();
+## Secrets used to control access classes defined in this file.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 ## Default language module to use, when language is unspecified.
 def DEFAULT_LANGUAGE = "core.Lang2";
@@ -296,7 +297,8 @@ export fn loadResource(loader, source, format) {
 ##
 
 class NullLoader
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn readResource(source, format) {
         ## Returns void, always.
@@ -310,7 +312,7 @@ class NullLoader
 };
 
 ## The one instance of the class.
-def nullLoader = SECRET(NullLoader);
+def nullLoader = NEW(NullLoader);
 
 ## Helper to "massage" `null` into `nullLoader` and pass everything
 ## else through as-is.
@@ -333,7 +335,7 @@ fn fixNullLoader(loader) {
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
-    def data = SECRET(loader);
+    def data = ACCESS(loader);
     def modulePath = data::basePath.cat(source::name);
 
     return? ifIs { eq($Io0::fileType(modulePath), @directory) }
@@ -350,17 +352,18 @@ fn doExternalResolve(loader, source) {
 };
 
 class ExternalLoader
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn readResource(source, format) {
         ## Always just defer to the next loader.
-        def data = SECRET(this);
+        def data = ACCESS(this);
         return? data::nextLoader.readResource(source, format)
     };
 
     ## Documented in spec.
     fn resolve(source) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
 
         ifNot { checkExternalSource(source) }
             {
@@ -392,7 +395,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
     ifNot { eq(pathType, @directory) }
         { die("Module loader path exists but is not a directory: ", path) };
 
-    return SECRET(
+    return NEW(
         ExternalLoader,
         @{
             basePath: path.cat("/"),
@@ -421,7 +424,7 @@ fn resolveMain(loader) {
 fn doInternalResolve(loader, source) {
     note("        ", sourceString(source));
 
-    def data = SECRET(loader);
+    def data = ACCESS(loader);
     def pathPrefix = data::basePath.cat(source::name);
     def binPath = pathPrefix.cat(".samb");
 
@@ -467,10 +470,11 @@ def INTERNAL_READERS = {
 };
 
 class InternalLoader
-        access: SECRET {
+        access: ACCESS,
+        new: NEW {
     ## Documented in spec.
     fn readResource(source, format) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
 
         ifNot { checkInternalSource(source) }
             {
@@ -487,7 +491,7 @@ class InternalLoader
 
     ## Documented in spec.
     fn resolve(source) {
-        def data = SECRET(this);
+        def data = ACCESS(this);
 
         ifNot { checkInternalSource(source) }
             {
@@ -529,7 +533,7 @@ export fn makeInternalLoader(path, globals, nextLoader) {
         thisLoader:   glo_thisLoader
     };
 
-    loader := SECRET(
+    loader := NEW(
         InternalLoader,
         @{
             basePath,
