@@ -282,18 +282,6 @@ bool classHasParent(zvalue cls, zvalue parent) {
 }
 
 // Documented in header.
-bool classHasSecret(zvalue cls, zvalue secret) {
-    assertIsClass(cls);
-
-    ClassInfo *info = getInfo(cls);
-
-    // Note: It's important to pass `info->secret` first, so that it's the
-    // one whose `totalEq` method is used. The given `secret` can't be
-    // trusted to behave.
-    return valEq(info->secret, secret);
-}
-
-// Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
     return classEqUnchecked(get_class(value), get_class(other));
 }

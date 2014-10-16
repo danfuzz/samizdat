@@ -40,11 +40,6 @@ bool classAccepts(zvalue cls, zvalue value);
 bool classHasParent(zvalue cls, zvalue parent);
 
 /**
- * Returns `true` iff the given class has the given secret.
- */
-bool classHasSecret(zvalue cls, zvalue secret);
-
-/**
  * Returns true iff the classes of the given values (that is, `get_class()` on
  * each) are the same.
  */
