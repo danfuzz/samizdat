@@ -114,11 +114,20 @@ DEF_SYMBOL(gcMark);
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(imports);
 
+/** Used as an `*order()` result. */
+DEF_SYMBOL(less);
+
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(main);
 
 /** Used as the prefix for metaclass names. */
 DEF_SYMBOL(meta_);
 
+/** Used as an `*order()` result. */
+DEF_SYMBOL(more);
+
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(resources);
+
+/** Used as an `*order()` result. */
+DEF_SYMBOL(same);

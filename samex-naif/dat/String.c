@@ -537,11 +537,7 @@ METH_IMPL_1(String, totalEq, other) {
 // Documented in spec.
 METH_IMPL_1(String, totalOrder, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
-    switch (uncheckedZorder(ths, other)) {
-        case ZLESS: { return INT_NEG1; }
-        case ZSAME: { return INT_0;    }
-        case ZMORE: { return INT_1;    }
-    }
+    return symbolFromZorder(uncheckedZorder(ths, other));
 }
 
 // Documented in spec.

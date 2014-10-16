@@ -198,6 +198,7 @@
 
 /** Variable definition for a symbol. */
 #define SYM_DEF(name) \
+    zint SYMIDX(name) = -1; \
     zvalue SYM(name) = NULL
 
 /**
@@ -207,6 +208,7 @@
 #define SYM_INIT_WITH(name, value) \
     do { \
         SYM(name) = symbolFromUtf8(-1, value); \
+        SYMIDX(name) = symbolIndex(SYM(name)); \
     } while (0)
 
 /**

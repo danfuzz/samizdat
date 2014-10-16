@@ -7,6 +7,7 @@
 #include "type/methodCalls.h"
 #include "type/Int.h"
 #include "type/String.h"
+#include "type/Symbol.h"
 #include "type/SymbolTable.h"
 
 #include "impl.h"
@@ -99,9 +100,7 @@ zorder cm_order(zvalue x, zvalue other) {
         die("Attempt to order unordered values.");
     }
 
-    zorder order = zintFromInt(result);
-    datFrameReturn(save, NULL);
-    return order;
+    return zorderFromSymbol(result);
 }
 
 // Documented in header.

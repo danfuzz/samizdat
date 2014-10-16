@@ -52,6 +52,11 @@ zvalue symbolFromString(zvalue name);
 zvalue symbolFromUtf8(zint utfBytes, const char *utf);
 
 /**
+ * Gets the interned symbol corresponding to a `zorder` value.
+ */
+zvalue symbolFromZorder(zorder order);
+
+/**
  * Makes an interned symbol from a `zstring`.
  */
 zvalue symbolFromZstring(zstring name);
@@ -62,30 +67,9 @@ zvalue symbolFromZstring(zstring name);
 zint symbolIndex(zvalue symbol);
 
 /**
- * Like `utf8FromSymbol`, except this returns an allocated buffer containing
- * the result.
+ * Gets the `zorder` value corresponding to the given interned symbol.
  */
-char *utf8DupFromSymbol(zvalue symbol);
-
-/**
- * Encodes the name of the given symbol as UTF-8 into the given buffer of the
- * given size in bytes, returning the number of bytes written to. The buffer
- * must be large enough to hold the entire encoded result plus a terminating
- * `'\0'` byte; if not, this function will complain and exit the runtime.
- * To be clear, the result *is* `'\0'`-terminated, and the `'\0'` is included
- * in the result count.
- *
- * **Note:** If the given string possibly contains any `U+0` code points,
- * then the only "safe" way to use the result is as an explicitly-sized
- * buffer. (For example, `strlen()` might "lie.")
- */
-zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol);
-
-/**
- * Gets the number of bytes required to encode the name of the given symbol
- * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
- */
-zint utf8SizeFromSymbol(zvalue symbol);
+zorder zorderFromSymbol(zvalue symbol);
 
 /**
  * Gets a `zstring` of the given symbol. The result `chars` shares storage

@@ -255,6 +255,15 @@ zvalue symbolFromUtf8(zint utfBytes, const char *utf) {
 }
 
 // Documented in header.
+zvalue symbolFromZorder(zorder order) {
+    switch (order) {
+        case ZLESS: { return SYM(less); }
+        case ZMORE: { return SYM(more); }
+        case ZSAME: { return SYM(same); }
+    }
+}
+
+// Documented in header.
 zvalue symbolFromZstring(zstring name) {
     zvalue result = findInternedSymbol(name);
     return (result != NULL) ? result : makeSymbol0(name, true);
@@ -267,18 +276,15 @@ zint symbolIndex(zvalue symbol) {
 }
 
 // Documented in header.
-char *utf8DupFromSymbol(zvalue symbol) {
-    return utf8DupFromZstring(zstringFromSymbol(symbol));
-}
+zorder zorderFromSymbol(zvalue symbol) {
+    zint index = symbolIndex(symbol);
 
-// Documented in header.
-zint utf8FromSymbol(zint resultSize, char *result, zvalue symbol) {
-    return utf8FromZstring(resultSize, result, zstringFromSymbol(symbol));
-}
+    // This can't be a `switch`, since the indices aren't constants.
+    if      (index == SYMIDX(less)) { return ZLESS; }
+    else if (index == SYMIDX(more)) { return ZMORE; }
+    else if (index == SYMIDX(same)) { return ZSAME; }
 
-// Documented in header.
-zint utf8SizeFromSymbol(zvalue symbol) {
-    return utf8SizeFromZstring(zstringFromSymbol(symbol));
+    die("Invalid order symbol: %s", cm_debugString(symbol));
 }
 
 // Documented in header.
@@ -366,7 +372,7 @@ METH_IMPL_1(Symbol, totalOrder, other) {
         // Note: This check is necessary to keep the `ZSAME` case below from
         // incorrectly claiming an unlisted symbol is unordered with
         // respect to itself.
-        return INT_0;
+        return SYM(same);
     }
 
     SymbolInfo *info1 = getInfo(ths);
@@ -374,17 +380,16 @@ METH_IMPL_1(Symbol, totalOrder, other) {
     bool interned = info1->interned;
 
     if (interned != info2->interned) {
-        return interned ? INT_NEG1 : INT_1;
+        return interned ? SYM(less) : SYM(more);
     }
 
-    zorder order = zstringOrder(info1->s, info2->s);
-    switch (order) {
-        case ZLESS: { return INT_NEG1; }
-        case ZMORE: { return INT_1;    }
+    switch (zstringOrder(info1->s, info2->s)) {
+        case ZLESS: { return SYM(less); }
+        case ZMORE: { return SYM(more); }
         case ZSAME: {
             // Per spec, two different unlisted symbols with the same name
             // are unordered with respect to each other.
-            return interned ? INT_0 : NULL;
+            return interned ? SYM(same) : NULL;
         }
     }
 }

@@ -59,7 +59,7 @@ zvalue valOrder(zvalue value, zvalue other) {
     if ((value == NULL) || (other == NULL)) {
         die("Shouldn't happen: NULL argument passed to `valOrder`.");
     } else if (value == other) {
-        return INT_0;
+        return SYM(same);
     }
 
     zvalue valueCls = classOf(value);
@@ -146,7 +146,7 @@ METH_IMPL_1(Value, totalOrder, other) {
         die("`totalOrder` called with incompatible arguments.");
     }
 
-    return valEq(ths, other) ? INT_0 : NULL;
+    return valEq(ths, other) ? SYM(same) : NULL;
 }
 
 // Documented in header.
