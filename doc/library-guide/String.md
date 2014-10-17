@@ -71,8 +71,8 @@ before its longer brethren.
 
 #### `.cat(more*) -> string`
 
-Returns a string consisting of the concatenation of the contents
-of all the arguments, in argument order. Arguments are allowed to be
+Returns a string consisting of the concatenation of the contents of `ths`
+and all the arguments, in argument order. Arguments are allowed to be
 either strings or symbols.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
