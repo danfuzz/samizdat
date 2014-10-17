@@ -10,7 +10,7 @@ Value (the base class)
 #### `.castToward(cls) -> . | void`
 
 Returns a value representing `this` cast either to the given `cls` or
-to a value which `cls` is known (or expected to) be able to cast to itself
+to a value which `cls` is known (or expected) to be able to cast to itself
 from. If `this` does not know how to cast to / toward `cls`, this returns
 void.
 
