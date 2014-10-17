@@ -80,6 +80,17 @@ CMETH_IMPL_1_2(Record, new, name, data) {
 }
 
 // Documented in spec.
+METH_IMPL_1(Record, castToward, cls) {
+    if (valEq(cls, CLS_SymbolTable)) {
+        return getInfo(ths)->data;
+    } else if (classAccepts(cls, ths)) {
+        return ths;
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
@@ -159,6 +170,7 @@ MOD_INIT(Record) {
         METH_TABLE(
             CMETH_BIND(Record, new)),
         METH_TABLE(
+            METH_BIND(Record, castToward),
             METH_BIND(Record, debugString),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
