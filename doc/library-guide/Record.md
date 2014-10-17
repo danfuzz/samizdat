@@ -53,6 +53,18 @@ Returns `this` if its name is as given, or void if not.
 <br><br>
 ### Method Definitions: `Value` protocol
 
+#### `.castToward(cls) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Core` &mdash; Returns `this`.
+
+* `SymbolTable` &mdash; Returns the data payload of `this`. This cast
+  exists so that it is possible to use interpolation when constructing
+  records and symbol tables.
+
+* `Value` &mdash; Returns `this`.
+
 #### `.perEq(other) -> record | void`
 
 Default implementation.
