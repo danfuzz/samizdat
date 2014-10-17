@@ -19,6 +19,10 @@ This class knows how to cast as follows:
 
 * `Map` &mdash; Returns `value`.
 
+* `Record` &mdash; Returns the data payload of `value`. **Note:** This
+  cast exists so that it is possible to do interpolation of records in when
+  constructing maps.
+
 * `SymbolTable` &mdash; Returns a map with the same bindings as `value`.
   Only works if `value`s keys are all ordered. See `Symbol` documentation
   for restrictions on symbol ordering.

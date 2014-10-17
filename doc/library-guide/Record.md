@@ -59,9 +59,9 @@ This class knows how to cast as follows:
 
 * `Core` &mdash; Returns `this`.
 
-* `SymbolTable` &mdash; Returns the data payload of `this`. This cast
-  exists so that it is possible to use interpolation when constructing
-  records and symbol tables.
+* `SymbolTable` &mdash; Returns the data payload of `this`. **Note:** This
+  cast exists so that it is possible to do interpolation of records when
+  constructing records and symbol tables.
 
 * `Value` &mdash; Returns `this`.
 
