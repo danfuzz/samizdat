@@ -17,8 +17,8 @@ void.
 The default implementation of this method merely checks to see if `this` is
 already of class `cls`. If so, it returns `this`; if not, it returns `void`.
 
-**Note:** This method is used by the global functions `cast()` and `optCast()`
-as part of the more general casting mechanism.
+**Note:** This method is used by the global functions `cast()` and
+`maybeCast()` as part of the more general casting mechanism.
 
 
 #### `.debugString() -> string`
