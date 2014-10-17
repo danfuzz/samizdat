@@ -55,7 +55,7 @@ comparison, with a strict prefix always ordering before its longer brethren.
 #### `.cat(more*) -> int`
 
 Returns a list consisting of the concatenation of the elements
-of all the argument lists, in argument order.
+of `ths` and all the argument lists, in argument order.
 
 #### `.del(n) -> list`
 

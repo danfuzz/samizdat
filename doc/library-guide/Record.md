@@ -53,6 +53,29 @@ Returns `this` if its name is as given, or void if not.
 <br><br>
 ### Method Definitions: `Value` protocol
 
+#### `.castToward(cls) -> . | void`
+
+This class knows how to cast as follows:
+
+* `Core` &mdash; Returns `this`.
+
+* `SymbolTable` &mdash; Returns the data payload of `this`. **Note:** This
+  cast exists so that it is possible to do interpolation of records when
+  constructing records and symbol tables.
+
+* `Value` &mdash; Returns `this`.
+
+#### `.cat(more*) -> record`
+
+Returns a record consisting of the combination of the mappings of `ths` and
+the arguments, with the same name as `ths`. Arguments must each be a record
+or a symbol table.
+
+For any keys in common between the arguments, the lastmost argument's value
+is the one that ends up in the result. Despite the `cat` name, strictly
+speaking this isn't a linear concatenation, but it is as close as one can
+get to it given the class's key uniqueness constraints.
+
 #### `.perEq(other) -> record | void`
 
 Default implementation.

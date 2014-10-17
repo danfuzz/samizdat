@@ -108,7 +108,7 @@ METH_IMPL_0(Bool, bitSize) {
     return INT_1;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Bool, castToward, cls) {
     if (valEq(cls, CLS_Int)) {
         return intFromZint(zboolValue(ths));

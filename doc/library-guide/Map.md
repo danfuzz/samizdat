@@ -19,6 +19,10 @@ This class knows how to cast as follows:
 
 * `Map` &mdash; Returns `value`.
 
+* `Record` &mdash; Returns the data payload of `value`. **Note:** This
+  cast exists so that it is possible to do interpolation of records in when
+  constructing maps.
+
 * `SymbolTable` &mdash; Returns a map with the same bindings as `value`.
   Only works if `value`s keys are all ordered. See `Symbol` documentation
   for restrictions on symbol ordering.
@@ -115,8 +119,8 @@ It is a terminal error if `this` does not contain exactly one mapping.
 
 #### `.cat(more*) -> map`
 
-Returns a map consisting of the combination of the mappings of the
-arguments. Arguments are allowed to be maps or symbol tables.
+Returns a map consisting of the combination of the mappings of `ths` and the
+arguments. Arguments are allowed to be maps, records, or symbol tables.
 
 For any keys in common between the arguments, the lastmost argument's value
 is the one that ends up in the result. Despite the `cat` name, strictly

@@ -77,7 +77,7 @@ zvalue valOrder(zvalue value, zvalue other) {
 // Class Definition
 //
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Value, castToward, cls) {
     return classAccepts(cls, ths) ? ths : NULL;
 }

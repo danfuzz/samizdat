@@ -217,15 +217,21 @@ CMETH_IMPL_1(Map, castFrom, value) {
     zvalue cls = classOf(value);
 
     if (valEq(cls, CLS_SymbolTable)) {
-        zint size = symbolTableSize(value);
-        zmapping mappings[size];
-        arrayFromSymbolTable(mappings, value);
-        return mapFromArray(size, mappings);
+        // Do nothing here; fall through the `if` to the conversion below.
+    } else if (valEq(cls, CLS_Record)) {
+        value = get_data(value);
+        // ...and fall through to the conversion below.
     } else if (classAccepts(thsClass, value)) {
         return value;
+    } else {
+        return NULL;
     }
 
-    return NULL;
+    // We were given either a `Record` or a `SymbolTable`.
+    zint size = symbolTableSize(value);
+    zmapping mappings[size];
+    arrayFromSymbolTable(mappings, value);
+    return mapFromArray(size, mappings);
 }
 
 // Documented in spec.
@@ -264,7 +270,7 @@ CMETH_IMPL_1_rest(Map, singleValue, first, args) {
     return mapFromArray(argsSize, mappings);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, castToward, cls) {
     MapInfo *info = getInfo(ths);
 
@@ -290,13 +296,17 @@ METH_IMPL_rest(Map, cat, args) {
     zint size = thsSize;
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        if (classAccepts(CLS_SymbolTable, one)) {
-            one = METH_CALL(castFrom, CLS_Map, one);
+        if (classAccepts(CLS_Map, one)) {
+            maps[i] = one;
         } else {
-            assertHasClass(one, CLS_Map);
+            // TODO: Should be the full `cast()`. Fix this when that function
+            // is sanely available here.
+            maps[i] = METH_CALL(castFrom, CLS_Map, one);
+            if (maps[i] == NULL) {
+                die("Invalid argument to `cat()`: %s", cm_debugString(one));
+            }
         }
-        maps[i] = one;
-        size += getInfo(one)->size;
+        size += getInfo(maps[i])->size;
     }
 
     zmapping elems[size];

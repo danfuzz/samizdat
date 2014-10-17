@@ -311,7 +311,7 @@ CMETH_IMPL_1(String, castFrom, value) {
     return NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(String, castToward, cls) {
     StringInfo *info = getInfo(ths);
 

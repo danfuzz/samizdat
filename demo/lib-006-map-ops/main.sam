@@ -89,4 +89,19 @@ expectEq("symtab 1", {},             {}.cat(@{}));
 expectEq("symtab 2", {a: 10},        {}.cat(@{a: 10}));
 expectEq("symtab 3", {a: 10, b: 20}, {b: 20}.cat(@{a: 10}));
 
+## Record conversion.
+expectEq("record 1", {}, Map.castFrom(@blort{}));
+expectEq("record 2", {blort: "x"}, Map.castFrom(@blort{blort: "x"}));
+
+## Interpolation.
+expectEq("interpolate 1",
+    {blort: "x", fizmo: "y"},
+    {blort: "x", @{fizmo: "y"}*});
+expectEq("interpolate 2",
+    {blort: "x", fizmo: "y"},
+    {@{blort: "x"}*, fizmo: "y"});
+expectEq("interpolate 3",
+    {blort: "x", fizmo: "y"},
+    {@foo{blort: "x"}*, @{fizmo: "y"}*});
+
 note("All good.");

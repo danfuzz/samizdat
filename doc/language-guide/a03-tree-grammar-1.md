@@ -440,7 +440,7 @@ def parPostfixOperator = {:
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(getterCall.get_name()){
-                    getterCall.get_data()*,
+                    getterCall*,
                     lvalue: { expr ->
                         def setterRef = makeSymbolLiteral("set_".cat(name));
                         makeCall(setterRef, node, expr)
@@ -1065,7 +1065,7 @@ def parPexSet = {:
 ## Parses a code block parsing expression.
 def parPexCode = {:
     closure = parNullaryClosure
-    { @code(closure.get_data()) }
+    { @code{closure*} }
 :};
 
 ## Parses a thunk parsing expression.
