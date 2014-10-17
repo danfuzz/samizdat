@@ -77,4 +77,8 @@ expectEq("get_name", @blort, @blort{}.get_name());
 
 expectEq("get_data", @{a: 1}, @blort{a: 1}.get_data());
 
+expectEq("castToward",
+    @{name: "fizmo"},
+    @potion{name: "fizmo"}.castToward(SymbolTable));
+
 note("All good.");
