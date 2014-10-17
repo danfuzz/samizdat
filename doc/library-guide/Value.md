@@ -140,16 +140,16 @@ of all cross-class ordering functions.
 <br><br>
 ### Primitive Definitions
 
-#### `classOf(value) -> class`
-
-Returns the class of the given arbitrary `value`. The return value is always
-of class `Class`.
-
 #### `cast(cls, value) -> .`
 
 "Hard" cast operation. This is like `optCast()`, except that this terminates
 the runtime with an error if the cast could not complete, instead of returning
 void.
+
+#### `classOf(value) -> class`
+
+Returns the class of the given arbitrary `value`. The return value is always
+of class `Class`.
 
 #### `eq(value, other) -> logic`
 
