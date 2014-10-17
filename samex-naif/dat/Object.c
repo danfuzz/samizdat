@@ -68,11 +68,6 @@ CMETH_IMPL_2_4(Object, subclass, name, config,
     zvalue accessSecret = cm_get(config, SYM(access));
     zvalue newSecret = cm_get(config, SYM(new));
 
-    // TODO: Remove this temporary scaffolding.
-    if ((newSecret == NULL) && (accessSecret != NULL)) {
-        newSecret = accessSecret;
-    }
-
     if (accessSecret != NULL) {
         zvalue extraMethods = METH_TABLE(
             accessSecret, FUNC_VALUE(Object_privateDataOf));
