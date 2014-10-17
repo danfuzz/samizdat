@@ -264,7 +264,7 @@ CMETH_IMPL_1_rest(Map, singleValue, first, args) {
     return mapFromArray(argsSize, mappings);
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Map, castToward, cls) {
     MapInfo *info = getInfo(ths);
 
