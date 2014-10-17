@@ -100,8 +100,10 @@ zorder cm_order(zvalue x, zvalue other) {
         die("Attempt to order unordered values.");
     }
 
+    zorder order = zorderFromSymbol(result);
     datFrameReturn(save, NULL);
-    return zorderFromSymbol(result);
+
+    return order;
 }
 
 // Documented in header.
