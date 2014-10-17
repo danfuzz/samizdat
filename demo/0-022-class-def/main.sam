@@ -22,7 +22,8 @@ fn print(args*) {
 ## Main Tests
 ##
 
-def secret = @secret.toUnlisted();
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
 ## Simplest possible class.
 
@@ -55,28 +56,30 @@ ifIs { eq(Blort, OtherBlort) }
 note("\nFizmo");
 
 class Fizmo
-        access: secret {
+        access: ACCESS,
+        new: NEW {
     ## This space intentionally left blank.
 };
 
 print(Fizmo);
-def fizmo = secret(Fizmo);
+def fizmo = NEW(Fizmo);
 print(fizmo);
-print(secret(fizmo));
+print(ACCESS(fizmo));
 
 ## Class with secret and just one method.
 
 note("\nIgram");
 
 class Igram
-        access: secret {
+        access: ACCESS,
+        new: NEW {
     fn hello() {
-        note("Igram! ", secret(this)::effect)
+        note("Igram! ", ACCESS(this)::effect)
     }
 };
 
 print(Igram);
-def igram = secret(Igram, @{effect: "purple -> invisible"});
+def igram = NEW(Igram, @{effect: "purple -> invisible"});
 print(igram);
-print(secret(igram));
+print(ACCESS(igram));
 igram.hello();
