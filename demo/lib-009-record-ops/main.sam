@@ -77,6 +77,16 @@ expectEq("get_name", @blort, @blort{}.get_name());
 
 expectEq("get_data", @{a: 1}, @blort{a: 1}.get_data());
 
+expectEq("cat 1",
+    @foo{a: 1},
+    @foo{a: 1}.cat());
+expectEq("cat 2",
+    @foo{a: 1, b: 2},
+    @foo{b: 2}.cat(@bar{a: 1}));
+expectEq("cat 3",
+    @foo{a: 1, b: 2, c: 3},
+    @foo{b: 2}.cat(@bar{a: 1}, @{c: 3}));
+
 expectEq("castToward",
     @{name: "fizmo"},
     @potion{name: "fizmo"}.castToward(SymbolTable));
