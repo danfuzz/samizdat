@@ -198,3 +198,26 @@ Version History
       you can, say, pass `var x` in as an argument to a function and
       that function can then perform assignment on it in a reasonably
       sane way.
+
+* 0.10.0 &mdash; 17-oct-2014  &mdash; "I Never Metaclass I Didn't Like"
+
+  * **Milestone:** The object model has grown to include metaclasses and
+    class methods.
+
+    * Class methods are now used for construction of values and creation of
+      subclasses, replacing a bunch of globally-exported functions.
+
+    * Defined a generalized "casting" (value conversion) mechanism, based
+      on a class method `.castFrom(value)` and an instance method
+      `.castToward(ClassName)`.
+
+    * Introduced new and much cleaner syntax for defining classes. Underlying
+      semantics is much better than before as well. **Note:** The syntax is
+      still in flux and is missing a lot of functionality.
+
+  * Reworked record values (formerly known as "derived data values").
+    There is now only one class `Record`, instead of a class per record
+    name.
+
+  * Split `Box` into a family of classes, for the various standard box
+    behaviors.
