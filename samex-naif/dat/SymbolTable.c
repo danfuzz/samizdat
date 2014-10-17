@@ -264,7 +264,17 @@ METH_IMPL_rest(SymbolTable, cat, args) {
 
     for (zint i = 0; i < argsSize; i++) {
         zvalue one = args[i];
-        assertHasClass(one, CLS_SymbolTable);
+
+        if (!classAccepts(CLS_SymbolTable, one)) {
+            // TODO: Should be the full `cast()`. Fix this when that function
+            // is sanely available here.
+            one = METH_CALL(castToward, one, CLS_SymbolTable);
+            if ((one == NULL) || !classAccepts(CLS_SymbolTable, one)) {
+                die("Invalid argument to `cat()`: %s",
+                    cm_debugString(args[i]));
+            }
+        }
+
         SymbolTableInfo *oneInfo = getInfo(one);
         zint arraySize = oneInfo->arraySize;
         zmapping *array = oneInfo->array;
