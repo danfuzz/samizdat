@@ -92,7 +92,7 @@ zvalue cm_new_SymbolTable0(zvalue first, ...) {
 // Documented in header.
 zorder cm_order(zvalue x, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
-    // the stack. See note on `valOrder` for more color.
+    // the stack.
     zstackPointer save = datFrameStart();
     zvalue result = valOrder(x, other);
 
@@ -100,6 +100,7 @@ zorder cm_order(zvalue x, zvalue other) {
         die("Attempt to order unordered values.");
     }
 
+    datFrameReturn(save, NULL);
     return zorderFromSymbol(result);
 }
 
