@@ -112,18 +112,17 @@ export fn makeVarStore(name, value) {
 
 ## Documented in spec.
 export fn withFormals(node, formals) {
-    return @(node.get_name()){node.get_data()*, formals}
+    return @(node.get_name()){node*, formals}
 };
 
 ## Documented in spec.
 export fn withName(node, name) {
-    return @(node.get_name()){node.get_data()*, name}
+    return @(node.get_name()){node*, name}
 };
 
 ## Documented in spec.
 export fn withYieldDef(node, name) {
-    def table = node.get_data();
-    def newBindings = ifValue { table::yieldDef }
+    def newBindings = ifValue { node::yieldDef }
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
@@ -131,7 +130,7 @@ export fn withYieldDef(node, name) {
         }
         { @{yieldDef: name} };
 
-    return @(node.get_name()){table*, newBindings*}
+    return @(node.get_name()){node*, newBindings*}
 };
 
 ## Documented in spec.
