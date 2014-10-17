@@ -142,7 +142,7 @@ of all cross-class ordering functions.
 
 #### `cast(cls, value) -> .`
 
-"Hard" cast operation. This is like `optCast()`, except that this terminates
+"Hard" cast operation. This is like `maybeCast()`, except that this terminates
 the runtime with an error if the cast could not complete, instead of returning
 void.
 
