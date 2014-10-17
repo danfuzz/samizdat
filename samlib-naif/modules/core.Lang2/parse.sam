@@ -435,7 +435,7 @@ def parPostfixOperator = {:
             { node ->
                 def getterCall = makeCall(getterRef, node);
                 @(getterCall.get_name()){
-                    getterCall.get_data()*,
+                    getterCall*,
                     lvalue: { expr ->
                         def setterRef = makeSymbolLiteral("set_".cat(name));
                         makeCall(setterRef, node, expr)
@@ -1060,7 +1060,7 @@ def parPexSet = {:
 ## Parses a code block parsing expression.
 def parPexCode = {:
     closure = parNullaryClosure
-    { @code(closure.get_data()) }
+    { @code{closure*} }
 :};
 
 ## Parses a thunk parsing expression.
@@ -1985,7 +1985,7 @@ def parIfExpression = {:
         ## We include the `yieldDef` (if any) here and in the `filterPump`
         ## below, so that we get the proper application of the implicit
         ## yield rule.
-        { makeFullClosure(@{yieldDef*, clause.get_data()*}) }
+        { makeFullClosure(@{yieldDef*, clause*}) }
     )?
 
     {
@@ -2002,7 +2002,7 @@ def parIfExpression = {:
         filterPump(clauses) { clause ->
             ## See above about `yieldDef`.
             def closure =
-                makeFullClosure(@{yieldDef*, clause::then.get_data()*});
+                makeFullClosure(@{yieldDef*, clause::then*});
             reduction := [makeThunk(clause::maker(closure, reduction*))]
         };
 
@@ -2018,7 +2018,7 @@ def parIfExpression = {:
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                makeCall(makeFullClosure(@{mainThunk.get_data()*, yieldDef*}))
+                makeCall(makeFullClosure(@{mainThunk*, yieldDef*}))
             }
     }
 :};
