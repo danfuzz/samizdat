@@ -91,6 +91,27 @@ METH_IMPL_1(Record, castToward, cls) {
 }
 
 // Documented in spec.
+METH_IMPL_rest(Record, cat, args) {
+    if (argsSize == 0) {
+        return ths;
+    }
+
+    // What this does is ask `SymbolTable` to concat `ths`'s data with
+    // all the given arguments, and then use that result to construct a
+    // new instance with the same `name` as `ths`.
+
+    RecordInfo *info = getInfo(ths);
+
+    zvalue fullArgs[argsSize + 1];
+    fullArgs[0] = info->data;
+    utilCpy(zvalue, &fullArgs[1], args, argsSize);
+
+    zvalue data = funCall(SYM(cat), argsSize + 1, fullArgs);
+
+    return cm_new(Record, info->name, data);
+}
+
+// Documented in spec.
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
@@ -171,6 +192,7 @@ MOD_INIT(Record) {
             CMETH_BIND(Record, new)),
         METH_TABLE(
             METH_BIND(Record, castToward),
+            METH_BIND(Record, cat),
             METH_BIND(Record, debugString),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
