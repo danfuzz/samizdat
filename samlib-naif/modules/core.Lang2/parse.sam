@@ -83,7 +83,7 @@ def parParenExpression = {:
     ex = parExpression
     @")"
 
-    { withoutInterpolate(ex) }
+    { withoutIntermediates(ex) }
 :};
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
@@ -181,9 +181,9 @@ def parMapping = {:
     keys = parKey+
     value = parExpression
 
-    ## `withoutInterpolate` here ensures that `value*` is treated as a
+    ## `withoutIntermediates` here ensures that `value*` is treated as a
     ## `fetch` and not interpolation into an underlying function call.
-    { @mapping{keys, value: withoutInterpolate(value)} }
+    { @mapping{keys, value: withoutIntermediates(value)} }
 |
     ## A plain expression is valid only if it's an interpolation, in which
     ## case we take the interpolation variant of the node.

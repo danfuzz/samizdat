@@ -147,7 +147,7 @@ zvalue withTop(zvalue node);
 zvalue withYieldDef(zvalue node, zvalue name);
 
 // Documented in spec.
-zvalue withoutInterpolate(zvalue node);
+zvalue withoutIntermediates(zvalue node);
 
 // Documented in spec.
 zvalue withoutTops(zvalue node);

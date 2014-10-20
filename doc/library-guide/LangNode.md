@@ -480,11 +480,12 @@ data payload bindings. These are bindings which are incidentally used
 during typical tree node construction but which are not used for execution.
 This includes `box`, `lvalue` and `interpolate`.
 
-#### `withoutInterpolate(node) -> node`
-
-Makes a node just like the given one, except without any binding
-for `interpolate`. This is used by parser code to preventing argument
-interpolation from applying to parenthesized expressions.
+This function is useful in a couple of situations. Notably, it is used
+when parsing expressions in a context where their otherwise-special
+transformations should *not* apply. For example, this is used when parsing
+parenthesized expressions to ensure that a parenthesized postfix-`*`
+expression (e.g. `foo(bar, (baz*))`) is treated as a "fetch" and not as a
+call argument interpolation.
 
 #### `withoutTops(node) -> node`
 

@@ -289,7 +289,7 @@ DEF_PARSE(parenExpression) {
     zvalue expression = PARSE_OR_REJECT(expression);
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return withoutInterpolate(expression);
+    return withoutIntermediates(expression);
 }
 
 // Documented in spec.
@@ -440,7 +440,9 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return recordFrom2(SYM(mapping), SYM(keys), keys, SYM(value), value);
+    return recordFrom2(SYM(mapping),
+        SYM(keys), keys,
+        SYM(value), withoutIntermediates(value));
 }
 
 /**

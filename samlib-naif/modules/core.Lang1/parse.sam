@@ -64,7 +64,7 @@ def parParenExpression = makeMainSequence(
     makeToken(@"("),
     parExpression,
     makeToken(@")"),
-    makeCode { ., ex, . -> withoutInterpolate(ex) });
+    makeCode { ., ex, . -> withoutIntermediates(ex) });
 
 ## Documented in spec.
 def parNameSymbol = makeMainSequence(
@@ -149,7 +149,7 @@ def parMapping = makeMainChoice(
         makeRepeat(parKey, 1),
         parExpression,
         makeCode { keys, value ->
-            @mapping{keys, value: withoutInterpolate(value)}
+            @mapping{keys, value: withoutIntermediates(value)}
         }),
     makeSequence(
         parExpression,
