@@ -42,7 +42,7 @@ export fn apply(rule, input) {
         }
         { input };
 
-    return? ifIs { rule.parse(var result, generator) }
+    return? ifIs { rule.parse(result?, generator) }
         { result }
 };
 

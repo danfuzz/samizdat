@@ -47,7 +47,7 @@ class ParaGenerator
         var result;
         def generatorCalls = subGens.collect(
             { gen ->
-                ifValue { gen.nextValue(var result) }
+                ifValue { gen.nextValue(result?) }
                     { nextGenerator -> [result, nextGenerator] }
                     {
                         ## One of the sub-generators became voided.

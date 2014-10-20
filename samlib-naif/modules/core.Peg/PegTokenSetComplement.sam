@@ -28,7 +28,7 @@ class PegTokenSetComplement
         def data = ACCESS(this);
         def result;
 
-        return? ifValue { input.nextValue(var result) }
+        return? ifValue { input.nextValue(result?) }
             { newInput ->
                 ifNot { data::set.get(result.get_name()) }
                     {
