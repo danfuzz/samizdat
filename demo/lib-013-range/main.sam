@@ -40,7 +40,7 @@ fn msgTen(header, origGen) {
                 { yield /done };
 
             def result;
-            ifValue { gen.nextValue(var result) }
+            ifValue { gen.nextValue(result?) }
                 { nextGen ->
                     msg(result);
                     gen := nextGen

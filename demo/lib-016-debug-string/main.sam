@@ -35,23 +35,23 @@ msg(@blort{fizmo: "zorch"});
 def foo = 10;
 var bar = 10;
 def baz;
-msg(var foo);                 ## a Result
-msg(var bar);                 ## a Cell
-msg(var baz);                 ## a Promise
+msg(foo?);                 ## a Result
+msg(bar?);                 ## a Cell
+msg(baz?);                 ## a Promise
 
-msg(Value);                   ## a core class
+msg(Value);                ## a core class
 
 class UserClass {
     ## empty
 };
-msg(UserClass);               ## a user class
+msg(UserClass);            ## a user class
 
-msg(@blort);                  ## an interned symbol
-msg(@blort.toUnlisted());     ## an unlisted symbol
-msg(eq);                      ## a builtin function
-msg(msg);                     ## a named in-language function
-msg({ -> });                  ## an anonymous in-language function
+msg(@blort);               ## an interned symbol
+msg(@blort.toUnlisted());  ## an unlisted symbol
+msg(eq);                   ## a builtin function
+msg(msg);                  ## a named in-language function
+msg({ -> });               ## an anonymous in-language function
 
 { /out ->
-    msg(out);  ## a nonlocal exit function
+    msg(out);              ## a nonlocal exit function
 }();
