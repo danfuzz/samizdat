@@ -60,5 +60,5 @@ class Wrapper
 
 export fn genWrapper(tree) {
     def flat;
-    return NEW(Wrapper, @{tree, flatBox: (var flat)})
+    return NEW(Wrapper, @{tree, flatBox: flat?})
 };
