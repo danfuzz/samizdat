@@ -114,12 +114,12 @@ export fn makeVarStore(name, value) {
 
 ## Documented in spec.
 export fn withFormals(node, formals) {
-    return @(node.get_name()){node*, formals}
+    return node.cat(@{formals})
 };
 
 ## Documented in spec.
 export fn withName(node, name) {
-    return @(node.get_name()){node*, name}
+    return node.cat(@{name})
 };
 
 ## Documented in spec.
@@ -132,7 +132,7 @@ export fn withYieldDef(node, name) {
         }
         { @{yieldDef: name} };
 
-    return @(node.get_name()){node*, newBindings*}
+    return node.cat(newBindings)
 };
 
 ## Documented in spec.
