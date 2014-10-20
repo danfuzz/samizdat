@@ -71,6 +71,18 @@ expectEq("eq 2", @{blort: "splort"}, @{@blort: "splort"});
 expectNe("ne 1", @{blort: "splort"}, @{blort: "zlort"});
 expectNe("ne 2", @{blort: "splort"}, @{zlort: "splort"});
 
+expectEq("del 1",  @{},           @{}.del());
+expectEq("del 2",  @{a: 1},       @{a: 1}.del());
+expectEq("del 3",  @{a: 1},       @{a: 1}.del(@b));
+expectEq("del 4",  @{},           @{a: 1}.del(@a));
+expectEq("del 5",  @{a: 1},       @{a: 1, b: 2}.del(@b));
+expectEq("del 6",  @{b: 2},       @{a: 1, b: 2}.del(@a));
+expectEq("del 7",  @{a: 1, b: 2}, @{a: 1, b: 2}.del(@x));
+expectEq("del 8",  @{},           @{a: 1, b: 2}.del(@a, @b));
+expectEq("del 9",  @{b: 2},       @{a: 1, b: 2, c: 3}.del(@a, @c));
+expectEq("del 10", @{b: 2, d: 4}, @{a: 1, b: 2, c: 3, d: 4}.del(@a, @c));
+expectEq("del 11", @{b: 2},       @{a: 1, b: 2, c: 3, d: 4}.del(@a, @c, @d));
+
 expectEq("interpolate 1", @{x: 10}, @{@{x: 10}*});
 expectEq("interpolate 2", @{x: 10, y: 20}, @{y: 20, @{x: 10}*});
 

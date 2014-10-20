@@ -77,6 +77,20 @@ expectNe("ne 2", [1], [2]);
 
 expectEq("cat", [9, 8, 7, 6, 5, 4], [9, 8, 7].cat([6, 5, 4]));
 
+expectEq("del 1",  [],     [].del());
+expectEq("del 2",  [],     [].del("wha?"));
+expectEq("del 3",  [],     [].del(-1));
+expectEq("del 4",  [],     [].del(0));
+expectEq("del 5",  [],     [].del(1));
+expectEq("del 5",  [],     ["x"].del(0));
+expectEq("del 6",  ["x"],  ["x"].del(-1));
+expectEq("del 7",  ["x"],  ["x"].del(1));
+expectEq("del 8",  ["x"],  ["x", "y"].del(1));
+expectEq("del 9",  ["y"],  ["x", "y"].del(0));
+expectEq("del 10", ["y"],  ["x", "y"].del(0, 0));
+expectEq("del 11", [],     ["x", "y"].del(0, 1));
+expectEq("del 12", [2, 3], [0, 1, 2, 3, 4].del(0, 1, 4));
+
 expectEq("sliceInclusive", [], [1].sliceInclusive(1));
 
 note("All good.");
