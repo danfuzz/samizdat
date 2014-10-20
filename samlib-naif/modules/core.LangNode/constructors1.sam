@@ -149,6 +149,6 @@ export fn withoutInterpolate(node) {
 
 ## Documented in spec.
 export fn withoutIntermediates(node) {
-    def data = node.get_data().del(@lvalue).del(@interpolate);
+    def data = node.get_data().del(@box).del(@lvalue).del(@interpolate);
     return @(node.get_name())(data)
 };
