@@ -57,9 +57,11 @@ comparison, with a strict prefix always ordering before its longer brethren.
 Returns a list consisting of the concatenation of the elements
 of `ths` and all the argument lists, in argument order.
 
-#### `.del(n) -> list`
+#### `.del(ns*) -> list`
 
-Returns a list like the given one, but without the `n`th element.
+Returns a list like the given one, but without the indicated elements
+(by index). If a given index is repeated more than once, it has the same
+effect as if it were only mentioned once.
 
 #### `.get(key) -> . | void`
 

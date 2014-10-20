@@ -77,11 +77,11 @@ get to it given the class's key uniqueness constraints.
 
 **Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
 
-#### `.del(symbol) -> symbolTable`
+#### `.del(symbols*) -> symbolTable`
 
 Returns a symbol table just like the given one, except that
-the mapping for the given `symbol` is removed. If `this`
-does not have a particular given symbol, then this returns `this`.
+the mappings for the given `symbols`, if any, are removed. If `this`
+does not bind any of the given symbols, then this returns `this`.
 
 #### `.get(symbol) -> . | void`
 

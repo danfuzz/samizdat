@@ -130,11 +130,11 @@ get to it given the class's key ordering and uniqueness constraints.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `.del(key) -> map`
+#### `.del(keys*) -> map`
 
-Returns a map just like the one given as an argument, except that
-the result does not have a mapping for the given `key`. If `map` does
-not bind `key`, then this returns `map`.
+Returns a map just like the given one, except that
+the mappings for the given `keys`, if any, are removed. If `this`
+does not bind any of the given keys, then this returns `this`.
 
 #### `.get(key) -> . | void`
 

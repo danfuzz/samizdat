@@ -77,9 +77,11 @@ either strings or symbols.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
 
-#### `.del(n) -> string`
+#### `.del(ns*) -> string`
 
-Returns a string like the given one, but without the `n`th character.
+Returns a string like the given one, but without the indicated characters
+(by index). If a given index is repeated more than once, it has the same
+effect as if it were only mentioned once.
 
 #### `.get(key) -> . | void`
 

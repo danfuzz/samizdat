@@ -20,11 +20,11 @@ would expect.
 
 Concatenates the given collections.
 
-#### `.del(key) -> collection`
+#### `.del(keys*) -> collection`
 
 Returns a collection just like the given one, except that
-the mapping for the given `key` is removed. If `this`
-does not have a particular given key, then this returns `this`.
+the mappings for the given `keys`, if any, are removed. If `this`
+does not bind any of the given keys, then this returns `this`.
 
 **Note:** On sequence-like collections, this shifts elements after the
 deleted element down in index, such that there is no gap in the resulting
