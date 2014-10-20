@@ -734,7 +734,13 @@ zvalue makeMaybe(zvalue value) {
 
 // Documented in spec.
 zvalue makeMaybeValue(zvalue expression) {
-    return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+    zvalue box = cm_get(expression, SYM(box));
+
+    if (box != NULL) {
+        return box;
+    } else {
+        return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+    }
 }
 
 // Documented in spec.
@@ -793,8 +799,11 @@ zvalue makeVarFetch(zvalue name) {
 zvalue makeVarFetchLvalue(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return recordFrom2(SYM(fetch),
-        SYM(target), makeVarRef(name), SYM(lvalue), EMPTY_LIST);
+    zvalue ref = makeVarRef(name);
+    return recordFrom3(SYM(fetch),
+        SYM(box),    ref,
+        SYM(lvalue), EMPTY_LIST,
+        SYM(target), ref);
 }
 
 // Documented in spec.

@@ -94,8 +94,10 @@ export fn makeVarFetch(name) {
 
 ## Documented in spec.
 export fn makeVarFetchLvalue(name) {
+    def ref = makeVarRef(name);
     return @fetch{
-        target: makeVarRef(name),
+        box:    ref,
+        target: ref,
         lvalue: { node -> makeVarStore(name, node) }
     }
 };

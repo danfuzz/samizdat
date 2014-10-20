@@ -444,7 +444,9 @@ export fn makeMapExpression(mappings*) {
 
 ## Documented in spec.
 export fn makeMaybeValue(node) {
-    return makeCall(REFS::maybeValue, makeThunk(node))
+    return ifValueOr
+        { node::box }
+        { makeCall(REFS::maybeValue, makeThunk(node)) }
 };
 
 ## Documented in spec.
