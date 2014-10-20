@@ -12,46 +12,11 @@ The one exception is the assignment operator `:=`.
 The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
-### Tight Prefix Modifiers (Precedence 9, highest / tightest)
 
-One special prefix form binds tighter than any other form.
+### Postfix Operators (Precedence 8, highest / tightest)
 
-#### Variable box reference &mdash; `var name`
-
-Semantically speaking, every variable is represented as a "box" which can
-be fetched from and (in some cases) stored to. Normally, the box
-representation is kept "behind the scenes," but sometimes it is useful
-to access a variable's box directly.
-
-To do this, prefix the name of the variable with `var`.
-
-For example, in each of the following pairs, the two statements are
-equivalent to each other:
-
-```
-note(x);
-note((var x)*);
-
-x := 10;
-(var x).store(10);
-```
-
-This form is most useful when using protocols that explicitly want to take
-boxes, such as notably the generator and parser protocols.
-
-```
-def result;
-if (generator.nextValue(var result)) {
-    [...]
-}
-```
-
-This form is similar in meaning to the address-of operator in C (`&name`).
-
-### Postfix Operators
-
-Postfix operators have nearly the highest precedence in the language, binding
-more tightly than any other regular operators, including prefix operators.
+Postfix operators have the highest precedence in the language, binding
+more tightly than any other operators, including prefix operators.
 
 #### Apply function &mdash; `expression(arg, arg, ...) { block } { block } ...`
 
@@ -191,6 +156,22 @@ inner expression can be converted into a list by appending a question mark to
 it. If the inner expression results in a value `v`, then the outer expression
 results in a single-element list of the result `[v]`. If the inner expression
 results in void, the outer expression results in `[]` (the empty list).
+
+As a special case of this operator, when applied to a variable name, this
+operator denotes the box which holds the so-named variable, similar to the
+`&name` form in C. Normally, the box representation of variables is kept
+"behind the scenes," but sometimes it is useful to access a variable's box
+directly. This form is most useful when using protocols that explicitly want
+to take boxes, such as notably the generator and parser protocols.
+For example:
+
+```
+def result;
+if (generator.nextValue(result?)) {
+    [...]
+}
+```
+
 
 #### Interpolate generator or value &mdash; `expression*`
 
