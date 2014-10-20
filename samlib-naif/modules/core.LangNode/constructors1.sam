@@ -144,6 +144,5 @@ export fn withYieldDefIfAbsent(node, name) {
 
 ## Documented in spec.
 export fn withoutIntermediates(node) {
-    def data = node.get_data().del(@box, @interpolate, @lvalue);
-    return @(node.get_name())(data)
+    return node.del(@box, @interpolate, @lvalue)
 };
