@@ -73,9 +73,10 @@ static zvalue allocClone(zvalue orig) {
 }
 
 /**
- * The main guts of the `get` operation.
+ * Returns the index where the `key` is stored in `info`, or returns `-1` if
+ * not found.
  */
-static zvalue infoGet(SymbolTableInfo *info, zvalue key) {
+static zint infoFind(SymbolTableInfo *info, zvalue key) {
     zint arraySize = info->arraySize;
     zmapping *array = info->array;
     zint index = symbolIndex(key) % arraySize;
@@ -85,15 +86,15 @@ static zvalue infoGet(SymbolTableInfo *info, zvalue key) {
         if (foundKey == NULL) {
             // As keys are never deleted, `NULL` means that we can't possibly
             // find the key at a later index.
-            return NULL;
+            return -1;
         } else if (key == foundKey) {
-            return array[index].value;
+            return index;
         }
 
         index = (index + 1) % arraySize;
     }
 
-    return NULL;
+    return -1;
 }
 
 /**
@@ -288,26 +289,53 @@ METH_IMPL_rest(SymbolTable, cat, args) {
 }
 
 // Documented in spec.
-METH_IMPL_1(SymbolTable, del, key) {
+METH_IMPL_rest(SymbolTable, del, keys) {
     SymbolTableInfo *info = getInfo(ths);
     zint arraySize = info->arraySize;
-    zint size = info->size;
-    zint newSize = size - 1;
-    zmapping mappings[newSize];
+    zmapping array[arraySize];
+    bool any = false;
 
-    for (zint i = 0, at = 0; i < arraySize; i++) {
-        zvalue oneKey = info->array[i].key;
-        if ((oneKey != NULL) && (oneKey != key)) {
-            if (at == newSize) {
-                // We failed to find the given key.
-                return ths;
+    if ((keysSize == 0) || (info->size == 0)) {
+        // Easy outs: Not actually deleting anything, and/or starting out
+        // with the empty symbol table.
+        return ths;
+    }
+
+    // Make a local copy of the original mappings.
+    utilCpy(zmapping, array, info->array, arraySize);
+
+    // Null out the `key` for any of the given `keys`.
+    for (zint i = 0; i < keysSize; i++) {
+        zint index = infoFind(info, keys[i]);
+        if (index >= 0) {
+            any = true;
+            array[index].key = NULL;
+        }
+    }
+
+    if (! any) {
+        // None of `keys` were in `ths`.
+        return ths;
+    }
+
+    // Compact away the holes.
+    zint at = 0;
+    for (zint i = 0; i < arraySize; i++) {
+        if (array[i].key != NULL) {
+            if (i != at) {
+                array[at] = array[i];
             }
-            mappings[at] = info->array[i];
             at++;
         }
     }
 
-    return symbolTableFromArray(newSize, mappings);
+    if (at == 0) {
+        // All of the elements were removed.
+        return EMPTY_SYMBOL_TABLE;
+    }
+
+    // Construct a new instance with the remaining elements.
+    return symbolTableFromArray(at, array);
 }
 
 // Documented in header.
@@ -325,7 +353,10 @@ METH_IMPL_0(SymbolTable, gcMark) {
 
 // Documented in spec.
 METH_IMPL_1(SymbolTable, get, key) {
-    return infoGet(getInfo(ths), key);
+    SymbolTableInfo *info = getInfo(ths);
+    zint index = infoFind(info, key);
+
+    return (index < 0) ? NULL : info->array[index].value;
 }
 
 // Documented in spec.
