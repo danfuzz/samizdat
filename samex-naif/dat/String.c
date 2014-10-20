@@ -2,6 +2,8 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+#include <stdlib.h>
+
 #include "type/Box.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -172,9 +174,18 @@ static zvalue doSlice(zvalue ths, bool inclusive,
         // Share storage for large results.
         return makeIndirectString(ths, start, size);
     } else {
-        zstring s = { size, &info->s.chars[start] };
-        return stringFromZstring(s);
+        return stringFromZstring((zstring) { size, &info->s.chars[start] });
     }
+}
+
+/**
+ * Comparison function to order `zint`s, passed to standard library sorting
+ * functions.
+ */
+static int zintOrder(const void *ptr1, const void *ptr2) {
+    zint v1 = *((const zint *) ptr1);
+    zint v2 = *((const zint *) ptr2);
+    return (v1 == v2) ? 0 : ((v1 < v2) ? -1 : 1);
 }
 
 
@@ -360,8 +371,7 @@ METH_IMPL_rest(String, cat, args) {
         at += one.size;
     }
 
-    zstring s = { size, chars };
-    zvalue result = stringFromZstring(s);
+    zvalue result = stringFromZstring((zstring) { size, chars });
     freeArray(chars);
     return result;
 }
@@ -388,23 +398,67 @@ METH_IMPL_0_1(String, collect, function) {
 }
 
 // Documented in spec.
-METH_IMPL_1(String, del, key) {
+METH_IMPL_rest(String, del, ns) {
     StringInfo *info = getInfo(ths);
-    const zchar *chars = info->s.chars;
     zint size = info->s.size;
-    zint index = seqNthIndexLenient(key);
 
-    if ((index < 0) || (index >= size)) {
+    if ((nsSize == 0) || (size == 0)) {
+        // Easy outs: Not actually deleting anything, and/or starting out
+        // with the empty string.
         return ths;
     }
 
-    zchar *resultChars = allocArray(size - 1);
-    utilCpy(zchar, resultChars, chars, index);
-    utilCpy(zchar, &resultChars[index], &chars[index + 1], (size - index - 1));
+    // Convert all the given `ns` to ints, leniently. Leave `-1` for any
+    // argument that is invalid. Sort them.
+    zint indexes[nsSize];
+    for (zint i = 0; i < nsSize; i++) {
+        indexes[i] = seqNthIndexLenient(ns[i]);
+        if (indexes[i] >= size) {
+            indexes[i] = -1;
+        }
+    }
+    qsort(indexes, nsSize, sizeof(zint), zintOrder);
 
-    zstring s = { size - 1, resultChars };
-    zvalue result = stringFromZstring(s);
-    freeArray(resultChars);
+    // Make a local copy of the characters, and compact out the selected
+    // indexes.
+
+    // Start `indexAt` at the first valid index.
+    zint indexAt = 0;
+    while ((indexAt < nsSize) && (indexes[indexAt] < 0)) {
+        indexAt++;
+    }
+
+    if (indexAt == nsSize) {
+        // None of `ns` were in `ths`.
+        return ths;
+    }
+
+    zchar *chars = allocArray(size);
+    arrayFromZstring(chars, info->s);
+
+    zint at = 0;
+    for (zint i = 0; i < size; i++) {
+        if ((indexAt < nsSize) && (indexes[indexAt] == i)) {
+            // The loop skips duplicates.
+            do {
+                indexAt++;
+            } while ((indexAt < nsSize) && (indexes[indexAt] == i));
+        } else {
+            if (i != at) {
+                chars[at] = chars[i];
+            }
+            at++;
+        }
+    }
+
+    if (at == 0) {
+        // All of the characters were removed.
+        return EMPTY_STRING;
+    }
+
+    // Construct a new instance with the remaining characters.
+    zvalue result = stringFromZstring((zstring) { at, chars });
+    freeArray(chars);
     return result;
 }
 
@@ -495,8 +549,7 @@ METH_IMPL_2(String, put, key, value) {
     arrayFromZstring(resultChars, getInfo(ths)->s);
     resultChars[index] = zcharFromString(value);
 
-    zstring s = { size, resultChars };
-    zvalue result = stringFromZstring(s);
+    zvalue result = stringFromZstring((zstring) { size, resultChars });
     freeArray(resultChars);
     return result;
 }
@@ -512,8 +565,7 @@ METH_IMPL_0(String, reverse) {
         arr[i] = chars[j];
     }
 
-    zstring s = { size, arr };
-    zvalue result = stringFromZstring(s);
+    zvalue result = stringFromZstring((zstring) { size, arr });
     freeArray(arr);
     return result;
 }
