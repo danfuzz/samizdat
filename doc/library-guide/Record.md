@@ -32,6 +32,22 @@ other than a symbol table.
 <br><br>
 ### Method Definitions: `Record` protocol
 
+#### `.cat(more*) -> record`
+
+Returns a record consisting of the combination of the mappings of `this` and
+the arguments, with the same name as `ths`. Arguments must each be a record
+or a symbol table.
+
+For any keys in common between the arguments, the lastmost argument's value
+is the one that ends up in the result. Despite the `cat` name, strictly
+speaking this isn't a linear concatenation, but it is as close as one can
+get to it given the class's key uniqueness constraints.
+
+#### `.del(symbols*) -> record`
+
+Returns a record with the same name and mappings as `this`, except without
+any data bindings for the given `symbols`.
+
 #### `.get(symbol) -> . | void`
 
 Returns the value mapped to the given `symbol` (a symbol) in the given
@@ -64,17 +80,6 @@ This class knows how to cast as follows:
   constructing records and symbol tables.
 
 * `Value` &mdash; Returns `this`.
-
-#### `.cat(more*) -> record`
-
-Returns a record consisting of the combination of the mappings of `ths` and
-the arguments, with the same name as `ths`. Arguments must each be a record
-or a symbol table.
-
-For any keys in common between the arguments, the lastmost argument's value
-is the one that ends up in the result. Despite the `cat` name, strictly
-speaking this isn't a linear concatenation, but it is as close as one can
-get to it given the class's key uniqueness constraints.
 
 #### `.perEq(other) -> record | void`
 
