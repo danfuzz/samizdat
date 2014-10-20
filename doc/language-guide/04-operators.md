@@ -157,13 +157,13 @@ it. If the inner expression results in a value `v`, then the outer expression
 results in a single-element list of the result `[v]`. If the inner expression
 results in void, the outer expression results in `[]` (the empty list).
 
-As a special case of this operator, when applied to a variable name, this
-operator denotes the box which holds the so-named variable, similar to the
-`&name` form in C. Normally, the box representation of variables is kept
-"behind the scenes," but sometimes it is useful to access a variable's box
-directly. This form is most useful when using protocols that explicitly want
-to take boxes, such as notably the generator and parser protocols.
-For example:
+As a special case of this operator, when applied directly to a variable name
+(with no intervening parentheses), this operator denotes the box which holds
+the so-named variable, similar to the `&name` form in C. Normally, the box
+representation of variables is kept "behind the scenes," but sometimes it is
+useful to access a variable's box directly. This form is most useful when
+using protocols that explicitly want to take boxes, such as notably the
+generator and parser protocols. For example:
 
 ```
 def result;
@@ -434,8 +434,8 @@ result of the overall expression is the same as the evaluated result
 of `expression`. `expression` must not evaluate to void.
 
 Any number of `lvalue :=` left-hand sides can be included (e.g.,
-`a := b := expr`). Unlike all other infix operator forms, assignment operators
-are right-associative.
+`a := b := expr`). Unlike all other infix operator forms, the assignment
+operator is right-associative.
 
 Beyond that, the specific meaning of an assignment expression depends on
 what sort of reference `lvalue` is; see those for more details.
@@ -449,3 +449,8 @@ Lvalues include:
   supports the `Box` protocol.
 * A getter/setter expression, that is, an arbitrary expression followed
   by `.memberName` and *without* method application parentheses after that.
+  In this case, assignment is equivalent to calling `.set_memberName()` with
+  one argument.
+
+**Note:** If an otherwise-valid lvalue expression is surrounded with
+parentheses, then it loses its "lvalue-ness."
