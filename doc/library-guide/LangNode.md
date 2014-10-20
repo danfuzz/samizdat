@@ -360,7 +360,7 @@ Makes a `varDefMutable` statement node. `name` must be a symbol.
 Makes a `fetch` node with a `varRef` payload, and no additional bindings.
 `name` must be a symbol.
 
-#### `makeVarFetchLvalue(name) -> node`
+#### `makeVarFetchGeneral(name) -> node`
 
 Makes a `fetch` node with a `varRef` payload. `name` must be a symbol.
 

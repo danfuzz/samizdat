@@ -117,7 +117,7 @@ zvalue makeVarDefMutable(zvalue name, zvalue value);
 zvalue makeVarFetch(zvalue name);
 
 // Documented in spec.
-zvalue makeVarFetchLvalue(zvalue name);
+zvalue makeVarFetchGeneral(zvalue name);
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name);

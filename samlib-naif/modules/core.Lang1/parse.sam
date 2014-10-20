@@ -80,7 +80,7 @@ def parNameSymbolList = makeMainSequence(
 ## Documented in spec.
 def parVarLvalue = makeMainSequence(
     parNameSymbol,
-    makeCode { name -> makeVarFetchLvalue(name) });
+    makeCode { name -> makeVarFetchGeneral(name) });
 
 ## Documented in spec.
 def parIdentifierSymbol = makeMainChoice(

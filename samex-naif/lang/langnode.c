@@ -796,7 +796,7 @@ zvalue makeVarFetch(zvalue name) {
 }
 
 // Documented in spec.
-zvalue makeVarFetchLvalue(zvalue name) {
+zvalue makeVarFetchGeneral(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
     zvalue ref = makeVarRef(name);

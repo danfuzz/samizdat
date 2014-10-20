@@ -110,7 +110,7 @@ def parNameSymbolList = {:
 ## binding for constructing a "store" as appropriate.
 def parVarLvalue = {:
     name = parNameSymbol
-    { makeVarFetchLvalue(name) }
+    { makeVarFetchGeneral(name) }
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,

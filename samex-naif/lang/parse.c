@@ -315,7 +315,7 @@ DEF_PARSE(varLvalue) {
     MARK();
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
-    return makeVarFetchLvalue(name);
+    return makeVarFetchGeneral(name);
 }
 
 // Documented in spec.

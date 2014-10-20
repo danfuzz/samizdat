@@ -93,7 +93,7 @@ export fn makeVarFetch(name) {
 };
 
 ## Documented in spec.
-export fn makeVarFetchLvalue(name) {
+export fn makeVarFetchGeneral(name) {
     def ref = makeVarRef(name);
     return @fetch{
         box:    ref,
