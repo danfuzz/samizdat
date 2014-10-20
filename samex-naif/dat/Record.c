@@ -126,6 +126,22 @@ METH_IMPL_0(Record, debugString) {
     }
 }
 
+// Documented in spec.
+METH_IMPL_rest(Record, del, keys) {
+    RecordInfo *info = getInfo(ths);
+    zvalue data = info->data;
+
+    zint argsSize = keysSize + 1;
+    zvalue args[argsSize];
+    args[0] = data;
+    utilCpy(zvalue, &args[1], keys, keysSize);
+
+    zvalue newData = funCall(SYM(del), argsSize, args);
+    return (newData == data)
+        ? ths
+        : cm_new(Record, info->name, newData);
+}
+
 // Documented in header.
 METH_IMPL_0(Record, gcMark) {
     RecordInfo *info = getInfo(ths);
@@ -194,6 +210,7 @@ MOD_INIT(Record) {
             METH_BIND(Record, castToward),
             METH_BIND(Record, cat),
             METH_BIND(Record, debugString),
+            METH_BIND(Record, del),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
             METH_BIND(Record, get_data),
