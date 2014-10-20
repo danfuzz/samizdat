@@ -1018,9 +1018,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 // Documented in spec.
 zvalue withoutIntermediates(zvalue node) {
     zvalue data = get_data(node);
-    data = METH_CALL(del, data, SYM(box));
-    data = METH_CALL(del, data, SYM(lvalue));
-    data = METH_CALL(del, data, SYM(interpolate));
+    data = METH_CALL(del, data, SYM(box), SYM(interpolate), SYM(lvalue));
 
     return cm_new(Record, get_name(node), data);
 }
