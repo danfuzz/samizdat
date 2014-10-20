@@ -319,15 +319,6 @@ DEF_PARSE(varLvalue) {
 }
 
 // Documented in spec.
-DEF_PARSE(varRef) {
-    MARK();
-
-    MATCH_OR_REJECT(var);
-    zvalue name = PARSE_OR_REJECT(nameSymbol);
-    return makeVarRef(name);
-}
-
-// Documented in spec.
 DEF_PARSE(identifierSymbol) {
     MARK();
 
@@ -633,7 +624,6 @@ DEF_PARSE(term) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varLvalue);       }
-    if (result == NULL) { result = PARSE(varRef);          }
     if (result == NULL) { result = PARSE(literal);         }
     if (result == NULL) { result = PARSE(symbolTable);     }
     if (result == NULL) { result = PARSE(map);             }

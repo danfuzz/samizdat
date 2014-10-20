@@ -108,13 +108,6 @@ def parVarLvalue = {:
     { makeVarFetchLvalue(name) }
 :};
 
-## Parses a variable box reference.
-def parVarRef = {:
-    @var
-    name = parNameSymbol
-    { makeVarRef(name) }
-:};
-
 ## Parses an identifier, identifier-like keyword, or string literal,
 ## returning a symbol literal in all cases.
 def parIdentifierSymbol = {:
@@ -351,7 +344,7 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarLvalue | parVarRef | parLiteral | parSymbolTable | parMap |
+    parVarLvalue | parLiteral | parSymbolTable | parMap |
     parList | parRecord | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear
