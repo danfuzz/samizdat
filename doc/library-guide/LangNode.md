@@ -275,7 +275,8 @@ just returns that.
 
 Makes an interpolation of the given expression node. The result is a
 `fetch` node that refers to the given `expr` as both the main `value` and
-as an `interpolate` binding. See `makeCallOrApply` for more details.
+as an `interpolate` binding, and which binds `lvalue` to a store conversion
+function. See `makeCallOrApply` for more details about `interpolate` bindings.
 
 #### `makeLiteral(value) -> node`
 
@@ -477,7 +478,7 @@ around implicit yielding of the final statement of a closure.
 Makes a node just like the given one, except without any "intermediate"
 data payload bindings. These are bindings which are incidentally used
 during typical tree node construction but which are not used for execution.
-This includes `lvalue` and `interpolate`.
+This includes `box`, `lvalue` and `interpolate`.
 
 #### `withoutInterpolate(node) -> node`
 
