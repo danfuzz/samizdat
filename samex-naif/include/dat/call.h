@@ -98,10 +98,10 @@ zvalue mustNotYield(zvalue value)
         DAT_ARG_COUNT(__VA_ARGS__), (zvalue[]) { DAT_REST(__VA_ARGS__) })
 
 /**
- * `METH_APPLY(name, args)`: Calls a method by (unadorned) name,
+ * `METH_APPLY(target, name, args)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed as a list.
  */
-#define METH_APPLY(name, args) funApply(SYM(name), args)
+#define METH_APPLY(target, name, args) methApply((target), SYM(name), (args))
 
 /**
  * `METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,

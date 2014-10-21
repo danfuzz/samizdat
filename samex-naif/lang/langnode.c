@@ -425,7 +425,7 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
 // Documented in spec.
 zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
-    zvalue attribMap = METH_APPLY(cat, listPrepend(EMPTY_MAP, attributes));
+    zvalue attribMap = METH_APPLY(EMPTY_MAP, cat, attributes);
     zint attribSize = get_size(attribMap);
 
     if (get_size(attributes) != attribSize) {
@@ -471,10 +471,8 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     }
 
     zvalue instanceMethodTable = makeCall(SYMS(new),
-        METH_APPLY(cat,
-            listPrepend(
-                listFrom1(LITS(SymbolTable)),
-                METH_CALL(valueList, instanceMethods))));
+        METH_APPLY(listFrom1(LITS(SymbolTable)), cat,
+            METH_CALL(valueList, instanceMethods)));
 
     zvalue call = makeCall(SYMS(subclass),
         listFrom5(
