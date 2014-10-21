@@ -225,7 +225,7 @@ zvalue symbolCat(zvalue symbol1, zvalue symbol2) {
     arrayFromZstring(chars, info1->s);
     arrayFromZstring(&chars[size1], info2->s);
 
-    return symbolFromZstring((zstring) { size, chars });
+    return symbolFromZstring((zstring) {size, chars});
 }
 
 // Documented in header.
@@ -331,7 +331,7 @@ METH_IMPL_rest(Symbol, cat, args) {
         at += one.size;
     }
 
-    return symbolFromZstring((zstring) { size, chars });
+    return symbolFromZstring((zstring) {size, chars});
 }
 
 // Documented in spec.

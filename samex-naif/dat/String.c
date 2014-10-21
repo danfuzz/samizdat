@@ -174,7 +174,7 @@ static zvalue doSlice(zvalue ths, bool inclusive,
         // Share storage for large results.
         return makeIndirectString(ths, start, size);
     } else {
-        return stringFromZstring((zstring) { size, &info->s.chars[start] });
+        return stringFromZstring((zstring) {size, &info->s.chars[start]});
     }
 }
 
@@ -371,7 +371,7 @@ METH_IMPL_rest(String, cat, args) {
         at += one.size;
     }
 
-    zvalue result = stringFromZstring((zstring) { size, chars });
+    zvalue result = stringFromZstring((zstring) {size, chars});
     freeArray(chars);
     return result;
 }
@@ -457,7 +457,7 @@ METH_IMPL_rest(String, del, ns) {
     }
 
     // Construct a new instance with the remaining characters.
-    zvalue result = stringFromZstring((zstring) { at, chars });
+    zvalue result = stringFromZstring((zstring) {at, chars});
     freeArray(chars);
     return result;
 }
@@ -549,7 +549,7 @@ METH_IMPL_2(String, put, key, value) {
     arrayFromZstring(resultChars, getInfo(ths)->s);
     resultChars[index] = zcharFromString(value);
 
-    zvalue result = stringFromZstring((zstring) { size, resultChars });
+    zvalue result = stringFromZstring((zstring) {size, resultChars});
     freeArray(resultChars);
     return result;
 }
@@ -565,7 +565,7 @@ METH_IMPL_0(String, reverse) {
         arr[i] = chars[j];
     }
 
-    zvalue result = stringFromZstring((zstring) { size, arr });
+    zvalue result = stringFromZstring((zstring) {size, arr});
     freeArray(arr);
     return result;
 }
