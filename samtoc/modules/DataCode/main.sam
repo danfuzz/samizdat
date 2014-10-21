@@ -154,7 +154,7 @@ fn Int_convert(value) {
 ## Converts a list.
 fn List_convert(value) {
     def listElems = [ elem in value -> convert(elem) ];
-    return genCall("VA_METH_CALL", "new", "CLS_List", listElems*)
+    return genCall("VA_METH_CALL", "CLS_List", "new", listElems*)
 };
 
 ## Converts a map.
@@ -163,7 +163,7 @@ fn Map_convert(value) {
         [convert(mapping.key), convert(mapping.value)]
     ];
 
-    return genCall("VA_METH_CALL", "new", "CLS_Map", [].cat(mapPairs*)*)
+    return genCall("VA_METH_CALL", "CLS_Map", "new", [].cat(mapPairs*)*)
 };
 
 ## Converts a record.
@@ -208,7 +208,7 @@ fn SymbolTable_convert(value) {
         [convert(mapping.key), convert(mapping.value)]
     ];
 
-    return genCall("VA_METH_CALL", "new", "CLS_SymbolTable",
+    return genCall("VA_METH_CALL", "CLS_SymbolTable", "new",
         [].cat(mapPairs*)*)
 };
 
