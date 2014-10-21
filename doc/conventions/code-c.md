@@ -152,6 +152,15 @@ switch (something) {
 }
 ```
 
+#### Inline structs
+
+Inline structs should be written *without* spaces just inside the braces,
+e.g.:
+
+```c
+return stringFromZstring((zstring) {size, array});
+```
+
 ### Variable and Function Naming
 
 Variable and function names use `lowercaseInitialCamelCase`. Structural
