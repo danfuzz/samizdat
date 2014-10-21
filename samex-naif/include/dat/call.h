@@ -51,10 +51,10 @@ zvalue methCall(zvalue target, zvalue name, zint argCount,
         const zvalue *args);
 
 /**
- * Calls a function, with a variable number of arguments passed in the usual
- * C style, except that `NULL` must be passed at the end.
+ * Like `methCall()`, except that arguments to the method are passed as
+ * individual C arguments, followed by a `NULL` arguement at the end.
  */
-zvalue vaFunCall(zvalue function, ...);
+zvalue vaMethCall(zvalue target, zvalue name, ...);
 
 /**
  * Function which should never get called. This is used to wrap calls which
@@ -110,12 +110,13 @@ zvalue mustNotYield(zvalue value)
 #define METH_CALL_old(name, ...) FUN_CALL(SYM(name), __VA_ARGS__)
 
 /**
- * `VA_METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,
- * with a variable number of arguments passed in the usual C style. Under
- * the covers, this calls `vaFunCall()` to "parse" the call, and as such it
- * is less efficient than `METH_CALL_old()`, but unlike that macro, this one can
- * handle any number of arguments.
+ * `VA_METH_CALL(target, name, arg, ...)`: Calls a method on a given `target`
+ * by (unadorned) name, with a variable number of arguments passed in the
+ * usual C style. Under the covers, this calls `vaMethCall()` to "parse" the
+ * call, and as such it is less efficient than `METH_CALL()`, but unlike that
+ * macro, this one can handle any number of arguments.
  */
-#define VA_METH_CALL(name, ...) vaFunCall(SYM(name), __VA_ARGS__, NULL)
+#define VA_METH_CALL(target, name, ...) \
+    vaMethCall((target), SYM(name), __VA_ARGS__, NULL)
 
 #endif

@@ -210,11 +210,11 @@ zvalue methCall(zvalue target, zvalue name, zint argCount,
 }
 
 // Documented in header.
-zvalue vaFunCall(zvalue function, ...) {
+zvalue vaMethCall(zvalue target, zvalue name, ...) {
     zint size = 0;
     va_list rest;
 
-    va_start(rest, function);
+    va_start(rest, name);
     for (;;) {
         if (va_arg(rest, zvalue) == NULL) {
             break;
@@ -225,13 +225,13 @@ zvalue vaFunCall(zvalue function, ...) {
 
     zvalue values[size];
 
-    va_start(rest, function);
+    va_start(rest, name);
     for (zint i = 0; i < size; i++) {
         values[i] = va_arg(rest, zvalue);
     }
     va_end(rest);
 
-    return funCall(function, size, values);
+    return methCall(target, name, size, values);
 }
 
 // Documented in header.
