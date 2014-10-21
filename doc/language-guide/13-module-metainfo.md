@@ -75,6 +75,7 @@ syntax.
     },
     ...
 }
+```
 
 ### Path references
 
