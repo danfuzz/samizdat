@@ -70,7 +70,7 @@ syntax.
 ```
 {
     resources: {
-        @internal{name: "etc/template.txt"}: "utf8",
+        @internal{name: "etc/template.txt"}: ["utf8"],
         ...
     },
     ...
