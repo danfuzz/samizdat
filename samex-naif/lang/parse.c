@@ -1323,7 +1323,7 @@ zvalue langParseExpression0(zvalue expression) {
         tokens = expression;
     }
 
-    ParseState state = { tokens, get_size(tokens), 0 };
+    ParseState state = {tokens, get_size(tokens), 0};
     zvalue result = parse_expression(&state);
 
     if (!isEof(&state)) {
@@ -1344,7 +1344,7 @@ zvalue langParseProgram0(zvalue program) {
         tokens = program;
     }
 
-    ParseState state = { tokens, get_size(tokens), 0 };
+    ParseState state = {tokens, get_size(tokens), 0};
     zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {

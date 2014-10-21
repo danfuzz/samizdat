@@ -157,7 +157,7 @@ static zvalue tokenizeInt(ParseState *state) {
  */
 static zvalue tokenizeIdentifier(ParseState *state) {
     zchar chars[LANG_MAX_STRING_CHARS];
-    zstring s = { 0, chars };
+    zstring s = {0, chars};
 
     for (;;) {
         zint ch = peek(state);
@@ -216,7 +216,7 @@ static zvalue tokenizeString(ParseState *state) {
     read(state);
 
     zchar chars[LANG_MAX_STRING_CHARS];
-    zstring s = { 0, chars };
+    zstring s = {0, chars};
 
     for (;;) {
         zint ch = peek(state);
@@ -329,7 +329,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     }
 
     zchar chars[LANG_MAX_STRING_CHARS];
-    zstring s = { 0, chars };
+    zstring s = {0, chars};
 
     for (;;) {
         zint ch = read(state);
@@ -415,7 +415,7 @@ static zvalue tokenizeAnyToken(ParseState *state) {
 
 // Documented in header.
 zvalue langLanguageOf0(zvalue string) {
-    ParseState state = { .str = zstringFromString(string), .at = 0 };
+    ParseState state = {.str = zstringFromString(string), .at = 0};
     zvalue result = tokenizeAnyToken(&state);
 
     if ((result != NULL)
@@ -430,7 +430,7 @@ zvalue langLanguageOf0(zvalue string) {
 // Documented in header.
 zvalue langTokenize0(zvalue string) {
     zstackPointer save = datFrameStart();
-    ParseState state = { .str = zstringFromString(string), .at = 0 };
+    ParseState state = {.str = zstringFromString(string), .at = 0};
 
     zvalue result[LANG_MAX_TOKENS];
     zint out = 0;

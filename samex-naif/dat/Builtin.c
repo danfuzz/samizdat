@@ -110,11 +110,9 @@ BuiltinState builtinGetState(zvalue builtin) {
     zint size = info->stateSize;
 
     if (size == 0) {
-        BuiltinState result = { 0, NULL };
-        return result;
+        return (BuiltinState) {0, NULL};
     } else {
-        BuiltinState result = { size, info->state };
-        return result;
+        return (BuiltinState) {size, info->state};
     }
 }
 

@@ -152,7 +152,7 @@ static char *callReporter(void *state) {
 static zvalue anySymbolFromUtf8(zint utfBytes, const char *utf,
         bool interned) {
     zchar chars[DAT_MAX_SYMBOLS];
-    zstring name = { utf8DecodeStringSize(utfBytes, utf), chars };
+    zstring name = {utf8DecodeStringSize(utfBytes, utf), chars};
 
     utf8DecodeCharsFromString(chars, utfBytes, utf);
 

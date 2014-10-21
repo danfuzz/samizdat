@@ -60,8 +60,7 @@ static PageRange pageRangeFromAddressRange(void *startPtr, void *endPtr) {
     intptr_t start = ((intptr_t) startPtr) & PAGE_MASK;
     intptr_t end = ((intptr_t) endPtr + PAGE_SIZE - 1) & PAGE_MASK;
 
-    PageRange result = { start, end };
-    return result;
+    return (PageRange) {start, end};
 }
 
 /**
