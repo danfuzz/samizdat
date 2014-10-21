@@ -64,7 +64,7 @@ def parParenExpression = makeMainSequence(
     makeToken(@"("),
     parExpression,
     makeToken(@")"),
-    makeCode { ., ex, . -> withoutInterpolate(ex) });
+    makeCode { ., ex, . -> withoutIntermediates(ex) });
 
 ## Documented in spec.
 def parNameSymbol = makeMainSequence(
@@ -80,13 +80,7 @@ def parNameSymbolList = makeMainSequence(
 ## Documented in spec.
 def parVarLvalue = makeMainSequence(
     parNameSymbol,
-    makeCode { name -> makeVarFetchLvalue(name) });
-
-## Documented in spec.
-def parVarRef = makeMainSequence(
-    makeToken(@var),
-    parNameSymbol,
-    makeCode { ., name -> makeVarRef(name) });
+    makeCode { name -> makeVarFetchGeneral(name) });
 
 ## Documented in spec.
 def parIdentifierSymbol = makeMainChoice(
@@ -155,7 +149,7 @@ def parMapping = makeMainChoice(
         makeRepeat(parKey, 1),
         parExpression,
         makeCode { keys, value ->
-            @mapping{keys, value: withoutInterpolate(value)}
+            @mapping{keys, value: withoutIntermediates(value)}
         }),
     makeSequence(
         parExpression,
@@ -280,7 +274,7 @@ def parBasicNullaryClosure = makeMainSequence(
 
 ## Documented in spec.
 def parTerm = makeMainChoice(
-    parVarLvalue, parVarRef, parLiteral, parSymbolTable, parMap,
+    parVarLvalue, parLiteral, parSymbolTable, parMap,
     parList, parRecord, parFullClosure, parParenExpression,
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.

@@ -38,7 +38,7 @@ class ListWrapGenerator
         def data = ACCESS(this);
         def result;
 
-        return? ifValue { data::generator.nextValue(var result) }
+        return? ifValue { data::generator.nextValue(result?) }
             { nextGenerator ->
                 box* := [result];
                 makeListWrapGenerator(nextGenerator)

@@ -59,14 +59,36 @@ fn igram(foo) {
 ## Demo of box-of-variable access.
 fn fizmo() {
     var x = "blort";
-    def box = var x;
+    def box = x?;
 
+    ## Fetching through the box.
     note("fizmo:");
     note("    ", x);
     note("    ", box.fetch());
+    note("    ", box*);
 
+    ## Storing to the original variable affects the box too.
+    x := "frotz";
+    note("    ", x);
+    note("    ", box.fetch());
+    note("    ", box*);
+
+    ## Storing to the box affects the original variable too.
     box* := "igram";
     note("    ", x);
+    note("    ", box.fetch());
+    note("    ", box*);
+
+    ## The `?` operator works as part of the left-hand side of an assignment.
+    (x?)* := "blort";
+    note("    ", x);
+    note("    ", box.fetch());
+    note("    ", box*);
+
+    ## In this case, the variable is unbound, and the usual idiom of `name?*`
+    ## should expand into a successful interpolation of nothingness.
+    var y;
+    note("    nothing? [", y?*, "]");
 };
 
 

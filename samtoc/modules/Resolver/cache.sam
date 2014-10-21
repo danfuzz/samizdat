@@ -16,7 +16,7 @@
 
 export fn makeCache() {
     var cache = {};
-    return @ResolveCache{box: (var cache)}
+    return @ResolveCache{box: cache?}
 };
 
 export fn cacheGet(cache, source) {

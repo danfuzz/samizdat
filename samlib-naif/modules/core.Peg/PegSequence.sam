@@ -37,7 +37,7 @@ class PegSequence
 
         ## This is akin to `for (rule in data::rules) { ... }`.
         filterPump(data::rules) { rule ->
-            ifValue { rule.parse(var result, remainingInput, results*) }
+            ifValue { rule.parse(result?, remainingInput, results*) }
                 { newInput ->
                     remainingInput := newInput;
                     results := [results*, result]

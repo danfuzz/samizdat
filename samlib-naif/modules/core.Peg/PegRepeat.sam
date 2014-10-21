@@ -41,7 +41,7 @@ class PegRepeat
                 { {->} };
 
             loop {
-                ifValue { rule.parse(var result, remainingInput, items*) }
+                ifValue { rule.parse(result?, remainingInput, items*) }
                     { newInput ->
                         ## Successfully parsed the inner rule.
                         remainingInput := newInput;

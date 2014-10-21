@@ -275,7 +275,8 @@ just returns that.
 
 Makes an interpolation of the given expression node. The result is a
 `fetch` node that refers to the given `expr` as both the main `value` and
-as an `interpolate` binding. See `makeCallOrApply` for more details.
+as an `interpolate` binding, and which binds `lvalue` to a store conversion
+function. See `makeCallOrApply` for more details about `interpolate` bindings.
 
 #### `makeLiteral(value) -> node`
 
@@ -302,8 +303,12 @@ the latter produces an expression node which always evaluates to a list.
 #### `makeMaybeValue(node) -> node`
 
 Makes a maybe-value expression for the given `node`. This effectively
-returns a node representing `node?` (for the original `node`), or
-equivalently and more expanded, `maybeValue { -> node }`.
+returns a node representing `node?` (for the original `node`).
+
+In the usual case, the result is equivalent to a node for
+`maybeValue { -> node }`. However, if `node` bound `box`, then this simply
+returns the so-bound value. The latter is the case for general variable
+references, where postfix `?` denotes a reference to the varaible's box.
 
 #### `makeNoYield(value) -> node`
 
@@ -355,12 +360,16 @@ Makes a `varDefMutable` statement node. `name` must be a symbol.
 Makes a `fetch` node with a `varRef` payload, and no additional bindings.
 `name` must be a symbol.
 
-#### `makeVarFetchLvalue(name) -> node`
+#### `makeVarFetchGeneral(name) -> node`
 
 Makes a `fetch` node with a `varRef` payload. `name` must be a symbol.
 
-The resulting `fetch` node has an `lvalue` binding to a one-argument function
-which takes a node and calls `makeVarStore()` to produce an assignment node.
+The resulting `fetch` node is a general variable reference, which makes it
+usable as-is (to fetch a variable's value), as well as usable as an lvalue
+(to store into a variable) *and* to use with the maybe-value operator
+(postfix `?`) to refer to the box which holds the variable. The latter
+operations are achieved by having `lvalue` and `box` bound on the resulting
+node, respectively.
 
 #### `makeVarRef(name) -> node`
 
@@ -469,13 +478,14 @@ around implicit yielding of the final statement of a closure.
 Makes a node just like the given one, except without any "intermediate"
 data payload bindings. These are bindings which are incidentally used
 during typical tree node construction but which are not used for execution.
-This includes `lvalue` and `interpolate`.
+This includes `box`, `lvalue` and `interpolate`.
 
-#### `withoutInterpolate(node) -> node`
-
-Makes a node just like the given one, except without any binding
-for `interpolate`. This is used by parser code to preventing argument
-interpolation from applying to parenthesized expressions.
+This function is useful in a couple of situations. Notably, it is used
+when parsing expressions in a context where their otherwise-special
+transformations should *not* apply. For example, this is used when parsing
+parenthesized expressions to ensure that a parenthesized postfix-`*`
+expression (e.g. `foo(bar, (baz*))`) is treated as a "fetch" and not as a
+call argument interpolation.
 
 #### `withoutTops(node) -> node`
 

@@ -101,9 +101,9 @@ fn bodies(node, bodiesBox) {
 ## `closure` nodes have been replaced by indexed closure references.
 export fn collectClosures(node) {
     var bodiesMap = {};
-    def newNode = bodies(node, var bodiesMap);
+    def newNode = bodies(node, bodiesMap?);
 
-    def bodiesBoxList = [ for #bodiesMap -> def result; (var result) ];
+    def bodiesBoxList = [ for #bodiesMap -> def result; result? ];
     for (body in bodiesMap) {
         def index = body.value::id;
         bodiesBoxList[index]* := body.key

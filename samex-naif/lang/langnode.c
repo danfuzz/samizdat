@@ -734,7 +734,13 @@ zvalue makeMaybe(zvalue value) {
 
 // Documented in spec.
 zvalue makeMaybeValue(zvalue expression) {
-    return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+    zvalue box = cm_get(expression, SYM(box));
+
+    if (box != NULL) {
+        return box;
+    } else {
+        return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+    }
 }
 
 // Documented in spec.
@@ -790,11 +796,14 @@ zvalue makeVarFetch(zvalue name) {
 }
 
 // Documented in spec.
-zvalue makeVarFetchLvalue(zvalue name) {
+zvalue makeVarFetchGeneral(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
-    return recordFrom2(SYM(fetch),
-        SYM(target), makeVarRef(name), SYM(lvalue), EMPTY_LIST);
+    zvalue ref = makeVarRef(name);
+    return recordFrom3(SYM(fetch),
+        SYM(box),    ref,
+        SYM(lvalue), EMPTY_LIST,
+        SYM(target), ref);
 }
 
 // Documented in spec.
@@ -927,19 +936,16 @@ zvalue withModuleDefs(zvalue node) {
                     SYMS(exports), yieldExports,
                     SYMS(info),    yieldInfo))));
 
-    return cm_new(Record, get_name(node),
-        cm_cat(
-            get_data(node),
-            tableFrom3(
-                SYM(info),       info,
-                SYM(statements), statements,
-                SYM(yield),      yieldNode)));
+    return cm_cat(node,
+        tableFrom3(
+            SYM(info),       info,
+            SYM(statements), statements,
+            SYM(yield),      yieldNode));
 }
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
-    return cm_new(Record, get_name(node),
-        cm_put(get_data(node), SYM(name), name));
+    return cm_cat(node, tableFrom1(SYM(name), name));
 }
 
 // Documented in spec.
@@ -975,23 +981,19 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     zvalue converted = listFromArray(size, arr);
 
-    return cm_new(Record, get_name(node),
-        cm_cat(
-            get_data(node),
-            tableFrom1(SYM(statements), converted)));
+    return cm_cat(node, tableFrom1(SYM(statements), converted));
 }
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
-    return cm_new(Record, get_name(node),
-        cm_put(get_data(node), SYM(top), BOOL_TRUE));
+    return cm_cat(node, tableFrom1(SYM(top), BOOL_TRUE));
 }
 
 
 // Documented in spec.
 zvalue withYieldDef(zvalue node, zvalue name) {
-    zvalue table = get_data(node);
-    zvalue yieldDef = cm_get(table, SYM(yieldDef));
+    zvalue data = get_data(node);
+    zvalue yieldDef = cm_get(data, SYM(yieldDef));
     zvalue newBindings;
 
     if (yieldDef != NULL) {
@@ -1003,13 +1005,12 @@ zvalue withYieldDef(zvalue node, zvalue name) {
         newBindings = tableFrom1(SYM(yieldDef), name);
     }
 
-    return cm_new(Record, get_name(node), cm_cat(table, newBindings));
+    return cm_cat(node, newBindings);
 };
 
 // Documented in spec.
-zvalue withoutInterpolate(zvalue node) {
-    return cm_new(Record, get_name(node),
-        METH_CALL(del, get_data(node), SYM(interpolate)));
+zvalue withoutIntermediates(zvalue node) {
+    return METH_CALL(del, node, SYM(box), SYM(interpolate), SYM(lvalue));
 }
 
 // Documented in spec.
@@ -1066,9 +1067,6 @@ zvalue withoutTops(zvalue node) {
         ? EMPTY_LIST
         : listFrom1(makeExportSelection(exports));
 
-    return cm_new(Record, get_name(node),
-        cm_cat(
-            get_data(node),
-            tableFrom1(
-                SYM(statements), cm_cat(tops, mains, optSelection))));
+    return cm_cat(node,
+        tableFrom1(SYM(statements), cm_cat(tops, mains, optSelection)));
 }

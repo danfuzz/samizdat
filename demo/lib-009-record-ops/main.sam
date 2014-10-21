@@ -87,6 +87,18 @@ expectEq("cat 3",
     @foo{a: 1, b: 2, c: 3},
     @foo{b: 2}.cat(@bar{a: 1}, @{c: 3}));
 
+expectEq("del 1",  @a{},           @a{}.del());
+expectEq("del 2",  @b{a: 1},       @b{a: 1}.del());
+expectEq("del 3",  @c{a: 1},       @c{a: 1}.del(@b));
+expectEq("del 4",  @d{},           @d{a: 1}.del(@a));
+expectEq("del 5",  @e{a: 1},       @e{a: 1, b: 2}.del(@b));
+expectEq("del 6",  @f{b: 2},       @f{a: 1, b: 2}.del(@a));
+expectEq("del 7",  @g{a: 1, b: 2}, @g{a: 1, b: 2}.del(@x));
+expectEq("del 8",  @h{},           @h{a: 1, b: 2}.del(@a, @b));
+expectEq("del 9",  @i{b: 2},       @i{a: 1, b: 2, c: 3}.del(@a, @c));
+expectEq("del 10", @j{b: 2, d: 4}, @j{a: 1, b: 2, c: 3, d: 4}.del(@a, @c));
+expectEq("del 11", @k{b: 2},       @k{a: 1, b: 2, c: 3, d: 4}.del(@a, @c, @d));
+
 expectEq("castToward",
     @{name: "fizmo"},
     @potion{name: "fizmo"}.castToward(SymbolTable));

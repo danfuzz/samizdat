@@ -12,46 +12,11 @@ The one exception is the assignment operator `:=`.
 The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
-### Tight Prefix Modifiers (Precedence 9, highest / tightest)
 
-One special prefix form binds tighter than any other form.
+### Postfix Operators (Precedence 8, highest / tightest)
 
-#### Variable box reference &mdash; `var name`
-
-Semantically speaking, every variable is represented as a "box" which can
-be fetched from and (in some cases) stored to. Normally, the box
-representation is kept "behind the scenes," but sometimes it is useful
-to access a variable's box directly.
-
-To do this, prefix the name of the variable with `var`.
-
-For example, in each of the following pairs, the two statements are
-equivalent to each other:
-
-```
-note(x);
-note((var x)*);
-
-x := 10;
-(var x).store(10);
-```
-
-This form is most useful when using protocols that explicitly want to take
-boxes, such as notably the generator and parser protocols.
-
-```
-def result;
-if (generator.nextValue(var result)) {
-    [...]
-}
-```
-
-This form is similar in meaning to the address-of operator in C (`&name`).
-
-### Postfix Operators
-
-Postfix operators have nearly the highest precedence in the language, binding
-more tightly than any other regular operators, including prefix operators.
+Postfix operators have the highest precedence in the language, binding
+more tightly than any other operators, including prefix operators.
 
 #### Apply function &mdash; `expression(arg, arg, ...) { block } { block } ...`
 
@@ -191,6 +156,22 @@ inner expression can be converted into a list by appending a question mark to
 it. If the inner expression results in a value `v`, then the outer expression
 results in a single-element list of the result `[v]`. If the inner expression
 results in void, the outer expression results in `[]` (the empty list).
+
+As a special case of this operator, when applied directly to a variable name
+(with no intervening parentheses), this operator denotes the box which holds
+the so-named variable, similar to the `&name` form in C. Normally, the box
+representation of variables is kept "behind the scenes," but sometimes it is
+useful to access a variable's box directly. This form is most useful when
+using protocols that explicitly want to take boxes, such as notably the
+generator and parser protocols. For example:
+
+```
+def result;
+if (generator.nextValue(result?)) {
+    [...]
+}
+```
+
 
 #### Interpolate generator or value &mdash; `expression*`
 
@@ -453,8 +434,8 @@ result of the overall expression is the same as the evaluated result
 of `expression`. `expression` must not evaluate to void.
 
 Any number of `lvalue :=` left-hand sides can be included (e.g.,
-`a := b := expr`). Unlike all other infix operator forms, assignment operators
-are right-associative.
+`a := b := expr`). Unlike all other infix operator forms, the assignment
+operator is right-associative.
 
 Beyond that, the specific meaning of an assignment expression depends on
 what sort of reference `lvalue` is; see those for more details.
@@ -468,3 +449,8 @@ Lvalues include:
   supports the `Box` protocol.
 * A getter/setter expression, that is, an arbitrary expression followed
   by `.memberName` and *without* method application parentheses after that.
+  In this case, assignment is equivalent to calling `.set_memberName()` with
+  one argument.
+
+**Note:** If an otherwise-valid lvalue expression is surrounded with
+parentheses, then it loses its "lvalue-ness."

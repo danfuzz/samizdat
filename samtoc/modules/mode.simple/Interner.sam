@@ -9,7 +9,7 @@
 
 export fn makeInterner() {
     var values = {};
-    return @Interner{values: (var values)}
+    return @Interner{values: values?}
 };
 
 export fn intern(this, value) {
@@ -28,7 +28,7 @@ export fn intern(this, value) {
 
 export fn get_interns(this) {
     def map = this::values*;
-    def boxList = [ n in (0..#map) -> def result; (var result) ];
+    def boxList = [ n in (0..#map) -> def result; result? ];
 
     for (mapping in map) {
         def id = mapping.value;

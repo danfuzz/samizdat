@@ -88,7 +88,20 @@ expect("cat 8", "blort", { "b".cat(@lort) });
 expect("cat 9", "blort", { "b".cat(@lor, @t) });
 expect("cat 10", "blort", { "b".cat(@lor, "t") });
 
-expect("del", "muffins", { "mufxfins".del(3) });
+expectEq("del 1",  "",        "".del());
+expectEq("del 2",  "",        "".del("wha?"));
+expectEq("del 3",  "",        "".del(-1));
+expectEq("del 4",  "",        "".del(0));
+expectEq("del 5",  "",        "".del(1));
+expectEq("del 5",  "",        "x".del(0));
+expectEq("del 6",  "x",       "x".del(-1));
+expectEq("del 7",  "x",       "x".del(1));
+expectEq("del 8",  "x",       "xy".del(1));
+expectEq("del 9",  "y",       "xy".del(0));
+expectEq("del 10", "y",       "xy".del(0, 0));
+expectEq("del 11", "",        "xy".del(0, 1));
+expectEq("del 12", "23",      "01234".del(0, 1, 4));
+expectEq("del 13", "muffins", "mufxfins".del(3));
 
 expect("keyList", [0, 1, 2, 3, 4], { "blort".keyList() });
 

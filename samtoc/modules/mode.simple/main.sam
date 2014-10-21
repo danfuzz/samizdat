@@ -116,17 +116,17 @@ fn closureBody(cloIdx, clo, literals) {
     ## set of vars defined in `vars`).
 
     def mainStats =
-        [ s in clo::statements -> translateStatement(s, var vars) ];
+        [ s in clo::statements -> translateStatement(s, vars?) ];
 
     def rawYield = clo::yield;
     def yieldNode = if (rawYield.hasName(@maybe)) {
-        translate(rawYield::value, var vars);
+        translate(rawYield::value, vars?);
     } else if (rawYield.hasName(@void)) {
         "NULL"
     } else {
         ## If it's not wrapped in a `@maybe`, we need to guarantee
         ## non-void.
-        genCall("datNonVoid", translate(rawYield, var vars))
+        genCall("datNonVoid", translate(rawYield, vars?))
     };
     def yieldStats = makeYieldStatements(yieldNode, varInfo::cleanups);
 

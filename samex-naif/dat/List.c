@@ -186,17 +186,53 @@ METH_IMPL_0_1(List, collect, function) {
 }
 
 // Documented in spec.
-METH_IMPL_1(List, del, key) {
+METH_IMPL_rest(List, del, ns) {
     ListInfo *info = getInfo(ths);
-    zvalue *elems = info->elems;
     zint size = info->size;
-    zint index = seqNthIndexLenient(key);
+    zvalue elems[size];
+    bool any = false;
 
-    if ((index < 0) || (index >= size)) {
+    if ((nsSize == 0) || (size == 0)) {
+        // Easy outs: Not actually deleting anything, and/or starting out
+        // with the empty list.
         return ths;
     }
 
-    return listFrom(index, elems, NULL, size - index - 1, &elems[index + 1]);
+    // Make a local copy of the original elements.
+    utilCpy(zvalue, elems, info->elems, size);
+
+    // Null out the values at any valid `n` (leniently).
+    for (zint i = 0; i < nsSize; i++) {
+        zint index = seqNthIndexLenient(ns[i]);
+        if ((index >= 0) && (index < size)) {
+            any = true;
+            elems[index] = NULL;
+        }
+    }
+
+    if (! any) {
+        // None of `ns` were in `ths`.
+        return ths;
+    }
+
+    // Compact away the holes.
+    zint at = 0;
+    for (zint i = 0; i < size; i++) {
+        if (elems[i] != NULL) {
+            if (i != at) {
+                elems[at] = elems[i];
+            }
+            at++;
+        }
+    }
+
+    if (at == 0) {
+        // All of the elements were removed.
+        return EMPTY_LIST;
+    }
+
+    // Construct a new instance with the remaining elements.
+    return listFrom(at, elems, NULL, 0, NULL);
 }
 
 // Documented in spec.

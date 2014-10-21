@@ -54,7 +54,7 @@ export fn filterPump(filterFunction, generators*) {
             ## unnecessary wrapping / unwrapping.
             var gen = generators*;
             loop {
-                ifValue { gen.nextValue(var innerResult) }
+                ifValue { gen.nextValue(innerResult?) }
                     { nextGen ->
                         ifValue { filterFunction(innerResult) }
                             { value -> result := [value] };
@@ -70,7 +70,7 @@ export fn filterPump(filterFunction, generators*) {
             ## General case of multiple (or zero) generators.
             var gen = makeParaGenerator(generators*);
             loop {
-                ifValue { gen.nextValue(var innerResult) }
+                ifValue { gen.nextValue(innerResult?) }
                     { nextGen ->
                         ifValue { filterFunction(innerResult*) }
                             { value -> result := [value] };
@@ -90,7 +90,7 @@ export fn generatorPump(generator) {
     var result;
 
     loop {
-        gen := ifValueOr { gen.nextValue(var result) }
+        gen := ifValueOr { gen.nextValue(result?) }
             { return? result }
     }
 };

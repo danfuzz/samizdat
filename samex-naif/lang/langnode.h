@@ -117,7 +117,7 @@ zvalue makeVarDefMutable(zvalue name, zvalue value);
 zvalue makeVarFetch(zvalue name);
 
 // Documented in spec.
-zvalue makeVarFetchLvalue(zvalue name);
+zvalue makeVarFetchGeneral(zvalue name);
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name);
@@ -147,7 +147,7 @@ zvalue withTop(zvalue node);
 zvalue withYieldDef(zvalue node, zvalue name);
 
 // Documented in spec.
-zvalue withoutInterpolate(zvalue node);
+zvalue withoutIntermediates(zvalue node);
 
 // Documented in spec.
 zvalue withoutTops(zvalue node);

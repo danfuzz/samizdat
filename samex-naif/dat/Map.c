@@ -344,27 +344,54 @@ METH_IMPL_0_1(Map, collect, function) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Map, del, key) {
-    zint index = mapFind(ths, key);
+METH_IMPL_rest(Map, del, keys) {
+    MapInfo *info = getInfo(ths);
+    zint size = info->size;
+    zmapping elems[size];
+    bool any = false;
 
-    if (index < 0) {
+    if ((keysSize == 0) || (size == 0)) {
+        // Easy outs: Not actually deleting anything, and/or starting out
+        // with the empty map.
         return ths;
     }
 
-    MapInfo *info = getInfo(ths);
-    zint size = info->size;
+    // Make a local copy of the original mappings.
+    utilCpy(zmapping, elems, info->elems, size);
 
-    if (size == 1) {
+    // Null out the `key` for any of the given `keys`.
+    for (zint i = 0; i < keysSize; i++) {
+        zint index = mapFind(ths, keys[i]);
+        if (index >= 0) {
+            any = true;
+            elems[index].key = NULL;
+        }
+    }
+
+    if (! any) {
+        // None of `keys` were in `ths`.
+        return ths;
+    }
+
+    // Compact away the holes.
+    zint at = 0;
+    for (zint i = 0; i < size; i++) {
+        if (elems[i].key != NULL) {
+            if (i != at) {
+                elems[at] = elems[i];
+            }
+            at++;
+        }
+    }
+
+    if (at == 0) {
+        // All of the elements were removed.
         return EMPTY_MAP;
     }
 
-    zvalue result = allocMap(size - 1);
-    zmapping *elems = getInfo(result)->elems;
-    zmapping *oldElems = info->elems;
-
-    utilCpy(zmapping, elems, oldElems, index);
-    utilCpy(zmapping, &elems[index], &oldElems[index + 1], (size - index - 1));
-    return result;
+    // Construct a new map with the remaining elements. `elems` is already
+    // sorted, so it's safe to skip the sorting step.
+    return mapFromArrayUnchecked(at, elems);
 }
 
 // Documented in spec.

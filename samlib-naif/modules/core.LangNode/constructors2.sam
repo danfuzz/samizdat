@@ -444,7 +444,9 @@ export fn makeMapExpression(mappings*) {
 
 ## Documented in spec.
 export fn makeMaybeValue(node) {
-    return makeCall(REFS::maybeValue, makeThunk(node))
+    return ifValueOr
+        { node::box }
+        { makeCall(REFS::maybeValue, makeThunk(node)) }
 };
 
 ## Documented in spec.
@@ -485,7 +487,7 @@ export fn withDynamicImports(node) {
     };
 
     def statements = [].cat(converted*);
-    return @(node.get_name()){node*, statements}
+    return node.cat(@{statements})
 };
 
 ## Documented in spec.
@@ -529,17 +531,16 @@ export fn withModuleDefs(node) {
             SYMS::exports, yieldExports,
             SYMS::info,    yieldInfo));
 
-    return @(node.get_name()){
-        node*,
+    return node.cat(@{
         info,
         yield: yieldNode,
         statements
-    }
+    })
 };
 
 ## Documented in spec.
 export fn withTop(node) {
-    return @(node.get_name()){node*, top: true}
+    return node.cat(@{top: true})
 };
 
 ## Documented in spec.
@@ -583,8 +584,5 @@ export fn withoutTops(node) {
         { [] }
         { [makeExportSelection(exports*)] };
 
-    return @(node.get_name()){
-        node*,
-        statements: [tops*, mains*, optSelection*]
-    }
+    return node.cat(@{statements: [tops*, mains*, optSelection*]})
 };

@@ -20,15 +20,18 @@ would expect.
 
 Concatenates the given collections.
 
-#### `.del(key) -> collection`
+#### `.del(keys*) -> collection`
 
-Returns a collection just like the given one, except that
-the mapping for the given `key` is removed. If `this`
-does not have a particular given key, then this returns `this`.
+Returns a collection just like the given one, except that the mappings for the
+given `keys`, if any, are removed. If any of the `keys` is a duplicate, then
+it is no different as if that key is only specified once. If `this` does not
+bind any of the given keys, then this method returns `this`.
 
 **Note:** On sequence-like collections, this shifts elements after the
 deleted element down in index, such that there is no gap in the resulting
-collection.
+collection. However, all such shifting happens *after* selecting of
+elements to delete; so, for example, `[0, 1, 2].del(0, 1)` returns `[2]` and
+not `[1]`. Similarly, `[0, 1, 2].del(0, 0)` returns `[1, 2]`.
 
 #### `.get(key) -> . | void`
 

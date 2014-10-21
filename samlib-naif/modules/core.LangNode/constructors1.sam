@@ -93,9 +93,11 @@ export fn makeVarFetch(name) {
 };
 
 ## Documented in spec.
-export fn makeVarFetchLvalue(name) {
+export fn makeVarFetchGeneral(name) {
+    def ref = makeVarRef(name);
     return @fetch{
-        target: makeVarRef(name),
+        box:    ref,
+        target: ref,
         lvalue: { node -> makeVarStore(name, node) }
     }
 };
@@ -112,12 +114,12 @@ export fn makeVarStore(name, value) {
 
 ## Documented in spec.
 export fn withFormals(node, formals) {
-    return @(node.get_name()){node*, formals}
+    return node.cat(@{formals})
 };
 
 ## Documented in spec.
 export fn withName(node, name) {
-    return @(node.get_name()){node*, name}
+    return node.cat(@{name})
 };
 
 ## Documented in spec.
@@ -130,7 +132,7 @@ export fn withYieldDef(node, name) {
         }
         { @{yieldDef: name} };
 
-    return @(node.get_name()){node*, newBindings*}
+    return node.cat(newBindings)
 };
 
 ## Documented in spec.
@@ -141,12 +143,6 @@ export fn withYieldDefIfAbsent(node, name) {
 };
 
 ## Documented in spec.
-export fn withoutInterpolate(node) {
-    return @(node.get_name())(node.get_data().del(@interpolate))
-};
-
-## Documented in spec.
 export fn withoutIntermediates(node) {
-    def data = node.get_data().del(@lvalue).del(@interpolate);
-    return @(node.get_name())(data)
+    return node.del(@box, @interpolate, @lvalue)
 };

@@ -38,6 +38,7 @@ DEF_SYMBOL(CH_SEMICOLON,          ";");
 DEF_SYMBOL(CH_SLASH,              "/");
 DEF_SYMBOL(CH_STAR,               "*");
 DEF_SYMBOL(apply,                 "apply");
+DEF_SYMBOL(box,                   "box");
 DEF_SYMBOL(break,                 "break");
 DEF_SYMBOL(class,                 "class");
 DEF_SYMBOL(closure,               "closure");

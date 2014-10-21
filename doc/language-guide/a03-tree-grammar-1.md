@@ -88,7 +88,7 @@ def parParenExpression = {:
     ex = parExpression
     @")"
 
-    { withoutInterpolate(ex) }
+    { withoutIntermediates(ex) }
 :};
 
 ## Parses a "name" of some sort. This is just an identifier, but with the
@@ -110,14 +110,7 @@ def parNameSymbolList = {:
 ## binding for constructing a "store" as appropriate.
 def parVarLvalue = {:
     name = parNameSymbol
-    { makeVarFetchLvalue(name) }
-:};
-
-## Parses a variable box reference.
-def parVarRef = {:
-    @var
-    name = parNameSymbol
-    { makeVarRef(name) }
+    { makeVarFetchGeneral(name) }
 :};
 
 ## Parses an identifier, identifier-like keyword, or string literal,
@@ -193,9 +186,9 @@ def parMapping = {:
     keys = parKey+
     value = parExpression
 
-    ## `withoutInterpolate` here ensures that `value*` is treated as a
+    ## `withoutIntermediates` here ensures that `value*` is treated as a
     ## `fetch` and not interpolation into an underlying function call.
-    { @mapping{keys, value: withoutInterpolate(value)} }
+    { @mapping{keys, value: withoutIntermediates(value)} }
 |
     ## A plain expression is valid only if it's an interpolation, in which
     ## case we take the interpolation variant of the node.
@@ -356,7 +349,7 @@ def parBasicNullaryClosure = {:
 
 ## Parses a term (basic expression unit).
 def parTerm = {:
-    parVarLvalue | parVarRef | parLiteral | parSymbolTable | parMap |
+    parVarLvalue | parLiteral | parSymbolTable | parMap |
     parList | parRecord | parFullClosure | parParenExpression
 |
     ## Defined by Samizdat Layer 1. The lookahead is just to make it clear

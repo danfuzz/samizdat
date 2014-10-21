@@ -47,7 +47,7 @@ class FilterGenerator
         ## allowed to yield void to indicate a generated value is to
         ## be discarded.
         loop {
-            ifValue { innerGen.nextValue(var result) }
+            ifValue { innerGen.nextValue(result?) }
                 { nextGen ->
                     ifValue { filterFunction(result*) }
                         { value ->
