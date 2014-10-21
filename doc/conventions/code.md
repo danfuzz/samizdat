@@ -33,7 +33,8 @@ columns. Beyond that, figure out a better way to format the code.
 ### Indentation and tabs
 
 Indentation is four spaces for nested contructs. Tab characters are never
-allowed, except when made a hard requirement by the source code format.
+allowed, except when made a hard requirement by the source code format
+(such as, notably, by the standard makefile syntax).
 
 When splitting up a long statement or expression onto two or more lines,
 use one extra level of indentation, unless that would cause confusion with
