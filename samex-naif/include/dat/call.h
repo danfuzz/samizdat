@@ -104,6 +104,19 @@ zvalue mustNotYield(zvalue value)
 #define METH_APPLY(target, name, args) methApply((target), SYM(name), (args))
 
 /**
+ * `METH_CALL(target, name, arg, ...)`: Calls a method on a given `target`
+ * by (unadorned) name, with a variable number of arguments passed in the
+ * usual C style.
+ */
+#define METH_ARG_ARRAY(...) ((zvalue[]) { __VA_ARGS__ })
+#define METH_ARG_COUNT(...) \
+    (sizeof (METH_ARG_ARRAY(__VA_ARGS__)) / sizeof (zvalue))
+#define METH_CALL(target, name, ...) \
+    methCall((target), SYM(name), \
+        METH_ARG_COUNT(__VA_ARGS__), \
+        METH_ARG_ARRAY(__VA_ARGS__))
+
+/**
  * `METH_CALL_old(name, arg, ...)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed in the usual C style.
  */
