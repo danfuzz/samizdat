@@ -10,16 +10,16 @@
 #define _DAT_CALL_H_
 
 /**
- * Calls a function with the given list of arguments. `function` must be
- * a function, and `args` must be a list or `NULL` (the latter treated like
- * an empty list).
+ * Calls the given `function` with the given list of arguments. `function`
+ * must be a function, and `args` must be a list or `NULL` (the latter treated
+ * like an empty list).
  */
 zvalue funApply(zvalue function, zvalue args);
 
 /**
- * Calls a function with the given list of arguments. `function` must be
- * a `Function`, and `argCount` must be non-negative. If `argCount` is
- * positive, then `args` must not be `NULL`. In addition all elements of
+ * Calls the given `function` with the given list of arguments. `function`
+ * must be a function, and `argCount` must be non-negative. If `argCount` is
+ * positive, then `args` must not be `NULL`. In addition, all elements of
  * `args` must be non-`NULL`.
  *
  * **Note:** Since in the vast majority of cases it's statically known that
@@ -28,6 +28,27 @@ zvalue funApply(zvalue function, zvalue args);
  * the caller side, e.g. with calls to `datNonVoid()`.
  */
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
+ * Calls the method `name` on target `target`, with the given list of
+ * `args`. `name` must be a symbol, and `args` must be a list or `NULL` (the
+ * latter treated as the empty list).
+ */
+zvalue methApply(zvalue target, zvalue name, zvalue args);
+
+/**
+ * Calls the method `name` on target `target`, with the given list of
+ * `args`. `name` must be a symbol, and `argCount` must be non-negative. If
+ * `argCount` is positive, then `args` must not be `NULL`. In addition, all
+ * elements of `args` must be non-`NULL`.
+ *
+ * **Note:** Since in the vast majority of cases it's statically known that
+ * `args[*]` is non-`NULL`, those checks are not performed here. If the
+ * checks in question need to be performed, then they need to be done on
+ * the caller side, e.g. with calls to `datNonVoid()`.
+ */
+zvalue methCall(zvalue target, zvalue name, zint argCount,
+        const zvalue *args);
 
 /**
  * Calls a function, with a variable number of arguments passed in the usual

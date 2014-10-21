@@ -39,10 +39,10 @@ static zvalue ensureString(zvalue value) {
 }
 
 /**
- * This is the function that handles emitting a context string for a call,
- * when dumping the stack.
+ * This is the function that handles emitting a context string for a function
+ * call, when dumping the stack.
  */
-static char *callReporter(void *state) {
+static char *funcReporter(void *state) {
     zvalue value = state;
     zvalue name = METH_CALL(debugSymbol, value);
 
@@ -54,6 +54,21 @@ static char *callReporter(void *state) {
     char *result;
 
     asprintf(&result, "anonymous %s", clsString);
+    utilFree(clsString);
+
+    return result;
+}
+
+/**
+ * This is the function that handles emitting a context string for a method
+ * call, when dumping the stack.
+ */
+static char *methReporter(void *state) {
+    zvalue cls = state;
+    char *clsString = cm_debugString(cls);
+    char *result;
+
+    asprintf(&result, "class %s", clsString);
     utilFree(clsString);
 
     return result;
@@ -77,13 +92,23 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
         return jumpCall(function, argCount, args);
     } else {
         // The original `function` is some kind of higher layer function.
-        // Use method dispatch to get to it: Prepend `function` as a new
-        // first argument, and call the method `call` via its symbol.
-        zvalue newArgs[argCount + 1];
-        newArgs[0] = function;
-        utilCpy(zvalue, &newArgs[1], args, argCount);
-        return symbolCall(SYM(call), argCount + 1, newArgs);
+        // Use method dispatch to get to it.
+        return methCall(function, SYM(call), argCount, args);
     }
+}
+
+
+//
+// Module Definitions
+//
+
+// Documented in header.
+zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
+    if (argCount < 1) {
+        die("Too few arguments for symbol call.");
+    }
+
+    return methCall(args[0], symbol, argCount - 1, &args[1]);
 }
 
 
@@ -112,11 +137,49 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
         die("Function call argument inconsistency.");
     }
 
-    UTIL_TRACE_START(callReporter, function);
+    UTIL_TRACE_START(funcReporter, function);
     zstackPointer save = datFrameStart();
-
     zvalue result = funCall0(function, argCount, args);
+    datFrameReturn(save, result);
+    UTIL_TRACE_END();
 
+    return result;
+}
+
+// Documented in header.
+zvalue methApply(zvalue target, zvalue name, zvalue args) {
+    zint argCount = (args == NULL) ? 0 : get_size(args);
+
+    if (argCount == 0) {
+        return methCall(target, name, 0, NULL);
+    } else {
+        zvalue argsArray[argCount];
+        arrayFromList(argsArray, args);
+        return methCall(target, name, argCount, argsArray);
+    }
+}
+
+// Documented in header.
+zvalue methCall(zvalue target, zvalue name, zint argCount,
+        const zvalue *args) {
+    zint index = symbolIndex(name);
+    zvalue cls = classOf(target);
+    zvalue function = classFindMethodUnchecked(cls, index);
+
+    if (function == NULL) {
+        zvalue nameStr = cm_castFrom(CLS_String, name);
+        die("Unbound method: %s.%s", cm_debugString(cls),
+            cm_debugString(nameStr));
+    }
+
+    // Prepend `target` as a new first argument for a call to `function`.
+    zvalue newArgs[argCount + 1];
+    newArgs[0] = target;
+    utilCpy(zvalue, &newArgs[1], args, argCount);
+
+    UTIL_TRACE_START(methReporter, cls);
+    zstackPointer save = datFrameStart();
+    zvalue result = funCall0(function, argCount + 1, newArgs);
     datFrameReturn(save, result);
     UTIL_TRACE_END();
 
