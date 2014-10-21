@@ -25,76 +25,100 @@
 //
 
 /**
- * Returns `value` if it is a string. Returns `String.castFrom(value)` if it
- * is a symbol; otherwise calls `debugString` on it.
+ * Struct used to hold the salient info for generating a stack trace.
  */
-static zvalue ensureString(zvalue value) {
-    if (classAccepts(CLS_String, value)) {
-        return value;
-    } else if (classAccepts(CLS_Symbol, value)) {
-        return cm_castFrom(CLS_String, value);
-    } else {
-        return METH_CALL(debugString, value);
-    }
-}
+typedef struct {
+    /** Target being called. */
+    zvalue target;
+
+    /** Name of method being called. */
+    zvalue name;
+} StackTraceEntry;
 
 /**
- * This is the function that handles emitting a context string for a function
- * call, when dumping the stack.
+ * Returns a `dup()`ed string representing `value`. The result is the chars
+ * of `value` if it is a string or symbol. Otherwise, it is the result of
+ * calling `.debugString()` on `value`.
  */
-static char *funcReporter(void *state) {
-    zvalue value = state;
-    zvalue name = METH_CALL(debugSymbol, value);
-
-    if (name != NULL) {
-        return utf8DupFromString(ensureString(name));
+static char *ensureString(zvalue value) {
+    if (classAccepts(CLS_String, value)) {
+        // No conversion.
+    } else if (classAccepts(CLS_Symbol, value)) {
+        value = cm_castFrom(CLS_String, value);
+    } else {
+        value = METH_CALL(debugString, value);
     }
 
-    char *clsString = cm_debugString(classOf(value));
-    char *result;
-
-    asprintf(&result, "anonymous %s", clsString);
-    utilFree(clsString);
-
-    return result;
+    return utf8DupFromString(value);
 }
 
 /**
  * This is the function that handles emitting a context string for a method
  * call, when dumping the stack.
  */
-static char *methReporter(void *state) {
-    zvalue cls = state;
-    char *clsString = cm_debugString(cls);
+static char *callReporter(void *state) {
+    StackTraceEntry *ste = state;
+    char *classStr =
+        ensureString(METH_CALL(debugSymbol, classOf(ste->target)));
     char *result;
 
-    asprintf(&result, "class %s", clsString);
-    utilFree(clsString);
+    if (symbolEq(ste->name, SYM(call))) {
+        // It's a function call (or function-like call).
+        zvalue targetName = METH_CALL(debugSymbol, ste->target);
+
+        if (targetName != NULL) {
+            char *nameStr = ensureString(targetName);
+            asprintf(&result, "%s (instance of %s)",
+                nameStr, classStr);
+            utilFree(nameStr);
+        } else {
+            asprintf(&result, "anonymous instance of %s", classStr);
+        }
+    } else {
+        char *targetStr = cm_debugString(ste->target);
+        char *nameStr = ensureString(ste->name);
+        asprintf(&result, "%s.%s on %s", classStr, nameStr, targetStr);
+        utilFree(targetStr);
+        utilFree(nameStr);
+    }
+
+    utilFree(classStr);
 
     return result;
 }
 
 /**
- * Inner implementation of `funCall`, which does *not* do argument validation,
- * nor debug and local frame setup/teardown.
+ * Inner implementation of `funCall` and `methCall`, which does *not* do
+ * argument validation.
  */
 static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     zvalue funCls = classOf(function);
+    zvalue result;
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or
     // `Symbol`.
     if (funCls == CLS_Symbol) {
-        return symbolCall(function, argCount, args);
+        // No call reporting setup here, as this will bottom out in a
+        // `methCall()` which will do that.
+        result = symbolCall(function, argCount, args);
     } else if (funCls == CLS_Builtin) {
-        return builtinCall(function, argCount, args);
+        StackTraceEntry ste = {.target = function, .name = SYM(call)};
+        UTIL_TRACE_START(callReporter, &ste);
+        result = builtinCall(function, argCount, args);
+        UTIL_TRACE_END();
     } else if (funCls == CLS_Jump) {
-        return jumpCall(function, argCount, args);
+        StackTraceEntry ste = {.target = function, .name = SYM(call)};
+        UTIL_TRACE_START(callReporter, &ste);
+        result = jumpCall(function, argCount, args);
+        UTIL_TRACE_END();
     } else {
         // The original `function` is some kind of higher layer function.
         // Use method dispatch to get to it.
-        return methCall(function, SYM(call), argCount, args);
+        result = methCall(function, SYM(call), argCount, args);
     }
+
+    return result;
 }
 
 
@@ -137,12 +161,9 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
         die("Function call argument inconsistency.");
     }
 
-    UTIL_TRACE_START(funcReporter, function);
     zstackPointer save = datFrameStart();
     zvalue result = funCall0(function, argCount, args);
     datFrameReturn(save, result);
-    UTIL_TRACE_END();
-
     return result;
 }
 
@@ -177,12 +198,14 @@ zvalue methCall(zvalue target, zvalue name, zint argCount,
     newArgs[0] = target;
     utilCpy(zvalue, &newArgs[1], args, argCount);
 
-    UTIL_TRACE_START(methReporter, cls);
+    StackTraceEntry ste = {.target = target, .name = name};
+    UTIL_TRACE_START(callReporter, &ste);
+
     zstackPointer save = datFrameStart();
     zvalue result = funCall0(function, argCount + 1, newArgs);
     datFrameReturn(save, result);
-    UTIL_TRACE_END();
 
+    UTIL_TRACE_END();
     return result;
 }
 
