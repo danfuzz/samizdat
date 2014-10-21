@@ -216,24 +216,24 @@ fn checkAbsolutePath(path) {
 ## Helper for `resolve` methods, which does most of the work of `loaded`
 ## map management.
 fn resolveHelper(loadedBox, source, resolveFn) {
-    ## The loaded map maps paths to `"loading"` for a load-in-progress,
-    ## `"notFound"` for a known-missing module, and to a `@module` for
+    ## The loaded map maps paths to `@loading` for a load-in-progress,
+    ## `@notFound` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
     ifValue { (loadedBox*).get(source) }
         { found ->
             ifIs { found.hasName(@module) }
                 { return found };
-            ifIs { eq(found, "notFound") }
+            ifIs { eq(found, @notFound) }
                 { return };
-            ifIs { eq(found, "loading") }
+            ifIs { eq(found, @loading) }
                 { die("Module load loop: ", sourceString(source)) };
         };
 
-    loadedBox* := {(loadedBox*)*, (source): "loading"};
-    def result = ifValueOr { resolveFn() } { "notFound" };
+    loadedBox* := {(loadedBox*)*, (source): @loading};
+    def result = ifValueOr { resolveFn() } { @notFound };
     loadedBox* := {(loadedBox*)*, (source): result};
 
-    return? ifNot { eq(result, "notFound") }
+    return? ifNot { eq(result, @notFound) }
         { result }
 };
 
