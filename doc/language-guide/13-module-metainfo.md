@@ -55,6 +55,7 @@ module as a whole is to be imported.
     },
     ...
 }
+```
 
 ### `resources`
 
