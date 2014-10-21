@@ -117,11 +117,11 @@ METH_IMPL_0(Record, debugString) {
 
     if (valEq(info->data, EMPTY_SYMBOL_TABLE)) {
         return cm_cat(
-            METH_CALL(debugString, info->name),
+            METH_CALL_old(debugString, info->name),
             stringFromUtf8(-1, "{}"));
     } else {
         return cm_cat(
-            METH_CALL(debugString, info->name),
+            METH_CALL_old(debugString, info->name),
             stringFromUtf8(-1, "{...}"));
     }
 }

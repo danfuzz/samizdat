@@ -16,22 +16,22 @@
  * Common implementation for `cast` and `maybeCast`.
  */
 static zvalue doCast(zvalue cls, zvalue value) {
-    if (METH_CALL(accepts, cls, value)) {
+    if (METH_CALL_old(accepts, cls, value)) {
         return value;
     }
 
-    zvalue result = METH_CALL(castToward, value, cls);
+    zvalue result = METH_CALL_old(castToward, value, cls);
 
     if (result != NULL) {
-        if (METH_CALL(accepts, cls, result)) {
+        if (METH_CALL_old(accepts, cls, result)) {
             return result;
         }
         value = result;
     }
 
-    result = METH_CALL(castFrom, cls, value);
+    result = METH_CALL_old(castFrom, cls, value);
 
-    if ((result != NULL) && METH_CALL(accepts, cls, result)) {
+    if ((result != NULL) && METH_CALL_old(accepts, cls, result)) {
         return result;
     }
 

@@ -377,7 +377,7 @@ DEF_PARSE(literal) {
 
     if (MATCH(CH_MINUS)) {
         token = MATCH_OR_REJECT(int);
-        return makeLiteral(METH_CALL(neg, cm_get(token, SYM(value))));
+        return makeLiteral(METH_CALL_old(neg, cm_get(token, SYM(value))));
     } else if ((token = MATCH(int))) {
         return makeLiteral(cm_get(token, SYM(value)));
     } else if ((token = MATCH(string))) {

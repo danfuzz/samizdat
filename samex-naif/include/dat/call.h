@@ -104,16 +104,16 @@ zvalue mustNotYield(zvalue value)
 #define METH_APPLY(target, name, args) methApply((target), SYM(name), (args))
 
 /**
- * `METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,
+ * `METH_CALL_old(name, arg, ...)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed in the usual C style.
  */
-#define METH_CALL(name, ...) FUN_CALL(SYM(name), __VA_ARGS__)
+#define METH_CALL_old(name, ...) FUN_CALL(SYM(name), __VA_ARGS__)
 
 /**
  * `VA_METH_CALL(name, arg, ...)`: Calls a method by (unadorned) name,
  * with a variable number of arguments passed in the usual C style. Under
  * the covers, this calls `vaFunCall()` to "parse" the call, and as such it
- * is less efficient than `METH_CALL()`, but unlike that macro, this one can
+ * is less efficient than `METH_CALL_old()`, but unlike that macro, this one can
  * handle any number of arguments.
  */
 #define VA_METH_CALL(name, ...) vaFunCall(SYM(name), __VA_ARGS__, NULL)

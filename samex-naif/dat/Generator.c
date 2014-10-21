@@ -30,7 +30,7 @@ FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
     zvalue box = cm_new0(Cell);
 
     for (;;) {
-        zvalue nextGen = METH_CALL(nextValue, generator, box);
+        zvalue nextGen = METH_CALL_old(nextValue, generator, box);
 
         if (nextGen == NULL) {
             break;
@@ -77,7 +77,7 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
     zvalue result;
 
     zvalue box = cm_new0(Cell);
-    zvalue nextGen = METH_CALL(nextValue, generator, box);
+    zvalue nextGen = METH_CALL_old(nextValue, generator, box);
 
     if (nextGen == NULL) {
         // We were given a voided generator.
@@ -86,7 +86,7 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
         // We got a value out of the generator. Now need to make sure it's
         // voided.
         result = cm_fetch(box);
-        if (METH_CALL(nextValue, nextGen, box) != NULL) {
+        if (METH_CALL_old(nextValue, nextGen, box) != NULL) {
             die("Generator produced second item in `fetch`.");
         }
     }
