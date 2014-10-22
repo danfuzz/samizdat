@@ -88,15 +88,15 @@ static char *callReporter(void *state) {
 }
 
 /**
- * Inner implementation of `funCall` and `methCall`, which does *not* do
- * argument validation.
+ * Helper for `methCall`, which calls a function (which was presumably looked
+ * up in a method table). This does *not* do argument validation.
  */
-static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
+static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     zvalue funCls = classOf(function);
     zvalue result;
 
     // The first three cases are how we bottom out the recursion, instead of
-    // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or
+    // calling `funCall` on the `call` methods for `Builtin`, `Jump`, or
     // `Symbol`.
     if (funCls == CLS_Symbol) {
         // No call reporting setup here, as this will bottom out in a
@@ -141,20 +141,6 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 //
 
 // Documented in header.
-zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
-    if (argCount < 0) {
-        die("Invalid argument count for function call: %lld", argCount);
-    } else if ((args == NULL) && (argCount != 0)) {
-        die("Function call argument inconsistency.");
-    }
-
-    zstackPointer save = datFrameStart();
-    zvalue result = funCall0(function, argCount, args);
-    datFrameReturn(save, result);
-    return result;
-}
-
-// Documented in header.
 zvalue methApply(zvalue target, zvalue name, zvalue args) {
     zint argCount = (args == NULL) ? 0 : get_size(args);
 
@@ -195,7 +181,7 @@ zvalue methCall(zvalue target, zvalue name, zint argCount,
     UTIL_TRACE_START(callReporter, &ste);
 
     zstackPointer save = datFrameStart();
-    zvalue result = funCall0(function, argCount + 1, newArgs);
+    zvalue result = funCall(function, argCount + 1, newArgs);
     datFrameReturn(save, result);
 
     UTIL_TRACE_END();
