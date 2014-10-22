@@ -48,13 +48,7 @@ static zvalue execApply(Frame *frame, zvalue apply) {
         (nameExpr == NULL) ? SYM(call) : execExpression(frame, nameExpr);
     zvalue values = execExpressionOrMaybe(frame, valuesExpr);
 
-    if (values == NULL) {
-        // If `values` isn't present or evaluated to void, then evaluation
-        // becomes a simple no-argument function call.
-        return methCall(target, name, 0, NULL);
-    } else {
-        return methApply(target, name, values);
-    }
+    return methApply(target, name, values);
 }
 
 /**
