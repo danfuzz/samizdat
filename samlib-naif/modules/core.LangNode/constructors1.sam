@@ -12,12 +12,23 @@ import core.Generator :: filterAll;
 ##
 
 ## Documented in spec.
+export fn makeApply(target, name, optValues?) {
+    def values = ifValueOr { optValues* } { @void{} };
+    return @apply{target, name, values}
+};
+
+## Documented in spec.
 export fn makeBasicClosure(table) {
     return @closure{
         formals:    [],
         statements: [],
         table*
     }
+};
+
+## Documented in spec.
+export fn makeCall(target, name, values*) {
+    return @call{target, name, values}
 };
 
 ## Documented in spec.

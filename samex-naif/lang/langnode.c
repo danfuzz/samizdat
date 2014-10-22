@@ -336,11 +336,35 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 }
 
 // Documented in spec.
+zvalue makeApply(zvalue target, zvalue name, zvalue values) {
+    if (values == NULL) {
+        values = TOK_void;
+    }
+
+    return recordFrom3(SYM(apply),
+        SYM(name),   name,
+        SYM(target), target,
+        SYM(values), values);
+}
+
+// Documented in spec.
 zvalue makeBasicClosure(zvalue table) {
     return cm_new(Record, SYM(closure),
         cm_cat(
             tableFrom2(SYM(formals), EMPTY_LIST, SYM(statements), EMPTY_LIST),
             table));
+}
+
+// Documented in spec.
+zvalue makeCall(zvalue target, zvalue name, zvalue values) {
+    if (values == NULL) {
+        values = EMPTY_LIST;
+    }
+
+    return recordFrom3(SYM(call),
+        SYM(name),   name,
+        SYM(target), target,
+        SYM(values), values);
 }
 
 // Documented in spec.

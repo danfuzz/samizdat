@@ -42,10 +42,16 @@ zvalue get_definedNames(zvalue node);
 bool isExpression(zvalue node);
 
 // Documented in spec.
+zvalue makeApply(zvalue target, zvalue name, zvalue values);
+
+// Documented in spec.
 zvalue makeAssignmentIfPossible(zvalue target, zvalue value);
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue map);
+
+// Documented in spec.
+zvalue makeCall(zvalue target, zvalue name, zvalue values);
 
 // Documented in spec.
 zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods);
