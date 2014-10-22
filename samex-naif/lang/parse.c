@@ -531,7 +531,7 @@ DEF_PARSE(record) {
         value = makeSymbolTableExpression(mappings);
     }
 
-    return makeCall(SYMS(new), listFrom3(LITS(Record), name, value));
+    return makeFunCall(SYMS(new), listFrom3(LITS(Record), name, value));
 }
 
 // Documented in spec.
@@ -562,7 +562,7 @@ DEF_PARSE(list) {
 
     return (get_size(expressions) == 0)
         ? LITS(EMPTY_LIST)
-        : makeCallOrApply(SYMS(new), listPrepend(LITS(List), expressions));
+        : makeFunCallOrApply(SYMS(new), listPrepend(LITS(List), expressions));
 }
 
 // Documented in spec.
@@ -674,7 +674,7 @@ DEF_PARSE(postfixOperator) {
         MATCH_OR_REJECT(CH_DOT);
         zvalue name = PARSE_OR_REJECT(nameSymbol);
         zvalue actuals = PARSE_OR_REJECT(actualsList);
-        result = makeCall(makeLiteral(name), actuals);
+        result = makeFunCall(makeLiteral(name), actuals);
     }
 
     return result;
@@ -692,13 +692,13 @@ DEF_PARSE(unaryExpression) {
         zvalue one = cm_nth(postfixes, i);
         if (classAccepts(CLS_List, one)) {
             // Regular function call.
-            result = makeCallOrApply(result, one);
+            result = makeFunCallOrApply(result, one);
         } else switch (recordEvalType(one)) {
             case EVAL_call: {
                 // Method call.
                 zvalue function = cm_get(one, SYM(function));
                 zvalue values = cm_get(one, SYM(values));
-                result = makeCallOrApply(function,
+                result = makeFunCallOrApply(function,
                     listPrepend(result, values));
                 break;
             }
@@ -711,7 +711,7 @@ DEF_PARSE(unaryExpression) {
                 break;
             }
             case EVAL_literal: {
-                result = makeCallOrApply(SYMS(get), listFrom2(result, one));
+                result = makeFunCallOrApply(SYMS(get), listFrom2(result, one));
                 break;
             }
             default: {

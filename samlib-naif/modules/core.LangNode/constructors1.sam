@@ -12,29 +12,12 @@ import core.Generator :: filterAll;
 ##
 
 ## Documented in spec.
-export fn makeApply(function, optValues?) {
-    def values = ifValueOr { optValues* } { @void{} };
-    return @apply{function, values}
-};
-
-## Documented in spec.
 export fn makeBasicClosure(table) {
     return @closure{
         formals:    [],
         statements: [],
         table*
     }
-};
-
-## Documented in spec.
-export fn makeCall(function, values*) {
-    return @call{function, values}
-};
-
-## Documented in spec.
-export fn makeCallLiterals(function, values*) {
-    def literals = filterAll(values) { one -> makeLiteral(one) };
-    return makeCall(function, literals*)
 };
 
 ## Documented in spec.
@@ -45,6 +28,23 @@ export fn makeExport(node) {
 ## Documented in spec.
 export fn makeExportSelection(names+) {
     return @exportSelection{select: names}
+};
+
+## Documented in spec.
+export fn makeFunApply(function, optValues?) {
+    def values = ifValueOr { optValues* } { @void{} };
+    return @apply{function, values}
+};
+
+## Documented in spec.
+export fn makeFunCall(function, values*) {
+    return @call{function, values}
+};
+
+## Documented in spec.
+export fn makeFunCallLiterals(function, values*) {
+    def literals = filterAll(values) { one -> makeLiteral(one) };
+    return makeFunCall(function, literals*)
 };
 
 ## Documented in spec.

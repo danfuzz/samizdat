@@ -250,7 +250,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(SYMS::new, LITS::Record, name, value) }
+    { makeFunCall(SYMS::new, LITS::Record, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -288,7 +288,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeCallOrApply(SYMS::new, LITS::List, expressions*) }
+            { makeFunCallOrApply(SYMS::new, LITS::List, expressions*) }
     }
 :};
 
@@ -377,7 +377,7 @@ def parActualsList = {:
 ## function call.
 def parPostfixOperator = {:
     actuals = parActualsList
-    { { node -> makeCallOrApply(node, actuals*) } }
+    { { node -> makeFunCallOrApply(node, actuals*) } }
 |
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
@@ -424,19 +424,19 @@ def parPostfixOperator = {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            { node -> makeCallOrApply(makeLiteral(name), node, actuals*) }
+            { node -> makeFunCallOrApply(makeLiteral(name), node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
         {
             def getterRef = makeSymbolLiteral("get_".cat(name));
             { node ->
-                def getterCall = makeCall(getterRef, node);
+                def getterCall = makeFunCall(getterRef, node);
                 @(getterCall.get_name()){
                     getterCall*,
                     lvalue: { expr ->
                         def setterRef = makeSymbolLiteral("set_".cat(name));
-                        makeCall(setterRef, node, expr)
+                        makeFunCall(setterRef, node, expr)
                     }
                 }
             }

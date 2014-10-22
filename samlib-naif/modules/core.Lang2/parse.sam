@@ -245,7 +245,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeCall(SYMS::new, LITS::Record, name, value) }
+    { makeFunCall(SYMS::new, LITS::Record, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -283,7 +283,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeCallOrApply(SYMS::new, LITS::List, expressions*) }
+            { makeFunCallOrApply(SYMS::new, LITS::List, expressions*) }
     }
 :};
 
@@ -372,7 +372,7 @@ def parActualsList = {:
 ## function call.
 def parPostfixOperator = {:
     actuals = parActualsList
-    { { node -> makeCallOrApply(node, actuals*) } }
+    { { node -> makeFunCallOrApply(node, actuals*) } }
 |
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
@@ -419,19 +419,19 @@ def parPostfixOperator = {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            { node -> makeCallOrApply(makeLiteral(name), node, actuals*) }
+            { node -> makeFunCallOrApply(makeLiteral(name), node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
         {
             def getterRef = makeSymbolLiteral("get_".cat(name));
             { node ->
-                def getterCall = makeCall(getterRef, node);
+                def getterCall = makeFunCall(getterRef, node);
                 @(getterCall.get_name()){
                     getterCall*,
                     lvalue: { expr ->
                         def setterRef = makeSymbolLiteral("set_".cat(name));
-                        makeCall(setterRef, node, expr)
+                        makeFunCall(setterRef, node, expr)
                     }
                 }
             }
@@ -1175,7 +1175,7 @@ fn makeBinaryCalls(firstEx, opExList) {
 
     filterPump(opExList) { opEx ->
         def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
-        result := makeCall(resolvedOp, result, opEx::expr)
+        result := makeFunCall(resolvedOp, result, opEx::expr)
     };
 
     return result
@@ -1236,15 +1236,15 @@ fn makeCompareCalls(firstEx, opExList) {
         def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
 
         return ifIs { eq(rest, []) }
-            { makeThunk(makeCall(resolvedOp, leftRef, opEx::expr)) }
+            { makeThunk(makeFunCall(resolvedOp, leftRef, opEx::expr)) }
             {
                 def rightName = nextName();
                 def rightRef = makeVarFetch(rightName);
                 makeFullClosure(@{
                     statements: [makeVarDef(rightName, opEx::expr)],
                     yield: makeMaybe(
-                        makeCall(REFS::ifIs,
-                            makeThunk(makeCall(resolvedOp, leftRef, rightRef)),
+                        makeFunCall(REFS::ifIs,
+                            makeThunk(makeFunCall(resolvedOp, leftRef, rightRef)),
                             transform(rightRef, rest*)))
                 })
             }
@@ -1253,7 +1253,7 @@ fn makeCompareCalls(firstEx, opExList) {
     def firstName = nextName();
     def closure = transform(makeVarFetch(firstName), opExList*);
 
-    return makeCall(
+    return makeFunCall(
         makeFullClosure(@{
             statements: [
                 makeVarDef(firstName, firstEx),
@@ -1275,7 +1275,7 @@ def parStringInterpolation = {:
     &@"{"
     block = parNullaryClosure
     !.
-    { makeCall(block) }
+    { makeFunCall(block) }
 :};
 
 ## Parses an interpolated string. The payload of an interpolated string
@@ -1315,7 +1315,7 @@ def parInterpolatedString = {:
 
                     def formatter = ifValue { elem::format }
                         { format ->
-                            makeCall(REFS::Format_formatterFor,
+                            makeFunCall(REFS::Format_formatterFor,
                                 makeLiteral(format))
                         }
                         { REFS::Format_usual };
@@ -1324,12 +1324,12 @@ def parInterpolatedString = {:
                         { $Peg::apply(parStringInterpolation, tokens) }
                         { die("Invalid syntax in string interpolation.") };
 
-                    makeCallOrApply(formatter,
+                    makeFunCallOrApply(formatter,
                         makeInterpolate(makeMaybeValue(call)))
                 }
         };
 
-        makeCall(SYMS::cat, elems*)
+        makeFunCall(SYMS::cat, elems*)
     }
 :};
 
@@ -1355,7 +1355,7 @@ def parGeneratorDef = {:
     size = parExpression
 
     {
-        def init = makeCall(REFS::Generator_makeRepeatGenerator, size);
+        def init = makeFunCall(REFS::Generator_makeRepeatGenerator, size);
         {formal: {}, init}
     }
 :};
@@ -1422,13 +1422,13 @@ def parComprehensionExpression = {:
     body = parComprehensionBody
     @")"
 
-    { makeCall(REFS::Generator_makeFilterGenerator, body*) }
+    { makeFunCall(REFS::Generator_makeFilterGenerator, body*) }
 |
     @"["
     body = parComprehensionBody
     @"]"
 
-    { makeCall(REFS::Generator_filterAll, body*) }
+    { makeFunCall(REFS::Generator_filterAll, body*) }
 :};
 
 ## Helper for `parRangeExpression`, which parses the body of a
@@ -1453,19 +1453,19 @@ def parRangeBody = {:
     {
         ifIs { op.hasName(@"..!") }
             {
-                makeCall(
+                makeFunCall(
                     REFS::Range_makeExclusiveRange,
                     firstValue, optLimit*, optIncrement*)
             }
             {
                 ifValue { optLimit* }
                     { limit ->
-                        makeCall(
+                        makeFunCall(
                             REFS::Range_makeInclusiveRange,
                             firstValue, limit, optIncrement*)
                     }
                     {
-                        makeCall(
+                        makeFunCall(
                             REFS::Range_makeOpenRange,
                             firstValue, optIncrement*)
                     }
@@ -1487,7 +1487,7 @@ def parRangeExpression = {:
 
     ## The test here is to prevent open ranges from being allowed.
     { ne(body::function, REFS::Range_makeOpenRange) }
-    { makeCallOrApply(SYMS::new, LITS::List, makeInterpolate(body)) }
+    { makeFunCallOrApply(SYMS::new, LITS::List, makeInterpolate(body)) }
 :};
 
 ## Parses the `term` variants introduced in Layer 2.
@@ -1505,13 +1505,13 @@ parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
         def name = UNARY_OPERATORS.get(operator.get_name());
-        { node -> makeCall(name, node) }
+        { node -> makeFunCall(name, node) }
     }
 |
     ## This one is specially converted, since it's a control construct,
     ## not just a simple function application.
     @"!"
-    { { node -> makeCallThunks(REFS::ifNot, node, LITS::true) } }
+    { { node -> makeFunCallThunks(REFS::ifNot, node, LITS::true) } }
 :};
 
 ## Parses an index expression (inside a collection indexing postfix form).
@@ -1560,7 +1560,7 @@ def parIndexPostfix = {:
                     { SYMS::sliceExclusive };
                 def startNode = start::value;
 
-                { node -> makeCall(funcRef, node, startNode, optEndNode*) }
+                { node -> makeFunCall(funcRef, node, startNode, optEndNode*) }
             }
         |
             ## At least one of start or end is `fromEnd`, so we have to
@@ -1571,23 +1571,23 @@ def parIndexPostfix = {:
                     { SYMS::exclusive };
 
                 def startNode =
-                    makeCall(SYMS::new, LITS::Record,
+                    makeFunCall(SYMS::new, LITS::Record,
                         makeLiteral(start::origin),
-                        makeCall(SYMS::new, LITS::SymbolTable,
+                        makeFunCall(SYMS::new, LITS::SymbolTable,
                             SYMS::value, start::value));
 
                 def optEndNode = (
                     ifNot { eq(end, INDEX_AT_END_0) }
                         {
-                            makeCall(SYMS::new, LITS::Record,
+                            makeFunCall(SYMS::new, LITS::Record,
                                 makeLiteral(end::origin),
-                                makeCall(SYMS::new, LITS::SymbolTable,
+                                makeFunCall(SYMS::new, LITS::SymbolTable,
                                     SYMS::value, end::value))
                         }
                 )?;
 
                 { node ->
-                    makeCall(REFS::Sequence_sliceGeneral,
+                    makeFunCall(REFS::Sequence_sliceGeneral,
                         node,
                         style,
                         startNode,
@@ -1607,7 +1607,7 @@ def parIndexPostfix = {:
                 { SYMS::get }
                 { REFS::Sequence_reverseNth };
 
-            { node -> makeCall(funcRef, node, index::value) }
+            { node -> makeFunCall(funcRef, node, index::value) }
         }
     )
 :};
@@ -1617,13 +1617,13 @@ def parIndexPostfix = {:
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {:
     @"**"
-    { { node -> makeCall(SYMS::toLogic, node) } }
+    { { node -> makeFunCall(SYMS::toLogic, node) } }
 |
     ## Expansion is essentially `expr??` -> `Bool.fromLogic(expr?*)`.
     @"??"
     {
         { node ->
-            makeCallOrApply(SYMS::fromLogic, LITS::Bool,
+            makeFunCallOrApply(SYMS::fromLogic, LITS::Bool,
                 makeInterpolate(makeMaybeValue(node)))
         }
     }
@@ -1776,9 +1776,9 @@ def parLogicAndExpression = {:
             def resultThunk = makeThunk(last);
 
             ifIs { eq(formal, {}) }
-                { makeCall(REFS::ifIs, testThunk, resultThunk) }
+                { makeFunCall(REFS::ifIs, testThunk, resultThunk) }
                 {
-                    makeCall(REFS::ifValue,
+                    makeFunCall(REFS::ifValue,
                         testThunk,
                         withFormals(resultThunk, [formal]))
                 }
@@ -1797,7 +1797,7 @@ def parLogicAndExpression = {:
                     };
 
             ## Construct the overall `ifValueAnd` call.
-            makeCall(REFS::ifValueAnd,
+            makeFunCall(REFS::ifValueAnd,
                 testThunks*,
                 withFormals(makeThunk(last), formals))
         }
@@ -1819,7 +1819,7 @@ def parLogicOrExpression = {:
 
     (
         rest = (@"|" parLogicAndExpression)+
-        { makeCallThunks(REFS::ifValueOr, one, rest*) }
+        { makeFunCallThunks(REFS::ifValueOr, one, rest*) }
     |
         ## It's not actually a logical-or expression.
         { one }
@@ -1880,11 +1880,11 @@ def parMultiTest = {:
             { thenThunk, elseThunk? ->
                 ifIs { eq(formal, {}) }
                     {
-                        makeCall(REFS::ifIs,
+                        makeFunCall(REFS::ifIs,
                             testThunk, thenThunk, elseThunk*)
                     }
                     {
-                        makeCall(REFS::ifValue,
+                        makeFunCall(REFS::ifValue,
                             testThunk,
                             withFormals(thenThunk, [formal]),
                             elseThunk*)
@@ -1909,7 +1909,7 @@ def parMultiTest = {:
                 def func = ifIs { elseThunk* }
                     { REFS::ifValueAndElse }
                     { REFS::ifValueAnd };
-                makeCall(func,
+                makeFunCall(func,
                     testThunks*,
                     withFormals(thenThunk, formals),
                     elseThunk*)
@@ -2011,7 +2011,7 @@ def parIfExpression = {:
             {
                 ## There was a yield def. Add the yield def to the thunk,
                 ## and wrap that in a call.
-                makeCall(makeFullClosure(@{mainThunk*, yieldDef*}))
+                makeFunCall(makeFullClosure(@{mainThunk*, yieldDef*}))
             }
     }
 :};
@@ -2120,15 +2120,15 @@ def parSwitchExpression = {:
             def keys = case::keys;
             def code = finishCode(case);
             ifIs { List.accepts(keys) }
-                { makeCallOrApply(SYMS::singleValue, LITS::Map, keys*, code) }
+                { makeFunCallOrApply(SYMS::singleValue, LITS::Map, keys*, code) }
         };
-        def caseMap = makeCallOrApply(SYMS::cat,
+        def caseMap = makeFunCallOrApply(SYMS::cat,
             LITS::EMPTY_MAP,
             makeInterpolate(
-                makeCall(SYMS::reverse,
-                    makeCallOrApply(SYMS::new, LITS::List, caseClauses*))));
+                makeFunCall(SYMS::reverse,
+                    makeFunCallOrApply(SYMS::new, LITS::List, caseClauses*))));
 
-        def ifCall = makeCall(REFS::ifSwitch,
+        def ifCall = makeFunCall(REFS::ifSwitch,
             testClause::testThunk,
             caseMap,
             optDefault*);
@@ -2142,7 +2142,7 @@ def parSwitchExpression = {:
                     yield: makeMaybe(ifCall),
                     yieldDef*
                 });
-                makeCall(outerClosure)
+                makeFunCall(outerClosure)
             }
     }
 :};
@@ -2200,10 +2200,10 @@ def parWhileExpression = {:
 
         def mainClosure = makeFullClosure(@{
             yieldDef: @break,
-            statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
+            statements: [breakDef*, makeFunCall(REFS::loop, loopClosure)]
         });
 
-        makeCall(mainClosure)
+        makeFunCall(mainClosure)
     }
 :};
 
@@ -2234,7 +2234,7 @@ def parDoExpression = {:
     condition = (
         @while
         ex = parParenExpression
-        { makeCallThunks(REFS::ifNot, ex, makeNonlocalExit(REFS::break)) }
+        { makeFunCallThunks(REFS::ifNot, ex, makeNonlocalExit(REFS::break)) }
     )?
 
     {
@@ -2243,14 +2243,14 @@ def parDoExpression = {:
         def fullCode = makeFullClosure(withYieldDefIfAbsent(code, @continue));
         def loopClosure = makeFullClosure(@{
             yieldDef: @continue,
-            statements: [makeCall(fullCode), condition*]
+            statements: [makeFunCall(fullCode), condition*]
         });
         def mainClosure = makeFullClosure(@{
             yieldDef: @break,
-            statements: [breakDef*, makeCall(REFS::loop, loopClosure)]
+            statements: [breakDef*, makeFunCall(REFS::loop, loopClosure)]
         });
 
-        makeCall(mainClosure)
+        makeFunCall(mainClosure)
     }
 :};
 
@@ -2292,10 +2292,10 @@ def parForExpression = {:
             yieldDef: @break,
             statements: [breakDef*],
             yield: makeMaybe(
-                makeCall(REFS::Generator_filterPump, loopClosure, genInits*))
+                makeFunCall(REFS::Generator_filterPump, loopClosure, genInits*))
         });
 
-        makeCall(mainClosure)
+        makeFunCall(mainClosure)
     }
 :};
 

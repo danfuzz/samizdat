@@ -104,17 +104,17 @@ static zvalue expandYield(zvalue table) {
 
     switch (recordEvalType(value)) {
         case EVAL_void: {
-            exitCall = makeCall(function, NULL);
+            exitCall = makeFunCall(function, NULL);
             break;
         }
         case EVAL_maybe: {
             zvalue arg = makeInterpolate(
                 makeMaybeValue(cm_get(value, SYM(value))));
-            exitCall = makeCallOrApply(function, listFrom1(arg));
+            exitCall = makeFunCallOrApply(function, listFrom1(arg));
             break;
         }
         default: {
-            exitCall = makeCall(function, listFrom1(value));
+            exitCall = makeFunCall(function, listFrom1(value));
             break;
         }
     }
@@ -143,7 +143,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
 
     #define addSingleToCat() do { \
         if (singleAt != 0) { \
-            addToCat(makeCall(SYMS(new), \
+            addToCat(makeFunCall(SYMS(new), \
                 listPrepend(clsLit, listFromArray(singleAt, singleArgs)))); \
             singleAt = 0; \
         } \
@@ -166,7 +166,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
             }
             if (!handled) {
                 addSingleToCat();
-                addToCat(makeCallOrApply(SYMS(singleValue),
+                addToCat(makeFunCallOrApply(SYMS(singleValue),
                     listPrepend(clsLit, listAppend(keys, value))));
             }
         } else {
@@ -181,7 +181,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
     }
 
     addSingleToCat();
-    return makeCall(SYMS(cat),
+    return makeFunCall(SYMS(cat),
         listPrepend(emptyLit, listFromArray(catAt, catArgs)));
 };
 
@@ -316,17 +316,6 @@ bool isExpression(zvalue node) {
 }
 
 // Documented in spec.
-zvalue makeApply(zvalue function, zvalue values) {
-    if (values == NULL) {
-        values = TOK_void;
-    }
-
-    return recordFrom2(SYM(apply),
-        SYM(function), function,
-        SYM(values),   values);
-}
-
-// Documented in spec.
 zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
     // This code isn't parallel to the in-language code but has the same
     // effect. The difference stems from the fact that C isn't a great direct
@@ -352,75 +341,6 @@ zvalue makeBasicClosure(zvalue table) {
         cm_cat(
             tableFrom2(SYM(formals), EMPTY_LIST, SYM(statements), EMPTY_LIST),
             table));
-}
-
-// Documented in spec.
-zvalue makeCall(zvalue function, zvalue values) {
-    if (values == NULL) {
-        values = EMPTY_LIST;
-    }
-
-    return recordFrom2(SYM(call),
-        SYM(function), function,
-        SYM(values),   values);
-}
-
-// Documented in spec.
-zvalue makeCallOrApply(zvalue function, zvalue values) {
-    // This is a fairly direct (but not exact) transliteration
-    // of the corresponding code in `LangNode`.
-
-    zint sz = (values == NULL) ? 0 : get_size(values);
-    zvalue pending[sz];
-    zvalue cookedValues[sz];
-    zint pendAt = 0;
-    zint cookAt = 0;
-
-    if (sz == 0) {
-        return makeApply(function, NULL);
-    }
-
-    #define addToCooked(actual) do { \
-        cookedValues[cookAt] = (actual); \
-        cookAt++; \
-    } while (0)
-
-    #define addPendingToCooked() do { \
-        if (pendAt != 0) { \
-            addToCooked(makeCall(SYMS(new), \
-                listPrepend(LITS(List), listFromArray(pendAt, pending)))); \
-            pendAt = 0; \
-        } \
-    } while (0)
-
-    for (zint i = 0; i < sz; i++) {
-        zvalue one = cm_nth(values, i);
-        zvalue node = cm_get(one, SYM(interpolate));
-        if (node != NULL) {
-            addPendingToCooked();
-            addToCooked(makeCall(SYMS(collect), listFrom1(node)));
-        } else {
-            pending[pendAt] = one;
-            pendAt++;
-        }
-    }
-
-    if (cookAt == 0) {
-        // There were no interpolated arguments.
-        return makeCall(function, values);
-    }
-
-    addPendingToCooked();
-
-    if (cookAt > 1) {
-        return makeApply(function,
-            makeCall(SYMS(cat), listFromArray(cookAt, cookedValues)));
-    } else {
-        return makeApply(function, cookedValues[0]);
-    }
-
-    #undef addToCooked
-    #undef addPendingToCooked
 }
 
 // Documented in spec.
@@ -470,11 +390,11 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
             name, listFrom2(makeLiteral(name), one));
     }
 
-    zvalue instanceMethodTable = makeCall(SYMS(new),
+    zvalue instanceMethodTable = makeFunCall(SYMS(new),
         METH_APPLY(listFrom1(LITS(SymbolTable)), cat,
             METH_CALL(instanceMethods, valueList)));
 
-    zvalue call = makeCall(SYMS(subclass),
+    zvalue call = makeFunCall(SYMS(subclass),
         listFrom5(
             LITS(Object),
             makeLiteral(name),
@@ -495,13 +415,13 @@ zvalue makeDynamicImport(zvalue node) {
     switch (recordEvalType(node)) {
         case EVAL_importModule: {
             zvalue stat = makeVarDef(name,
-                makeCall(REFS(loadModule), listFrom1(makeLiteral(source))));
+                makeFunCall(REFS(loadModule), listFrom1(makeLiteral(source))));
             return listFrom1(stat);
         }
         case EVAL_importModuleSelection: {
             zvalue names = get_definedNames(node);
             zint size = get_size(names);
-            zvalue loadCall = makeCall(REFS(loadModule),
+            zvalue loadCall = makeFunCall(REFS(loadModule),
                 listFrom1(makeLiteral(source)));
 
             zvalue stats[size];
@@ -509,7 +429,7 @@ zvalue makeDynamicImport(zvalue node) {
                 zvalue name = cm_nth(names, i);
                 zvalue sel = cm_nth(select, i);
                 stats[i] = makeVarDef(name,
-                    makeCall(SYMS(get),
+                    makeFunCall(SYMS(get),
                         listFrom2(loadCall, makeLiteral(sel))));
             }
 
@@ -518,7 +438,7 @@ zvalue makeDynamicImport(zvalue node) {
         case EVAL_importResource: {
             zvalue stat = makeVarDef(
                 name,
-                makeCall(REFS(loadResource),
+                makeFunCall(REFS(loadResource),
                     listFrom2(makeLiteral(source), makeLiteral(format))));
             return listFrom1(stat);
         }
@@ -578,6 +498,86 @@ zvalue makeFullClosure(zvalue baseData) {
                 SYM(formals),    formals,
                 SYM(statements), statements,
                 SYM(yield),      yieldNode)));
+}
+
+// Documented in spec.
+zvalue makeFunApply(zvalue function, zvalue values) {
+    if (values == NULL) {
+        values = TOK_void;
+    }
+
+    return recordFrom2(SYM(apply),
+        SYM(function), function,
+        SYM(values),   values);
+}
+
+// Documented in spec.
+zvalue makeFunCall(zvalue function, zvalue values) {
+    if (values == NULL) {
+        values = EMPTY_LIST;
+    }
+
+    return recordFrom2(SYM(call),
+        SYM(function), function,
+        SYM(values),   values);
+}
+
+// Documented in spec.
+zvalue makeFunCallOrApply(zvalue function, zvalue values) {
+    // This is a fairly direct (but not exact) transliteration
+    // of the corresponding code in `LangNode`.
+
+    zint sz = (values == NULL) ? 0 : get_size(values);
+    zvalue pending[sz];
+    zvalue cookedValues[sz];
+    zint pendAt = 0;
+    zint cookAt = 0;
+
+    if (sz == 0) {
+        return makeFunApply(function, NULL);
+    }
+
+    #define addToCooked(actual) do { \
+        cookedValues[cookAt] = (actual); \
+        cookAt++; \
+    } while (0)
+
+    #define addPendingToCooked() do { \
+        if (pendAt != 0) { \
+            addToCooked(makeFunCall(SYMS(new), \
+                listPrepend(LITS(List), listFromArray(pendAt, pending)))); \
+            pendAt = 0; \
+        } \
+    } while (0)
+
+    for (zint i = 0; i < sz; i++) {
+        zvalue one = cm_nth(values, i);
+        zvalue node = cm_get(one, SYM(interpolate));
+        if (node != NULL) {
+            addPendingToCooked();
+            addToCooked(makeFunCall(SYMS(collect), listFrom1(node)));
+        } else {
+            pending[pendAt] = one;
+            pendAt++;
+        }
+    }
+
+    if (cookAt == 0) {
+        // There were no interpolated arguments.
+        return makeFunCall(function, values);
+    }
+
+    addPendingToCooked();
+
+    if (cookAt > 1) {
+        return makeFunApply(function,
+            makeFunCall(SYMS(cat), listFromArray(cookAt, cookedValues)));
+    } else {
+        return makeFunApply(function, cookedValues[0]);
+    }
+
+    #undef addToCooked
+    #undef addPendingToCooked
 }
 
 // Documented in spec.
@@ -737,7 +737,7 @@ zvalue makeMaybeValue(zvalue expression) {
     if (box != NULL) {
         return box;
     } else {
-        return makeCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+        return makeFunCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
     }
 }
 
@@ -922,13 +922,13 @@ zvalue withModuleDefs(zvalue node) {
 
     zvalue yieldExports = (exSize == 0)
         ? LITS(EMPTY_SYMBOL_TABLE)
-        : makeCall(SYMS(new), listPrepend(LITS(SymbolTable), exportValues));
+        : makeFunCall(SYMS(new), listPrepend(LITS(SymbolTable), exportValues));
     zvalue yieldInfo = makeLiteral(info);
-    zvalue yieldNode = makeCall(SYMS(new),
+    zvalue yieldNode = makeFunCall(SYMS(new),
         listFrom3(
             LITS(Record),
             SYMS(module),
-            makeCall(SYMS(new),
+            makeFunCall(SYMS(new),
                 listFrom5(
                     LITS(SymbolTable),
                     SYMS(exports), yieldExports,

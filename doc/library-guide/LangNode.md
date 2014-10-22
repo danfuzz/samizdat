@@ -111,12 +111,6 @@ Indicates whether `node` is a full expression node type (as opposed to,
 notably, a restricted expression node type or a statement node type).
 Returns `node` to indicate logic-true.
 
-#### `makeApply(function, optValues?) -> node`
-
-Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `values` (an expression node). If `optValues`
-is not passed, it defaults to `@void`.
-
 #### `makeAssignmentIfPossible(target, value) -> node | .`
 
 Makes an assignment node of some form, if possible. Given a `lvalue`-bearing
@@ -134,39 +128,6 @@ in sensible defaults for `formals` and `statements` if missing:
 No default is provided for `yield`, as it is not always possible to
 figure out a default for it at the points where `closure` nodes need to
 be produced de novo. See `makeFullClosure()` for more detail.
-
-#### `makeCall(function, values*) -> node`
-
-Makes a `call` node, where `function` (an expression node) is called
-with each of the `values` (each an expression node) as arguments, in
-order.
-
-#### `makeCallLiterals(function, values*) -> node`
-
-Like `makeCall`, except that each of the `values` is made to be a literal
-value.
-
-#### `makeCallOrApply(function, values*) -> node`
-
-Returns a function call node, where `function` (an expression node) is called
-with each of the `values` (each an expression node) as arguments, in
-order.
-
-If any of the `values` is an `interpolate` node, this converts the
-call into a form where the interpolated nodes have their usual
-surface-language effect. The end result is an `apply` node.
-
-If there are no arguments at all, the end result is a straightforward
-`apply` node with `@void` for the arguments.
-
-If there are no `interpolate` nodes in `values`, the end result is a
-straightforward `call` node, the same as calling `makeCall` on the same
-arguments.
-
-#### `makeCallThunks(function, values*) -> node`
-
-Like `makeCall`, except that each of the `values` is wrapped in
-a thunk. This is useful in converting conditional expressions and the like.
 
 #### `makeClassDef(name, attributes, methods) -> node`
 
@@ -229,6 +190,45 @@ result. If the node cannot possibly yield void, then it is directly used as
 the `yield`. If it might yield void, then it is wrapped in a `@maybe`, and
 the `@maybe` is used as the binding for `yield` in the result.
 
+#### `makeFunApply(function, optValues?) -> node`
+
+Makes an `apply` node, with the given `function` (an expression node)
+being applied to the given `values` (an expression node). If `optValues`
+is not passed, it defaults to `@void`.
+
+#### `makeFunCall(function, values*) -> node`
+
+Makes a `call` node, where `function` (an expression node) is called
+with each of the `values` (each an expression node) as arguments, in
+order.
+
+#### `makeFunCallLiterals(function, values*) -> node`
+
+Like `makeFunCall`, except that each of the `values` is made to be a literal
+value.
+
+#### `makeFunCallOrApply(function, values*) -> node`
+
+Returns a function call node, where `function` (an expression node) is called
+with each of the `values` (each an expression node) as arguments, in
+order.
+
+If any of the `values` is an `interpolate` node, this converts the
+call into a form where the interpolated nodes have their usual
+surface-language effect. The end result is an `apply` node.
+
+If there are no arguments at all, the end result is a straightforward
+`apply` node with `@void` for the arguments.
+
+If there are no `interpolate` nodes in `values`, the end result is a
+straightforward `call` node, the same as calling `makeFunCall` on the same
+arguments.
+
+#### `makeFunCallThunks(function, values*) -> node`
+
+Like `makeFunCall`, except that each of the `values` is wrapped in
+a thunk. This is useful in converting conditional expressions and the like.
+
 #### `makeGet(collArg, keyArg) -> node`
 
 Makes a collection access (`get`) expression. This is a `call` node
@@ -276,7 +276,7 @@ just returns that.
 Makes an interpolation of the given expression node. The result is a
 `fetch` node that refers to the given `expr` as both the main `value` and
 as an `interpolate` binding, and which binds `lvalue` to a store conversion
-function. See `makeCallOrApply` for more details about `interpolate` bindings.
+function. See `makeFunCallOrApply` for more details about `interpolate` bindings.
 
 #### `makeLiteral(value) -> node`
 

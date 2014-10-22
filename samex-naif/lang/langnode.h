@@ -42,19 +42,10 @@ zvalue get_definedNames(zvalue node);
 bool isExpression(zvalue node);
 
 // Documented in spec.
-zvalue makeApply(zvalue function, zvalue values);
-
-// Documented in spec.
 zvalue makeAssignmentIfPossible(zvalue target, zvalue value);
 
 // Documented in spec.
 zvalue makeBasicClosure(zvalue map);
-
-// Documented in spec.
-zvalue makeCall(zvalue function, zvalue values);
-
-// Documented in spec.
-zvalue makeCallOrApply(zvalue function, zvalue values);
 
 // Documented in spec.
 zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods);
@@ -70,6 +61,15 @@ zvalue makeExportSelection(zvalue names);
 
 // Documented in spec.
 zvalue makeFullClosure(zvalue nodeOrMap);
+
+// Documented in spec.
+zvalue makeFunApply(zvalue function, zvalue values);
+
+// Documented in spec.
+zvalue makeFunCall(zvalue function, zvalue values);
+
+// Documented in spec.
+zvalue makeFunCallOrApply(zvalue function, zvalue values);
 
 // Documented in spec.
 zvalue makeImport(zvalue baseData);
