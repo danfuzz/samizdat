@@ -8,7 +8,6 @@
 #include "type/Class.h"
 #include "type/Core.h"
 #include "type/Int.h"
-#include "type/Jump.h"
 #include "type/Object.h"
 #include "type/String.h"
 #include "type/Symbol.h"
