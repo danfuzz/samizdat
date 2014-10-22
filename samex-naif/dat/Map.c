@@ -301,7 +301,7 @@ METH_IMPL_rest(Map, cat, args) {
         } else {
             // TODO: Should be the full `cast()`. Fix this when that function
             // is sanely available here.
-            maps[i] = METH_CALL_old(castFrom, CLS_Map, one);
+            maps[i] = METH_CALL(CLS_Map, castFrom, one);
             if (maps[i] == NULL) {
                 die("Invalid argument to `cat()`: %s", cm_debugString(one));
             }

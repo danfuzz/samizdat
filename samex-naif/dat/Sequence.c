@@ -100,7 +100,7 @@ zint seqPutIndexStrict(zint size, zvalue n) {
 // Documented in spec.
 METH_IMPL_1(Sequence, get, key) {
     if (seqNthIndexLenient(key) >= 0) {
-        return METH_CALL_old(nth, ths, key);
+        return METH_CALL(ths, nth, key);
     } else {
         return NULL;
     }
@@ -120,7 +120,7 @@ METH_IMPL_0(Sequence, keyList) {
 
 // Documented in spec.
 METH_IMPL_1(Sequence, nthMapping, n) {
-    zvalue value = METH_CALL_old(nth, ths, n);
+    zvalue value = METH_CALL(ths, nth, n);
 
     if (value == NULL) {
         return NULL;
