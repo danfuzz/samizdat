@@ -210,31 +210,6 @@ zvalue methCall(zvalue target, zvalue name, zint argCount,
 }
 
 // Documented in header.
-zvalue vaMethCall(zvalue target, zvalue name, ...) {
-    zint size = 0;
-    va_list rest;
-
-    va_start(rest, name);
-    for (;;) {
-        if (va_arg(rest, zvalue) == NULL) {
-            break;
-        }
-        size++;
-    }
-    va_end(rest);
-
-    zvalue values[size];
-
-    va_start(rest, name);
-    for (zint i = 0; i < size; i++) {
-        values[i] = va_arg(rest, zvalue);
-    }
-    va_end(rest);
-
-    return methCall(target, name, size, values);
-}
-
-// Documented in header.
 zvalue mustNotYield(zvalue value) {
     die("Improper yield from `noYield` expression.");
 }
