@@ -111,6 +111,12 @@ Indicates whether `node` is a full expression node type (as opposed to,
 notably, a restricted expression node type or a statement node type).
 Returns `node` to indicate logic-true.
 
+#### `makeApply(target, name, optValues?) -> node`
+
+Makes an `apply` node, where the method `name` (an expression node) is
+called on the given `target` (an expression node) with the given `optValues*`
+as arguments. If `optValues` is not passed, it defaults to `@void`.
+
 #### `makeAssignmentIfPossible(target, value) -> node | .`
 
 Makes an assignment node of some form, if possible. Given a `lvalue`-bearing
@@ -128,6 +134,12 @@ in sensible defaults for `formals` and `statements` if missing:
 No default is provided for `yield`, as it is not always possible to
 figure out a default for it at the points where `closure` nodes need to
 be produced de novo. See `makeFullClosure()` for more detail.
+
+#### `makeCall(target, name, values*) -> node`
+
+Makes a `call` node, where the method `name` (an expression node) is
+called on the given `target` (an expression node) with the given `values`
+as arguments, in order.
 
 #### `makeClassDef(name, attributes, methods) -> node`
 
@@ -196,11 +208,17 @@ Makes an `apply` node, with the given `function` (an expression node)
 being applied to the given `values` (an expression node). If `optValues`
 is not passed, it defaults to `@void`.
 
+The result is an `apply` node with `function` as the target and literal
+`@call` as the name.
+
 #### `makeFunCall(function, values*) -> node`
 
 Makes a `call` node, where `function` (an expression node) is called
 with each of the `values` (each an expression node) as arguments, in
 order.
+
+The result is a `call` node with `function` as the target and literal
+`@call` as the name.
 
 #### `makeFunCallLiterals(function, values*) -> node`
 
