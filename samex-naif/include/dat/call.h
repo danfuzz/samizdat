@@ -64,32 +64,34 @@ zvalue mustNotYield(zvalue value)
 
 
 //
-// Function calling macros
+// Function / method calling macros
 //
+// See <https://stackoverflow.com/questions/26497854/> for info about how
+// the varargs macros work. There's some additional history at
+// <http://stackoverflow.com/questions/2632300> and
+// <http://stackoverflow.com/questions/1872220>.
+//
+
+/**
+ * Helper for call macros: Construct an inline `zvalue[]` for all given
+ * arguments.
+ */
+#define CALL_ARG_ARRAY(...) ((zvalue[]) { __VA_ARGS__ })
+
+/**
+ * Helper for call macros: Get the number of arguments.
+ */
+#define CALL_ARG_COUNT(...) \
+    (sizeof (CALL_ARG_ARRAY(__VA_ARGS__)) / sizeof (zvalue))
 
 /**
  * `FUN_CALL(function, arg, ...)`: Calls a function, with a variable number
  * of arguments passed in the usual C style.
- *
- * This uses some crazy preprocessor stuff to make it all work out. See
- * <http://stackoverflow.com/questions/2632300> and
- * <http://stackoverflow.com/questions/1872220>. Note that the definitions
- * here are slightly different than the answer at those links, to account for
- * the fact that the first argument to the call here is the function, and not
- * a numbered argument.
  */
-#define DAT_CONCAT(x, y) x##y
-#define DAT_FIRST(x, ...) x
-#define DAT_REST(x, ...) __VA_ARGS__
-#define DAT_ARG_COUNT(...) \
-    DAT_ARG_COUNT0(__VA_ARGS__, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, \
-        9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-#define DAT_ARG_COUNT0(...) DAT_ARG_COUNT1(__VA_ARGS__)
-#define DAT_ARG_COUNT1(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, \
-    x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, n, ...) n
-#define FUN_CALL(...) \
-    funCall(DAT_FIRST(__VA_ARGS__), \
-        DAT_ARG_COUNT(__VA_ARGS__), (zvalue[]) { DAT_REST(__VA_ARGS__) })
+#define FUN_CALL(func, ...) \
+    methCall(func, SYM(call), \
+        CALL_ARG_COUNT(__VA_ARGS__), \
+        CALL_ARG_ARRAY(__VA_ARGS__))
 
 /**
  * `METH_APPLY(target, name, args)`: Calls a method by (unadorned) name,
@@ -101,16 +103,10 @@ zvalue mustNotYield(zvalue value)
  * `METH_CALL(target, name, arg, ...)`: Calls a method on a given `target`
  * by (unadorned) name, with a variable number of arguments passed in the
  * usual C style.
- *
- * See <https://stackoverflow.com/questions/26497854/> for info about how
- * this works.
  */
-#define METH_ARG_ARRAY(...) ((zvalue[]) { __VA_ARGS__ })
-#define METH_ARG_COUNT(...) \
-    (sizeof (METH_ARG_ARRAY(__VA_ARGS__)) / sizeof (zvalue))
 #define METH_CALL(target, name, ...) \
     methCall((target), SYM(name), \
-        METH_ARG_COUNT(__VA_ARGS__), \
-        METH_ARG_ARRAY(__VA_ARGS__))
+        CALL_ARG_COUNT(__VA_ARGS__), \
+        CALL_ARG_ARRAY(__VA_ARGS__))
 
 #endif
