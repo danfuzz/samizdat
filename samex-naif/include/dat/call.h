@@ -107,6 +107,9 @@ zvalue mustNotYield(zvalue value)
  * `METH_CALL(target, name, arg, ...)`: Calls a method on a given `target`
  * by (unadorned) name, with a variable number of arguments passed in the
  * usual C style.
+ *
+ * See <https://stackoverflow.com/questions/26497854/> for info about how
+ * this works.
  */
 #define METH_ARG_ARRAY(...) ((zvalue[]) { __VA_ARGS__ })
 #define METH_ARG_COUNT(...) \
