@@ -74,7 +74,7 @@ FUN_IMPL_DECL(ifValueAnd) {
     zvalue results[argCount];
 
     for (zint i = 0; i < argCount; i++) {
-        results[i] = funCall(args[i], i, results);
+        results[i] = methCall(args[i], SYM(call), i, results);
 
         if (results[i] == NULL) {
             return NULL;
@@ -92,14 +92,14 @@ FUN_IMPL_DECL(ifValueAndElse) {
     zvalue results[funcCount];
 
     for (zint i = 0; i < funcCount; i++) {
-        results[i] = funCall(args[i], i, results);
+        results[i] = methCall(args[i], SYM(call), i, results);
 
         if (results[i] == NULL) {
-            return funCall(elseFunc, 0, NULL);
+            return methCall(elseFunc, SYM(call), 0, NULL);
         }
     }
 
-    return funCall(thenFunc, funcCount, results);
+    return methCall(thenFunc, SYM(call), funcCount, results);
 }
 
 // Documented in spec.
