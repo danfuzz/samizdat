@@ -3,7 +3,6 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "type/Int.h"
 #include "type/Symbol.h"
@@ -131,21 +130,6 @@ static zvalue findInternedSymbol(zstring name) {
 }
 
 /**
- * This is the function that handles emitting a context string for a call,
- * when dumping the stack.
- */
-static char *callReporter(void *state) {
-    zvalue cls = state;
-    char *clsString = cm_debugString(cls);
-    char *result;
-
-    asprintf(&result, "class %s", clsString);
-    free(clsString);
-
-    return result;
-}
-
-/**
  * Helper for `symbolFromUtf8` and `unlistedSymbolFromUtf8`, which
  * does all the real work.
  */
@@ -170,34 +154,6 @@ static bool uncheckedEq(zvalue symbol1, zvalue symbol2) {
     // It's safe to use `==`, since by definition two different symbol
     // references must be different symbols.
     return symbol1 == symbol2;
-}
-
-
-//
-// Module Definitions
-//
-
-// Documented in header.
-zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
-    if (argCount < 1) {
-        die("Too few arguments for symbol call.");
-    }
-
-    SymbolInfo *info = getInfo(symbol);
-    zint index = info->index;
-    zvalue cls = classOf(args[0]);
-    zvalue function = classFindMethodUnchecked(cls, index);
-
-    if (function == NULL) {
-        zvalue nameStr = cm_castFrom(CLS_String, symbol);
-        die("Unbound method: %s.%s", cm_debugString(cls),
-            cm_debugString(nameStr));
-    }
-
-    UTIL_TRACE_START(callReporter, cls);
-    zvalue result = funCall(function, argCount, args);
-    UTIL_TRACE_END();
-    return result;
 }
 
 
@@ -300,6 +256,7 @@ zstring zstringFromSymbol(zvalue symbol) {
 
 // Documented in spec.
 METH_IMPL_rest(Symbol, call, args) {
+    // TODO: This should probably be removed.
     return symbolCall(ths, argsSize, args);
 }
 

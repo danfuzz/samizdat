@@ -377,7 +377,7 @@ DEF_PARSE(literal) {
 
     if (MATCH(CH_MINUS)) {
         token = MATCH_OR_REJECT(int);
-        return makeLiteral(METH_CALL(neg, cm_get(token, SYM(value))));
+        return makeLiteral(METH_CALL(cm_get(token, SYM(value)), neg));
     } else if ((token = MATCH(int))) {
         return makeLiteral(cm_get(token, SYM(value)));
     } else if ((token = MATCH(string))) {
@@ -1094,8 +1094,8 @@ DEF_PARSE(importSource1) {
     zvalue rest = PARSE_STAR(importSourceSlashName);
     zvalue optSuffix = PARSE_OPT(importSourceDotName);
 
-    zvalue name = METH_APPLY(cat,
-        cm_cat(listFrom2(EMPTY_STRING, first), rest, optSuffix));
+    zvalue name = METH_APPLY(EMPTY_STRING, cat,
+        cm_cat(listFrom1(first), rest, optSuffix));
     return recordFrom1(SYM(internal), SYM(name), name);
 }
 
@@ -1106,8 +1106,8 @@ DEF_PARSE(importSource2) {
     zvalue first = PARSE_OR_REJECT(nameSymbol);
     zvalue rest = PARSE_STAR(importSourceDotName);
 
-    zvalue name = METH_APPLY(cat,
-        cm_cat(listFrom2(EMPTY_STRING, first), rest));
+    zvalue name = METH_APPLY(EMPTY_STRING, cat,
+        cm_cat(listFrom1(first), rest));
     return recordFrom1(SYM(external), SYM(name), name);
 }
 

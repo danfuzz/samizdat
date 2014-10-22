@@ -34,11 +34,7 @@ extern zevalType symbolEvalType(zvalue symbol);
 /** Initializes the module. */
 MOD_INIT(lang) {
     MOD_USE(lang_const);
-    MOD_USE(Bool);
-    MOD_USE(Box);
     MOD_USE(Closure);
-    MOD_USE(Generator);
-    MOD_USE(Map);
 
     memset(langSymbolMap, 0, sizeof(langSymbolMap));
 

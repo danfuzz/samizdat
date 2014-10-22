@@ -37,7 +37,7 @@ zvalue valEq(zvalue value, zvalue other) {
     } else if (value == other) {
         return value;
     } else if (haveSameClass(value, other)) {
-        return (METH_CALL(totalEq, value, other) != NULL) ? value : NULL;
+        return (METH_CALL(value, totalEq, other) != NULL) ? value : NULL;
     } else {
         return NULL;
     }
@@ -66,9 +66,9 @@ zvalue valOrder(zvalue value, zvalue other) {
     zvalue otherCls = classOf(other);
 
     if (valueCls == otherCls) {
-        return METH_CALL(totalOrder, value, other);
+        return METH_CALL(value, totalOrder, other);
     } else {
-        return METH_CALL(perOrder, valueCls, otherCls);
+        return METH_CALL(valueCls, perOrder, otherCls);
     }
 }
 
@@ -85,7 +85,7 @@ METH_IMPL_1(Value, castToward, cls) {
 // Documented in spec.
 METH_IMPL_0(Value, debugString) {
     zvalue cls = classOf(ths);
-    zvalue name = METH_CALL(debugSymbol, ths);
+    zvalue name = METH_CALL(ths, debugSymbol);
     char addrBuf[19];  // Includes room for `0x` and `\0`.
 
     if (name == NULL) {
@@ -101,7 +101,7 @@ METH_IMPL_0(Value, debugString) {
 
     return cm_cat(
         stringFromUtf8(-1, "@<"),
-        METH_CALL(debugString, cls),
+        METH_CALL(cls, debugString),
         name,
         stringFromUtf8(-1, " @ "),
         stringFromUtf8(-1, addrBuf),
@@ -177,7 +177,6 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Record);
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Int);
-    MOD_USE_NEXT(Jump);
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(Null);
     MOD_USE_NEXT(String);

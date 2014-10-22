@@ -30,13 +30,13 @@
 /**
  * Calls `x.castFrom(value)`. **Note:** This is a macro.
  */
-#define cm_castFrom(x, value) (METH_CALL(castFrom, (x), (value)))
+#define cm_castFrom(x, value) (METH_CALL((x), castFrom, (value)))
 
 /**
  * Calls `x.cat(...)`. **Note:** This is a macro, and due to limitations on
  * C macros, this must be passed at least one argument.
  */
-#define cm_cat(...) (METH_CALL(cat, __VA_ARGS__))
+#define cm_cat(x, ...) (METH_CALL((x), cat, __VA_ARGS__))
 
 /**
  * Calls `x.debugString()`, converting the result to a `char *`. The
@@ -48,26 +48,18 @@ char *cm_debugString(zvalue x);
 /**
  * Calls `x.fetch()`. **Note:** This is a macro.
  */
-#define cm_fetch(x) (METH_CALL(fetch, (x)))
+#define cm_fetch(x) (METH_CALL((x), fetch))
 
 /**
  * Calls `x.get(key)`. **Note:** This is a macro.
  */
-#define cm_get(x, key) (METH_CALL(get, (x), (key)))
+#define cm_get(x, key) (METH_CALL((x), get, (key)))
 
 /**
  * Calls `ClassName.new(...)`. `ClassName` is fixed to be a proper C name
- * for a class. **Note:** This is a macro, and due to limitations on
- * C macros, this must be passed at least one argument after the class name.
+ * for a class. **Note:** This is a macro.
  */
-#define cm_new(clsName, ...) (METH_CALL(new, (CLS_##clsName), __VA_ARGS__))
-
-/**
- * Calls `ClassName.new()` with no arguments. `ClassName` is fixed to be a
- * proper C name for a class. **Note:** This is a macro, and exists only
- * because of limitations on varargs macros (see `cm_new()`).
- */
-#define cm_new0(clsName) (METH_CALL(new, (CLS_##clsName)))
+#define cm_new(clsName, ...) (METH_CALL((CLS_##clsName), new, __VA_ARGS__))
 
 /**
  * Does the equivalent of calling `SymbolTable.new(...)`, except that this
@@ -96,22 +88,22 @@ zorder cm_order(zvalue x, zvalue other);
 /**
  * Calls `x.put(key, value)`. **Note:** This is a macro.
  */
-#define cm_put(x, key, value) (METH_CALL(put, (x), (key), (value)))
+#define cm_put(x, key, value) (METH_CALL((x), put, (key), (value)))
 
 /**
  * Calls `x.store(...)`. **Note:** This is a macro.
  */
-#define cm_store(...) (METH_CALL(store, __VA_ARGS__))
+#define cm_store(x, ...) (METH_CALL((x), store, __VA_ARGS__))
 
 /**
  * Calls `x.get_data()`. **Note:** This is a macro.
  */
-#define get_data(x) (METH_CALL(get_data, (x)))
+#define get_data(x) (METH_CALL((x), get_data))
 
 /**
  * Calls `x.get_name()`. **Note:** This is a macro.
  */
-#define get_name(x) (METH_CALL(get_name, (x)))
+#define get_name(x) (METH_CALL((x), get_name))
 
 /**
  * Calls `x.get_size()`, converting the result to a `zint`.

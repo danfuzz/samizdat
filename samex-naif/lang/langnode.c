@@ -425,14 +425,14 @@ zvalue makeCallOrApply(zvalue function, zvalue values) {
 
 // Documented in spec.
 zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
-    zvalue attribMap = METH_APPLY(cat, listPrepend(EMPTY_MAP, attributes));
+    zvalue attribMap = METH_APPLY(EMPTY_MAP, cat, attributes);
     zint attribSize = get_size(attribMap);
 
     if (get_size(attributes) != attribSize) {
         die("Duplicate attribute.");
     }
 
-    zvalue keys = METH_CALL(keyList, attribMap);
+    zvalue keys = METH_CALL(attribMap, keyList);
     for (zint i = 0; i < attribSize; i++) {
         zvalue one = cm_nth(keys, i);
         if (!(valEq(one, SYM(access)) || valEq(one, SYM(new)))) {
@@ -471,10 +471,8 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     }
 
     zvalue instanceMethodTable = makeCall(SYMS(new),
-        METH_APPLY(cat,
-            listPrepend(
-                listFrom1(LITS(SymbolTable)),
-                METH_CALL(valueList, instanceMethods))));
+        METH_APPLY(listFrom1(LITS(SymbolTable)), cat,
+            METH_CALL(instanceMethods, valueList)));
 
     zvalue call = makeCall(SYMS(subclass),
         listFrom5(
@@ -562,7 +560,7 @@ zvalue makeFullClosure(zvalue baseData) {
           && (cm_get(table, SYM(yieldDef)) == NULL)) {
         zvalue lastStat = cm_nth(statements, statSz - 1);
         if (isExpression(lastStat)) {
-            statements = METH_CALL(sliceExclusive, statements, intFromZint(0));
+            statements = METH_CALL(statements, sliceExclusive, INT_0);
             yieldNode = canYieldVoid(lastStat)
                 ? makeMaybe(lastStat)
                 : lastStat;
@@ -600,7 +598,7 @@ zvalue makeImport(zvalue baseData) {
 
         if (valEq(select, SYM(CH_STAR))) {
             // It's a wildcard import.
-            data = METH_CALL(del, data, SYM(select));
+            data = METH_CALL(data, del, SYM(select));
         }
 
         return cm_new(Record, SYM(importModuleSelection), data);
@@ -863,7 +861,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
                 return node;
             } else {
                 // It's a wildcard select.
-                select = METH_CALL(keyList, exports);
+                select = METH_CALL(exports, keyList);
                 return cm_new(Record, SYM(importModuleSelection),
                     cm_put(get_data(node), SYM(select), select));
             }
@@ -1010,7 +1008,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
 // Documented in spec.
 zvalue withoutIntermediates(zvalue node) {
-    return METH_CALL(del, node, SYM(box), SYM(interpolate), SYM(lvalue));
+    return METH_CALL(node, del, SYM(box), SYM(interpolate), SYM(lvalue));
 }
 
 // Documented in spec.

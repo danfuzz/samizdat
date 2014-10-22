@@ -2,7 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-import CodeGen;
+import CodeGen :: *;
 import VarCalc :: get_varRefs;
 
 
@@ -46,7 +46,7 @@ def FORMAL_PARSERS = {
 ## unnamed formals.
 fn unnamedFormals(clo) {
     return [ idx in (0..), f in clo::formals ->
-        (!f::name) & $CodeGen::genComment("Unnamed formal \(idx)")
+        (!f::name) & genComment("Unnamed formal \(idx)")
     ];
 };
 
@@ -64,11 +64,10 @@ fn processFormalsWithRepeat(clo, names) {
                 name,
                 origName,
                 preInit: [
-                    $CodeGen::genAssign("zvalue \(rawName)", parse::parse),
+                    genAssign("zvalue \(rawName)", parse::parse),
                     parse::update
                 ],
-                init: $CodeGen::genCall(
-                    "METH_CALL", "new", "CLS_Result", rawName)
+                init: genMethCall("CLS_Result", "new", rawName)
             }
         } else {
             ## Note: Because we have to adjust `argAt` for unnamed formals, we
@@ -107,8 +106,7 @@ fn processFormals(clo) {
                 origName: name,
                 kind:     "arg",
                 name:     safeName("arg", name, idx),
-                init:     $CodeGen::genCall("METH_CALL", "new", "CLS_Result",
-                              "args[\(idx)]")
+                init:     genMethCall("CLS_Result", "new", "args[\(idx)]")
             }}
     );
 
@@ -130,7 +128,7 @@ fn processYieldDef(clo) {
                     origName: cast(Symbol, "<\(name)>"),
                     kind:     "yield",
                     name:     safeName("yield", name),
-                    init:     "METH_CALL(new, CLS_Result, jump)"
+                    init:     genMethCall("CLS_Result", "new", "jump")
                 }}
         }
     } else {
@@ -207,9 +205,9 @@ export fn processVars(clo) {
     ## Make C local variable defintions for all the variables.
     def varStats = ( name in names ->
         def binding = vars[name];
-        $CodeGen::genComment(
+        genComment(
             "\%q(cast(String, binding::origName))",
-            $CodeGen::genAssign("zvalue \(binding::name)", binding::init));
+            genAssign("zvalue \(binding::name)", binding::init));
     );
 
     return {

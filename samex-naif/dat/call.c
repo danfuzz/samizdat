@@ -10,7 +10,6 @@
 #include <stdio.h>   // For `asprintf`.
 
 #include "type/Builtin.h"
-#include "type/Jump.h"
 #include "type/List.h"
 #include "type/String.h"
 #include "type/Symbol.h"
@@ -25,65 +24,108 @@
 //
 
 /**
- * Returns `value` if it is a string. Returns `String.castFrom(value)` if it
- * is a symbol; otherwise calls `debugString` on it.
+ * Struct used to hold the salient info for generating a stack trace.
  */
-static zvalue ensureString(zvalue value) {
+typedef struct {
+    /** Target being called. */
+    zvalue target;
+
+    /** Name of method being called. */
+    zvalue name;
+} StackTraceEntry;
+
+/**
+ * Returns a `dup()`ed string representing `value`. The result is the chars
+ * of `value` if it is a string or symbol. Otherwise, it is the result of
+ * calling `.debugString()` on `value`.
+ */
+static char *ensureString(zvalue value) {
     if (classAccepts(CLS_String, value)) {
-        return value;
+        // No conversion.
     } else if (classAccepts(CLS_Symbol, value)) {
-        return cm_castFrom(CLS_String, value);
+        value = cm_castFrom(CLS_String, value);
     } else {
-        return METH_CALL(debugString, value);
+        value = METH_CALL(value, debugString);
     }
+
+    return utf8DupFromString(value);
 }
 
 /**
- * This is the function that handles emitting a context string for a call,
- * when dumping the stack.
+ * This is the function that handles emitting a context string for a method
+ * call, when dumping the stack.
  */
 static char *callReporter(void *state) {
-    zvalue value = state;
-    zvalue name = METH_CALL(debugSymbol, value);
-
-    if (name != NULL) {
-        return utf8DupFromString(ensureString(name));
-    }
-
-    char *clsString = cm_debugString(classOf(value));
+    StackTraceEntry *ste = state;
+    char *classStr =
+        ensureString(METH_CALL(classOf(ste->target), debugSymbol));
     char *result;
 
-    asprintf(&result, "anonymous %s", clsString);
-    utilFree(clsString);
+    if (symbolEq(ste->name, SYM(call))) {
+        // It's a function call (or function-like call).
+        zvalue targetName = METH_CALL(ste->target, debugSymbol);
+
+        if (targetName != NULL) {
+            char *nameStr = ensureString(targetName);
+            asprintf(&result, "%s (instance of %s)",
+                nameStr, classStr);
+            utilFree(nameStr);
+        } else {
+            asprintf(&result, "anonymous instance of %s", classStr);
+        }
+    } else {
+        char *targetStr = cm_debugString(ste->target);
+        char *nameStr = ensureString(ste->name);
+        asprintf(&result, "%s.%s on %s", classStr, nameStr, targetStr);
+        utilFree(targetStr);
+        utilFree(nameStr);
+    }
+
+    utilFree(classStr);
 
     return result;
 }
 
 /**
- * Inner implementation of `funCall`, which does *not* do argument validation,
- * nor debug and local frame setup/teardown.
+ * Helper for `methCall`, which calls a function (which was presumably looked
+ * up in a method table). This does *not* do argument validation.
  */
-static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
+static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     zvalue funCls = classOf(function);
+    zvalue result;
 
     // The first three cases are how we bottom out the recursion, instead of
-    // calling `funCall0` on the `call` methods for `Builtin`, `Jump`, or
-    // `Symbol`.
+    // calling `funCall` on the `call` methods for `Builtin` or `Symbol`.
     if (funCls == CLS_Symbol) {
-        return symbolCall(function, argCount, args);
+        // No call reporting setup here, as this will bottom out in a
+        // `methCall()` which will do that.
+        result = symbolCall(function, argCount, args);
     } else if (funCls == CLS_Builtin) {
-        return builtinCall(function, argCount, args);
-    } else if (funCls == CLS_Jump) {
-        return jumpCall(function, argCount, args);
+        StackTraceEntry ste = {.target = function, .name = SYM(call)};
+        UTIL_TRACE_START(callReporter, &ste);
+        result = builtinCall(function, argCount, args);
+        UTIL_TRACE_END();
     } else {
         // The original `function` is some kind of higher layer function.
-        // Use method dispatch to get to it: Prepend `function` as a new
-        // first argument, and call the method `call` via its symbol.
-        zvalue newArgs[argCount + 1];
-        newArgs[0] = function;
-        utilCpy(zvalue, &newArgs[1], args, argCount);
-        return symbolCall(SYM(call), argCount + 1, newArgs);
+        // Use method dispatch to get to it.
+        result = methCall(function, SYM(call), argCount, args);
     }
+
+    return result;
+}
+
+
+//
+// Module Definitions
+//
+
+// Documented in header.
+zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
+    if (argCount < 1) {
+        die("Too few arguments for symbol call.");
+    }
+
+    return methCall(args[0], symbol, argCount - 1, &args[1]);
 }
 
 
@@ -92,60 +134,51 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 //
 
 // Documented in header.
-zvalue funApply(zvalue function, zvalue args) {
+zvalue methApply(zvalue target, zvalue name, zvalue args) {
     zint argCount = (args == NULL) ? 0 : get_size(args);
 
     if (argCount == 0) {
-        return funCall(function, 0, NULL);
+        return methCall(target, name, 0, NULL);
     } else {
         zvalue argsArray[argCount];
         arrayFromList(argsArray, args);
-        return funCall(function, argCount, argsArray);
+        return methCall(target, name, argCount, argsArray);
     }
 }
 
 // Documented in header.
-zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
+zvalue methCall(zvalue target, zvalue name, zint argCount,
+        const zvalue *args) {
     if (argCount < 0) {
-        die("Invalid argument count for function call: %lld", argCount);
-    } else if ((argCount != 0) && (args == NULL)) {
-        die("Function call argument inconsistency.");
+        die("Invalid argument count for method call: %lld", argCount);
+    } else if ((args == NULL) && (argCount != 0)) {
+        die("Method call argument inconsistency.");
     }
 
-    UTIL_TRACE_START(callReporter, function);
+    zint index = symbolIndex(name);
+    zvalue cls = classOf(target);
+    zvalue function = classFindMethodUnchecked(cls, index);
+
+    if (function == NULL) {
+        zvalue nameStr = cm_castFrom(CLS_String, name);
+        die("Unbound method: %s.%s", cm_debugString(cls),
+            cm_debugString(nameStr));
+    }
+
+    // Prepend `target` as a new first argument for a call to `function`.
+    zvalue newArgs[argCount + 1];
+    newArgs[0] = target;
+    utilCpy(zvalue, &newArgs[1], args, argCount);
+
+    StackTraceEntry ste = {.target = target, .name = name};
+    UTIL_TRACE_START(callReporter, &ste);
+
     zstackPointer save = datFrameStart();
-
-    zvalue result = funCall0(function, argCount, args);
-
+    zvalue result = funCall(function, argCount + 1, newArgs);
     datFrameReturn(save, result);
+
     UTIL_TRACE_END();
-
     return result;
-}
-
-// Documented in header.
-zvalue vaFunCall(zvalue function, ...) {
-    zint size = 0;
-    va_list rest;
-
-    va_start(rest, function);
-    for (;;) {
-        if (va_arg(rest, zvalue) == NULL) {
-            break;
-        }
-        size++;
-    }
-    va_end(rest);
-
-    zvalue values[size];
-
-    va_start(rest, function);
-    for (zint i = 0; i < size; i++) {
-        values[i] = va_arg(rest, zvalue);
-    }
-    va_end(rest);
-
-    return funCall(function, size, values);
 }
 
 // Documented in header.

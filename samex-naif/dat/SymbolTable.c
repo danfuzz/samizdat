@@ -269,7 +269,7 @@ METH_IMPL_rest(SymbolTable, cat, args) {
         if (!classAccepts(CLS_SymbolTable, one)) {
             // TODO: Should be the full `cast()`. Fix this when that function
             // is sanely available here.
-            one = METH_CALL(castToward, one, CLS_SymbolTable);
+            one = METH_CALL(one, castToward, CLS_SymbolTable);
             if ((one == NULL) || !classAccepts(CLS_SymbolTable, one)) {
                 die("Invalid argument to `cat()`: %s",
                     cm_debugString(args[i]));
@@ -445,7 +445,7 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
         zvalue key1 = array1[i].key;
         zvalue key2 = array2[i].key;
         if (key1 != key2) {
-            return METH_CALL(totalOrder, key1, key2);
+            return METH_CALL(key1, totalOrder, key2);
         }
     }
 

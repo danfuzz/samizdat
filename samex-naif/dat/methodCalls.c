@@ -41,7 +41,7 @@ char *cm_debugString(zvalue x) {
     }
 
     inDebugString = true;
-    char *result = utf8DupFromString(METH_CALL(debugString, x));
+    char *result = utf8DupFromString(METH_CALL(x, debugString));
     inDebugString = false;
 
     return result;
@@ -49,7 +49,7 @@ char *cm_debugString(zvalue x) {
 
 // Documented in header.
 zvalue cm_nth(zvalue x, zint index) {
-    return METH_CALL(nth, x, intFromZint(index));
+    return METH_CALL(x, nth, intFromZint(index));
 }
 
 // Documented in header.
@@ -108,5 +108,5 @@ zorder cm_order(zvalue x, zvalue other) {
 
 // Documented in header.
 zint get_size(zvalue x) {
-    return zintFromInt(METH_CALL(get_size, x));
+    return zintFromInt(METH_CALL(x, get_size));
 }

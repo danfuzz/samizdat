@@ -1,0 +1,96 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Method call tree.
+##
+
+import ./CodeString :: fix;
+import ./Wrapper :: *;
+import ./indentation :: *;
+
+
+##
+## Class Definition
+##
+
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
+
+class MethCall
+        access: ACCESS,
+        new: NEW {
+    fn flatten() {
+        def data = ACCESS(this);
+        def args = data::args;
+
+        return "".cat(
+            "methCall(",
+            data::target.flatten(), ", ",
+            data::name.flatten(), ", ",
+            "\(#args), (zvalue[]) { ",
+            ( a in args, i in (#args.. by -1) ->
+                "".cat(a.flatten(), (i == 1) & "" | ", ")
+            )*,
+            " })"
+        )
+    };
+
+    fn indent(level, maxColumns) {
+        def data = ACCESS(this);
+        def prefix = indentation(level);
+        def args = data::args;
+        def nextLevel = level + 2;
+
+        return "".cat(
+            "methCall(\n",
+            prefix, data::target.flatten(), ",\n",
+            prefix, data::name.flatten(), ",\n",
+            prefix, "\(#args),\n",
+            prefix, "(zvalue[]) {\n",
+            ( a in args, i in (#args.. by -1) ->
+                "".cat(a.indent(nextLevel, maxColumns),
+                    (i == 1) & "\n" | ",\n")
+            )*,
+            prefix, "})"
+        )
+    };
+
+    fn prefersFlat() {
+        def data = ACCESS(this);
+        return? data::flatOk** & this;
+    };
+};
+
+
+##
+## Exported Definitions
+##
+
+export fn genMethCall(target, name, args*) {
+    def fixTarget = fix(target);
+    def fixName = fix("SYM(\(name))");
+    def fixArgs = [ a in args -> fix(a) ];
+    var flatOk = false;
+
+    if ((#args < 5) & fixTarget.prefersFlat()) {
+        flatOk := true;
+        for (a in fixArgs) {
+            if (!a.prefersFlat()) {
+                flatOk := false;
+                break
+            }
+        }
+    };
+
+    return genWrapper(
+        NEW(MethCall,
+            @{
+                target: fixTarget,
+                name:   fixName,
+                args:   fixArgs,
+                flatOk
+            }))
+};
