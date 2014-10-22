@@ -117,12 +117,6 @@ zvalue mustNotYield(zvalue value)
         METH_ARG_ARRAY(__VA_ARGS__))
 
 /**
- * `METH_CALL_old(name, arg, ...)`: Calls a method by (unadorned) name,
- * with a variable number of arguments passed in the usual C style.
- */
-#define METH_CALL_old(name, ...) FUN_CALL(SYM(name), __VA_ARGS__)
-
-/**
  * `VA_METH_CALL(target, name, arg, ...)`: Calls a method on a given `target`
  * by (unadorned) name, with a variable number of arguments passed in the
  * usual C style. Under the covers, this calls `vaMethCall()` to "parse" the
