@@ -141,19 +141,6 @@ zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
 //
 
 // Documented in header.
-zvalue funApply(zvalue function, zvalue args) {
-    zint argCount = (args == NULL) ? 0 : get_size(args);
-
-    if (argCount == 0) {
-        return funCall(function, 0, NULL);
-    } else {
-        zvalue argsArray[argCount];
-        arrayFromList(argsArray, args);
-        return funCall(function, argCount, argsArray);
-    }
-}
-
-// Documented in header.
 zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);

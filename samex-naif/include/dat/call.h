@@ -11,13 +11,6 @@
 
 /**
  * Calls the given `function` with the given list of arguments. `function`
- * must be a function, and `args` must be a list or `NULL` (the latter treated
- * like an empty list).
- */
-zvalue funApply(zvalue function, zvalue args);
-
-/**
- * Calls the given `function` with the given list of arguments. `function`
  * must be a function, and `argCount` must be non-negative. If `argCount` is
  * positive, then `args` must not be `NULL`. In addition, all elements of
  * `args` must be non-`NULL`.
