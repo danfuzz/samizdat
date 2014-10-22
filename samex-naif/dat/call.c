@@ -46,7 +46,7 @@ static char *ensureString(zvalue value) {
     } else if (classAccepts(CLS_Symbol, value)) {
         value = cm_castFrom(CLS_String, value);
     } else {
-        value = METH_CALL_old(debugString, value);
+        value = METH_CALL(value, debugString);
     }
 
     return utf8DupFromString(value);
@@ -59,12 +59,12 @@ static char *ensureString(zvalue value) {
 static char *callReporter(void *state) {
     StackTraceEntry *ste = state;
     char *classStr =
-        ensureString(METH_CALL_old(debugSymbol, classOf(ste->target)));
+        ensureString(METH_CALL(classOf(ste->target), debugSymbol));
     char *result;
 
     if (symbolEq(ste->name, SYM(call))) {
         // It's a function call (or function-like call).
-        zvalue targetName = METH_CALL_old(debugSymbol, ste->target);
+        zvalue targetName = METH_CALL(ste->target, debugSymbol);
 
         if (targetName != NULL) {
             char *nameStr = ensureString(targetName);
