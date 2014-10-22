@@ -26,29 +26,6 @@ static JumpInfo *getInfo(zvalue jump) {
 
 
 //
-// Module Definitions
-//
-
-// Documented in header.
-zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args) {
-    JumpInfo *info = getInfo(jump);
-
-    if (!info->valid) {
-        die("Out-of-scope nonlocal jump.");
-    }
-
-    switch (argCount) {
-        case 0:  { info->result = NULL;    break;      }
-        case 1:  { info->result = args[0]; break;      }
-        default: { die("Out-of-scope nonlocal jump."); }
-    }
-
-    info->valid = false;
-    siglongjmp(info->env, 1);
-}
-
-
-//
 // Exported Definitions
 //
 
@@ -68,7 +45,20 @@ zvalue makeJump(void) {
 
 // Documented in spec.
 METH_IMPL_rest(Jump, call, args) {
-    return jumpCall(ths, argsSize, args);
+    JumpInfo *info = getInfo(ths);
+
+    if (!info->valid) {
+        die("Out-of-scope nonlocal jump.");
+    }
+
+    switch (argsSize) {
+        case 0:  { info->result = NULL;    break;                    }
+        case 1:  { info->result = args[0]; break;                    }
+        default: { die("Invalid argument count for nonlocal jump."); }
+    }
+
+    info->valid = false;
+    siglongjmp(info->env, 1);
 }
 
 // Documented in spec.

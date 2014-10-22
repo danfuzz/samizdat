@@ -163,12 +163,6 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 zvalue classFindMethodUnchecked(zvalue cls, zint index);
 
 /**
- * Actual implementation of nonlocal jump calling. This is where
- * short-circuited method dispatch of `call` on class `Jump` lands.
- */
-zvalue jumpCall(zvalue jump, zint argCount, const zvalue *args);
-
-/**
  * Actual implementation of symbol calling. This is where
  * short-circuited method dispatch of `call` on class `Symbol`
  * lands. This calls the method bound to the given symbol, with the given
