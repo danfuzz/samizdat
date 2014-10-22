@@ -123,7 +123,7 @@ static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue valueExpression = cm_get(varDef, SYM(value));
     zvalue box = valueExpression
         ? cm_new(Result, execExpression(frame, valueExpression))
-        : cm_new0(Promise);
+        : cm_new(Promise);
 
     frameDef(frame, name, box);
 }

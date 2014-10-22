@@ -57,20 +57,9 @@ char *cm_debugString(zvalue x);
 
 /**
  * Calls `ClassName.new(...)`. `ClassName` is fixed to be a proper C name
- * for a class. **Note:** This is a macro, and due to limitations on
- * C macros, this must be passed at least one argument after the class name.
+ * for a class. **Note:** This is a macro.
  */
 #define cm_new(clsName, ...) (METH_CALL((CLS_##clsName), new, __VA_ARGS__))
-
-/**
- * Calls `ClassName.new()` with no arguments. `ClassName` is fixed to be a
- * proper C name for a class. **Note:** This is a macro, and exists only
- * because of limitations on varargs macros (see `cm_new()`).
- *
- * TODO: With the new `METH_CALL`, this may be obsolete; that is plain
- * `cm_new()` might work now.
- */
-#define cm_new0(clsName) (METH_CALL((CLS_##clsName), new))
 
 /**
  * Does the equivalent of calling `SymbolTable.new(...)`, except that this
