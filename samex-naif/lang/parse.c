@@ -682,6 +682,8 @@ DEF_PARSE(postfixOperator) {
 
 // Documented in spec.
 DEF_PARSE(unaryExpression) {
+    // We differ from the spec here. See comment in `postfixOperator`, above.
+
     MARK();
 
     zvalue result = PARSE_OR_REJECT(term);
@@ -696,7 +698,7 @@ DEF_PARSE(unaryExpression) {
         } else switch (recordEvalType(one)) {
             case EVAL_call: {
                 // Method call.
-                zvalue function = cm_get(one, SYM(function));
+                zvalue function = cm_get(one, SYM(target));
                 zvalue values = cm_get(one, SYM(values));
                 result = makeFunCallOrApply(function,
                     listPrepend(result, values));

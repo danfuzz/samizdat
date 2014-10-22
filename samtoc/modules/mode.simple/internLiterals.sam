@@ -17,17 +17,19 @@ import ./Interner :: intern;
 fn lits(node, interner) {
     return switch (def nodeName = node.name) {
         @apply: {
-            def function = lits(node::function, interner);
+            def target = lits(node::target, interner);
+            def name = lits(node::name, interner);
             def values = lits(node::values, interner);
 
-            @apply{values, function}
+            @apply{target, name, values}
         };
 
         @call: {
-            @call{
-                function: lits(node::function, interner),
-                values: [ a in node::values -> lits(a, interner) ]
-            }
+            def target = lits(node::target, interner);
+            def name = lits(node::name, interner);
+            def values = [ a in node::values -> lits(a, interner) ];
+
+            @call{target, name, values}
         };
 
         @closure: {

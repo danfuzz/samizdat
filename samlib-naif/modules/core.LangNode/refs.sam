@@ -5,8 +5,8 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 :: makeFunCall, makeLiteral, makeVarFetch;
-import ./literals :: SYMS;
+import ./constructors1 :: makeFunCall, makeVarFetch;
+import ./literals :: SYMS, makeLiteral;
 
 
 ##

@@ -526,24 +526,12 @@ zvalue makeFullClosure(zvalue baseData) {
 
 // Documented in spec.
 zvalue makeFunApply(zvalue function, zvalue values) {
-    if (values == NULL) {
-        values = TOK_void;
-    }
-
-    return recordFrom2(SYM(apply),
-        SYM(function), function,
-        SYM(values),   values);
+    return makeApply(function, SYMS(call), values);
 }
 
 // Documented in spec.
 zvalue makeFunCall(zvalue function, zvalue values) {
-    if (values == NULL) {
-        values = EMPTY_LIST;
-    }
-
-    return recordFrom2(SYM(call),
-        SYM(function), function,
-        SYM(values),   values);
+    return makeCall(function, SYMS(call), values);
 }
 
 // Documented in spec.

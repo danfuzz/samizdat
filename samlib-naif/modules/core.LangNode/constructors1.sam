@@ -6,6 +6,7 @@
 
 import core.Generator :: filterAll;
 
+import ./literals :: SYMS, makeLiteral;
 
 ##
 ## Exported Definitions
@@ -43,24 +44,18 @@ export fn makeExportSelection(names+) {
 
 ## Documented in spec.
 export fn makeFunApply(function, optValues?) {
-    def values = ifValueOr { optValues* } { @void{} };
-    return @apply{function, values}
+    return makeApply(function, SYMS::call, optValues*)
 };
 
 ## Documented in spec.
 export fn makeFunCall(function, values*) {
-    return @call{function, values}
+    return makeCall(function, SYMS::call, values*)
 };
 
 ## Documented in spec.
 export fn makeFunCallLiterals(function, values*) {
     def literals = filterAll(values) { one -> makeLiteral(one) };
     return makeFunCall(function, literals*)
-};
-
-## Documented in spec.
-export fn makeLiteral(value) {
-    return @literal{value}
 };
 
 ## Documented in spec.
@@ -77,11 +72,6 @@ export fn makeNoYield(value) {
 export fn makeNonlocalExit(function, optValue?) {
     def value = ifValueOr { optValue* } { @void{} };
     return @nonlocalExit{function, value}
-};
-
-## Documented in spec.
-export fn makeSymbolLiteral(name) {
-    return makeLiteral(cast(Symbol, name))
 };
 
 ## Documented in spec.

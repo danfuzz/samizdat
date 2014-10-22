@@ -25,11 +25,11 @@ fn catVarRefs(nodes*) {
 export fn get_varRefs(node) {
     return switch (node.name) {
         @apply: {
-            catVarRefs(node::function, node::values)
+            catVarRefs(node::target, node::name, node::values)
         };
 
         @call: {
-            catVarRefs(node::function, node::values*)
+            catVarRefs(node::target, node::name, node::values*)
         };
 
         @closure: {

@@ -169,17 +169,19 @@ fn convertPexIn(node) {
         { node.get_name() },
         {
             @apply: { . ->
-                def function = convertPexIn(node::function);
+                def target = convertPexIn(node::target);
+                def name = convertPexIn(node::name);
                 def values = convertPexIn(node::values);
 
-                withFinalBindings(node, @{function, values});
+                withFinalBindings(node, @{target, name, values});
             },
 
             @call: { . ->
-                def function = convertPexIn(node::function);
+                def target = convertPexIn(node::target);
+                def name = convertPexIn(node::name);
                 def values = convertPexInList(node::values);
 
-                withFinalBindings(node, @{function, values});
+                withFinalBindings(node, @{target, name, values});
             },
 
             @closure: { . ->

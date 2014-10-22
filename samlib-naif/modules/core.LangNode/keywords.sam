@@ -5,7 +5,8 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 :: makeLiteral;
+
+import ./literals :: makeLiteral;
 
 
 ##

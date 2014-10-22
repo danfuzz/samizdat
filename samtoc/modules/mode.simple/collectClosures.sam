@@ -16,16 +16,18 @@ import VarCalc :: get_varRefs;
 fn bodies(node, bodiesBox) {
     return switch (def nodeName = node.name) {
         @apply: {
-            def function = bodies(node::function, bodiesBox);
+            def target = bodies(node::target, bodiesBox);
+            def name = bodies(node::name, bodiesBox);
             def values = bodies(node::values, bodiesBox);
 
-            @apply{values, function}
+            @apply{target, name, values}
         };
 
         @call: {
-            def function = bodies(node::function, bodiesBox);
+            def target = bodies(node::target, bodiesBox);
+            def name = bodies(node::name, bodiesBox);
             def values = [ a in node::values -> bodies(a, bodiesBox) ];
-            @call{function, values}
+            @call{target, name, values}
         };
 
         @closure: {
