@@ -10,7 +10,6 @@
 #include <stdio.h>   // For `asprintf`.
 
 #include "type/Builtin.h"
-#include "type/Jump.h"
 #include "type/List.h"
 #include "type/String.h"
 #include "type/Symbol.h"
@@ -96,8 +95,7 @@ static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     zvalue result;
 
     // The first three cases are how we bottom out the recursion, instead of
-    // calling `funCall` on the `call` methods for `Builtin`, `Jump`, or
-    // `Symbol`.
+    // calling `funCall` on the `call` methods for `Builtin` or `Symbol`.
     if (funCls == CLS_Symbol) {
         // No call reporting setup here, as this will bottom out in a
         // `methCall()` which will do that.
@@ -106,11 +104,6 @@ static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
         StackTraceEntry ste = {.target = function, .name = SYM(call)};
         UTIL_TRACE_START(callReporter, &ste);
         result = builtinCall(function, argCount, args);
-        UTIL_TRACE_END();
-    } else if (funCls == CLS_Jump) {
-        StackTraceEntry ste = {.target = function, .name = SYM(call)};
-        UTIL_TRACE_START(callReporter, &ste);
-        result = jumpCall(function, argCount, args);
         UTIL_TRACE_END();
     } else {
         // The original `function` is some kind of higher layer function.
