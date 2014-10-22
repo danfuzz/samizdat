@@ -177,7 +177,6 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Record);
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Int);
-    MOD_USE_NEXT(Jump);
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(Null);
     MOD_USE_NEXT(String);
