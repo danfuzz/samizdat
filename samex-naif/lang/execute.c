@@ -33,17 +33,27 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e);
  * Executes an `apply` form.
  */
 static zvalue execApply(Frame *frame, zvalue apply) {
-    zvalue functionExpr = cm_get(apply, SYM(function));
+    zvalue targetExpr = cm_get(apply, SYM(target));
+    zvalue nameExpr = cm_get(apply, SYM(name));
     zvalue valuesExpr = cm_get(apply, SYM(values));
-    zvalue function = execExpression(frame, functionExpr);
+
+    // TODO: Remove this scaffolding.
+    if (targetExpr == NULL) {
+        // Handle deprecated `function` form.
+        targetExpr = cm_get(apply, SYM(function));
+    }
+
+    zvalue target = execExpression(frame, targetExpr);
+    zvalue name =
+        (nameExpr == NULL) ? SYM(call) : execExpression(frame, nameExpr);
     zvalue values = execExpressionOrMaybe(frame, valuesExpr);
 
     if (values == NULL) {
         // If `values` isn't present or evaluated to void, then evaluation
         // becomes a simple no-argument function call.
-        return METH_CALL(function, call);
+        return methCall(target, name, 0, NULL);
     } else {
-        return METH_APPLY(function, call, values);
+        return methApply(target, name, values);
     }
 }
 
@@ -51,9 +61,19 @@ static zvalue execApply(Frame *frame, zvalue apply) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    zvalue functionExpr = cm_get(call, SYM(function));
+    zvalue targetExpr = cm_get(call, SYM(target));
+    zvalue nameExpr = cm_get(call, SYM(name));
     zvalue valuesExprs = cm_get(call, SYM(values));
-    zvalue function = execExpression(frame, functionExpr);
+
+    // TODO: Remove this scaffolding.
+    if (targetExpr == NULL) {
+        // Handle deprecated `function` form.
+        targetExpr = cm_get(call, SYM(function));
+    }
+
+    zvalue target = execExpression(frame, targetExpr);
+    zvalue name =
+        (nameExpr == NULL) ? SYM(call) : execExpression(frame, nameExpr);
 
     zint argCount = get_size(valuesExprs);
     zvalue args[argCount];
@@ -64,7 +84,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         args[i] = execExpression(frame, args[i]);
     }
 
-    return methCall(function, SYM(call), argCount, args);
+    return methCall(target, name, argCount, args);
 }
 
 /**
