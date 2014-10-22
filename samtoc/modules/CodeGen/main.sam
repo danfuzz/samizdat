@@ -10,5 +10,6 @@ export import ./Assign :: *;
 export import ./Call :: *;
 export import ./CodeString :: genCodeString;
 export import ./Comment :: *;
+export import ./MethCall :: *;
 export import ./Return :: *;
 export import ./Statement :: *;
