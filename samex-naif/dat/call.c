@@ -157,7 +157,7 @@ zvalue funApply(zvalue function, zvalue args) {
 zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
-    } else if ((argCount != 0) && (args == NULL)) {
+    } else if ((args == NULL) && (argCount != 0)) {
         die("Function call argument inconsistency.");
     }
 
@@ -183,6 +183,12 @@ zvalue methApply(zvalue target, zvalue name, zvalue args) {
 // Documented in header.
 zvalue methCall(zvalue target, zvalue name, zint argCount,
         const zvalue *args) {
+    if (argCount < 0) {
+        die("Invalid argument count for method call: %lld", argCount);
+    } else if ((args == NULL) && (argCount != 0)) {
+        die("Method call argument inconsistency.");
+    }
+
     zint index = symbolIndex(name);
     zvalue cls = classOf(target);
     zvalue function = classFindMethodUnchecked(cls, index);
