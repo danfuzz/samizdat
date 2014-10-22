@@ -41,9 +41,9 @@ static zvalue execApply(Frame *frame, zvalue apply) {
     if (values == NULL) {
         // If `values` isn't present or evaluated to void, then evaluation
         // becomes a simple no-argument function call.
-        return funCall(function, 0, NULL);
+        return METH_CALL(function, call);
     } else {
-        return funApply(function, values);
+        return METH_APPLY(function, call, values);
     }
 }
 
@@ -64,7 +64,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         args[i] = execExpression(frame, args[i]);
     }
 
-    return funCall(function, argCount, args);
+    return methCall(function, SYM(call), argCount, args);
 }
 
 /**
