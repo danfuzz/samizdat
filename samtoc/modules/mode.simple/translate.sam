@@ -86,7 +86,7 @@ export fn translate(node, varsBox) {
 
         @fetch: {
             def target = nonVoid(translate(node::target, varsBox));
-            genCall("METH_CALL_old", "fetch", target)
+            genMethCall(target, "fetch")
         };
 
         @literalRef: {
@@ -106,20 +106,20 @@ export fn translate(node, varsBox) {
                 def vTrans = translate(value::value, varsBox);
                 genCall("cm_store", target, vTrans)
             } else if (value.hasName(@void)) {
-                genCall("METH_CALL_old", "store", target)
+                genMethCall(target, "store")
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
                 ## non-void.
                 def vTrans = nonVoid(translate(value, varsBox));
-                genCall("METH_CALL_old", "store", target, vTrans)
+                genMethCall(target, "store", vTrans)
             }
         };
 
         @varDef: {
             def value = (def v = node::value)
-                & genCall("METH_CALL_old", "new", "CLS_Result",
+                & genMethCall("CLS_Result", "new",
                     nonVoid(translate(v, varsBox)))
-                | genCall("METH_CALL_old", "new", "CLS_Promise");
+                | genMethCall("CLS_Promise", "new");
 
             varDefCommon(node::name, value, varsBox)
         };
@@ -127,7 +127,7 @@ export fn translate(node, varsBox) {
         @varDefMutable: {
             def optValue = ((def v = node::value) & translate(v, varsBox))?;
             varDefCommon(node::name,
-                nonVoid(genCall("METH_CALL_old", "new", "CLS_Cell", optValue*)),
+                nonVoid(genMethCall("CLS_Cell", "new", optValue*)),
                 varsBox)
         };
 

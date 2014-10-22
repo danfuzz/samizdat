@@ -67,8 +67,7 @@ fn processFormalsWithRepeat(clo, names) {
                     $CodeGen::genAssign("zvalue \(rawName)", parse::parse),
                     parse::update
                 ],
-                init: $CodeGen::genCall(
-                    "METH_CALL_old", "new", "CLS_Result", rawName)
+                init: $CodeGen::genMethCall("CLS_Result", "new", rawName)
             }
         } else {
             ## Note: Because we have to adjust `argAt` for unnamed formals, we
@@ -107,8 +106,7 @@ fn processFormals(clo) {
                 origName: name,
                 kind:     "arg",
                 name:     safeName("arg", name, idx),
-                init:     $CodeGen::genCall("METH_CALL_old", "new", "CLS_Result",
-                              "args[\(idx)]")
+                init:     $CodeGen::genMethCall("CLS_Result", "new", "args[\(idx)]")
             }}
     );
 
@@ -130,7 +128,7 @@ fn processYieldDef(clo) {
                     origName: cast(Symbol, "<\(name)>"),
                     kind:     "yield",
                     name:     safeName("yield", name),
-                    init:     "METH_CALL_old(new, CLS_Result, jump)"
+                    init:     $CodeGen::genMethCall("CLS_Result", "new", "jump")
                 }}
         }
     } else {
