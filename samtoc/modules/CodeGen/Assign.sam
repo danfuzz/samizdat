@@ -23,12 +23,12 @@ class Assign
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return "\(data::target.flatten()) = \(data::value.flatten())"
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return "".cat(
             data::target.indent(level, maxColumns),
             " =\n",
@@ -37,7 +37,7 @@ class Assign
     };
 
     fn prefersFlat() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::target.prefersFlat()
             & data::value.prefersFlat()
             & this
@@ -51,5 +51,5 @@ class Assign
 
 export fn genAssign(target, value) {
     return genWrapper(
-        NEW(Assign, @{target: fix(target), value: fix(value)}))
+        Assign.(NEW)(@{target: fix(target), value: fix(value)}))
 };

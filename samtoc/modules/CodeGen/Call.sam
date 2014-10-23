@@ -23,7 +23,7 @@ class Call
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def args = data::args;
 
         return "".cat(
@@ -37,7 +37,7 @@ class Call
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def prefix = indentation(level);
         def args = data::args;
         def nextLevel = level + 1;
@@ -53,7 +53,7 @@ class Call
     };
 
     fn prefersFlat() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::flatOk** & this;
     };
 };
@@ -79,7 +79,7 @@ export fn genCall(function, args*) {
     };
 
     return genWrapper(
-        NEW(Call,
+        Call.(NEW)(
             @{
                 function: fixFunction,
                 args: fixArgs,

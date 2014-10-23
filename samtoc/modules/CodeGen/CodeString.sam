@@ -21,12 +21,12 @@ class CodeString
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return data::text
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return indentation(level).cat(data::text)
     };
 
@@ -41,7 +41,7 @@ class CodeString
 ##
 
 export fn genCodeString(text) {
-    return NEW(CodeString, @{text});
+    return CodeString.(NEW)(@{text});
 };
 
 ## Fixes a tree constructor argument, so that strings (per se) are

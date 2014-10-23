@@ -23,17 +23,17 @@ class Statement
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return "\(data::tree.flatten());"
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return "\(data::tree.indent(level, maxColumns));\n"
     };
 
     fn prefersFlat() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::tree.prefersFlat()
             & this
     };
@@ -45,5 +45,5 @@ class Statement
 ##
 
 export fn genStatement(tree) {
-    return genWrapper(NEW(Statement, @{tree: fix(tree)}))
+    return genWrapper(Statement.(NEW)(@{tree: fix(tree)}))
 };

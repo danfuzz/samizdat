@@ -23,7 +23,7 @@ class MethCall
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def args = data::args;
 
         def argStr = if (#args == 0) {
@@ -48,7 +48,7 @@ class MethCall
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def prefix1 = indentation(level);
         def prefix2 = indentation(level + 1);
         def args = data::args;
@@ -78,7 +78,7 @@ class MethCall
     };
 
     fn prefersFlat() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::flatOk** & this;
     };
 };
@@ -105,7 +105,7 @@ export fn genMethCall(target, name, args*) {
     };
 
     return genWrapper(
-        NEW(MethCall,
+        MethCall.(NEW)(
             @{
                 target: fixTarget,
                 name:   fixName,

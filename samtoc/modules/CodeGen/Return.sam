@@ -23,12 +23,12 @@ class Return
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return "return \(data::tree.flatten())"
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def prefix = indentation(level);
 
         return "\
@@ -37,7 +37,7 @@ class Return
     };
 
     fn prefersFlat() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::tree.prefersFlat()
             & this
     };
@@ -49,5 +49,5 @@ class Return
 ##
 
 export fn genReturn(tree) {
-    return genWrapper(NEW(Return, @{tree: fix(tree)}))
+    return genWrapper(Return.(NEW)(@{tree: fix(tree)}))
 };

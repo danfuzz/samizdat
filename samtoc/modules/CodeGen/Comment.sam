@@ -23,7 +23,7 @@ class Comment
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def text = data::text;
 
         return (def payload = data::payload)
@@ -32,7 +32,7 @@ class Comment
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def prefix = indentation(level);
 
         return if (def p = data::payload) {
@@ -46,7 +46,7 @@ class Comment
     };
 
     fn prefersFlat() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? (#data::text < 30)
             & (((def payload = data::payload)
                 & payload.prefersFlat()?
@@ -61,8 +61,8 @@ class Comment
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        genWrapper(NEW(Comment, @{payload: fix(payload), text}))
+        genWrapper(Comment.(NEW)(@{payload: fix(payload), text}))
     } else {
-        genWrapper(NEW(Comment, @{text}))
+        genWrapper(Comment.(NEW)(@{text}))
     }
 };
