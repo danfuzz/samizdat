@@ -245,7 +245,7 @@ def parRecord = {:
         { makeSymbolTableExpression(mappings*) }
     )
 
-    { makeFunCall(SYMS::new, LITS::Record, name, value) }
+    { makeCall(LITS::Record, SYMS::new, name, value) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -1329,7 +1329,9 @@ def parInterpolatedString = {:
                 }
         };
 
-        makeFunCall(SYMS::cat, elems*)
+        def first = elems.nth(0);
+        def rest = elems.sliceInclusive(1);
+        makeCall(first, SYMS::cat, rest*)
     }
 :};
 
@@ -1571,17 +1573,17 @@ def parIndexPostfix = {:
                     { SYMS::exclusive };
 
                 def startNode =
-                    makeFunCall(SYMS::new, LITS::Record,
+                    makeCall(LITS::Record, SYMS::new,
                         makeLiteral(start::origin),
-                        makeFunCall(SYMS::new, LITS::SymbolTable,
+                        makeCall(LITS::SymbolTable, SYMS::new,
                             SYMS::value, start::value));
 
                 def optEndNode = (
                     ifNot { eq(end, INDEX_AT_END_0) }
                         {
-                            makeFunCall(SYMS::new, LITS::Record,
+                            makeCall(LITS::Record, SYMS::new,
                                 makeLiteral(end::origin),
-                                makeFunCall(SYMS::new, LITS::SymbolTable,
+                                makeCall(LITS::SymbolTable, SYMS::new,
                                     SYMS::value, end::value))
                         }
                 )?;
@@ -1617,7 +1619,7 @@ def parIndexPostfix = {:
 ## appropriate operator application, function call, or the like.
 parPostfixOperator2 := {:
     @"**"
-    { { node -> makeFunCall(SYMS::toLogic, node) } }
+    { { node -> makeCall(node, SYMS::toLogic) } }
 |
     ## Expansion is essentially `expr??` -> `Bool.fromLogic(expr?*)`.
     @"??"
@@ -2124,8 +2126,8 @@ def parSwitchExpression = {:
         };
         def caseMap = makeCallGeneral(LITS::EMPTY_MAP, SYMS::cat,
             makeInterpolate(
-                makeFunCall(SYMS::reverse,
-                    makeCallGeneral(LITS::List, SYMS::new, caseClauses*))));
+                makeCall(makeCallGeneral(LITS::List, SYMS::new, caseClauses*),
+                    SYMS::reverse)));
 
         def ifCall = makeFunCall(REFS::ifSwitch,
             testClause::testThunk,

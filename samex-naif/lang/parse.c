@@ -531,7 +531,7 @@ DEF_PARSE(record) {
         value = makeSymbolTableExpression(mappings);
     }
 
-    return makeFunCall(SYMS(new), listFrom3(LITS(Record), name, value));
+    return makeCall(LITS(Record), SYMS(new), listFrom2(name, value));
 }
 
 // Documented in spec.
