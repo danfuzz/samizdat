@@ -39,7 +39,7 @@ class ClosedRange
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
 
         return? ifValue { ge(data::size, 0) }
             { size ->
@@ -67,7 +67,7 @@ export fn makeClosedRange(firstValue, size, optIncrement?) {
         { die("`size` must be an int.") };
 
     return ifIs { gt(size, 0) }
-        { NEW(ClosedRange, @{firstValue, increment, size}) }
+        { ClosedRange.(NEW)(@{firstValue, increment, size}) }
         { nullGenerator }
 };
 

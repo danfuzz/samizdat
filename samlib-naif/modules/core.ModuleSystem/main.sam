@@ -306,7 +306,7 @@ class NullLoader
 };
 
 ## The one instance of the class.
-def nullLoader = NEW(NullLoader);
+def nullLoader = NullLoader.(NEW)();
 
 ## Helper to "massage" `null` into `nullLoader` and pass everything
 ## else through as-is.
@@ -329,7 +329,7 @@ fn fixNullLoader(loader) {
 
 ## Helper for `resolve` which does the actual resolution / loading.
 fn doExternalResolve(loader, source) {
-    def data = ACCESS(loader);
+    def data = loader.(ACCESS)();
     def modulePath = data::basePath.cat(source::name);
 
     return? ifIs { eq($Io0::fileType(modulePath), @directory) }
@@ -351,13 +351,13 @@ class ExternalLoader
     ## Documented in spec.
     fn readResource(source, format) {
         ## Always just defer to the next loader.
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::nextLoader.readResource(source, format)
     };
 
     ## Documented in spec.
     fn resolve(source) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
 
         ifNot { checkExternalSource(source) }
             {
@@ -389,8 +389,7 @@ export fn makeExternalLoader(path, globals, nextLoader) {
     ifNot { eq(pathType, @directory) }
         { die("Module loader path exists but is not a directory: ", path) };
 
-    return NEW(
-        ExternalLoader,
+    return ExternalLoader.(NEW)(
         @{
             basePath: path.cat("/"),
             globals,
@@ -418,7 +417,7 @@ fn resolveMain(loader) {
 fn doInternalResolve(loader, source) {
     note("        ", sourceString(source));
 
-    def data = ACCESS(loader);
+    def data = loader.(ACCESS)();
     def pathPrefix = data::basePath.cat(source::name);
     def binPath = pathPrefix.cat(".samb");
 
@@ -468,7 +467,7 @@ class InternalLoader
         new: NEW {
     ## Documented in spec.
     fn readResource(source, format) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
 
         ifNot { checkInternalSource(source) }
             {
@@ -485,7 +484,7 @@ class InternalLoader
 
     ## Documented in spec.
     fn resolve(source) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
 
         ifNot { checkInternalSource(source) }
             {
@@ -527,8 +526,7 @@ export fn makeInternalLoader(path, globals, nextLoader) {
         thisLoader:   glo_thisLoader
     };
 
-    loader := NEW(
-        InternalLoader,
+    loader := InternalLoader.(NEW)(
         @{
             basePath,
             globals:    fullGlobals,
