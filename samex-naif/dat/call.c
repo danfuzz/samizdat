@@ -101,10 +101,7 @@ static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
         // `methCall()` which will do that.
         result = symbolCall(function, argCount, args);
     } else if (funCls == CLS_Builtin) {
-        StackTraceEntry ste = {.target = function, .name = SYM(call)};
-        UTIL_TRACE_START(callReporter, &ste);
         result = builtinCall(function, argCount, args);
-        UTIL_TRACE_END();
     } else {
         // The original `function` is some kind of higher layer function.
         // Use method dispatch to get to it.
