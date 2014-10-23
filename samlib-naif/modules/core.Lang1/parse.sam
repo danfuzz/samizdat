@@ -313,28 +313,31 @@ def parPostfixOperator = makeMainChoice(
         makeCode { . -> { node -> makeMaybeValue(node) } }),
     makeSequence(
         makeToken(@"."),
-        parNameSymbol,
         makeChoice(
             makeSequence(
-                parActualsList,
-                makeCode { ., name, actuals ->
-                    { node ->
-                        makeCallGeneral(node, makeLiteral(name), actuals*)
-                    }
-                }),
-            makeCode { ., name ->
-                def getterRef = makeSymbolLiteral("get_".cat(name));
-                { node ->
-                    def getterCall = makeCall(node, getterRef);
-                    @(getterCall.get_name()){
-                        getterCall*,
-                        lvalue: { expr ->
-                            def setterRef = makeSymbolLiteral("set_".cat(name));
-                            makeCall(node, setterRef, expr)
-                        }
+                parNameSymbol,
+                makeCode { ., symbol -> makeLiteral(symbol) }),
+            parParenExpression),
+        parActualsList,
+        makeCode { ., name, actuals ->
+            { node -> makeCallGeneral(node, name, actuals*) }
+        }),
+    makeSequence(
+        makeToken(@"."),
+        parNameSymbol,
+        makeCode { ., name ->
+            def getterRef = makeSymbolLiteral("get_".cat(name));
+            { node ->
+                def getterCall = makeCall(node, getterRef);
+                @(getterCall.get_name()){
+                    getterCall*,
+                    lvalue: { expr ->
+                        def setterRef = makeSymbolLiteral("set_".cat(name));
+                        makeCall(node, setterRef, expr)
                     }
                 }
-            })));
+            }
+        }));
 
 ## Documented in spec.
 def parUnaryExpression = makeMainSequence(

@@ -389,24 +389,21 @@ def parPostfixOperator = {:
     @"?"
     { { node -> makeMaybeValue(node) } }
 |
+    @"."
+    name = (
+        symbol = parNameSymbol
+        { makeLiteral(symbol) }
+    |
+        parParenExpression
+    )
+    actuals = parActualsList
+    { { node -> makeCallGeneral(node, name, actuals*) } }
+|
     ## This translates as follows:
     ##
     ## ```
-    ## target.memberName(arg, ...)
-    ## =>
-    ## (@memberName)(target, arg, ...)
-    ## ```
-    ##
-    ## ```
-    ## target.memberName
-    ## =>
-    ## (@get_memberName)(target)
-    ## ```
-    ##
-    ## ```
-    ## target.memberName := expression
-    ## =>
-    ## (@set_memberName)(target, expression)
+    ## target.memberName                =>  target.get_memberName()
+    ## target.memberName := expression  =>  target.set_memberName(expression)
     ## ```
     ##
     ## The setter variant works via an `lvalue` binding added to a parsed
@@ -414,29 +411,19 @@ def parPostfixOperator = {:
     ##
     @"."
     name = parNameSymbol
-
-    (
-        ## `target.memberName(arg, ...)`
-        actuals = parActualsList
-        {
-            { node -> makeCallGeneral(node, makeLiteral(name), actuals*) }
-        }
-    |
-        ## `target.memberName` (includes parsing of both getters and setters)
-        {
-            def getterRef = makeSymbolLiteral("get_".cat(name));
-            { node ->
-                def getterCall = makeCall(node, getterRef);
-                @(getterCall.get_name()){
-                    getterCall*,
-                    lvalue: { expr ->
-                        def setterRef = makeSymbolLiteral("set_".cat(name));
-                        makeCall(node, setterRef, expr)
-                    }
+    {
+        def getterRef = makeSymbolLiteral("get_".cat(name));
+        { node ->
+            def getterCall = makeCall(node, getterRef);
+            @(getterCall.get_name()){
+                getterCall*,
+                lvalue: { expr ->
+                    def setterRef = makeSymbolLiteral("set_".cat(name));
+                    makeCall(node, setterRef, expr)
                 }
             }
         }
-    )
+    }
 |
     ## Note: Layer 2 adds additional rules here.
     %parPostfixOperator2
