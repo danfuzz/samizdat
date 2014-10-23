@@ -35,7 +35,7 @@ class ListWrapGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def result;
 
         return? ifValue { data::generator.nextValue(result?) }
@@ -53,5 +53,5 @@ class ListWrapGenerator
 
 ## Documented in spec.
 export fn makeListWrapGenerator(generator) {
-    return NEW(ListWrapGenerator, @{generator})
+    return ListWrapGenerator.(NEW)(@{generator})
 };

@@ -37,7 +37,7 @@ class ValueGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         box* := data::value;
         return this
     };
@@ -50,5 +50,5 @@ class ValueGenerator
 
 ## Documented in spec.
 export fn makeValueGenerator(value) {
-    return NEW(ValueGenerator, @{value})
+    return ValueGenerator.(NEW)(@{value})
 };
