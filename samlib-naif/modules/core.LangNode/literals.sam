@@ -5,7 +5,6 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 :: makeLiteral;
 
 
 ##
@@ -17,6 +16,7 @@ def SYMBOLS = [
     @access,
     @add,
     @and,
+    @call,
     @cat,
     @collect,
     @div,
@@ -74,6 +74,19 @@ def VALUES = {
 ##
 ## Exported Definitions
 ##
+
+## Documented in spec.
+export fn makeLiteral(value) {
+    return @literal{value}
+};
+
+## Documented in spec.
+export fn makeSymbolLiteral(name) {
+    return makeLiteral(cast(Symbol, name))
+};
+
+## Note: The following constants need to be defined *after* the function
+## `makeLiteral()` gets defined, as these use that.
 
 ## Documented in spec.
 export def LITS = @{}.cat(

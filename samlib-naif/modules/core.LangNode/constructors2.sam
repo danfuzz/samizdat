@@ -9,7 +9,7 @@ import core.Sequence :: reverseNth;
 
 import ./constructors1 :: *;
 import ./getters :: *;
-import ./literals :: LITS, SYMS;
+import ./literals :: *;
 import ./misc :: canYieldVoid, isExpression;
 import ./refs :: REFS;
 
@@ -47,15 +47,15 @@ fn expandYield(table) {
         { ., ., ., . -> return value };
 
     def exitCall = ifValueOr
-        { ifIs { value.hasName(@void) } { makeCall(function) } }
+        { ifIs { value.hasName(@void) } { makeFunCall(function) } }
         {
             ifIs { value.hasName(@maybe) }
                 {
-                    makeCallOrApply(function,
+                    makeFunCallGeneral(function,
                         makeInterpolate(makeMaybeValue(value::value)))
                 }
         }
-        { makeCall(function, value) };
+        { makeFunCall(function, value) };
 
     return makeNoYield(exitCall)
 };
@@ -83,7 +83,7 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     fn addSingleToCat() {
         ifIs { perNe(singleArgs, []) }
             {
-                addToCat(makeCall(SYMS::new, classLit, singleArgs*));
+                addToCat(makeCall(classLit, SYMS::new, singleArgs*));
                 singleArgs := []
             }
     };
@@ -108,8 +108,8 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
                 ifIs { eq(handled, false) }
                     {
                         addSingleToCat();
-                        addToCat(makeCallOrApply(SYMS::singleValue,
-                            classLit, keys*, value))
+                        addToCat(makeCallGeneral(classLit, SYMS::singleValue,
+                            keys*, value))
                     };
             }
             {
@@ -130,7 +130,7 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     ## ensure a result of the proper type.
 
     addSingleToCat();
-    return makeCall(SYMS::cat, emptyLit, catArgs*)
+    return makeCall(emptyLit, SYMS::cat, catArgs*)
 };
 
 
@@ -145,11 +145,11 @@ export fn makeAssignmentIfPossible(target, value) {
 };
 
 ## Documented in spec.
-export fn makeCallOrApply(function, values*) {
+export fn makeCallGeneral(target, name, values*) {
     ifIs { eq(values, []) }
         {
             ## No values. Easy out.
-            return makeApply(function)
+            return makeApply(target, name)
         };
 
     ## Convert the values as if interpolation needs to be handled. If in the
@@ -167,7 +167,7 @@ export fn makeCallOrApply(function, values*) {
     fn addPendingToCooked() {
         ifIs { perNe(pending, []) }
             {
-                addToCooked(makeCall(SYMS::new, LITS::List, pending*));
+                addToCooked(makeCall(LITS::List, SYMS::new, pending*));
                 pending := [];
             }
     };
@@ -176,7 +176,7 @@ export fn makeCallOrApply(function, values*) {
         ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
-                addToCooked(makeCall(SYMS::collect, node))
+                addToCooked(makeCall(node, SYMS::collect))
             }
             { pending := [pending*, actual] }
     };
@@ -184,7 +184,7 @@ export fn makeCallOrApply(function, values*) {
     ifIs { eq(cookedValues, []) }
         {
             ## There were no interpolated arguments.
-            return makeCall(function, values*)
+            return makeCall(target, name, values*)
         };
 
     ## There is at least one interpolated argument.
@@ -194,18 +194,14 @@ export fn makeCallOrApply(function, values*) {
     return ifIs { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
-            makeApply(function, makeCall(SYMS::cat, cookedValues*))
+            def first = cookedValues.nth(0);
+            def rest = cookedValues.sliceInclusive(1);
+            makeApply(target, name, makeCall(first, SYMS::cat, rest*))
         }
         {
             ## Only one. Use it directly as the values for the `apply` node.
-            makeApply(function, cookedValues*)
+            makeApply(target, name, cookedValues*)
         }
-};
-
-## Documented in spec.
-export fn makeCallThunks(function, values*) {
-    def thunks = filterAll(values) { one -> makeThunk(one) };
-    return makeCall(function, thunks*)
 };
 
 ## Documented in spec.
@@ -236,11 +232,10 @@ export fn makeClassDef(name, attributes, methods) {
         instanceMethods := {instanceMethods*, (name): [makeLiteral(name), one]}
     };
 
-    def instanceMethodTable = makeCall(SYMS::new, LITS::SymbolTable,
+    def instanceMethodTable = makeCall(LITS::SymbolTable, SYMS::new,
         ([].cat(instanceMethods.valueList()*))*);
 
-    def call = makeCall(SYMS::subclass,
-        LITS::Object,
+    def call = makeCall(LITS::Object, SYMS::subclass,
         makeLiteral(name),
         config,
         LITS::EMPTY_SYMBOL_TABLE,  ## TODO: Class methods.
@@ -258,7 +253,7 @@ export fn makeDynamicImport(node) {
                 ## The translation is approximately
                 ## `def name = loadModule(source)`.
                 [makeVarDef(node::name,
-                    makeCall(REFS::loadModule, makeLiteral(node::source)))]
+                    makeFunCall(REFS::loadModule, makeLiteral(node::source)))]
             },
 
             @importModuleSelection: { . ->
@@ -270,11 +265,11 @@ export fn makeDynamicImport(node) {
 
                 def source = node::source;
                 def names = get_definedNames(node);
-                def loadCall = makeCall(REFS::loadModule, makeLiteral(source));
+                def loadCall = makeFunCall(REFS::loadModule, makeLiteral(source));
 
                 filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
-                        makeCall(SYMS::get, loadCall, makeLiteral(sel)))
+                        makeCall(loadCall, SYMS::get, makeLiteral(sel)))
                 }
             },
 
@@ -282,7 +277,7 @@ export fn makeDynamicImport(node) {
                 ## The translation is approximately
                 ## `def name = loadResource(source, format)`.
                 [makeVarDef(node::name,
-                    makeCall(REFS::loadResource,
+                    makeFunCall(REFS::loadResource,
                         makeLiteral(node::source), makeLiteral(node::format)))]
             }
         })
@@ -321,8 +316,14 @@ export fn makeFullClosure(baseData) {
 };
 
 ## Documented in spec.
-export fn makeGet(collArg, keyArg) {
-    return makeCall(SYMS::get, collArg, keyArg)
+export fn makeFunCallGeneral(function, values*) {
+    return makeCallGeneral(function, SYMS::call, values*)
+};
+
+## Documented in spec.
+export fn makeFunCallThunks(function, values*) {
+    def thunks = filterAll(values) { one -> makeThunk(one) };
+    return makeFunCall(function, thunks*)
 };
 
 ## Documented in spec.
@@ -446,7 +447,7 @@ export fn makeMapExpression(mappings*) {
 export fn makeMaybeValue(node) {
     return ifValueOr
         { node::box }
-        { makeCall(REFS::maybeValue, makeThunk(node)) }
+        { makeFunCall(REFS::maybeValue, makeThunk(node)) }
 };
 
 ## Documented in spec.
@@ -523,11 +524,11 @@ export fn withModuleDefs(node) {
 
     def yieldExports = ifIs { eq(exportValues, []) }
         { LITS::EMPTY_SYMBOL_TABLE }
-        { makeCall(SYMS::new, LITS::SymbolTable, [].cat(exportValues*)*) };
+        { makeCall(LITS::SymbolTable, SYMS::new, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
-    def yieldNode = makeCall(SYMS::new, LITS::Record,
+    def yieldNode = makeCall(LITS::Record, SYMS::new,
         makeLiteral(@module),
-        makeCall(SYMS::new, LITS::SymbolTable,
+        makeCall(LITS::SymbolTable, SYMS::new,
             SYMS::exports, yieldExports,
             SYMS::info,    yieldInfo));
 

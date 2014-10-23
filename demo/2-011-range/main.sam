@@ -41,6 +41,7 @@ msg(("f".."f"));
 msg(("f".."a"));
 msg([1..10]);
 msg([10..1]);
+zzzz blorch.
 
 note("\nInclusive, explicit increment...");
 msg((0..1000 by 200));

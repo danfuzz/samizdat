@@ -23,40 +23,45 @@ step of parser construction.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `apply` &mdash; `@apply{function: expression, values: expression}`
+#### `apply` &mdash; `@apply{target: expression, name: expression, values: expression}`
 
-* `function: expression` &mdash; An expression node that must
-  evaluate to a function.
+* `target: expression` &mdash; An expression node.
+
+* `name: expression` &mdash; An expression node that must evaluate to a symbol.
 
 * `values: expression` &mdash; An expression node that must
   evaluate to a list.
 
-This represents a function call.
+This represents a method call.
 
-When run, first `function` and then `values` is evaluated. If `function`
-evaluates to something other than a function, the call fails (terminating
-the runtime). If `values` evaluates to anything but void or a list, the
-call fails (terminating the runtime). `values` is allowed to evaluate to
-void *only* if it is a `@maybe` or `@void` node; any other void evaluation
-is a fatal error.
+When run, `target`, `name`, and `values` are evaluated, in that order.
+If `target` evaluates to void, or if `name` evaluates to something other than
+a symbol, the call fails (terminating the runtime). If `values` evaluates to
+anything but void or a list, the call fails (terminating the runtime).
+`values` is allowed to evaluate to void *only* if it is a `@maybe` or `@void`
+node; any other void evaluation is a fatal error.
 
 If there are too few actual arguments for the function (e.g., the
 function requires at least three arguments, but only two are passed),
 then the call fails (terminating the runtime).
 
-With all the above prerequisites passed, the function is applied to
-the evaluated actual values as its arguments (applied with no arguments if
-`values` evaluated to void), and the result of evaluation
-is the same as whatever was returned by the function call (including
-void).
+With all the above prerequisites passed, the method `name` is looked up
+on `target`, and called with the evaluated arguments. This can fail for
+any of the usual reasons that method calling can fail.
+The result of evaluation is the same as whatever was returned by the
+method call (including void).
 
 **Note:** The main difference between this and `call` is that the latter
 takes its `values` as a list in the node itself.
 
-#### `call` &mdash; `@call{function: expression, values: [expression*], interpolate?: expression}`
+**Note:** Function calls can be represented by nodes of this type, with
+`target` bound to the function and `name` bound to the literal symbol `@call`.
 
-* `function: expression` &mdash; An expression node that must
-  evaluate to a function.
+#### `call` &mdash; `@call{target: expression, name: expression, values: [expression*], interpolate?: expression}`
+
+* `target: expression` &mdash; An expression node.
+
+* `name: expression` &mdash; An expression node that must evaluate to a symbol.
 
 * `values: [expression*]` &mdash; A list of arbitrary
   expression nodes, each of which must evaluate to a non-void value.
@@ -64,11 +69,11 @@ takes its `values` as a list in the node itself.
 * `interpolate: expression` (optional) &mdash; Expression to use when treating
   this as a function call argument interpolation. (See below.)
 
-This represents a function call.
+This represents a method call.
 
-When run, first `function` and then the elements of `values` (in
-order) are evaluated. If `function` evaluates to something other than
-a function, the call fails (terminating the runtime). If any of the
+When run, `target`, `name`, and the elements of `values` are evaluated, in
+that order. If `target` evaluates to void, or if `name` evaluates to something
+other than a symbol, the call fails (terminating the runtime). If any of the
 `values` evaluates to void, the call fails (terminating the runtime).
 
 After that, this proceeds in the same manner as `apply`, using the
@@ -76,10 +81,13 @@ list of evaluated `values` as the arguments to the call.
 
 The `interpolate` binding is *not* used during execution, rather it is only
 ever used when programatically constructing trees. For example, it is used
-by the function `$LangNode::makeCallOrApply` to know that a "call
-to the function `fetch`" should actually be treated like an in-line
+by the function `$LangNode::makeCallGeneral` to know that a "call
+to the function `fetch`" should actually be treated as an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$LangNode::makeInterpolate`.
+
+**Note:** Function calls can be represented by nodes of this type, with
+`target` bound to the function and `name` bound to the literal symbol `@call`.
 
 #### `closure` &mdash; `formals: [formal+], info?: symbolTable, name?: symbol,` `statements: [statement*], yield: expression, yieldDef?: name}`
 
@@ -156,8 +164,8 @@ that call, including possibly void.
 
 The `interpolate` binding is *not* used during execution, rather it is only
 ever used when programatically constructing trees. For example, it is used
-by the function `$LangNode::makeCallOrApply` to know that a node of this
-type should actually be treated like an in-line argument interpolation.
+by the function `$LangNode::makeCallGeneral` to know that a node of this
+type should actually be treated as an in-line argument interpolation.
 Relatedly, `fetch` nodes with `interpolate` bindings are produced by the
 function `$LangNode::makeInterpolate`.
 

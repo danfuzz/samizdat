@@ -80,11 +80,13 @@ fn safeIndex(node, baseStr) {
         { node.get_name() },
         {
             @apply: { . ->
-                safeIndexForNodes(baseStr, node::function, node::values);
+                safeIndexForNodes(baseStr,
+                    node::target, node::name, node::values);
             },
 
             @call: { . ->
-                safeIndexForNodes(baseStr, node::function, node::values*);
+                safeIndexForNodes(baseStr,
+                    node::target, node::name, node::values*);
             },
 
             @closure: { . ->

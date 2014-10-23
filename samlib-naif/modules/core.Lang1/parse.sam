@@ -201,7 +201,7 @@ def parRecord = makeMainSequence(
                 makeSymbolTableExpression(mappings*)
             })),
     makeCode { ., name, value ->
-        makeCall(SYMS::new, LITS::Record, name, value)
+        makeCall(LITS::Record, SYMS::new, name, value)
     });
 
 ## Documented in spec.
@@ -233,7 +233,7 @@ def parList = makeMainSequence(
     makeCode { ., expressions, . ->
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeCallOrApply(SYMS::new, LITS::List, expressions*) }
+            { makeCallGeneral(LITS::List, SYMS::new, expressions*) }
     });
 
 ## Documented in spec.
@@ -299,7 +299,7 @@ def parPostfixOperator = makeMainChoice(
     makeSequence(
         parActualsList,
         makeCode { actuals ->
-            { node -> makeCallOrApply(node, actuals*) }
+            { node -> makeFunCallGeneral(node, actuals*) }
         }),
     makeSequence(
         makeToken(@"::"),
@@ -319,18 +319,18 @@ def parPostfixOperator = makeMainChoice(
                 parActualsList,
                 makeCode { ., name, actuals ->
                     { node ->
-                        makeCallOrApply(makeLiteral(name), node, actuals*)
+                        makeCallGeneral(node, makeLiteral(name), actuals*)
                     }
                 }),
             makeCode { ., name ->
                 def getterRef = makeSymbolLiteral("get_".cat(name));
                 { node ->
-                    def getterCall = makeCall(getterRef, node);
+                    def getterCall = makeCall(node, getterRef);
                     @(getterCall.get_name()){
                         getterCall*,
                         lvalue: { expr ->
                             def setterRef = makeSymbolLiteral("set_".cat(name));
-                            makeCall(setterRef, node, expr)
+                            makeCall(node, setterRef, expr)
                         }
                     }
                 }

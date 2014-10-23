@@ -531,7 +531,7 @@ DEF_PARSE(record) {
         value = makeSymbolTableExpression(mappings);
     }
 
-    return makeCall(SYMS(new), listFrom3(LITS(Record), name, value));
+    return makeCall(LITS(Record), SYMS(new), listFrom2(name, value));
 }
 
 // Documented in spec.
@@ -562,7 +562,7 @@ DEF_PARSE(list) {
 
     return (get_size(expressions) == 0)
         ? LITS(EMPTY_LIST)
-        : makeCallOrApply(SYMS(new), listPrepend(LITS(List), expressions));
+        : makeCallGeneral(LITS(List), SYMS(new), expressions);
 }
 
 // Documented in spec.
@@ -674,7 +674,7 @@ DEF_PARSE(postfixOperator) {
         MATCH_OR_REJECT(CH_DOT);
         zvalue name = PARSE_OR_REJECT(nameSymbol);
         zvalue actuals = PARSE_OR_REJECT(actualsList);
-        result = makeCall(makeLiteral(name), actuals);
+        result = makeCall(TOK_void, makeLiteral(name), actuals);
     }
 
     return result;
@@ -682,6 +682,8 @@ DEF_PARSE(postfixOperator) {
 
 // Documented in spec.
 DEF_PARSE(unaryExpression) {
+    // We differ from the spec here. See comment in `postfixOperator`, above.
+
     MARK();
 
     zvalue result = PARSE_OR_REJECT(term);
@@ -692,14 +694,13 @@ DEF_PARSE(unaryExpression) {
         zvalue one = cm_nth(postfixes, i);
         if (classAccepts(CLS_List, one)) {
             // Regular function call.
-            result = makeCallOrApply(result, one);
+            result = makeFunCallGeneral(result, one);
         } else switch (recordEvalType(one)) {
             case EVAL_call: {
                 // Method call.
-                zvalue function = cm_get(one, SYM(function));
+                zvalue name = cm_get(one, SYM(name));
                 zvalue values = cm_get(one, SYM(values));
-                result = makeCallOrApply(function,
-                    listPrepend(result, values));
+                result = makeCallGeneral(result, name, values);
                 break;
             }
             case EVAL_CH_STAR: {
@@ -711,7 +712,7 @@ DEF_PARSE(unaryExpression) {
                 break;
             }
             case EVAL_literal: {
-                result = makeCallOrApply(SYMS(get), listFrom2(result, one));
+                result = makeCallGeneral(result, SYMS(get), listFrom1(one));
                 break;
             }
             default: {

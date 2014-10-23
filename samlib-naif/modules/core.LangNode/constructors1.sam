@@ -6,15 +6,16 @@
 
 import core.Generator :: filterAll;
 
+import ./literals :: SYMS, makeLiteral;
 
 ##
 ## Exported Definitions
 ##
 
 ## Documented in spec.
-export fn makeApply(function, optValues?) {
+export fn makeApply(target, name, optValues?) {
     def values = ifValueOr { optValues* } { @void{} };
-    return @apply{function, values}
+    return @apply{target, name, values}
 };
 
 ## Documented in spec.
@@ -27,14 +28,8 @@ export fn makeBasicClosure(table) {
 };
 
 ## Documented in spec.
-export fn makeCall(function, values*) {
-    return @call{function, values}
-};
-
-## Documented in spec.
-export fn makeCallLiterals(function, values*) {
-    def literals = filterAll(values) { one -> makeLiteral(one) };
-    return makeCall(function, literals*)
+export fn makeCall(target, name, values*) {
+    return @call{target, name, values}
 };
 
 ## Documented in spec.
@@ -48,8 +43,26 @@ export fn makeExportSelection(names+) {
 };
 
 ## Documented in spec.
-export fn makeLiteral(value) {
-    return @literal{value}
+export fn makeFunCall(function, values*) {
+    return ifIs { eq(function.get_name(), @literal) }
+        {
+            ## Treat it as a method call.
+            def first = values.nth(0);
+            def rest = values.sliceInclusive(1);
+            makeCall(first, function, rest*)
+        }
+        { makeCall(function, SYMS::call, values*) }
+};
+
+## Documented in spec.
+export fn makeFunCallLiterals(function, values*) {
+    def literals = filterAll(values) { one -> makeLiteral(one) };
+    return makeFunCall(function, literals*)
+};
+
+## Documented in spec.
+export fn makeGet(collArg, keyArg) {
+    return makeCall(collArg, SYMS::get, keyArg)
 };
 
 ## Documented in spec.
@@ -66,11 +79,6 @@ export fn makeNoYield(value) {
 export fn makeNonlocalExit(function, optValue?) {
     def value = ifValueOr { optValue* } { @void{} };
     return @nonlocalExit{function, value}
-};
-
-## Documented in spec.
-export fn makeSymbolLiteral(name) {
-    return makeLiteral(cast(Symbol, name))
 };
 
 ## Documented in spec.

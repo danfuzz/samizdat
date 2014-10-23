@@ -38,4 +38,4 @@ print({ stuff(a) /out -> });
 
 print({ x, y -> x.cat(y) }("bl", "ort"));
 print({ x, y /out -> yield /out x.cat(y) }("fi", "zmo"));
-print({ yowza(args+) -> args*.cat() }("i", "gr", "am"));
+print({ yowza(args+) -> "".cat(args*) }("i", "gr", "am"));

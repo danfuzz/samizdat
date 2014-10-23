@@ -67,7 +67,7 @@ fn processFormalsWithRepeat(clo, names) {
                     genAssign("zvalue \(rawName)", parse::parse),
                     parse::update
                 ],
-                init: genMethCall("CLS_Result", "new", rawName)
+                init: genMethCall("CLS_Result", "SYM(new)", rawName)
             }
         } else {
             ## Note: Because we have to adjust `argAt` for unnamed formals, we
@@ -106,7 +106,7 @@ fn processFormals(clo) {
                 origName: name,
                 kind:     "arg",
                 name:     safeName("arg", name, idx),
-                init:     genMethCall("CLS_Result", "new", "args[\(idx)]")
+                init:     genMethCall("CLS_Result", "SYM(new)", "args[\(idx)]")
             }}
     );
 
@@ -128,7 +128,7 @@ fn processYieldDef(clo) {
                     origName: cast(Symbol, "<\(name)>"),
                     kind:     "yield",
                     name:     safeName("yield", name),
-                    init:     genMethCall("CLS_Result", "new", "jump")
+                    init:     genMethCall("CLS_Result", "SYM(new)", "jump")
                 }}
         }
     } else {
