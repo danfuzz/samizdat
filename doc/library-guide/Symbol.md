@@ -13,8 +13,9 @@ language constructs.
 
 #### `.cat(more*) -> symbol`
 
-Returns a symbol consisting of the concatenation of the contents
-of all the arguments, in argument order. Arguments must all be symbols.
+Returns an interned symbol whose name consists of `this`'s name
+concatenated with the names of all the arguments, in argument order.
+Arguments must all be symbols.
 
 #### `.isInterned() -> symbol | void`
 
