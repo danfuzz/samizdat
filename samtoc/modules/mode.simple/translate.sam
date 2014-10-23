@@ -54,7 +54,7 @@ export fn translate(node, varsBox) {
 
             if (values.hasName(@maybe)) {
                 def vTrans = translate(values::value, varsBox);
-                genCall("METH_APPLY", target, name, vTrans)
+                genCall("methApply", target, name, vTrans)
             } else if (values.hasName(@void)) {
                 ## A void `values` binding just devolves into a no-argument
                 ## (but otherwise regular) function call.
@@ -63,7 +63,7 @@ export fn translate(node, varsBox) {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
                 ## non-void.
                 def vTrans = nonVoid(translate(values, varsBox));
-                genCall("METH_APPLY", target, name, vTrans)
+                genCall("methApply", target, name, vTrans)
             }
         };
 
