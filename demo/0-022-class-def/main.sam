@@ -62,9 +62,9 @@ class Fizmo
 };
 
 print(Fizmo);
-def fizmo = NEW(Fizmo);
+def fizmo = Fizmo.(NEW)();
 print(fizmo);
-print(ACCESS(fizmo));
+print(fizmo.(ACCESS)());
 
 ## Class with secret and just one method.
 
@@ -74,12 +74,12 @@ class Igram
         access: ACCESS,
         new: NEW {
     fn hello() {
-        note("Igram! ", ACCESS(this)::effect)
+        note("Igram! ", this.(ACCESS)()::effect)
     }
 };
 
 print(Igram);
-def igram = NEW(Igram, @{effect: "purple -> invisible"});
+def igram = Igram.(NEW)(@{effect: "purple -> invisible"});
 print(igram);
-print(ACCESS(igram));
+print(igram.(ACCESS)());
 igram.hello();
