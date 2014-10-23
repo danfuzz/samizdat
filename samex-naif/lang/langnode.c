@@ -143,8 +143,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
 
     #define addSingleToCat() do { \
         if (singleAt != 0) { \
-            addToCat(makeFunCall(SYMS(new), \
-                listPrepend(clsLit, listFromArray(singleAt, singleArgs)))); \
+            addToCat(makeCall(clsLit, SYMS(new), \
+                listFromArray(singleAt, singleArgs))); \
             singleAt = 0; \
         } \
     } while (0)
@@ -181,8 +181,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
     }
 
     addSingleToCat();
-    return makeFunCall(SYMS(cat),
-        listPrepend(emptyLit, listFromArray(catAt, catArgs)));
+    return makeCall(emptyLit, SYMS(cat), listFromArray(catAt, catArgs));
 };
 
 
