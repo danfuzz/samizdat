@@ -472,13 +472,11 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
             name, listFrom2(makeLiteral(name), one));
     }
 
-    zvalue instanceMethodTable = makeFunCall(SYMS(new),
-        METH_APPLY(listFrom1(LITS(SymbolTable)), cat,
-            METH_CALL(instanceMethods, valueList)));
+    zvalue instanceMethodTable = makeCall(LITS(SymbolTable), SYMS(new),
+        METH_APPLY(EMPTY_LIST, cat, METH_CALL(instanceMethods, valueList)));
 
-    zvalue call = makeFunCall(SYMS(subclass),
-        listFrom5(
-            LITS(Object),
+    zvalue call = makeCall(LITS(Object), SYMS(subclass),
+        listFrom4(
             makeLiteral(name),
             config,
             LITS(EMPTY_SYMBOL_TABLE),
