@@ -26,35 +26,53 @@ class MethCall
         def data = ACCESS(this);
         def args = data::args;
 
+        def argStr = if (#args == 0) {
+            "NULL"
+        } else {
+            "".cat(
+                "(zvalue[]) { ",
+                ( a in args, i in (#args.. by -1) ->
+                    "".cat(a.flatten(), (i == 1) & "" | ", ")
+                )*,
+                " }")
+        };
+
         return "".cat(
             "methCall(",
             data::target.flatten(), ", ",
             data::name.flatten(), ", ",
-            "\(#args), (zvalue[]) { ",
-            ( a in args, i in (#args.. by -1) ->
-                "".cat(a.flatten(), (i == 1) & "" | ", ")
-            )*,
-            " })"
+            "\(#args), ",
+            argStr,
+            ")"
         )
     };
 
     fn indent(level, maxColumns) {
         def data = ACCESS(this);
-        def prefix = indentation(level);
+        def prefix1 = indentation(level);
+        def prefix2 = indentation(level + 1);
         def args = data::args;
         def nextLevel = level + 2;
 
+        def argStr = if (#args == 0) {
+            "NULL"
+        } else {
+            "".cat(
+                "(zvalue[]) {\n",
+                ( a in args, i in (#args.. by -1) ->
+                    "".cat(a.indent(nextLevel, maxColumns),
+                        (i == 1) & "" | ",\n")
+                )*,
+                "}")
+        };
+
         return "".cat(
-            "methCall(\n",
-            prefix, data::target.flatten(), ",\n",
-            prefix, data::name.flatten(), ",\n",
-            prefix, "\(#args),\n",
-            prefix, "(zvalue[]) {\n",
-            ( a in args, i in (#args.. by -1) ->
-                "".cat(a.indent(nextLevel, maxColumns),
-                    (i == 1) & "\n" | ",\n")
-            )*,
-            prefix, "})"
+            prefix1, "methCall(\n",
+            prefix2, data::target.flatten(), ",\n",
+            prefix2, data::name.flatten(), ",\n",
+            prefix2, "\(#args),\n",
+            prefix2, argStr,
+            ")"
         )
     };
 
