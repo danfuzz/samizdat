@@ -90,21 +90,20 @@ static char *callReporter(void *state) {
  * Helper for `methCall`, which does most of the work but skips argument
  * validation, reference frame, and stack trace setup.
  */
-static zvalue methCall0(zvalue target, zvalue name, zint argCount,
+static zvalue methCall0(zvalue target, zint nameIndex, zint argCount,
         const zvalue *args) {
     zvalue cls = classOf(target);
 
-    if ((cls == CLS_Builtin) && (name == SYM(call))) {
+    if ((cls == CLS_Builtin) && (nameIndex == SYMIDX(call))) {
         // We are looking at an invocation of `Builtin.call()`. Handle this
         // as a special case, in order to break the recursion.
         return builtinCall(target, argCount, args);
     }
 
-    zint index = symbolIndex(name);
-    zvalue function = classFindMethodUnchecked(cls, index);
+    zvalue function = classFindMethodUnchecked(cls, nameIndex);
 
     if (function == NULL) {
-        zvalue nameStr = cm_castFrom(CLS_String, name);
+        zvalue nameStr = cm_castFrom(CLS_String, symbolFromIndex(nameIndex));
         die("Unbound method: %s.%s", cm_debugString(cls),
             cm_debugString(nameStr));
     }
@@ -115,7 +114,7 @@ static zvalue methCall0(zvalue target, zvalue name, zint argCount,
     utilCpy(zvalue, &newArgs[1], args, argCount);
 
     // Invoke `function.call(target, args*)`.
-    return methCall0(function, SYM(call), argCount + 1, newArgs);
+    return methCall0(function, SYMIDX(call), argCount + 1, newArgs);
 }
 
 
@@ -145,11 +144,13 @@ zvalue methCall(zvalue target, zvalue name, zint argCount,
         die("Method call argument inconsistency.");
     }
 
+    zint nameIndex = symbolIndex(name);
+
     StackTraceEntry ste = {.target = target, .name = name};
     UTIL_TRACE_START(callReporter, &ste);
 
     zstackPointer save = datFrameStart();
-    zvalue result = methCall0(target, name, argCount, args);
+    zvalue result = methCall0(target, nameIndex, argCount, args);
     datFrameReturn(save, result);
 
     UTIL_TRACE_END();
