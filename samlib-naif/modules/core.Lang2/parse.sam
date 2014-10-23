@@ -283,7 +283,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeFunCallGeneral(SYMS::new, LITS::List, expressions*) }
+            { makeCallGeneral(LITS::List, SYMS::new, expressions*) }
     }
 :};
 
@@ -1487,7 +1487,7 @@ def parRangeExpression = {:
 
     ## The test here is to prevent open ranges from being allowed.
     { ne(body::function, REFS::Range_makeOpenRange) }
-    { makeFunCallGeneral(SYMS::new, LITS::List, makeInterpolate(body)) }
+    { makeCallGeneral(LITS::List, SYMS::new, makeInterpolate(body)) }
 :};
 
 ## Parses the `term` variants introduced in Layer 2.
@@ -1623,7 +1623,7 @@ parPostfixOperator2 := {:
     @"??"
     {
         { node ->
-            makeFunCallGeneral(SYMS::fromLogic, LITS::Bool,
+            makeCallGeneral(LITS::Bool, SYMS::fromLogic,
                 makeInterpolate(makeMaybeValue(node)))
         }
     }
@@ -2120,13 +2120,12 @@ def parSwitchExpression = {:
             def keys = case::keys;
             def code = finishCode(case);
             ifIs { List.accepts(keys) }
-                { makeFunCallGeneral(SYMS::singleValue, LITS::Map, keys*, code) }
+                { makeCallGeneral(LITS::Map, SYMS::singleValue, keys*, code) }
         };
-        def caseMap = makeFunCallGeneral(SYMS::cat,
-            LITS::EMPTY_MAP,
+        def caseMap = makeCallGeneral(LITS::EMPTY_MAP, SYMS::cat,
             makeInterpolate(
                 makeFunCall(SYMS::reverse,
-                    makeFunCallGeneral(SYMS::new, LITS::List, caseClauses*))));
+                    makeCallGeneral(LITS::List, SYMS::new, caseClauses*))));
 
         def ifCall = makeFunCall(REFS::ifSwitch,
             testClause::testThunk,

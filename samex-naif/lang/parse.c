@@ -562,7 +562,7 @@ DEF_PARSE(list) {
 
     return (get_size(expressions) == 0)
         ? LITS(EMPTY_LIST)
-        : makeFunCallGeneral(SYMS(new), listPrepend(LITS(List), expressions));
+        : makeCallGeneral(LITS(List), SYMS(new), expressions);
 }
 
 // Documented in spec.
@@ -712,7 +712,7 @@ DEF_PARSE(unaryExpression) {
                 break;
             }
             case EVAL_literal: {
-                result = makeFunCallGeneral(SYMS(get), listFrom2(result, one));
+                result = makeCallGeneral(result, SYMS(get), listFrom1(one));
                 break;
             }
             default: {

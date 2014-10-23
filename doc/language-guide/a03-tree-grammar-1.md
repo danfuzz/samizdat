@@ -288,7 +288,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeFunCallGeneral(SYMS::new, LITS::List, expressions*) }
+            { makeCallGeneral(LITS::List, SYMS::new, expressions*) }
     }
 :};
 
