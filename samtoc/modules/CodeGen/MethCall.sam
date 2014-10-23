@@ -89,7 +89,7 @@ class MethCall
 
 export fn genMethCall(target, name, args*) {
     def fixTarget = fix(target);
-    def fixName = fix("SYM(\(name))");
+    def fixName = fix(name);
     def fixArgs = [ a in args -> fix(a) ];
     var flatOk = false;
 
