@@ -511,8 +511,8 @@ zvalue makeDynamicImport(zvalue node) {
                 zvalue name = cm_nth(names, i);
                 zvalue sel = cm_nth(select, i);
                 stats[i] = makeVarDef(name,
-                    makeFunCall(SYMS(get),
-                        listFrom2(loadCall, makeLiteral(sel))));
+                    makeCall(loadCall, SYMS(get),
+                        listFrom1(makeLiteral(sel))));
             }
 
             return listFromArray(size, stats);
@@ -934,15 +934,13 @@ zvalue withModuleDefs(zvalue node) {
 
     zvalue yieldExports = (exSize == 0)
         ? LITS(EMPTY_SYMBOL_TABLE)
-        : makeFunCall(SYMS(new), listPrepend(LITS(SymbolTable), exportValues));
+        : makeCall(LITS(SymbolTable), SYMS(new), exportValues);
     zvalue yieldInfo = makeLiteral(info);
-    zvalue yieldNode = makeFunCall(SYMS(new),
-        listFrom3(
-            LITS(Record),
+    zvalue yieldNode = makeCall(LITS(Record), SYMS(new),
+        listFrom2(
             SYMS(module),
-            makeFunCall(SYMS(new),
-                listFrom5(
-                    LITS(SymbolTable),
+            makeCall(LITS(SymbolTable), SYMS(new),
+                listFrom4(
                     SYMS(exports), yieldExports,
                     SYMS(info),    yieldInfo))));
 
