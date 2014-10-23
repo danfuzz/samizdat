@@ -87,28 +87,25 @@ static char *callReporter(void *state) {
 }
 
 /**
- * Helper for `methCall`, which calls a function (which was presumably looked
+ * Helper for `methCall`, which calls a function (which has just been looked
  * up in a method table). This does *not* do argument validation.
  */
 static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     zvalue funCls = classOf(function);
-    zvalue result;
 
     // The first three cases are how we bottom out the recursion, instead of
     // calling `funCall` on the `call` methods for `Builtin` or `Symbol`.
-    if (funCls == CLS_Symbol) {
+    if (funCls == CLS_Builtin) {
+        return builtinCall(function, argCount, args);
+    } else if (funCls == CLS_Symbol) {
         // No call reporting setup here, as this will bottom out in a
         // `methCall()` which will do that.
-        result = symbolCall(function, argCount, args);
-    } else if (funCls == CLS_Builtin) {
-        result = builtinCall(function, argCount, args);
+        return symbolCall(function, argCount, args);
     } else {
         // The original `function` is some kind of higher layer function.
         // Use method dispatch to get to it.
-        result = methCall(function, SYM(call), argCount, args);
+        return methCall(function, SYM(call), argCount, args);
     }
-
-    return result;
 }
 
 
