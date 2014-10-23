@@ -1487,9 +1487,11 @@ def parRangeExpression = {:
     body = parRangeBody
     @"]"
 
-    ## The test here is to prevent open ranges from being allowed.
-    { ne(body::function, REFS::Range_makeOpenRange) }
-    { makeCallGeneral(LITS::List, SYMS::new, makeInterpolate(body)) }
+    {
+        ## The test here is to prevent open ranges from being allowed.
+        ifNot { eq(body::target, REFS::Range_makeOpenRange) }
+            { makeCallGeneral(LITS::List, SYMS::new, makeInterpolate(body)) }
+    }
 :};
 
 ## Parses the `term` variants introduced in Layer 2.
