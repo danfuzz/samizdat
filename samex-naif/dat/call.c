@@ -87,21 +87,35 @@ static char *callReporter(void *state) {
 }
 
 /**
- * Helper for `methCall`, which calls a function (which has just been looked
- * up in a method table). This does *not* do argument validation.
+ * Helper for `methCall`, which does most of the work but skips argument
+ * validation, reference frame, and stack trace setup.
  */
-static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
-    zvalue funCls = classOf(function);
+static zvalue methCall0(zvalue target, zvalue name, zint argCount,
+        const zvalue *args) {
+    zvalue cls = classOf(target);
 
-    // The first three cases are how we bottom out the recursion, instead of
-    // calling `funCall` on the `call` methods for `Builtin` or `Symbol`.
-    if (funCls == CLS_Builtin) {
-        return builtinCall(function, argCount, args);
-    } else {
-        // The original `function` is some kind of higher layer function.
-        // Use method dispatch to get to it.
-        return methCall(function, SYM(call), argCount, args);
+    if ((cls == CLS_Builtin) && (name == SYM(call))) {
+        // We are looking at an invocation of `Builtin.call()`. Handle this
+        // as a special case, in order to break the recursion.
+        return builtinCall(target, argCount, args);
     }
+
+    zint index = symbolIndex(name);
+    zvalue function = classFindMethodUnchecked(cls, index);
+
+    if (function == NULL) {
+        zvalue nameStr = cm_castFrom(CLS_String, name);
+        die("Unbound method: %s.%s", cm_debugString(cls),
+            cm_debugString(nameStr));
+    }
+
+    // Prepend `target` as a new first argument for a call to `function`.
+    zvalue newArgs[argCount + 1];
+    newArgs[0] = target;
+    utilCpy(zvalue, &newArgs[1], args, argCount);
+
+    // Invoke `function.call(target, args*)`.
+    return methCall0(function, SYM(call), argCount + 1, newArgs);
 }
 
 
@@ -131,26 +145,11 @@ zvalue methCall(zvalue target, zvalue name, zint argCount,
         die("Method call argument inconsistency.");
     }
 
-    zint index = symbolIndex(name);
-    zvalue cls = classOf(target);
-    zvalue function = classFindMethodUnchecked(cls, index);
-
-    if (function == NULL) {
-        zvalue nameStr = cm_castFrom(CLS_String, name);
-        die("Unbound method: %s.%s", cm_debugString(cls),
-            cm_debugString(nameStr));
-    }
-
-    // Prepend `target` as a new first argument for a call to `function`.
-    zvalue newArgs[argCount + 1];
-    newArgs[0] = target;
-    utilCpy(zvalue, &newArgs[1], args, argCount);
-
     StackTraceEntry ste = {.target = target, .name = name};
     UTIL_TRACE_START(callReporter, &ste);
 
     zstackPointer save = datFrameStart();
-    zvalue result = funCall(function, argCount + 1, newArgs);
+    zvalue result = methCall0(target, name, argCount, args);
     datFrameReturn(save, result);
 
     UTIL_TRACE_END();
