@@ -22,7 +22,7 @@ export fn reverseNth(seq, n) {
 ## Documented in spec.
 export fn sliceGeneral(seq, style, start, optEnd?) {
     def limit = seq.get_size().sub(1);
-    def func = ifIs { eq(style, @exclusive) }
+    def method = ifIs { eq(style, @exclusive) }
         { @sliceExclusive }
         { @sliceInclusive };
     def startIndex = ifIs { start.hasName(@fromStart) }
@@ -35,5 +35,5 @@ export fn sliceGeneral(seq, style, start, optEnd?) {
                 { limit.sub(end::value) }
         })?;
 
-    return? func(seq, startIndex, optEndIndex*)
+    return? seq.(method)(startIndex, optEndIndex*)
 };
