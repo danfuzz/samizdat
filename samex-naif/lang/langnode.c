@@ -110,7 +110,7 @@ static zvalue expandYield(zvalue table) {
         case EVAL_maybe: {
             zvalue arg = makeInterpolate(
                 makeMaybeValue(cm_get(value, SYM(value))));
-            exitCall = makeFunCallOrApply(function, listFrom1(arg));
+            exitCall = makeFunCallGeneral(function, listFrom1(arg));
             break;
         }
         default: {
@@ -166,7 +166,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
             }
             if (!handled) {
                 addSingleToCat();
-                addToCat(makeFunCallOrApply(SYMS(singleValue),
+                addToCat(makeFunCallGeneral(SYMS(singleValue),
                     listPrepend(clsLit, listAppend(keys, value))));
             }
         } else {
@@ -594,7 +594,7 @@ zvalue makeFunCall(zvalue function, zvalue values) {
 }
 
 // Documented in spec.
-zvalue makeFunCallOrApply(zvalue function, zvalue values) {
+zvalue makeFunCallGeneral(zvalue function, zvalue values) {
     return makeCallGeneral(function, SYMS(call), values);
 }
 

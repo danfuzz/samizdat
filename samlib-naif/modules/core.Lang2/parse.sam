@@ -283,7 +283,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeFunCallOrApply(SYMS::new, LITS::List, expressions*) }
+            { makeFunCallGeneral(SYMS::new, LITS::List, expressions*) }
     }
 :};
 
@@ -372,7 +372,7 @@ def parActualsList = {:
 ## function call.
 def parPostfixOperator = {:
     actuals = parActualsList
-    { { node -> makeFunCallOrApply(node, actuals*) } }
+    { { node -> makeFunCallGeneral(node, actuals*) } }
 |
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
@@ -419,7 +419,7 @@ def parPostfixOperator = {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            { node -> makeFunCallOrApply(makeLiteral(name), node, actuals*) }
+            { node -> makeFunCallGeneral(makeLiteral(name), node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)
@@ -1324,7 +1324,7 @@ def parInterpolatedString = {:
                         { $Peg::apply(parStringInterpolation, tokens) }
                         { die("Invalid syntax in string interpolation.") };
 
-                    makeFunCallOrApply(formatter,
+                    makeFunCallGeneral(formatter,
                         makeInterpolate(makeMaybeValue(call)))
                 }
         };
@@ -1487,7 +1487,7 @@ def parRangeExpression = {:
 
     ## The test here is to prevent open ranges from being allowed.
     { ne(body::function, REFS::Range_makeOpenRange) }
-    { makeFunCallOrApply(SYMS::new, LITS::List, makeInterpolate(body)) }
+    { makeFunCallGeneral(SYMS::new, LITS::List, makeInterpolate(body)) }
 :};
 
 ## Parses the `term` variants introduced in Layer 2.
@@ -1623,7 +1623,7 @@ parPostfixOperator2 := {:
     @"??"
     {
         { node ->
-            makeFunCallOrApply(SYMS::fromLogic, LITS::Bool,
+            makeFunCallGeneral(SYMS::fromLogic, LITS::Bool,
                 makeInterpolate(makeMaybeValue(node)))
         }
     }
@@ -2120,13 +2120,13 @@ def parSwitchExpression = {:
             def keys = case::keys;
             def code = finishCode(case);
             ifIs { List.accepts(keys) }
-                { makeFunCallOrApply(SYMS::singleValue, LITS::Map, keys*, code) }
+                { makeFunCallGeneral(SYMS::singleValue, LITS::Map, keys*, code) }
         };
-        def caseMap = makeFunCallOrApply(SYMS::cat,
+        def caseMap = makeFunCallGeneral(SYMS::cat,
             LITS::EMPTY_MAP,
             makeInterpolate(
                 makeFunCall(SYMS::reverse,
-                    makeFunCallOrApply(SYMS::new, LITS::List, caseClauses*))));
+                    makeFunCallGeneral(SYMS::new, LITS::List, caseClauses*))));
 
         def ifCall = makeFunCall(REFS::ifSwitch,
             testClause::testThunk,

@@ -78,7 +78,7 @@ zvalue makeFunApply(zvalue function, zvalue values);
 zvalue makeFunCall(zvalue function, zvalue values);
 
 // Documented in spec.
-zvalue makeFunCallOrApply(zvalue function, zvalue values);
+zvalue makeFunCallGeneral(zvalue function, zvalue values);
 
 // Documented in spec.
 zvalue makeImport(zvalue baseData);

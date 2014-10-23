@@ -233,7 +233,7 @@ def parList = makeMainSequence(
     makeCode { ., expressions, . ->
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeFunCallOrApply(SYMS::new, LITS::List, expressions*) }
+            { makeFunCallGeneral(SYMS::new, LITS::List, expressions*) }
     });
 
 ## Documented in spec.
@@ -299,7 +299,7 @@ def parPostfixOperator = makeMainChoice(
     makeSequence(
         parActualsList,
         makeCode { actuals ->
-            { node -> makeFunCallOrApply(node, actuals*) }
+            { node -> makeFunCallGeneral(node, actuals*) }
         }),
     makeSequence(
         makeToken(@"::"),
@@ -319,7 +319,7 @@ def parPostfixOperator = makeMainChoice(
                 parActualsList,
                 makeCode { ., name, actuals ->
                     { node ->
-                        makeFunCallOrApply(makeLiteral(name), node, actuals*)
+                        makeFunCallGeneral(makeLiteral(name), node, actuals*)
                     }
                 }),
             makeCode { ., name ->

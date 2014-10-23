@@ -237,18 +237,18 @@ order.
 The result is a `call` node with `function` as the target and literal
 `@call` as the name.
 
-#### `makeFunCallLiterals(function, values*) -> node`
-
-Like `makeFunCall`, except that each of the `values` is made to be a literal
-value.
-
-#### `makeFunCallOrApply(function, values*) -> node`
+#### `makeFunCallGeneral(function, values*) -> node`
 
 Like `makeCallGeneral`, except this takes a `function` instead of a
 `target` and `name`.
 
 The result is a `call` or `apply` node with `function` as the target and
 literal `@call` as the name.
+
+#### `makeFunCallLiterals(function, values*) -> node`
+
+Like `makeFunCall`, except that each of the `values` is made to be a literal
+value.
 
 #### `makeFunCallThunks(function, values*) -> node`
 
@@ -302,7 +302,7 @@ just returns that.
 Makes an interpolation of the given expression node. The result is a
 `fetch` node that refers to the given `expr` as both the main `value` and
 as an `interpolate` binding, and which binds `lvalue` to a store conversion
-function. See `makeFunCallOrApply` for more details about `interpolate` bindings.
+function. See `makeFunCallGeneral` for more details about `interpolate` bindings.
 
 #### `makeLiteral(value) -> node`
 

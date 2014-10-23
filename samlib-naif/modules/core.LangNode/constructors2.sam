@@ -51,7 +51,7 @@ fn expandYield(table) {
         {
             ifIs { value.hasName(@maybe) }
                 {
-                    makeFunCallOrApply(function,
+                    makeFunCallGeneral(function,
                         makeInterpolate(makeMaybeValue(value::value)))
                 }
         }
@@ -108,7 +108,7 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
                 ifIs { eq(handled, false) }
                     {
                         addSingleToCat();
-                        addToCat(makeFunCallOrApply(SYMS::singleValue,
+                        addToCat(makeFunCallGeneral(SYMS::singleValue,
                             classLit, keys*, value))
                     };
             }
@@ -317,7 +317,7 @@ export fn makeFullClosure(baseData) {
 };
 
 ## Documented in spec.
-export fn makeFunCallOrApply(function, values*) {
+export fn makeFunCallGeneral(function, values*) {
     return makeCallGeneral(function, SYMS::call, values*)
 };
 

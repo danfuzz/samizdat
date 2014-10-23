@@ -288,7 +288,7 @@ def parList = {:
     {
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
-            { makeFunCallOrApply(SYMS::new, LITS::List, expressions*) }
+            { makeFunCallGeneral(SYMS::new, LITS::List, expressions*) }
     }
 :};
 
@@ -377,7 +377,7 @@ def parActualsList = {:
 ## function call.
 def parPostfixOperator = {:
     actuals = parActualsList
-    { { node -> makeFunCallOrApply(node, actuals*) } }
+    { { node -> makeFunCallGeneral(node, actuals*) } }
 |
     ## This is sorta-kinda a binary operator, but in terms of precedence it
     ## fits better here.
@@ -424,7 +424,7 @@ def parPostfixOperator = {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            { node -> makeFunCallOrApply(makeLiteral(name), node, actuals*) }
+            { node -> makeFunCallGeneral(makeLiteral(name), node, actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)

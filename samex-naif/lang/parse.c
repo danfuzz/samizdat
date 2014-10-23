@@ -562,7 +562,7 @@ DEF_PARSE(list) {
 
     return (get_size(expressions) == 0)
         ? LITS(EMPTY_LIST)
-        : makeFunCallOrApply(SYMS(new), listPrepend(LITS(List), expressions));
+        : makeFunCallGeneral(SYMS(new), listPrepend(LITS(List), expressions));
 }
 
 // Documented in spec.
@@ -694,13 +694,13 @@ DEF_PARSE(unaryExpression) {
         zvalue one = cm_nth(postfixes, i);
         if (classAccepts(CLS_List, one)) {
             // Regular function call.
-            result = makeFunCallOrApply(result, one);
+            result = makeFunCallGeneral(result, one);
         } else switch (recordEvalType(one)) {
             case EVAL_call: {
                 // Method call.
                 zvalue function = cm_get(one, SYM(target));
                 zvalue values = cm_get(one, SYM(values));
-                result = makeFunCallOrApply(function,
+                result = makeFunCallGeneral(function,
                     listPrepend(result, values));
                 break;
             }
@@ -713,7 +713,7 @@ DEF_PARSE(unaryExpression) {
                 break;
             }
             case EVAL_literal: {
-                result = makeFunCallOrApply(SYMS(get), listFrom2(result, one));
+                result = makeFunCallGeneral(SYMS(get), listFrom2(result, one));
                 break;
             }
             default: {
