@@ -98,8 +98,6 @@ static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     if (funCls == CLS_Builtin) {
         return builtinCall(function, argCount, args);
     } else if (funCls == CLS_Symbol) {
-        // No call reporting setup here, as this will bottom out in a
-        // `methCall()` which will do that.
         return symbolCall(function, argCount, args);
     } else {
         // The original `function` is some kind of higher layer function.
