@@ -584,11 +584,6 @@ zvalue makeFullClosure(zvalue baseData) {
 }
 
 // Documented in spec.
-zvalue makeFunApply(zvalue function, zvalue values) {
-    return makeApply(function, SYMS(call), values);
-}
-
-// Documented in spec.
 zvalue makeFunCall(zvalue function, zvalue values) {
     return makeCall(function, SYMS(call), values);
 }

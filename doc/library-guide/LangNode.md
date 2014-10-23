@@ -219,15 +219,6 @@ result. If the node cannot possibly yield void, then it is directly used as
 the `yield`. If it might yield void, then it is wrapped in a `@maybe`, and
 the `@maybe` is used as the binding for `yield` in the result.
 
-#### `makeFunApply(function, optValues?) -> node`
-
-Makes an `apply` node, with the given `function` (an expression node)
-being applied to the given `values` (an expression node). If `optValues`
-is not passed, it defaults to `@void`.
-
-The result is an `apply` node with `function` as the target and literal
-`@call` as the name.
-
 #### `makeFunCall(function, values*) -> node`
 
 Makes a `call` node, where `function` (an expression node) is called

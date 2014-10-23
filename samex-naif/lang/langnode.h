@@ -72,9 +72,6 @@ zvalue makeExportSelection(zvalue names);
 zvalue makeFullClosure(zvalue nodeOrMap);
 
 // Documented in spec.
-zvalue makeFunApply(zvalue function, zvalue values);
-
-// Documented in spec.
 zvalue makeFunCall(zvalue function, zvalue values);
 
 // Documented in spec.
