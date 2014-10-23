@@ -52,15 +52,16 @@ class MethCall
         def prefix1 = indentation(level);
         def prefix2 = indentation(level + 1);
         def args = data::args;
-        def nextLevel = level + 2;
+        def nextLevel = level + 1;
 
         def argStr = if (#args == 0) {
             "NULL"
         } else {
+            def level2 = level + 2;
             "".cat(
                 "(zvalue[]) {\n",
                 ( a in args, i in (#args.. by -1) ->
-                    "".cat(a.indent(nextLevel, maxColumns),
+                    a.indent(level2, maxColumns).cat(
                         (i == 1) & "" | ",\n")
                 )*,
                 "}")
@@ -68,8 +69,8 @@ class MethCall
 
         return "".cat(
             prefix1, "methCall(\n",
-            prefix2, data::target.flatten(), ",\n",
-            prefix2, data::name.flatten(), ",\n",
+            data::target.indent(nextLevel, maxColumns), ",\n",
+            data::name.indent(nextLevel, maxColumns), ",\n",
             prefix2, "\(#args),\n",
             prefix2, argStr,
             ")"
