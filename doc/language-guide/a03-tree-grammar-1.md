@@ -424,7 +424,7 @@ def parPostfixOperator = {:
         ## `target.memberName(arg, ...)`
         actuals = parActualsList
         {
-            { node -> makeFunCallGeneral(makeLiteral(name), node, actuals*) }
+            { node -> makeCallGeneral(node, makeLiteral(name), actuals*) }
         }
     |
         ## `target.memberName` (includes parsing of both getters and setters)

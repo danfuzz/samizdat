@@ -674,7 +674,7 @@ DEF_PARSE(postfixOperator) {
         MATCH_OR_REJECT(CH_DOT);
         zvalue name = PARSE_OR_REJECT(nameSymbol);
         zvalue actuals = PARSE_OR_REJECT(actualsList);
-        result = makeFunCall(makeLiteral(name), actuals);
+        result = makeCall(TOK_void, makeLiteral(name), actuals);
     }
 
     return result;
@@ -698,10 +698,9 @@ DEF_PARSE(unaryExpression) {
         } else switch (recordEvalType(one)) {
             case EVAL_call: {
                 // Method call.
-                zvalue function = cm_get(one, SYM(target));
+                zvalue name = cm_get(one, SYM(name));
                 zvalue values = cm_get(one, SYM(values));
-                result = makeFunCallGeneral(function,
-                    listPrepend(result, values));
+                result = makeCallGeneral(result, name, values);
                 break;
             }
             case EVAL_CH_STAR: {

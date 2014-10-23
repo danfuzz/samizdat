@@ -319,7 +319,7 @@ def parPostfixOperator = makeMainChoice(
                 parActualsList,
                 makeCode { ., name, actuals ->
                     { node ->
-                        makeFunCallGeneral(makeLiteral(name), node, actuals*)
+                        makeCallGeneral(node, makeLiteral(name), actuals*)
                     }
                 }),
             makeCode { ., name ->
