@@ -1507,7 +1507,7 @@ parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
         def name = UNARY_OPERATORS.get(operator.get_name());
-        { node -> makeFunCall(name, node) }
+        { node -> makeCall(node, name) }
     }
 |
     ## This one is specially converted, since it's a control construct,
