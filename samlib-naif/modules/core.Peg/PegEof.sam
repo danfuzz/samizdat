@@ -36,4 +36,4 @@ class PegEof
 ##
 
 ## Documented in spec.
-export def eof = NEW(PegEof);
+export def eof = PegEof.(NEW)();

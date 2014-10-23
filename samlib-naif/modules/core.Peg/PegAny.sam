@@ -32,4 +32,4 @@ class PegAny
 ##
 
 ## Documented in spec.
-export def any = NEW(PegAny);
+export def any = PegAny.(NEW)();

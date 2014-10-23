@@ -23,7 +23,7 @@ class PegCode
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
             { result ->
                 box* := result;
@@ -39,6 +39,6 @@ class PegCode
 
 ## Documented in spec.
 export fn makeCode(function) {
-    return NEW(PegCode, @{function})
+    return PegCode.(NEW)(@{function})
 };
 

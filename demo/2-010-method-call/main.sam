@@ -48,6 +48,6 @@ class Igram
     };
 };
 
-def obj = Igram.NEW();
+def obj = Igram.(NEW)();
 note(obj.foo);
 obj.foo := "whatevs";

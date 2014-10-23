@@ -27,7 +27,7 @@ class PegMain
     ## Documented in spec.
     fn parse(box, input, .*) {
         ## The point of this implementation is to drop the `items` context.
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::rule.parse(box, input)
     };
 };
@@ -39,10 +39,10 @@ class PegMain
 
 ## Documented in spec.
 export fn makeMainChoice(rules*) {
-    return NEW(PegMain, @{rule: makeChoice(rules*)})
+    return PegMain.(NEW)(@{rule: makeChoice(rules*)})
 };
 
 ## Documented in spec.
 export fn makeMainSequence(rules*) {
-    return NEW(PegMain, @{rule: makeSequence(rules*)})
+    return PegMain.(NEW)(@{rule: makeSequence(rules*)})
 };

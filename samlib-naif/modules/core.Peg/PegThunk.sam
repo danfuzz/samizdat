@@ -23,7 +23,7 @@ class PegThunk
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
             { thunkResult -> thunkResult.parse(box, input, items*) }
     };
@@ -36,7 +36,7 @@ class PegThunk
 
 ## Documented in spec.
 export fn makeParserThunk(function) {
-    return NEW(PegThunk, @{function})
+    return PegThunk.(NEW)(@{function})
 };
 
 

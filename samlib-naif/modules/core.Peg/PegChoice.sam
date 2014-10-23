@@ -27,7 +27,7 @@ class PegChoice
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         filterPump(data::rules) { rule ->
             ifValue { rule.parse(box, input, items*) }
                 { newInput -> return newInput }
@@ -54,6 +54,6 @@ export fn makeChoice(rules*) {
         { return rules* };
 
     ## The general case.
-    return NEW(PegChoice, @{rules})
+    return PegChoice.(NEW)(@{rules})
 };
 

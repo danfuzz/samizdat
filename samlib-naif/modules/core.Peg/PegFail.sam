@@ -32,4 +32,4 @@ class PegFail
 ##
 
 ## Documented in spec.
-export def fail = NEW(PegFail);
+export def fail = PegFail.(NEW)();
