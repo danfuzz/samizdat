@@ -37,15 +37,8 @@ static zvalue execApply(Frame *frame, zvalue apply) {
     zvalue nameExpr = cm_get(apply, SYM(name));
     zvalue valuesExpr = cm_get(apply, SYM(values));
 
-    // TODO: Remove this scaffolding.
-    if (targetExpr == NULL) {
-        // Handle deprecated `function` form.
-        targetExpr = cm_get(apply, SYM(function));
-    }
-
     zvalue target = execExpression(frame, targetExpr);
-    zvalue name =
-        (nameExpr == NULL) ? SYM(call) : execExpression(frame, nameExpr);
+    zvalue name = execExpression(frame, nameExpr);
     zvalue values = execExpressionOrMaybe(frame, valuesExpr);
 
     return methApply(target, name, values);
@@ -59,15 +52,8 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue nameExpr = cm_get(call, SYM(name));
     zvalue valuesExprs = cm_get(call, SYM(values));
 
-    // TODO: Remove this scaffolding.
-    if (targetExpr == NULL) {
-        // Handle deprecated `function` form.
-        targetExpr = cm_get(call, SYM(function));
-    }
-
     zvalue target = execExpression(frame, targetExpr);
-    zvalue name =
-        (nameExpr == NULL) ? SYM(call) : execExpression(frame, nameExpr);
+    zvalue name = execExpression(frame, nameExpr);
 
     zint argCount = get_size(valuesExprs);
     zvalue args[argCount];
