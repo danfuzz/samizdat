@@ -28,6 +28,12 @@ the target is looked up and called. The result of the expression is the same
 as the result of the method call. If the method call returns void, then the
 expression's result is also void.
 
+`name` is typically a literal identifier, which is taken to be a literal
+symbol representing the name of the method. Alternatively, `name` can
+be an arbitrary parenthesized expression, in which case it must evaluate
+to a symbol. Not evaluating to a symbol is a fatal error (terminating the
+runtime).
+
 If the target, name, or any argument evaluates to void, then this causes an
 immmediate error (terminating the runtime).
 
