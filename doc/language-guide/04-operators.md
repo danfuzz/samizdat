@@ -18,43 +18,63 @@ The following list is ordered from highest (tightest binding) to lowest
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
 
-#### Apply function &mdash; `expression(arg, arg, ...) { block } { block } ...`
+#### Invoke method &mdash; `targetExpr.name(arg, arg, ...) { block } { block } ...`
 
-To apply an expression as a function, follow it with a list of comma-separated
-arguments to apply it to, between parentheses. The arguments are evaluated
-in order, and then the function is called with these arguments. The result
-of the apply expression is the same as the result of the function call.
-If the function call returns void, then the expression's result is also void.
+To invoke a method on an expression, follow it with a dot, a name, and
+a list of comma-separated arguments to apply it to, between parentheses.
+The evaluation order is the target expression, the name, and then the
+arguments in order. Once all of these are evaluated, the named method on
+the target is looked up and called. The result of the expression is the same
+as the result of the method call. If the method call returns void, then the
+expression's result is also void.
 
-If an argument evaluates to void, then this causes an immmediate error
-(terminating the runtime).
+If the target, name, or any argument evaluates to void, then this causes an
+immmediate error (terminating the runtime).
 
-In order to make it convenient to define control-structure-like functions,
-any number of block closure literals can follow the closing parenthesis. All
-such closures are taken to be additional *initial* arguments to the function.
-For example, `foo(bar) { baz }` means the same thing as `foo({ baz }, bar)`.
-This ordering is done based on the principal that for functions which take
-a mix of function and non-function arguments, the function arguments are
-more likely to be fixed in quantity (e.g., always just one) and fixed in
-meaning.
+In order to make it convenient to define control-structure-like methods
+and functions, any number of block closure literals can follow the closing
+parenthesis. All such closures are taken to be additional *initial* arguments
+to the method call. For example, `x.foo(bar) { baz }` means the same thing
+as `x.foo({ baz }, bar)`. This ordering is done based on the principal that
+for functions which take a mix of function and non-function arguments, the
+function arguments are more likely to be fixed in quantity (e.g., always just
+one) and fixed in meaning.
 
-If there are no arguments (including no closure arguments), parentheses are
-required to unambiguously indicate that function application is to be
-performed. That is, `foo()` and `foo { block }` are both function calls,
-but plain `foo` is just a variable reference.
+If there is at least one closure argument but no non-closure arguemnts, then
+the parentheses are optional. However, if there are no arguments at all,
+then parentheses are required, in order to unambiguously indicate that
+method invocation is to be performed. That is, `x.foo()` and `x.foo { block }`
+are both method calls, but plain `x.foo` is a getter/setter reference.
 
 As with list literal syntax, an argument whose class is a generator or
-a collection (list, map, or string) can have its contents "interpolated"
-into a function call argument list by following the argument with a star.
-For example, `foo(bar, [1, 2]*)` means the same thing as `foo(bar, 1, 2)`.
-This works for all argument expressions (not just literals), so long as the
-expression evaluates to an appropriate value.
+a collection (e.g., a list, map, or string) can have its contents
+"interpolated" into a function call argument list by following the argument
+with a star. For example, `x.foo(bar, [1, 2]*)` means the same thing as
+`x.foo(bar, 1, 2)`. This works for all argument expressions (not just
+literals), so long as the expression evaluates to an appropriate value.
 
-The expression to apply (before the open parenthesis) must be non-void.
+#### Invoke function &mdash; `expression(arg, arg, ...) { block } { block } ...`
 
-#### Getter/setter method application &mdash; `targetExpr.identifier` `targetExpr.identifier := expression`
+This is a variant of the method invocation syntax and is exactly equivalent
+to invoking the `call` method on the given target `expression`. This includes
+argument interpolation with postfix `*`.
 
-Dot infix syntax as an expression (without explicit function application) is
+As with method invocation, parentheses are optional if there is at least
+one closure argument but no non-closure arguments; and parentheses are
+required if there are no arguments at all. That is, `foo()` and
+`foo { block }` are both function calls, but plain `foo` is a variable
+reference.
+
+```
+foo()             is equivalent to  foo.call()
+foo(10)           is equivalent to  foo.call(10)
+foo { code }      is equivalent to  foo.call { code }
+(foo::bar(baz*))  is equivalent to  (foo::bar).call(baz*)
+```
+
+#### Invoke getter/setter method &mdash; `targetExpr.identifier` `targetExpr.identifier := expression`
+
+Dot infix syntax as an expression (without explicit method invocation) is
 used to call a "getter" or "setter" method. As a getter invocation, the method
 is passed `targetExpr` as its sole argument. As a setter, the method is passed
 `targetExpr` and `expression` (in that order).
@@ -74,16 +94,6 @@ blort.set_spaz(foo + 10)
 
 **Note:** The `:=` operator in the setter syntax is the assignment operator,
 described below.
-
-**Note:** See immediately below for the general method application syntax.
-
-#### Method application &mdash; `targetExpr.identifier(arg, arg, ...)`
-
-This is a variant of the function calling syntax, and is equivalent to
-`(@identifier)(targetExpr, arg, arg, ...)` (that is, treating a literal
-symbol as a function to apply).
-
-This is the preferred syntax to use for calling a method on a target.
 
 #### Access collection with literal symbol or string key &mdash; `expression::name`
 
