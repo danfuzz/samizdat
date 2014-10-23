@@ -139,7 +139,24 @@ be produced de novo. See `makeFullClosure()` for more detail.
 
 Makes a `call` node, where the method `name` (an expression node) is
 called on the given `target` (an expression node) with the given `values`
-as arguments, in order.
+(each an expression node) as arguments, in order.
+
+#### `makeCallGeneral(target, name, values*) -> node`
+
+Returns a method invocation node, where the method `name` (an expression node)
+is called on the given `target` (an expression node) with the given `values`
+(each an expression node) as arguments, in order.
+
+If any of the `values` is an `interpolate` node, this converts the call into
+a form where the interpolated nodes have their usual surface-language effect.
+The end result in this case is an `apply` node.
+
+If `values` is empty (no extra arguments passed), the end result is a
+straightforward `apply` node with `@void` for the arguments.
+
+Otherwise, if there are no `interpolate` nodes in `values`, the end result is
+a straightforward `call` node, identical to having called `makeCall` with the
+same arguments.
 
 #### `makeClassDef(name, attributes, methods) -> node`
 
@@ -227,20 +244,11 @@ value.
 
 #### `makeFunCallOrApply(function, values*) -> node`
 
-Returns a function call node, where `function` (an expression node) is called
-with each of the `values` (each an expression node) as arguments, in
-order.
+Like `makeCallGeneral`, except this takes a `function` instead of a
+`target` and `name`.
 
-If any of the `values` is an `interpolate` node, this converts the
-call into a form where the interpolated nodes have their usual
-surface-language effect. The end result is an `apply` node.
-
-If there are no arguments at all, the end result is a straightforward
-`apply` node with `@void` for the arguments.
-
-If there are no `interpolate` nodes in `values`, the end result is a
-straightforward `call` node, the same as calling `makeFunCall` on the same
-arguments.
+The result is a `call` or `apply` node with `function` as the target and
+literal `@call` as the name.
 
 #### `makeFunCallThunks(function, values*) -> node`
 

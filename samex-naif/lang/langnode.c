@@ -368,6 +368,65 @@ zvalue makeCall(zvalue target, zvalue name, zvalue values) {
 }
 
 // Documented in spec.
+zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values) {
+    // This is a fairly direct (but not exact) transliteration
+    // of the corresponding code in `LangNode`.
+
+    zint sz = (values == NULL) ? 0 : get_size(values);
+    zvalue pending[sz];
+    zvalue cookedValues[sz];
+    zint pendAt = 0;
+    zint cookAt = 0;
+
+    if (sz == 0) {
+        return makeApply(target, name, NULL);
+    }
+
+    #define addToCooked(actual) do { \
+        cookedValues[cookAt] = (actual); \
+        cookAt++; \
+    } while (0)
+
+    #define addPendingToCooked() do { \
+        if (pendAt != 0) { \
+            addToCooked(makeCall(LITS(List), SYMS(new), \
+                listFromArray(pendAt, pending))); \
+            pendAt = 0; \
+        } \
+    } while (0)
+
+    for (zint i = 0; i < sz; i++) {
+        zvalue one = cm_nth(values, i);
+        zvalue node = cm_get(one, SYM(interpolate));
+        if (node != NULL) {
+            addPendingToCooked();
+            addToCooked(makeCall(node, SYMS(collect), EMPTY_LIST));
+        } else {
+            pending[pendAt] = one;
+            pendAt++;
+        }
+    }
+
+    if (cookAt == 0) {
+        // There were no interpolated arguments.
+        return makeCall(target, name, values);
+    }
+
+    addPendingToCooked();
+
+    if (cookAt > 1) {
+        zvalue first = cookedValues[0];
+        zvalue rest = listFromArray(cookAt - 1, &cookedValues[1]);
+        return makeApply(target, name, makeCall(first, SYMS(cat), rest));
+    } else {
+        return makeApply(target, name, cookedValues[0]);
+    }
+
+    #undef addToCooked
+    #undef addPendingToCooked
+}
+
+// Documented in spec.
 zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     zvalue attribMap = METH_APPLY(EMPTY_MAP, cat, attributes);
     zint attribSize = get_size(attribMap);
@@ -536,60 +595,7 @@ zvalue makeFunCall(zvalue function, zvalue values) {
 
 // Documented in spec.
 zvalue makeFunCallOrApply(zvalue function, zvalue values) {
-    // This is a fairly direct (but not exact) transliteration
-    // of the corresponding code in `LangNode`.
-
-    zint sz = (values == NULL) ? 0 : get_size(values);
-    zvalue pending[sz];
-    zvalue cookedValues[sz];
-    zint pendAt = 0;
-    zint cookAt = 0;
-
-    if (sz == 0) {
-        return makeFunApply(function, NULL);
-    }
-
-    #define addToCooked(actual) do { \
-        cookedValues[cookAt] = (actual); \
-        cookAt++; \
-    } while (0)
-
-    #define addPendingToCooked() do { \
-        if (pendAt != 0) { \
-            addToCooked(makeFunCall(SYMS(new), \
-                listPrepend(LITS(List), listFromArray(pendAt, pending)))); \
-            pendAt = 0; \
-        } \
-    } while (0)
-
-    for (zint i = 0; i < sz; i++) {
-        zvalue one = cm_nth(values, i);
-        zvalue node = cm_get(one, SYM(interpolate));
-        if (node != NULL) {
-            addPendingToCooked();
-            addToCooked(makeFunCall(SYMS(collect), listFrom1(node)));
-        } else {
-            pending[pendAt] = one;
-            pendAt++;
-        }
-    }
-
-    if (cookAt == 0) {
-        // There were no interpolated arguments.
-        return makeFunCall(function, values);
-    }
-
-    addPendingToCooked();
-
-    if (cookAt > 1) {
-        return makeFunApply(function,
-            makeFunCall(SYMS(cat), listFromArray(cookAt, cookedValues)));
-    } else {
-        return makeFunApply(function, cookedValues[0]);
-    }
-
-    #undef addToCooked
-    #undef addPendingToCooked
+    return makeCallGeneral(function, SYMS(call), values);
 }
 
 // Documented in spec.

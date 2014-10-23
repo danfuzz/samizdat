@@ -54,6 +54,9 @@ zvalue makeBasicClosure(zvalue map);
 zvalue makeCall(zvalue target, zvalue name, zvalue values);
 
 // Documented in spec.
+zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values);
+
+// Documented in spec.
 zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods);
 
 // Documented in spec.

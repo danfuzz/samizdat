@@ -145,6 +145,66 @@ export fn makeAssignmentIfPossible(target, value) {
 };
 
 ## Documented in spec.
+export fn makeCallGeneral(target, name, values*) {
+    ifIs { eq(values, []) }
+        {
+            ## No values. Easy out.
+            return makeApply(target, name)
+        };
+
+    ## Convert the values as if interpolation needs to be handled. If in the
+    ## end it doesn't, then the original values are used as-is. This converts
+    ## runs of non-interpolated values to `List.new(ac, ac, ...)`, which
+    ## converts cleanly at runtime as part of the ultimate call to `cat`.
+
+    var pending = [];       ## Non-interpolated values, to be `List.new()`ed.
+    var cookedValues = [];  ## Fully-processed values (of either type).
+
+    fn addToCooked(actual) {
+        cookedValues := [cookedValues*, actual];
+    };
+
+    fn addPendingToCooked() {
+        ifIs { perNe(pending, []) }
+            {
+                addToCooked(makeCall(LITS::List, SYMS::new, pending*));
+                pending := [];
+            }
+    };
+
+    filterPump(values) { actual ->
+        ifValue { actual::interpolate }
+            { node ->
+                addPendingToCooked();
+                addToCooked(makeCall(node, SYMS::collect))
+            }
+            { pending := [pending*, actual] }
+    };
+
+    ifIs { eq(cookedValues, []) }
+        {
+            ## There were no interpolated arguments.
+            return makeCall(target, name, values*)
+        };
+
+    ## There is at least one interpolated argument.
+
+    addPendingToCooked();
+
+    return ifIs { cookedValues.nth(1) }
+        {
+            ## More than one actual. Use `cat`.
+            def first = cookedValues.nth(0);
+            def rest = cookedValues.sliceInclusive(1);
+            makeApply(target, name, makeCall(first, SYMS::cat, rest*))
+        }
+        {
+            ## Only one. Use it directly as the values for the `apply` node.
+            makeApply(target, name, cookedValues*)
+        }
+};
+
+## Documented in spec.
 export fn makeClassDef(name, attributes, methods) {
     def attribMap = {}.cat(attributes*);
 
@@ -258,60 +318,7 @@ export fn makeFullClosure(baseData) {
 
 ## Documented in spec.
 export fn makeFunCallOrApply(function, values*) {
-    ifIs { eq(values, []) }
-        {
-            ## No values. Easy out.
-            return makeFunApply(function)
-        };
-
-    ## Convert the values as if interpolation needs to be handled. If in the
-    ## end it doesn't, then the original values are used as-is. This converts
-    ## runs of non-interpolated values to `List.new(ac, ac, ...)`, which
-    ## converts cleanly at runtime as part of the ultimate call to `cat`.
-
-    var pending = [];       ## Non-interpolated values, to be `List.new()`ed.
-    var cookedValues = [];  ## Fully-processed values (of either type).
-
-    fn addToCooked(actual) {
-        cookedValues := [cookedValues*, actual];
-    };
-
-    fn addPendingToCooked() {
-        ifIs { perNe(pending, []) }
-            {
-                addToCooked(makeFunCall(SYMS::new, LITS::List, pending*));
-                pending := [];
-            }
-    };
-
-    filterPump(values) { actual ->
-        ifValue { actual::interpolate }
-            { node ->
-                addPendingToCooked();
-                addToCooked(makeFunCall(SYMS::collect, node))
-            }
-            { pending := [pending*, actual] }
-    };
-
-    ifIs { eq(cookedValues, []) }
-        {
-            ## There were no interpolated arguments.
-            return makeFunCall(function, values*)
-        };
-
-    ## There is at least one interpolated argument.
-
-    addPendingToCooked();
-
-    return ifIs { cookedValues.nth(1) }
-        {
-            ## More than one actual. Use `cat`.
-            makeFunApply(function, makeFunCall(SYMS::cat, cookedValues*))
-        }
-        {
-            ## Only one. Use it directly as the values for the `apply` node.
-            makeFunApply(function, cookedValues*)
-        }
+    return makeCallGeneral(function, SYMS::call, values*)
 };
 
 ## Documented in spec.

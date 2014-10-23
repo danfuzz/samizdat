@@ -81,8 +81,8 @@ list of evaluated `values` as the arguments to the call.
 
 The `interpolate` binding is *not* used during execution, rather it is only
 ever used when programatically constructing trees. For example, it is used
-by the function `$LangNode::makeFunCallOrApply` to know that a "call
-to the function `fetch`" should actually be treated like an in-line
+by the function `$LangNode::makeCallGeneral` to know that a "call
+to the function `fetch`" should actually be treated as an in-line
 argument interpolation. Relatedly, `call` nodes with `interpolate` are
 produced by the function `$LangNode::makeInterpolate`.
 
@@ -164,8 +164,8 @@ that call, including possibly void.
 
 The `interpolate` binding is *not* used during execution, rather it is only
 ever used when programatically constructing trees. For example, it is used
-by the function `$LangNode::makeFunCallOrApply` to know that a node of this
-type should actually be treated like an in-line argument interpolation.
+by the function `$LangNode::makeCallGeneral` to know that a node of this
+type should actually be treated as an in-line argument interpolation.
 Relatedly, `fetch` nodes with `interpolate` bindings are produced by the
 function `$LangNode::makeInterpolate`.
 
