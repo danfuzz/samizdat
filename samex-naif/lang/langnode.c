@@ -582,7 +582,13 @@ zvalue makeFullClosure(zvalue baseData) {
 
 // Documented in spec.
 zvalue makeFunCall(zvalue function, zvalue values) {
-    return makeCall(function, SYMS(call), values);
+    if (symbolEq(get_name(function), SYM(literal))) {
+        zvalue first = cm_nth(values, 0);
+        zvalue rest = METH_CALL(values, sliceInclusive, INT_1);
+        return makeCall(first, function, rest);
+    } else {
+        return makeCall(function, SYMS(call), values);
+    }
 }
 
 // Documented in spec.

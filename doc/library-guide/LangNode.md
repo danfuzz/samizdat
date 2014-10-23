@@ -228,6 +228,10 @@ order.
 The result is a `call` node with `function` as the target and literal
 `@call` as the name.
 
+As a special case, if `function` is actually a `@literal` node, then it
+is assumed to be a symbol and the result of this call is equivalent to
+`makeCall(values[0], function, values[1..]*)`.
+
 #### `makeFunCallGeneral(function, values*) -> node`
 
 Like `makeCallGeneral`, except this takes a `function` instead of a

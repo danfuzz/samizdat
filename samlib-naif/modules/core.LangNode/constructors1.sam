@@ -44,7 +44,14 @@ export fn makeExportSelection(names+) {
 
 ## Documented in spec.
 export fn makeFunCall(function, values*) {
-    return makeCall(function, SYMS::call, values*)
+    return ifIs { eq(function.get_name(), @literal) }
+        {
+            ## Treat it as a method call.
+            def first = values.nth(0);
+            def rest = values.sliceInclusive(1);
+            makeCall(first, function, rest*)
+        }
+        { makeCall(function, SYMS::call, values*) }
 };
 
 ## Documented in spec.
