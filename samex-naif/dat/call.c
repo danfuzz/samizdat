@@ -97,27 +97,11 @@ static zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     // calling `funCall` on the `call` methods for `Builtin` or `Symbol`.
     if (funCls == CLS_Builtin) {
         return builtinCall(function, argCount, args);
-    } else if (funCls == CLS_Symbol) {
-        return symbolCall(function, argCount, args);
     } else {
         // The original `function` is some kind of higher layer function.
         // Use method dispatch to get to it.
         return methCall(function, SYM(call), argCount, args);
     }
-}
-
-
-//
-// Module Definitions
-//
-
-// Documented in header.
-zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args) {
-    if (argCount < 1) {
-        die("Too few arguments for symbol call.");
-    }
-
-    return methCall(args[0], symbol, argCount - 1, &args[1]);
 }
 
 

@@ -163,15 +163,6 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
 zvalue classFindMethodUnchecked(zvalue cls, zint index);
 
 /**
- * Actual implementation of symbol calling. This is where
- * short-circuited method dispatch of `call` on class `Symbol`
- * lands. This calls the method bound to the given symbol, with the given
- * arguments. The method is looked up on `args[0]`. As such, `argCount` must
- * be at least `1`.
- */
-zvalue symbolCall(zvalue symbol, zint argCount, const zvalue *args);
-
-/**
  * Gets the `CacheEntry` for the given map/key pair.
  */
 MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
