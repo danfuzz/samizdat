@@ -54,6 +54,11 @@ export fn makeFunCallLiterals(function, values*) {
 };
 
 ## Documented in spec.
+export fn makeGet(collArg, keyArg) {
+    return makeCall(collArg, SYMS::get, keyArg)
+};
+
+## Documented in spec.
 export fn makeMaybe(value) {
     return @maybe{value}
 };

@@ -83,7 +83,7 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     fn addSingleToCat() {
         ifIs { perNe(singleArgs, []) }
             {
-                addToCat(makeFunCall(SYMS::new, classLit, singleArgs*));
+                addToCat(makeCall(classLit, SYMS::new, singleArgs*));
                 singleArgs := []
             }
     };
@@ -130,7 +130,7 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     ## ensure a result of the proper type.
 
     addSingleToCat();
-    return makeFunCall(SYMS::cat, emptyLit, catArgs*)
+    return makeCall(emptyLit, SYMS::cat, catArgs*)
 };
 
 
@@ -232,11 +232,10 @@ export fn makeClassDef(name, attributes, methods) {
         instanceMethods := {instanceMethods*, (name): [makeLiteral(name), one]}
     };
 
-    def instanceMethodTable = makeFunCall(SYMS::new, LITS::SymbolTable,
+    def instanceMethodTable = makeCall(LITS::SymbolTable, SYMS::new,
         ([].cat(instanceMethods.valueList()*))*);
 
-    def call = makeFunCall(SYMS::subclass,
-        LITS::Object,
+    def call = makeCall(LITS::Object, SYMS::subclass,
         makeLiteral(name),
         config,
         LITS::EMPTY_SYMBOL_TABLE,  ## TODO: Class methods.
@@ -270,7 +269,7 @@ export fn makeDynamicImport(node) {
 
                 filterAll(names, node::select) { name, sel ->
                     makeVarDef(name,
-                        makeFunCall(SYMS::get, loadCall, makeLiteral(sel)))
+                        makeCall(loadCall, SYMS::get, makeLiteral(sel)))
                 }
             },
 
@@ -325,11 +324,6 @@ export fn makeFunCallGeneral(function, values*) {
 export fn makeFunCallThunks(function, values*) {
     def thunks = filterAll(values) { one -> makeThunk(one) };
     return makeFunCall(function, thunks*)
-};
-
-## Documented in spec.
-export fn makeGet(collArg, keyArg) {
-    return makeFunCall(SYMS::get, collArg, keyArg)
 };
 
 ## Documented in spec.
@@ -530,11 +524,11 @@ export fn withModuleDefs(node) {
 
     def yieldExports = ifIs { eq(exportValues, []) }
         { LITS::EMPTY_SYMBOL_TABLE }
-        { makeFunCall(SYMS::new, LITS::SymbolTable, [].cat(exportValues*)*) };
+        { makeCall(LITS::SymbolTable, SYMS::new, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
-    def yieldNode = makeFunCall(SYMS::new, LITS::Record,
+    def yieldNode = makeCall(LITS::Record, SYMS::new,
         makeLiteral(@module),
-        makeFunCall(SYMS::new, LITS::SymbolTable,
+        makeCall(LITS::SymbolTable, SYMS::new,
             SYMS::exports, yieldExports,
             SYMS::info,    yieldInfo));
 

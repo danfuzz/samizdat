@@ -5,7 +5,7 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll;
-import ./constructors1 :: makeFunCall, makeVarFetch;
+import ./constructors1 :: makeGet, makeVarFetch;
 import ./literals :: SYMS, makeLiteral;
 
 
@@ -89,6 +89,6 @@ export def REFS = {}.cat(
         def name = modName::name;
         def modVar = makeVarFetch(cast(Symbol, "$".cat(mod)));
         def refKey = cast(Symbol, "".cat(mod, "_", name));
-        {(refKey): makeFunCall(SYMS::get, modVar, makeLiteral(name))}
+        {(refKey): makeGet(modVar, makeLiteral(name))}
     })*
 );
