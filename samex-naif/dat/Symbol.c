@@ -255,12 +255,6 @@ zstring zstringFromSymbol(zvalue symbol) {
 //
 
 // Documented in spec.
-METH_IMPL_rest(Symbol, call, args) {
-    // TODO: This should probably be removed.
-    return symbolCall(ths, argsSize, args);
-}
-
-// Documented in spec.
 METH_IMPL_rest(Symbol, cat, args) {
     if (argsSize == 0) {
         return ths;
@@ -356,7 +350,6 @@ void bindMethodsForSymbol(void) {
     classBindMethods(CLS_Symbol,
         NULL,
         METH_TABLE(
-            METH_BIND(Symbol, call),
             METH_BIND(Symbol, cat),
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),

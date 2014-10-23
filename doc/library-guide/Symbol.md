@@ -61,14 +61,6 @@ interned symbols getting ordered *before* unlisted symbols. Two
 different unlisted symbols with the same name are considered unordered
 (but not equal).
 
-<br><br>
-### Method Definitions: `Function` protocol
-
-#### `.call(args+) -> . | void`
-
-Calls the given symbol with the given arguments. This performs method
-dispatch on `args[0]`.
-
 
 <br><br>
 ### Primitive Definitions
