@@ -139,9 +139,9 @@ typedef struct {
 
 
 /**
- * Actual implementation of builtin function calling. This is where
- * short-circuited method dispatch of `call` on class `Builtin`
- * lands.
+ * Implementation of method `Builtin.call()`. This is used in the code
+ * for `methCall()` to avoid infinite recursion. **Note:** Assumes that
+ * `function` is in fact an instance of `Builtin`.
  */
 zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
