@@ -108,8 +108,8 @@ export fn makeMapLikeExpression(mappings, classLit, emptyLit) {
                 ifIs { eq(handled, false) }
                     {
                         addSingleToCat();
-                        addToCat(makeFunCallGeneral(SYMS::singleValue,
-                            classLit, keys*, value))
+                        addToCat(makeCallGeneral(classLit, SYMS::singleValue,
+                            keys*, value))
                     };
             }
             {

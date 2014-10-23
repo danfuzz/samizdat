@@ -166,8 +166,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
             }
             if (!handled) {
                 addSingleToCat();
-                addToCat(makeFunCallGeneral(SYMS(singleValue),
-                    listPrepend(clsLit, listAppend(keys, value))));
+                addToCat(makeCallGeneral(clsLit, SYMS(singleValue),
+                    listAppend(keys, value)));
             }
         } else {
             addSingleToCat();
