@@ -505,10 +505,15 @@ def parAttribute = makeMainSequence(
 
 ## Documented in spec.
 def parMethodDef = makeMainSequence(
+    makeChoice(
+        makeSequence(makeToken(@class), makeResult(@classMethod)),
+        makeResult(@instanceMethod)),
     makeToken(@fn),
     parFunctionCommon,
-    makeCode { ., closure ->
-        withFormals(closure, [@{name: @this}, closure::formals*])
+    makeCode { scope, ., baseClosure ->
+        def closure =
+            withFormals(baseClosure, [@{name: @this}, baseClosure::formals*]);
+        @(scope){closure*}
     });
 
 ## Documented in spec.
