@@ -22,7 +22,7 @@ class PegRepeat
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, items*) {
+    .parse(box, input, items*) {
         def data = this.(ACCESS)();
         var remainingInput = input;
         var results = [];  ## Values that have been parsed by the inner rule.

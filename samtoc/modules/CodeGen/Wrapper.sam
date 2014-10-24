@@ -24,7 +24,7 @@ def NEW = @NEW.toUnlisted();
 class Wrapper
         access: ACCESS,
         new: NEW {
-    fn flatten() {
+    .flatten() {
         def data = this.(ACCESS)();
         def flatBox = data::flatBox;
 
@@ -32,7 +32,7 @@ class Wrapper
             | (flatBox* := data::tree.flatten())
     };
 
-    fn indent(level, maxColumns) {
+    .indent(level, maxColumns) {
         def data = this.(ACCESS)();
         def tree = data::tree;
 
@@ -47,7 +47,7 @@ class Wrapper
         return tree.indent(level, maxColumns)
     };
 
-    fn prefersFlat() {
+    .prefersFlat() {
         def data = this.(ACCESS)();
         return? data::tree.prefersFlat() & this;
     };

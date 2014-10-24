@@ -22,12 +22,12 @@ def NEW = @NEW.toUnlisted();
 class Return
         access: ACCESS,
         new: NEW {
-    fn flatten() {
+    .flatten() {
         def data = this.(ACCESS)();
         return "return \(data::tree.flatten())"
     };
 
-    fn indent(level, maxColumns) {
+    .indent(level, maxColumns) {
         def data = this.(ACCESS)();
         def prefix = indentation(level);
 
@@ -36,7 +36,7 @@ class Return
             \(data::tree.indent(level + 1, maxColumns))"
     };
 
-    fn prefersFlat() {
+    .prefersFlat() {
         def data = this.(ACCESS)();
         return? data::tree.prefersFlat()
             & this

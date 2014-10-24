@@ -22,7 +22,7 @@ def NEW = @NEW.toUnlisted();
 class Comment
         access: ACCESS,
         new: NEW {
-    fn flatten() {
+    .flatten() {
         def data = this.(ACCESS)();
         def text = data::text;
 
@@ -31,7 +31,7 @@ class Comment
             | "/* \(text) */"
     };
 
-    fn indent(level, maxColumns) {
+    .indent(level, maxColumns) {
         def data = this.(ACCESS)();
         def prefix = indentation(level);
 
@@ -45,7 +45,7 @@ class Comment
         }
     };
 
-    fn prefersFlat() {
+    .prefersFlat() {
         def data = this.(ACCESS)();
         return? (#data::text < 30)
             & (((def payload = data::payload)

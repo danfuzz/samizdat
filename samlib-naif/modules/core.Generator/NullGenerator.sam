@@ -21,17 +21,17 @@ class NullGenerator
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn collect(optFilterFunction?) {
+    .collect(optFilterFunction?) {
         return []
     };
 
     ## Documented in spec.
-    fn fetch() {
+    .fetch() {
         ## Do nothing. Return void.
     };
 
     ## Documented in spec.
-    fn nextValue(box) {
+    .nextValue(box) {
         ## Do nothing. Return void.
     };
 };

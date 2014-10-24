@@ -21,7 +21,7 @@ class PegAny
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, .*) {
+    .parse(box, input, .*) {
         return? input.nextValue(box)
     };
 };

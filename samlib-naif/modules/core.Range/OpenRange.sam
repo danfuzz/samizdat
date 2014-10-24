@@ -26,19 +26,19 @@ class OpenRange
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn collect(optFilterFunction?) {
+    .collect(optFilterFunction?) {
         ## It is an "unbounded collect" error to call this.
         unboundedCollect(this)
     };
 
     ## Documented in spec.
-    fn fetch() {
+    .fetch() {
         ## It is an "unbounded fetch" error to call this.
         unboundedFetch(this)
     };
 
     ## Documented in spec.
-    fn nextValue(box) {
+    .nextValue(box) {
         def data = this.(ACCESS)();
         def firstValue = data::firstValue;
         def increment = data::increment;

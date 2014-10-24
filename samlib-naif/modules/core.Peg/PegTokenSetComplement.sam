@@ -24,7 +24,7 @@ class PegTokenSetComplement
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, items*) {
+    .parse(box, input, items*) {
         def data = this.(ACCESS)();
         def result;
 

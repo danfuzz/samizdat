@@ -25,19 +25,19 @@ class ParaGenerator
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn collect(optFilterFunction?) {
+    .collect(optFilterFunction?) {
         ## Just use the standard implementation.
         return Generator_stdCollect(this, optFilterFunction*)
     };
 
     ## Documented in spec.
-    fn fetch() {
+    .fetch() {
         ## Just use the standard implementation.
         return Generator_stdFetch(this)
     };
 
     ## Documented in spec.
-    fn nextValue(box) {
+    .nextValue(box) {
         def data = this.(ACCESS)();
         def subGens = data::generators;
 

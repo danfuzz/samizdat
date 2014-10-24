@@ -26,7 +26,7 @@ class PegSequence
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, items*) {
+    .parse(box, input, items*) {
         ## Each rule after the first gets passed as additional arguments
         ## the matched results of all the previous rules, in order.
 

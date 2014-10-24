@@ -26,19 +26,19 @@ class ClosedRange
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn collect(optFilterFunction?) {
+    .collect(optFilterFunction?) {
         ## Just use the standard implementation.
         return stdCollect(this, optFilterFunction*)
     };
 
     ## Documented in spec.
-    fn fetch() {
+    .fetch() {
         ## Just use the standard implementation.
         return Generator_stdFetch(this)
     };
 
     ## Documented in spec.
-    fn nextValue(box) {
+    .nextValue(box) {
         def data = this.(ACCESS)();
 
         return? ifValue { gt(data::size, 0) }

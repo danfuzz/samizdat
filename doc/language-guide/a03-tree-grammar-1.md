@@ -672,7 +672,7 @@ def parAttribute = {:
 ## Parses a single method definition.
 def parMethodDef = {:
     scope = (@class { @classMethod } | { @instanceMethod })
-    @fn
+    @"."
     baseClosure = parFunctionCommon
 
     {

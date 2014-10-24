@@ -1015,7 +1015,7 @@ DEF_PARSE(methodDef) {
     MARK();
 
     zvalue scope = MATCH(class) ? SYM(classMethod) : SYM(instanceMethod);
-    MATCH_OR_REJECT(fn);
+    MATCH_OR_REJECT(CH_DOT);
     zvalue baseClosure = PARSE_OR_REJECT(functionCommon);
 
     zvalue closure = withFormals(baseClosure,

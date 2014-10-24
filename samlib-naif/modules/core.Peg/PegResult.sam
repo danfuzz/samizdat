@@ -22,7 +22,7 @@ class PegResult
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, .*) {
+    .parse(box, input, .*) {
         def data = this.(ACCESS)();
         box* := data::value;
         return input
