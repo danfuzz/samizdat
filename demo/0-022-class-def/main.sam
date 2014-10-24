@@ -73,7 +73,7 @@ note("\nIgram");
 class Igram
         access: ACCESS,
         new: NEW {
-    fn hello() {
+    .hello() {
         note("Igram! ", this.(ACCESS)()::effect)
     }
 };
@@ -91,7 +91,7 @@ note("\nFrotz");
 class Frotz
         access: ACCESS,
         new: NEW {
-    class fn new(light) {
+    class.new(light) {
         note("New Frotz!");
         return this.(NEW)(@{light})
     }

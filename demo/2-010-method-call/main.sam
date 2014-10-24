@@ -40,10 +40,10 @@ note("\nLayer 2:\n");
 def NEW = @NEW.toUnlisted();
 class Igram
         new: NEW {
-    fn get_foo() {
+    .get_foo() {
         return "a foo"
     };
-    fn set_foo(foo) {
+    .set_foo(foo) {
         note("Set to: \%q(foo)");
     };
 };
