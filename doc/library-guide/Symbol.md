@@ -13,8 +13,9 @@ language constructs.
 
 #### `.cat(more*) -> symbol`
 
-Returns a symbol consisting of the concatenation of the contents
-of all the arguments, in argument order. Arguments must all be symbols.
+Returns an interned symbol whose name consists of `this`'s name
+concatenated with the names of all the arguments, in argument order.
+Arguments must all be symbols.
 
 #### `.isInterned() -> symbol | void`
 
@@ -59,14 +60,6 @@ Orders symbols by internedness (primary) and name (secondary), with
 interned symbols getting ordered *before* unlisted symbols. Two
 different unlisted symbols with the same name are considered unordered
 (but not equal).
-
-<br><br>
-### Method Definitions: `Function` protocol
-
-#### `.call(args+) -> . | void`
-
-Calls the given symbol with the given arguments. This performs method
-dispatch on `args[0]`.
 
 
 <br><br>

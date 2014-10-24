@@ -39,7 +39,7 @@ class OpenRange
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def firstValue = data::firstValue;
         def increment = data::increment;
 
@@ -57,5 +57,5 @@ class OpenRange
 export fn makeOpenRange(firstValue, optIncrement?) {
     def increment = ifValueOr { optIncrement* } { 1 };
 
-    return NEW(OpenRange, @{firstValue, increment})
+    return OpenRange.(NEW)(@{firstValue, increment})
 };

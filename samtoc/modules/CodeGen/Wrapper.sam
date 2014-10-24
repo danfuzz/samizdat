@@ -25,7 +25,7 @@ class Wrapper
         access: ACCESS,
         new: NEW {
     fn flatten() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def flatBox = data::flatBox;
 
         return flatBox*
@@ -33,7 +33,7 @@ class Wrapper
     };
 
     fn indent(level, maxColumns) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def tree = data::tree;
 
         if (tree.prefersFlat()) {
@@ -48,7 +48,7 @@ class Wrapper
     };
 
     fn prefersFlat() {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? data::tree.prefersFlat() & this;
     };
 };
@@ -60,5 +60,5 @@ class Wrapper
 
 export fn genWrapper(tree) {
     def flat;
-    return NEW(Wrapper, @{tree, flatBox: flat?})
+    return Wrapper.(NEW)(@{tree, flatBox: flat?})
 };

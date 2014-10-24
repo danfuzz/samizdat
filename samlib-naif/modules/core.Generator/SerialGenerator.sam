@@ -37,7 +37,7 @@ class SerialGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def subGens = data::generators;
 
         return? ifValue { subGens.nth(0) }
@@ -46,7 +46,7 @@ class SerialGenerator
 
                 ifValue { firstGen.nextValue(box) }
                     { nextGenerator ->
-                        NEW(SerialGenerator,
+                        SerialGenerator.(NEW)(
                             @{generators: [nextGenerator, moreGens*]})
                     }
                     {
@@ -73,5 +73,5 @@ export fn makeSerialGenerator(generators*) {
     ifIs { eq(generators.get_size(), 1) }
         { return generators* };
 
-    return NEW(SerialGenerator, @{generators})
+    return SerialGenerator.(NEW)(@{generators})
 };

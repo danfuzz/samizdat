@@ -25,7 +25,7 @@ class PegTokenSetComplement
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def result;
 
         return? ifValue { input.nextValue(result?) }
@@ -54,5 +54,5 @@ export fn makeTokenSetComplement(names*) {
 
     def set = {names*: true};  ## A set-like map of all the token names.
 
-    return NEW(PegTokenSetComplement, @{set})
+    return PegTokenSetComplement.(NEW)(@{set})
 };

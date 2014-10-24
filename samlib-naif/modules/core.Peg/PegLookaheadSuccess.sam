@@ -23,7 +23,7 @@ class PegLookaheadSuccess
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? ifIs { data::rule.parse(box, input, items*) }
             { input }
     };
@@ -36,5 +36,5 @@ class PegLookaheadSuccess
 
 ## Documented in spec.
 export fn makeLookaheadSuccess(rule) {
-    return NEW(PegLookaheadSuccess, @{rule})
+    return PegLookaheadSuccess.(NEW)(@{rule})
 };

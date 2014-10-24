@@ -38,7 +38,7 @@ class FilterGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         var innerGen = data::generator;
         def filterFunction = data::filterFunction;
         var result;
@@ -52,7 +52,7 @@ class FilterGenerator
                     ifValue { filterFunction(result*) }
                         { value ->
                             box* := value;
-                            return NEW(FilterGenerator,
+                            return FilterGenerator.(NEW)(
                                 @{filterFunction, generator: nextGen})
                         }
                         {
@@ -77,7 +77,7 @@ class FilterGenerator
 
 ## Documented in spec.
 export fn makeFilterGenerator(filterFunction, generators*) {
-    return NEW(FilterGenerator,
+    return FilterGenerator.(NEW)(
         @{
             filterFunction,
             generator: makeParaGenerator(generators*)

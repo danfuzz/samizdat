@@ -15,17 +15,17 @@
 
 ## Map from binary operation names to precedece/function maps.
 def BINARY_OPS = {
-    @"+": {function: @add, precedence: 1},
-    @"-": {function: @sub, precedence: 1},
-    @"*": {function: @mul, precedence: 2},
-    @"/": {function: @div, precedence: 2},
-    @"%": {function: @mod, precedence: 2}
+    @"+": {function: { x, y -> x.add(y) }, precedence: 1},
+    @"-": {function: { x, y -> x.sub(y) }, precedence: 1},
+    @"*": {function: { x, y -> x.mul(y) }, precedence: 2},
+    @"/": {function: { x, y -> x.div(y) }, precedence: 2},
+    @"%": {function: { x, y -> x.mod(y) }, precedence: 2}
 };
 
 ## Map from unary operation names to functions.
 def UNARY_OPS = {
     @"+": { x -> x },
-    @"-": @neg
+    @"-": { x -> x.neg() }
 };
 
 ## Takes an initial value and a list of one-argument functions, and

@@ -28,6 +28,13 @@ msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
 
+## Calculated method name.
+def negName = @neg;
+msg((100).(negName)());
+
+## Closure syntax.
+msg([1, 2].collect { x -> x.add(1) });
+
 note("\nLayer 2:\n");
 
 def NEW = @NEW.toUnlisted();
@@ -41,6 +48,6 @@ class Igram
     };
 };
 
-def obj = NEW(Igram);
+def obj = Igram.(NEW)();
 note(obj.foo);
 obj.foo := "whatevs";

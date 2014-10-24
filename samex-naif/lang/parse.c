@@ -651,6 +651,18 @@ DEF_PARSE(actualsList) {
     return PARSE_PLUS(fullClosure);
 }
 
+/**
+ * Helper for `postfixOperator`: Parses a method call name.
+ */
+DEF_PARSE(postfixOperator1) {
+    zvalue symbol = PARSE(nameSymbol);
+    if (symbol != NULL) {
+        return makeLiteral(symbol);
+    }
+
+    return PARSE(parenExpression);
+}
+
 // Documented in spec.
 DEF_PARSE(postfixOperator) {
     // We differ from the spec here, returning payloads that are directly
@@ -672,9 +684,9 @@ DEF_PARSE(postfixOperator) {
 
     if (result == NULL) {
         MATCH_OR_REJECT(CH_DOT);
-        zvalue name = PARSE_OR_REJECT(nameSymbol);
+        zvalue name = PARSE(postfixOperator1);
         zvalue actuals = PARSE_OR_REJECT(actualsList);
-        result = makeCall(TOK_void, makeLiteral(name), actuals);
+        result = makeCall(TOK_void, name, actuals);
     }
 
     return result;

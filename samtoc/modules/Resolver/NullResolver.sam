@@ -32,4 +32,4 @@ class NullResolver
 ## Exported Definitions
 ##
 
-export def nullResolver = NEW(NullResolver);
+export def nullResolver = NullResolver.(NEW)();

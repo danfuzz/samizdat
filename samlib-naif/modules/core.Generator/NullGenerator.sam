@@ -42,4 +42,4 @@ class NullGenerator
 ##
 
 ## Documented in spec.
-export def nullGenerator = NEW(NullGenerator);
+export def nullGenerator = NullGenerator.(NEW)();

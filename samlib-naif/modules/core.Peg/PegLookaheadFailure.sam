@@ -28,7 +28,7 @@ class PegLookaheadFailure
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         return? ifNot { data::rule.parse(nullBox, input, items*) }
             {
                 box* := null;
@@ -53,6 +53,6 @@ export fn makeLookaheadFailure(rule) {
         { return fail };
 
     ## The general case.
-    return NEW(PegLookaheadFailure, @{rule})
+    return PegLookaheadFailure.(NEW)(@{rule})
 };
 

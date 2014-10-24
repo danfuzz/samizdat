@@ -23,7 +23,7 @@ class PegRepeat
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, items*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         var remainingInput = input;
         var results = [];  ## Values that have been parsed by the inner rule.
 
@@ -76,5 +76,5 @@ class PegRepeat
 export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
     def minSize = ifValueOr { optMinSize* } { 0 };
     def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
-    return NEW(PegRepeat, @{maxMap*, minSize, rule})
+    return PegRepeat.(NEW)(@{maxMap*, minSize, rule})
 };

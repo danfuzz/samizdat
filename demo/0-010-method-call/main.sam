@@ -6,6 +6,8 @@
 ## Method call demo
 ##
 
+#= language core.Lang0
+
 
 ##
 ## Private Definitions
@@ -27,3 +29,10 @@ msg([1, 2].get_size());
 msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
+
+## Calculated method name.
+def negName = @neg;
+msg((100).(negName)());
+
+## Closure syntax.
+msg([1, 2].collect { x -> x.add(1) });

@@ -38,7 +38,7 @@ class OptGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def result;
 
         return ifValue { data::generator.nextValue(result?) }
@@ -57,5 +57,5 @@ class OptGenerator
 
 ## Documented in spec.
 export fn makeOptGenerator(generator) {
-    return NEW(OptGenerator, @{generator})
+    return OptGenerator.(NEW)(@{generator})
 };

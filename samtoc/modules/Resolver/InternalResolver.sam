@@ -31,7 +31,7 @@ def NEW = @NEW.toUnlisted();
 ## `source` is known to be `internal` and so *might* be found directly
 ## in or under this resolver's directory.
 fn directResolve(self, source) {
-    def data = ACCESS(self);
+    def data = self.(ACCESS)();
     def subPath = source::name;
     def basePath = "\(data::path)/\(subPath)";
     def infoPath = "\(basePath).saminfo";
@@ -54,7 +54,7 @@ class InternalResolver
         access: ACCESS,
         new: NEW {
     fn resolve(source) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
 
         if (def found = $cache::cacheGet(data::cache, source)) {
             ## `found` is always a list. See comment below.
@@ -82,7 +82,7 @@ class InternalResolver
 ##
 
 export fn makeInternalResolver(path, nextResolver) {
-    return NEW(InternalResolver,
+    return InternalResolver.(NEW)(
         @{
             cache: $cache::makeCache(),
             nextResolver,

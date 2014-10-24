@@ -23,7 +23,7 @@ class PegResult
         new: NEW {
     ## Documented in spec.
     fn parse(box, input, .*) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         box* := data::value;
         return input
     };
@@ -36,7 +36,7 @@ class PegResult
 
 ## Documented in spec.
 export fn makeResult(value) {
-    return NEW(PegResult, @{value})
+    return PegResult.(NEW)(@{value})
 };
 
 ## Documented in spec.

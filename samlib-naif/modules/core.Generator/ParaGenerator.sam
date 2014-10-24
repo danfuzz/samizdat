@@ -38,7 +38,7 @@ class ParaGenerator
 
     ## Documented in spec.
     fn nextValue(box) {
-        def data = ACCESS(this);
+        def data = this.(ACCESS)();
         def subGens = data::generators;
 
         ifIs { eq(subGens, []) }
@@ -59,7 +59,7 @@ class ParaGenerator
         def nexts = generatorCalls.collect({ one -> one.nth(1) });
 
         box* := yields;
-        return NEW(ParaGenerator, @{generators: nexts})
+        return ParaGenerator.(NEW)(@{generators: nexts})
     };
 };
 
@@ -79,5 +79,5 @@ export fn makeParaGenerator(generators*) {
     ifIs { eq(generators.get_size(), 1) }
         { return makeListWrapGenerator(generators*) };
 
-    return NEW(ParaGenerator, @{generators})
+    return ParaGenerator.(NEW)(@{generators})
 };
