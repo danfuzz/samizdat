@@ -141,7 +141,7 @@ static zvalue extractMethods(zvalue allMethods, zvalue scope) {
             name,
             listFrom2(
                 makeLiteral(name),
-                cm_new(Record, SYM(closure), get_data(one))));
+                cm_new(Record, SYM(closure), one)));
     }
 
     return makeCall(LITS(SymbolTable), SYMS(new),

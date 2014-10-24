@@ -9,10 +9,11 @@ Record
 
 #### `.new(name, data?) -> record`
 
-Returns a record with the given name (a symbol) and optional `data` payload
-value (which must be a symbol table if present). If `data` is not specified,
-it defaults to `@{}` (the empty symbol table). These equivalences hold for
-Samizdat source code:
+Returns a record with the given name (a symbol) and optional `data` payload.
+If `data` is not specified, it defaults to `@{}` (the empty symbol table).
+If `data` is specified, then it must either be a symbol table or a record.
+If passed as a record, the record name of `data` is ignored; only its
+bindings matter. These equivalences hold for Samizdat source code:
 
 ```
 @x{}            is equivalent to  Record.new(@x)

@@ -103,6 +103,13 @@ expectEq("castToward",
     @{name: "fizmo"},
     @potion{name: "fizmo"}.castToward(SymbolTable));
 
+## Construction.
+expectEq("new 1", @foo,     Record.new(@foo).get_name());
+expectEq("new 2", @foo,     Record.new(@foo, @{a: 10}).get_name());
+expectEq("new 3", @{},      Record.new(@foo).get_data());
+expectEq("new 4", @{a: 10}, Record.new(@foo, @{a: 10}).get_data());
+expectEq("new 5", @{a: 10}, Record.new(@foo, @blort{a: 10}).get_data());
+
 ## Construction using interpolation.
 expectEq("interpolate 1",
     @foo{x: 1},

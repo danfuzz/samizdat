@@ -1023,7 +1023,7 @@ DEF_PARSE(methodDef) {
             tableFrom1(SYM(name), SYM(this)),
             cm_get(baseClosure, SYM(formals))));
 
-    return cm_new(Record, scope, get_data(closure));
+    return cm_new(Record, scope, closure);
 }
 
 // Documented in spec.

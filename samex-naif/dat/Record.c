@@ -65,6 +65,9 @@ CMETH_IMPL_1_2(Record, new, name, data) {
 
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
+    } else if (classAccepts(CLS_Record, data)) {
+        // Extract the data out of the given record.
+        data = getInfo(data)->data;
     } else {
         assertHasClass(data, CLS_SymbolTable);
     }
