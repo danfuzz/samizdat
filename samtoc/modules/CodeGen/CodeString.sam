@@ -20,17 +20,17 @@ def NEW = @NEW.toUnlisted();
 class CodeString
         access: ACCESS,
         new: NEW {
-    fn flatten() {
+    .flatten() {
         def data = this.(ACCESS)();
         return data::text
     };
 
-    fn indent(level, maxColumns) {
+    .indent(level, maxColumns) {
         def data = this.(ACCESS)();
         return indentation(level).cat(data::text)
     };
 
-    fn prefersFlat() {
+    .prefersFlat() {
         return this
     };
 };

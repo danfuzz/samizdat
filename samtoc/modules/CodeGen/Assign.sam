@@ -22,12 +22,12 @@ def NEW = @NEW.toUnlisted();
 class Assign
         access: ACCESS,
         new: NEW {
-    fn flatten() {
+    .flatten() {
         def data = this.(ACCESS)();
         return "\(data::target.flatten()) = \(data::value.flatten())"
     };
 
-    fn indent(level, maxColumns) {
+    .indent(level, maxColumns) {
         def data = this.(ACCESS)();
         return "".cat(
             data::target.indent(level, maxColumns),
@@ -36,7 +36,7 @@ class Assign
         )
     };
 
-    fn prefersFlat() {
+    .prefersFlat() {
         def data = this.(ACCESS)();
         return? data::target.prefersFlat()
             & data::value.prefersFlat()

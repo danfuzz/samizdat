@@ -53,7 +53,7 @@ fn directResolve(self, source) {
 class InternalResolver
         access: ACCESS,
         new: NEW {
-    fn resolve(source) {
+    .resolve(source) {
         def data = this.(ACCESS)();
 
         if (def found = $cache::cacheGet(data::cache, source)) {

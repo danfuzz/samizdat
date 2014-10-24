@@ -22,17 +22,17 @@ def NEW = @NEW.toUnlisted();
 class Statement
         access: ACCESS,
         new: NEW {
-    fn flatten() {
+    .flatten() {
         def data = this.(ACCESS)();
         return "\(data::tree.flatten());"
     };
 
-    fn indent(level, maxColumns) {
+    .indent(level, maxColumns) {
         def data = this.(ACCESS)();
         return "\(data::tree.indent(level, maxColumns));\n"
     };
 
-    fn prefersFlat() {
+    .prefersFlat() {
         def data = this.(ACCESS)();
         return? data::tree.prefersFlat()
             & this

@@ -22,7 +22,7 @@ def NEW = @NEW.toUnlisted();
 class Call
         access: ACCESS,
         new: NEW {
-    fn flatten() {
+    .flatten() {
         def data = this.(ACCESS)();
         def args = data::args;
 
@@ -36,7 +36,7 @@ class Call
         )
     };
 
-    fn indent(level, maxColumns) {
+    .indent(level, maxColumns) {
         def data = this.(ACCESS)();
         def prefix = indentation(level);
         def args = data::args;
@@ -52,7 +52,7 @@ class Call
         )
     };
 
-    fn prefersFlat() {
+    .prefersFlat() {
         def data = this.(ACCESS)();
         return? data::flatOk** & this;
     };
