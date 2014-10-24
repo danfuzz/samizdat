@@ -23,6 +23,17 @@ typedef zvalue (*zfunction)(
     zvalue thisFunction, zint argCount, const zvalue *args);
 
 /**
+ * Low-level sized-array of `zvalue`s.
+ */
+typedef struct {
+    /** Number of elements. */
+    zint size;
+
+    /** Pointer to the elements. */
+    const zvalue *elems;
+} zarray;
+
+/**
  * Arbitrary (key, value) mapping.
  */
 typedef struct {

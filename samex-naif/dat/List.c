@@ -109,7 +109,6 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 // Documented in header.
 void arrayFromList(zvalue *result, zvalue list) {
     assertHasClass(list, CLS_List);
-
     ListInfo *info = getInfo(list);
 
     utilCpy(zvalue, result, info->elems, info->size);
@@ -122,6 +121,13 @@ zvalue listFromArray(zint size, const zvalue *values) {
     }
 
     return listFrom(size, values, NULL, 0, NULL);
+}
+
+// Documented in header.
+zarray zarrayFromList(zvalue list) {
+    assertHasClass(list, CLS_List);
+    ListInfo *info = getInfo(list);
+    return (zarray) { info->size, info->elems };
 }
 
 

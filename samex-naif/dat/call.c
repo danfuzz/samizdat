@@ -129,9 +129,8 @@ zvalue methApply(zvalue target, zvalue name, zvalue args) {
     if (argCount == 0) {
         return methCall(target, name, 0, NULL);
     } else {
-        zvalue argsArray[argCount];
-        arrayFromList(argsArray, args);
-        return methCall(target, name, argCount, argsArray);
+        zarray arr = zarrayFromList(args);
+        return methCall(target, name, arr.size, arr.elems);
     }
 }
 
