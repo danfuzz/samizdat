@@ -71,9 +71,9 @@ class MethCall
             prefix1, "methCall(\n",
             data::target.indent(nextLevel, maxColumns), ",\n",
             data::name.indent(nextLevel, maxColumns), ",\n",
-            prefix2, "\(#args),\n",
+            prefix2, "(zarray) {\(#args),\n",
             prefix2, argStr,
-            ")"
+            "})"
         )
     };
 
