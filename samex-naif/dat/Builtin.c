@@ -54,18 +54,18 @@ static BuiltinInfo *getInfo(zvalue builtin) {
 //
 
 // Documented in header.
-zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
+zvalue builtinCall(zvalue builtin, zarray args) {
     BuiltinInfo *info = getInfo(builtin);
 
-    if (argCount < info->minArgs) {
+    if (args.size < info->minArgs) {
         die("Too few arguments for builtin call: %lld, min %lld",
-            argCount, info->minArgs);
-    } else if (argCount > info->maxArgs) {
+            args.size, info->minArgs);
+    } else if (args.size > info->maxArgs) {
         die("Too many arguments for builtin call: %lld, max %lld",
-            argCount, info->maxArgs);
+            args.size, info->maxArgs);
     }
 
-    return info->function(builtin, argCount, args);
+    return info->function(builtin, args);
 }
 
 
@@ -123,7 +123,7 @@ BuiltinState builtinGetState(zvalue builtin) {
 
 // Documented in spec.
 METH_IMPL_rest(Builtin, call, args) {
-    return builtinCall(ths, argsSize, args);
+    return builtinCall(ths, args);
 }
 
 // Documented in spec.

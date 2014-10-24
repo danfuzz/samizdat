@@ -24,21 +24,21 @@ def C_IDENT_CHARS = {
 def FORMAL_PARSERS = {
     ## Non-repeat.
     @".": {
-        parse:  "(argAt >= argCount) ? EMPTY_LIST : args[argAt]",
-        update: "if (argAt < argCount) { argAt++; }"
+        parse:  "(argAt >= args.size) ? EMPTY_LIST : args.elems[argAt]",
+        update: "if (argAt < args.size) { argAt++; }"
     },
     ## Zero-or-one.
     @"?": {
         parse:
-            "(argAt >= argCount) \
-            ? EMPTY_LIST : listFromArray(1, &args[argAt])",
-        update: "if (argAt < argCount) { argAt++; }"
+            "(argAt >= args.size) \
+            ? EMPTY_LIST : listFromArray(1, &args.elems[argAt])",
+        update: "if (argAt < args.size) { argAt++; }"
     },
     ## Zero-or-more and one-or-more.
     @"*":
     @"+": {
-        parse:  "listFromArray(argCount - argAt, &args[argAt])",
-        update: "argAt = argCount"
+        parse:  "listFromArray(args.size - argAt, &args.elems[argAt])",
+        update: "argAt = args.size"
     }
 };
 
@@ -106,7 +106,8 @@ fn processFormals(clo) {
                 origName: name,
                 kind:     "arg",
                 name:     safeName("arg", name, idx),
-                init:     genMethCall("CLS_Result", "SYM(new)", "args[\(idx)]")
+                init:     genMethCall("CLS_Result", "SYM(new)",
+                              "args.elems[\(idx)]")
             }}
     );
 

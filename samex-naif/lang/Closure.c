@@ -108,8 +108,7 @@ static ClosureInfo *getInfo(zvalue closure) {
  * storage in the cache.
  */
 static zvalue buildCachedClosure(zvalue defMap) {
-    zvalue formals = cm_get(defMap, SYM(formals));
-    zint formalsSize = get_size(formals);
+    zarray formals = zarrayFromList(cm_get(defMap, SYM(formals)));
 
     // Build out most of the result.
 
@@ -117,24 +116,22 @@ static zvalue buildCachedClosure(zvalue defMap) {
     ClosureInfo *info = getInfo(result);
 
     info->defMap = defMap;
-    info->formalsSize = formalsSize;
+    info->formalsSize = formals.size;
     info->statements = cm_get(defMap, SYM(statements));
     info->yield = cm_get(defMap, SYM(yield));
     info->yieldDef = cm_get(defMap, SYM(yieldDef));
 
     // Validate and transform all the formals.
 
-    if (formalsSize > LANG_MAX_FORMALS) {
-        die("Too many formals: %lld", formalsSize);
+    if (formals.size > LANG_MAX_FORMALS) {
+        die("Too many formals: %lld", formals.size);
     }
 
-    zvalue formalsArr[formalsSize];
     zvalue names = EMPTY_MAP;
     zint formalNameCount = 0;
-    arrayFromList(formalsArr, formals);
 
-    for (zint i = 0; i < formalsSize; i++) {
-        zvalue formal = formalsArr[i];
+    for (zint i = 0; i < formals.size; i++) {
+        zvalue formal = formals.elems[i];
         zvalue name = cm_get(formal, SYM(name));
         zvalue repeat = cm_get(formal, SYM(repeat));
         zrepeat rep;
@@ -202,8 +199,7 @@ static zvalue getCachedClosure(zvalue node) {
  * Creates a variable map for all the formal arguments of the given
  * function.
  */
-static zvalue bindArguments(zvalue closure, zvalue exitFunction,
-        zint argCount, const zvalue *args) {
+static zvalue bindArguments(zvalue closure, zvalue exitFunction, zarray args) {
     ClosureInfo *info = getInfo(closure);
     zmapping elems[info->formalNameCount];
     zformal *formals = info->formals;
@@ -222,20 +218,20 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
 
             switch (repeat) {
                 case REP_STAR: {
-                    count = argCount - argAt;
+                    count = args.size - argAt;
                     break;
                 }
                 case REP_PLUS: {
-                    if (argAt >= argCount) {
+                    if (argAt >= args.size) {
                         die("Function called with too few arguments "
                             "(plus argument): %lld",
-                            argCount);
+                            args.size);
                     }
-                    count = argCount - argAt;
+                    count = args.size - argAt;
                     break;
                 }
                 case REP_QMARK: {
-                    count = (argAt >= argCount) ? 0 : 1;
+                    count = (argAt >= args.size) ? 0 : 1;
                     break;
                 }
                 default: {
@@ -243,12 +239,12 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
                 }
             }
 
-            value = ignore ? NULL : listFromArray(count, &args[argAt]);
+            value = ignore ? NULL : listFromArray(count, &args.elems[argAt]);
             argAt += count;
-        } else if (argAt >= argCount) {
-            die("Function called with too few arguments: %lld", argCount);
+        } else if (argAt >= args.size) {
+            die("Function called with too few arguments: %lld", args.size);
         } else {
-            value = args[argAt];
+            value = args.elems[argAt];
             argAt++;
         }
 
@@ -259,9 +255,9 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
         }
     }
 
-    if (argAt != argCount) {
+    if (argAt != args.size) {
         die("Function called with too many arguments: %lld > %lld",
-            argCount, argAt);
+            args.size, argAt);
     }
 
     if (exitFunction != NULL) {
@@ -290,14 +286,14 @@ static zvalue buildClosure(zvalue node) {
  * exit binding when appropriate.
  */
 static zvalue callClosureMain(zvalue closure, zvalue exitFunction,
-        zint argCount, const zvalue *args) {
+        zarray args) {
     ClosureInfo *info = getInfo(closure);
 
     // With the closure's frame as the parent, bind the formals and
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    zvalue argTable = bindArguments(closure, exitFunction, argCount, args);
+    zvalue argTable = bindArguments(closure, exitFunction, args);
     frameInit(&frame, &info->frame, closure, argTable);
 
     // Evaluate the statements, updating the frame as needed.
@@ -328,13 +324,13 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 // Documented in header.
 METH_IMPL_rest(Closure, call, args) {
     if (getInfo(ths)->yieldDef == NULL) {
-        return callClosureMain(ths, NULL, argsSize, args);
+        return callClosureMain(ths, NULL, args);
     }
 
     zvalue jump = makeJump();
     jumpArm(jump);
 
-    zvalue result = callClosureMain(ths, jump, argsSize, args);
+    zvalue result = callClosureMain(ths, jump, args);
     jumpRetire(jump);
 
     return result;

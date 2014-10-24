@@ -28,8 +28,7 @@
  * used as either a prototype or a top-of-implementation declaration.
  */
 #define FUN_IMPL_DECL(name) \
-    zvalue FUN_IMPL_NAME(name)( \
-        zvalue thisFunction, zint argCount, const zvalue *args)
+    zvalue FUN_IMPL_NAME(name)(zvalue thisFunction, zarray args)
 
 
 //

@@ -341,17 +341,17 @@ METH_IMPL_1(String, castToward, cls) {
 
 // Documented in spec.
 METH_IMPL_rest(String, cat, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return ths;
     }
 
     zint thsSize = getInfo(ths)->s.size;
-    zvalue strings[argsSize];
-    StringInfo *infos[argsSize];
+    zvalue strings[args.size];
+    StringInfo *infos[args.size];
 
     zint size = thsSize;
-    for (zint i = 0; i < argsSize; i++) {
-        zvalue one = args[i];
+    for (zint i = 0; i < args.size; i++) {
+        zvalue one = args.elems[i];
         if (classAccepts(CLS_Symbol, one)) {
             one = cm_castFrom(CLS_String, one);
         } else {
@@ -365,7 +365,7 @@ METH_IMPL_rest(String, cat, args) {
     zchar *chars = allocArray(size);
     zint at = thsSize;
     arrayFromZstring(chars, getInfo(ths)->s);
-    for (zint i = 0; i < argsSize; i++) {
+    for (zint i = 0; i < args.size; i++) {
         zstring one = infos[i]->s;
         arrayFromZstring(&chars[at], one);
         at += one.size;
@@ -402,7 +402,7 @@ METH_IMPL_rest(String, del, ns) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
 
-    if ((nsSize == 0) || (size == 0)) {
+    if ((ns.size == 0) || (size == 0)) {
         // Easy outs: Not actually deleting anything, and/or starting out
         // with the empty string.
         return ths;
@@ -410,25 +410,25 @@ METH_IMPL_rest(String, del, ns) {
 
     // Convert all the given `ns` to ints, leniently. Leave `-1` for any
     // argument that is invalid. Sort them.
-    zint indexes[nsSize];
-    for (zint i = 0; i < nsSize; i++) {
-        indexes[i] = seqNthIndexLenient(ns[i]);
+    zint indexes[ns.size];
+    for (zint i = 0; i < ns.size; i++) {
+        indexes[i] = seqNthIndexLenient(ns.elems[i]);
         if (indexes[i] >= size) {
             indexes[i] = -1;
         }
     }
-    qsort(indexes, nsSize, sizeof(zint), zintOrder);
+    qsort(indexes, ns.size, sizeof(zint), zintOrder);
 
     // Make a local copy of the characters, and compact out the selected
     // indexes.
 
     // Start `indexAt` at the first valid index.
     zint indexAt = 0;
-    while ((indexAt < nsSize) && (indexes[indexAt] < 0)) {
+    while ((indexAt < ns.size) && (indexes[indexAt] < 0)) {
         indexAt++;
     }
 
-    if (indexAt == nsSize) {
+    if (indexAt == ns.size) {
         // None of `ns` were in `ths`.
         return ths;
     }
@@ -438,11 +438,11 @@ METH_IMPL_rest(String, del, ns) {
 
     zint at = 0;
     for (zint i = 0; i < size; i++) {
-        if ((indexAt < nsSize) && (indexes[indexAt] == i)) {
+        if ((indexAt < ns.size) && (indexes[indexAt] == i)) {
             // The loop skips duplicates.
             do {
                 indexAt++;
-            } while ((indexAt < nsSize) && (indexes[indexAt] == i));
+            } while ((indexAt < ns.size) && (indexes[indexAt] == i));
         } else {
             if (i != at) {
                 chars[at] = chars[i];

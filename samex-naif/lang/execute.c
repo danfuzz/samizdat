@@ -50,21 +50,19 @@ static zvalue execApply(Frame *frame, zvalue apply) {
 static zvalue execCall(Frame *frame, zvalue call) {
     zvalue targetExpr = cm_get(call, SYM(target));
     zvalue nameExpr = cm_get(call, SYM(name));
-    zvalue valuesExprs = cm_get(call, SYM(values));
+    zarray valuesExprs = zarrayFromList(cm_get(call, SYM(values)));
 
     zvalue target = execExpression(frame, targetExpr);
     zvalue name = execExpression(frame, nameExpr);
 
-    zint argCount = get_size(valuesExprs);
+    // Evaluate each argument expression.
+    zint argCount = valuesExprs.size;
     zvalue args[argCount];
-    arrayFromList(args, valuesExprs);
-
-    // Replace each actual with its evaluation.
     for (zint i = 0; i < argCount; i++) {
-        args[i] = execExpression(frame, args[i]);
+        args[i] = execExpression(frame, valuesExprs.elems[i]);
     }
 
-    return methCall(target, name, argCount, args);
+    return methCall(target, name, (zarray) {argCount, args});
 }
 
 /**

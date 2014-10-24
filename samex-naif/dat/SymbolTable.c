@@ -212,20 +212,21 @@ zint symbolTableSize(zvalue symbolTable) {
 
 // Documented in spec.
 CMETH_IMPL_rest(SymbolTable, new, args) {
-    if ((argsSize & 1) != 0) {
+    if ((args.size & 1) != 0) {
         die("Odd argument count for symbol table construction.");
     }
 
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return EMPTY_SYMBOL_TABLE;
     }
 
-    zint size = argsSize >> 1;
+    zint size = args.size >> 1;
     zvalue result = allocInstance(size);
     SymbolTableInfo *info = getInfo(result);
 
     for (zint i = 0, at = 0; i < size; i++, at += 2) {
-        putInto(&result, &info, (zmapping) {args[at], args[at + 1]});
+        putInto(&result, &info,
+            (zmapping) {args.elems[at], args.elems[at + 1]});
     }
 
     return result;
@@ -233,7 +234,7 @@ CMETH_IMPL_rest(SymbolTable, new, args) {
 
 // Documented in spec.
 CMETH_IMPL_1_rest(SymbolTable, singleValue, first, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return EMPTY_SYMBOL_TABLE;
     }
 
@@ -241,14 +242,14 @@ CMETH_IMPL_1_rest(SymbolTable, singleValue, first, args) {
     // rear, we pull out the `value` and manually enter the first key into
     // the result.
 
-    zvalue value = args[argsSize - 1];
-    zvalue result = allocInstance(argsSize);
+    zvalue value = args.elems[args.size - 1];
+    zvalue result = allocInstance(args.size);
     SymbolTableInfo *info = getInfo(result);
 
     putInto(&result, &info, (zmapping) {first, value});
 
-    for (zint i = 1; i < argsSize; i++) {
-        putInto(&result, &info, (zmapping) {args[i - 1], value});
+    for (zint i = 1; i < args.size; i++) {
+        putInto(&result, &info, (zmapping) {args.elems[i - 1], value});
     }
 
     return result;
@@ -256,15 +257,15 @@ CMETH_IMPL_1_rest(SymbolTable, singleValue, first, args) {
 
 // Documented in spec.
 METH_IMPL_rest(SymbolTable, cat, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return ths;
     }
 
     zvalue result = allocClone(ths);
     SymbolTableInfo *info = getInfo(result);
 
-    for (zint i = 0; i < argsSize; i++) {
-        zvalue one = args[i];
+    for (zint i = 0; i < args.size; i++) {
+        zvalue one = args.elems[i];
 
         if (!classAccepts(CLS_SymbolTable, one)) {
             // TODO: Should be the full `cast()`. Fix this when that function
@@ -272,7 +273,7 @@ METH_IMPL_rest(SymbolTable, cat, args) {
             one = METH_CALL(one, castToward, CLS_SymbolTable);
             if ((one == NULL) || !classAccepts(CLS_SymbolTable, one)) {
                 die("Invalid argument to `cat()`: %s",
-                    cm_debugString(args[i]));
+                    cm_debugString(args.elems[i]));
             }
         }
 
@@ -295,7 +296,7 @@ METH_IMPL_rest(SymbolTable, del, keys) {
     zmapping array[arraySize];
     bool any = false;
 
-    if ((keysSize == 0) || (info->size == 0)) {
+    if ((keys.size == 0) || (info->size == 0)) {
         // Easy outs: Not actually deleting anything, and/or starting out
         // with the empty symbol table.
         return ths;
@@ -305,8 +306,8 @@ METH_IMPL_rest(SymbolTable, del, keys) {
     utilCpy(zmapping, array, info->array, arraySize);
 
     // Null out the `key` for any of the given `keys`.
-    for (zint i = 0; i < keysSize; i++) {
-        zint index = infoFind(info, keys[i]);
+    for (zint i = 0; i < keys.size; i++) {
+        zint index = infoFind(info, keys.elems[i]);
         if (index >= 0) {
             any = true;
             array[index].key = NULL;

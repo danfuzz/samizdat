@@ -45,8 +45,8 @@ static zvalue doCast(zvalue cls, zvalue value) {
 
 // Documented in spec.
 FUN_IMPL_DECL(cast) {
-    zvalue cls = args[0];
-    zvalue value = args[1];
+    zvalue cls = args.elems[0];
+    zvalue value = args.elems[1];
     zvalue result = doCast(cls, value);
 
     if (result != NULL) {
@@ -58,29 +58,29 @@ FUN_IMPL_DECL(cast) {
 
 // Documented in spec.
 FUN_IMPL_DECL(eq) {
-    zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue value = args.elems[0];
+    zvalue other = args.elems[1];
 
     return valEq(value, other);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(classOf) {
-    return classOf(args[0]);
+    return classOf(args.elems[0]);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(maybeCast) {
-    zvalue cls = args[0];
-    zvalue value = args[1];
+    zvalue cls = args.elems[0];
+    zvalue value = args.elems[1];
 
     return doCast(cls, value);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(order) {
-    zvalue value = args[0];
-    zvalue other = args[1];
+    zvalue value = args.elems[0];
+    zvalue other = args.elems[1];
 
     return valOrder(value, other);
 }

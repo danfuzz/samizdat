@@ -51,9 +51,9 @@ METH_IMPL_rest(Jump, call, args) {
         die("Out-of-scope nonlocal jump.");
     }
 
-    switch (argsSize) {
-        case 0:  { info->result = NULL;    break;                    }
-        case 1:  { info->result = args[0]; break;                    }
+    switch (args.size) {
+        case 0:  { info->result = NULL;          break;              }
+        case 1:  { info->result = args.elems[0]; break;              }
         default: { die("Invalid argument count for nonlocal jump."); }
     }
 

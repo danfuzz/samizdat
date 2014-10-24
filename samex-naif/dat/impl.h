@@ -143,7 +143,7 @@ typedef struct {
  * for `methCall()` to avoid infinite recursion. **Note:** Assumes that
  * `function` is in fact an instance of `Builtin`.
  */
-zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
+zvalue builtinCall(zvalue function, zarray args);
 
 /**
  * Binds all the methods of a class. Either `*Methods` argument can be

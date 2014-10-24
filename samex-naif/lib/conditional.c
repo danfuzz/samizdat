@@ -15,10 +15,10 @@
 
 // Documented in spec.
 FUN_IMPL_DECL(ifIs) {
-    if (FUN_CALL(args[0]) != NULL) {
-        return FUN_CALL(args[1]);
-    } else if (argCount == 3) {
-        return FUN_CALL(args[2]);
+    if (FUN_CALL(args.elems[0]) != NULL) {
+        return FUN_CALL(args.elems[1]);
+    } else if (args.size == 3) {
+        return FUN_CALL(args.elems[2]);
     } else {
         return NULL;
     }
@@ -26,8 +26,8 @@ FUN_IMPL_DECL(ifIs) {
 
 // Documented in spec.
 FUN_IMPL_DECL(ifNot) {
-    if (FUN_CALL(args[0]) == NULL) {
-        return FUN_CALL(args[1]);
+    if (FUN_CALL(args.elems[0]) == NULL) {
+        return FUN_CALL(args.elems[1]);
     } else {
         return NULL;
     }
@@ -35,9 +35,9 @@ FUN_IMPL_DECL(ifNot) {
 
 // Documented in spec.
 FUN_IMPL_DECL(ifSwitch) {
-    zvalue testFunction = args[0];
-    zvalue valueFunctions = args[1];
-    zvalue defaultFunction = (argCount >= 3) ? args[2] : NULL;
+    zvalue testFunction = args.elems[0];
+    zvalue valueFunctions = args.elems[1];
+    zvalue defaultFunction = (args.size >= 3) ? args.elems[2] : NULL;
 
     zvalue value = FUN_CALL(testFunction);
 
@@ -58,12 +58,12 @@ FUN_IMPL_DECL(ifSwitch) {
 
 // Documented in spec.
 FUN_IMPL_DECL(ifValue) {
-    zvalue result = FUN_CALL(args[0]);
+    zvalue result = FUN_CALL(args.elems[0]);
 
     if (result != NULL) {
-        return FUN_CALL(args[1], result);
-    } else if (argCount == 3) {
-        return FUN_CALL(args[2]);
+        return FUN_CALL(args.elems[1], result);
+    } else if (args.size == 3) {
+        return FUN_CALL(args.elems[2]);
     } else {
         return NULL;
     }
@@ -71,41 +71,41 @@ FUN_IMPL_DECL(ifValue) {
 
 // Documented in spec.
 FUN_IMPL_DECL(ifValueAnd) {
-    zvalue results[argCount];
+    zvalue results[args.size];
 
-    for (zint i = 0; i < argCount; i++) {
-        results[i] = methCall(args[i], SYM(call), i, results);
+    for (zint i = 0; i < args.size; i++) {
+        results[i] = methCall(args.elems[i], SYM(call), (zarray) {i, results});
 
         if (results[i] == NULL) {
             return NULL;
         }
     }
 
-    return results[argCount - 1];
+    return results[args.size - 1];
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(ifValueAndElse) {
-    zint funcCount = argCount - 2;
-    zvalue thenFunc = args[funcCount];
-    zvalue elseFunc = args[funcCount + 1];
+    zint funcCount = args.size - 2;
+    zvalue thenFunc = args.elems[funcCount];
+    zvalue elseFunc = args.elems[funcCount + 1];
     zvalue results[funcCount];
 
     for (zint i = 0; i < funcCount; i++) {
-        results[i] = methCall(args[i], SYM(call), i, results);
+        results[i] = methCall(args.elems[i], SYM(call), (zarray) {i, results});
 
         if (results[i] == NULL) {
-            return methCall(elseFunc, SYM(call), 0, NULL);
+            return methCall(elseFunc, SYM(call), EMPTY_ZARRAY);
         }
     }
 
-    return methCall(thenFunc, SYM(call), funcCount, results);
+    return methCall(thenFunc, SYM(call), (zarray) {funcCount, results});
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(ifValueOr) {
-    for (zint i = 0; i < argCount; i++) {
-        zvalue result = FUN_CALL(args[i]);
+    for (zint i = 0; i < args.size; i++) {
+        zvalue result = FUN_CALL(args.elems[i]);
         if (result != NULL) {
             return result;
         }
@@ -116,7 +116,7 @@ FUN_IMPL_DECL(ifValueOr) {
 
 // Documented in spec.
 FUN_IMPL_DECL(loop) {
-    zvalue function = args[0];
+    zvalue function = args.elems[0];
     for (;;) {
         zstackPointer save = datFrameStart();
         FUN_CALL(function);
@@ -126,7 +126,7 @@ FUN_IMPL_DECL(loop) {
 
 // Documented in spec.
 FUN_IMPL_DECL(maybeValue) {
-    zvalue function = args[0];
+    zvalue function = args.elems[0];
     zvalue value = FUN_CALL(function);
 
     return (value == NULL) ? EMPTY_LIST : listFromArray(1, &value);

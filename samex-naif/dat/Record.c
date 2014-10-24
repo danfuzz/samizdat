@@ -92,7 +92,7 @@ METH_IMPL_1(Record, castToward, cls) {
 
 // Documented in spec.
 METH_IMPL_rest(Record, cat, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return ths;
     }
 
@@ -101,7 +101,7 @@ METH_IMPL_rest(Record, cat, args) {
     // new instance with the same `name` as `ths`.
 
     RecordInfo *info = getInfo(ths);
-    zvalue data = methCall(info->data, SYM(cat), argsSize, args);
+    zvalue data = methCall(info->data, SYM(cat), args);
 
     return cm_new(Record, info->name, data);
 }
@@ -125,7 +125,7 @@ METH_IMPL_0(Record, debugString) {
 METH_IMPL_rest(Record, del, keys) {
     RecordInfo *info = getInfo(ths);
     zvalue data = info->data;
-    zvalue newData = methCall(data, SYM(del), keysSize, keys);
+    zvalue newData = methCall(data, SYM(del), keys);
 
     return (newData == data)
         ? ths

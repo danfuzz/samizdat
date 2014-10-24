@@ -16,11 +16,18 @@ typedef struct DatHeader *zvalue;
 typedef zvalue *zstackPointer;
 
 /**
- * Prototype for an underlying C function corresponding to an in-model
- * function (value of type `Function`).
+ * Low-level sized-array of `zvalue`s.
  */
-typedef zvalue (*zfunction)(
-    zvalue thisFunction, zint argCount, const zvalue *args);
+typedef struct {
+    /** Number of elements. */
+    zint size;
+
+    /** Pointer to the elements. */
+    const zvalue *elems;
+} zarray;
+
+/** The empty `zarray`. */
+#define EMPTY_ZARRAY ((zarray) {0, NULL})
 
 /**
  * Arbitrary (key, value) mapping.
@@ -32,5 +39,11 @@ typedef struct {
     /** The value. */
     zvalue value;
 } zmapping;
+
+/**
+ * Prototype for an underlying C function corresponding to an in-model
+ * function (value of type `Function`).
+ */
+typedef zvalue (*zfunction)(zvalue thisFunction, zarray args);
 
 #endif

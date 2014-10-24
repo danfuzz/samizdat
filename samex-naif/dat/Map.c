@@ -236,14 +236,14 @@ CMETH_IMPL_1(Map, castFrom, value) {
 
 // Documented in spec.
 CMETH_IMPL_rest(Map, new, args) {
-    if ((argsSize & 1) != 0) {
+    if ((args.size & 1) != 0) {
         die("Odd argument count for map construction.");
     }
 
-    zint size = argsSize >> 1;
+    zint size = args.size >> 1;
     zmapping mappings[size];
     for (zint i = 0, at = 0; i < size; i++, at += 2) {
-        mappings[i] = (zmapping) {args[at], args[at + 1]};
+        mappings[i] = (zmapping) {args.elems[at], args.elems[at + 1]};
     }
 
     return mapFromArray(size, mappings);
@@ -251,23 +251,23 @@ CMETH_IMPL_rest(Map, new, args) {
 
 // Documented in spec.
 CMETH_IMPL_1_rest(Map, singleValue, first, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return EMPTY_MAP;
     }
 
     // The value is passed at the end of the argument list. We pull out the
     // value here, and manually set up the first mapping.
 
-    zmapping mappings[argsSize];
-    zvalue value = args[argsSize - 1];
+    zmapping mappings[args.size];
+    zvalue value = args.elems[args.size - 1];
 
     mappings[0] = (zmapping) {first, value};
 
-    for (zint i = 1; i < argsSize; i++) {
-        mappings[i] = (zmapping) {args[i - 1], value};
+    for (zint i = 1; i < args.size; i++) {
+        mappings[i] = (zmapping) {args.elems[i - 1], value};
     }
 
-    return mapFromArray(argsSize, mappings);
+    return mapFromArray(args.size, mappings);
 }
 
 // Documented in spec.
@@ -286,16 +286,16 @@ METH_IMPL_1(Map, castToward, cls) {
 
 // Documented in spec.
 METH_IMPL_rest(Map, cat, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return ths;
     }
 
     zint thsSize = getInfo(ths)->size;
-    zvalue maps[argsSize];
+    zvalue maps[args.size];
 
     zint size = thsSize;
-    for (zint i = 0; i < argsSize; i++) {
-        zvalue one = args[i];
+    for (zint i = 0; i < args.size; i++) {
+        zvalue one = args.elems[i];
         if (classAccepts(CLS_Map, one)) {
             maps[i] = one;
         } else {
@@ -312,7 +312,7 @@ METH_IMPL_rest(Map, cat, args) {
     zmapping elems[size];
     zint at = thsSize;
     arrayFromMap(elems, ths);
-    for (zint i = 0; i < argsSize; i++) {
+    for (zint i = 0; i < args.size; i++) {
         arrayFromMap(&elems[at], maps[i]);
         at += getInfo(maps[i])->size;
     }
@@ -350,7 +350,7 @@ METH_IMPL_rest(Map, del, keys) {
     zmapping elems[size];
     bool any = false;
 
-    if ((keysSize == 0) || (size == 0)) {
+    if ((keys.size == 0) || (size == 0)) {
         // Easy outs: Not actually deleting anything, and/or starting out
         // with the empty map.
         return ths;
@@ -360,8 +360,8 @@ METH_IMPL_rest(Map, del, keys) {
     utilCpy(zmapping, elems, info->elems, size);
 
     // Null out the `key` for any of the given `keys`.
-    for (zint i = 0; i < keysSize; i++) {
-        zint index = mapFind(ths, keys[i]);
+    for (zint i = 0; i < keys.size; i++) {
+        zint index = mapFind(ths, keys.elems[i]);
         if (index >= 0) {
             any = true;
             elems[index].key = NULL;

@@ -30,4 +30,10 @@ void arrayFromList(zvalue *result, zvalue list);
  */
 zvalue listFromArray(zint size, const zvalue *values);
 
+/**
+ * Gets a `zarray` of the given list. The result `elems` shares storage
+ * with the `list`. As such, it is important to *not* modify the contents.
+ */
+zarray zarrayFromList(zvalue list);
+
 #endif
