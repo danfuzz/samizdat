@@ -508,7 +508,7 @@ def parMethodDef = makeMainSequence(
     makeChoice(
         makeSequence(makeToken(@class), makeResult(@classMethod)),
         makeResult(@instanceMethod)),
-    makeToken(@fn),
+    makeToken(@"."),
     parFunctionCommon,
     makeCode { scope, ., baseClosure ->
         def closure =

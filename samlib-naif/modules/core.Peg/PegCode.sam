@@ -22,7 +22,7 @@ class PegCode
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, items*) {
+    .parse(box, input, items*) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
             { result ->

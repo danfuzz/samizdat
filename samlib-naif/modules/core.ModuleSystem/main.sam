@@ -294,12 +294,12 @@ class NullLoader
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn readResource(source, format) {
+    .readResource(source, format) {
         ## Returns void, always.
     };
 
     ## Documented in spec.
-    fn resolve(source) {
+    .resolve(source) {
         return? ifIs { checkExternalSource(source) }
             { BOOTSTRAP_MODULES.get(source) }
     };
@@ -349,14 +349,14 @@ class ExternalLoader
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn readResource(source, format) {
+    .readResource(source, format) {
         ## Always just defer to the next loader.
         def data = this.(ACCESS)();
         return? data::nextLoader.readResource(source, format)
     };
 
     ## Documented in spec.
-    fn resolve(source) {
+    .resolve(source) {
         def data = this.(ACCESS)();
 
         ifNot { checkExternalSource(source) }
@@ -466,7 +466,7 @@ class InternalLoader
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn readResource(source, format) {
+    .readResource(source, format) {
         def data = this.(ACCESS)();
 
         ifNot { checkInternalSource(source) }
@@ -483,7 +483,7 @@ class InternalLoader
     };
 
     ## Documented in spec.
-    fn resolve(source) {
+    .resolve(source) {
         def data = this.(ACCESS)();
 
         ifNot { checkInternalSource(source) }

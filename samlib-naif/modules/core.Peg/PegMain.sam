@@ -25,7 +25,7 @@ class PegMain
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, .*) {
+    .parse(box, input, .*) {
         ## The point of this implementation is to drop the `items` context.
         def data = this.(ACCESS)();
         return? data::rule.parse(box, input)

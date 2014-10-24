@@ -22,7 +22,7 @@ class PegLookaheadSuccess
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, items*) {
+    .parse(box, input, items*) {
         def data = this.(ACCESS)();
         return? ifIs { data::rule.parse(box, input, items*) }
             { input }

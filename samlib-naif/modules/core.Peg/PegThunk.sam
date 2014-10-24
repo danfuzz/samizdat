@@ -22,7 +22,7 @@ class PegThunk
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, items*) {
+    .parse(box, input, items*) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
             { thunkResult -> thunkResult.parse(box, input, items*) }

@@ -21,7 +21,7 @@ class PegFail
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, .*) {
+    .parse(box, input, .*) {
         ## Do nothing, and return void.
     };
 };

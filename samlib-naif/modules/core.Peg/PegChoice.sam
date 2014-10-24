@@ -26,7 +26,7 @@ class PegChoice
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    fn parse(box, input, items*) {
+    .parse(box, input, items*) {
         def data = this.(ACCESS)();
         filterPump(data::rules) { rule ->
             ifValue { rule.parse(box, input, items*) }
