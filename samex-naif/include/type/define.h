@@ -36,12 +36,12 @@
  * argument-specific ones.
  */
 #define FUNC_IMPL_MIN_MAX(name, minArgs, maxArgs) \
-    static zvalue name(zvalue, zint, const zvalue *); \
+    static zvalue name(zvalue, zarray); \
     static zvalue MAKE_##name(void) { \
         return makeBuiltin(minArgs, maxArgs, name, 0, \
             symbolFromUtf8(-1, #name)); \
     } \
-    static zvalue name(zvalue _function, zint _argsSize, const zvalue *_args)
+    static zvalue name(zvalue _function, zarray _args)
 
 #define FUNC_IMPL_0(name) \
     static zvalue IMPL_##name(void); \
@@ -53,52 +53,56 @@
 #define FUNC_IMPL_1(name, a0) \
     static zvalue IMPL_##name(zvalue); \
     FUNC_IMPL_MIN_MAX(name, 1, 1) { \
-        return IMPL_##name(_args[0]); \
+        return IMPL_##name(_args.elems[0]); \
     } \
     static zvalue IMPL_##name(zvalue a0)
 
 #define FUNC_IMPL_2(name, a0, a1) \
     static zvalue IMPL_##name(zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 2, 2) { \
-        return IMPL_##name(_args[0], _args[1]); \
+        return IMPL_##name(_args.elems[0], _args.elems[1]); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1)
 
 #define FUNC_IMPL_3(name, a0, a1, a2) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 3, 3) { \
-        return IMPL_##name(_args[0], _args[1], _args[2]); \
+        return IMPL_##name(_args.elems[0], _args.elems[1], _args.elems[2]); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2)
 
 #define FUNC_IMPL_rest(name, aRest) \
-    static zvalue IMPL_##name(zint, const zvalue *); \
+    static zvalue IMPL_##name(zarray); \
     FUNC_IMPL_MIN_MAX(name, 0, -1) { \
-        return IMPL_##name(_argsSize, _args); \
+        return IMPL_##name(_args); \
     } \
-    static zvalue IMPL_##name(zint aRest##Size, const zvalue *aRest)
+    static zvalue IMPL_##name(zarray aRest)
 
 #define FUNC_IMPL_1_2(name, a0, a1) \
     static zvalue IMPL_##name(zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 1, 2) { \
-        return IMPL_##name(_args[0], (_argsSize > 1) ? _args[1] : NULL); \
+        return IMPL_##name( \
+            _args.elems[0], \
+            (_args.size > 1) ? _args.elems[1] : NULL); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1)
 
 #define FUNC_IMPL_1_rest(name, a0, aRest) \
-    static zvalue IMPL_##name(zvalue, zint, const zvalue *); \
+    static zvalue IMPL_##name(zvalue, zarray); \
     FUNC_IMPL_MIN_MAX(name, 1, -1) { \
-        return IMPL_##name(_args[0], _argsSize - 1, &_args[1]); \
+        return IMPL_##name( \
+            _args.elems[0], \
+            (zarray) {_args.size - 1, &_args.elems[1]}); \
     } \
-    static zvalue IMPL_##name(zvalue a0, zint aRest##Size, const zvalue *aRest)
+    static zvalue IMPL_##name(zvalue a0, zarray aRest)
 
 #define FUNC_IMPL_2_3(name, a0, a1, a2) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 2, 3) { \
         return IMPL_##name( \
-            _args[0], \
-            _args[1], \
-            (_argsSize > 2) ? _args[2] : NULL); \
+            _args.elems[0], \
+            _args.elems[1], \
+            (_args.size > 2) ? _args.elems[2] : NULL); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2)
 
@@ -106,30 +110,32 @@
     static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 2, 4) { \
         return IMPL_##name( \
-            _args[0], \
-            _args[1], \
-            (_argsSize > 2) ? _args[2] : NULL, \
-            (_argsSize > 3) ? _args[3] : NULL); \
+            _args.elems[0], \
+            _args.elems[1], \
+            (_args.size > 2) ? _args.elems[2] : NULL, \
+            (_args.size > 3) ? _args.elems[3] : NULL); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2, zvalue a3)
 
 #define FUNC_IMPL_2_rest(name, a0, a1, aRest) \
-    static zvalue IMPL_##name(zvalue, zvalue, zint, const zvalue *); \
+    static zvalue IMPL_##name(zvalue, zvalue, zarray); \
     FUNC_IMPL_MIN_MAX(name, 2, -1) { \
-        return IMPL_##name(_args[0], _args[1], _argsSize - 2, &_args[2]); \
+        return IMPL_##name( \
+            _args.elems[0], \
+            _args.elems[1], \
+            (zarray) {_args.size - 2, &_args.elems[2]}); \
     } \
-    static zvalue IMPL_##name(zvalue a0, zvalue a1, \
-            zint aRest##Size, const zvalue *aRest)
+    static zvalue IMPL_##name(zvalue a0, zvalue a1, zarray aRest)
 
 #define FUNC_IMPL_3_5(name, a0, a1, a2, a3, a4) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 3, 5) { \
         return IMPL_##name( \
-            _args[0], \
-            _args[1], \
-            _args[2], \
-            (_argsSize > 3) ? _args[3] : NULL, \
-            (_argsSize > 4) ? _args[4] : NULL); \
+            _args.elems[0], \
+            _args.elems[1], \
+            _args.elems[2], \
+            (_args.size > 3) ? _args.elems[3] : NULL, \
+            (_args.size > 4) ? _args.elems[4] : NULL); \
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2, zvalue a3, \
             zvalue a4)

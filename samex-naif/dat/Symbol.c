@@ -256,15 +256,15 @@ zstring zstringFromSymbol(zvalue symbol) {
 
 // Documented in spec.
 METH_IMPL_rest(Symbol, cat, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return ths;
     }
 
     zint thsSize = getInfo(ths)->s.size;
     zint size = thsSize;
 
-    for (zint i = 0; i < argsSize; i++) {
-        zvalue one = args[i];
+    for (zint i = 0; i < args.size; i++) {
+        zvalue one = args.elems[i];
         assertHasClass(one, CLS_Symbol);
         size += getInfo(one)->s.size;
     }
@@ -276,8 +276,8 @@ METH_IMPL_rest(Symbol, cat, args) {
     zchar chars[size];
     zint at = thsSize;
     arrayFromZstring(chars, getInfo(ths)->s);
-    for (zint i = 0; i < argsSize; i++) {
-        zstring one = zstringFromSymbol(args[i]);
+    for (zint i = 0; i < args.size; i++) {
+        zstring one = zstringFromSymbol(args.elems[i]);
         arrayFromZstring(&chars[at], one);
         at += one.size;
     }

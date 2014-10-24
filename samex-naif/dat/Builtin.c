@@ -65,7 +65,7 @@ zvalue builtinCall(zvalue builtin, zarray args) {
             args.size, info->maxArgs);
     }
 
-    return info->function(builtin, args.size, args.elems);
+    return info->function(builtin, args);
 }
 
 
@@ -123,7 +123,7 @@ BuiltinState builtinGetState(zvalue builtin) {
 
 // Documented in spec.
 METH_IMPL_rest(Builtin, call, args) {
-    return builtinCall(ths, (zarray) {argsSize, args});
+    return builtinCall(ths, args);
 }
 
 // Documented in spec.

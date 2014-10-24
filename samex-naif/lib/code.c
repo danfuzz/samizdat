@@ -14,16 +14,16 @@
 
 // Documented in spec.
 FUN_IMPL_DECL(Code_eval) {
-    zvalue env = args[0];
-    zvalue expressionNode = args[1];
+    zvalue env = args.elems[0];
+    zvalue expressionNode = args.elems[1];
 
     return langEval0(env, expressionNode);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(Code_evalBinary) {
-    zvalue env = args[0];
-    zvalue path = args[1];
+    zvalue env = args.elems[0];
+    zvalue path = args.elems[1];
 
     ioCheckAbsolutePath(path);
     return datEvalBinary(env, path);

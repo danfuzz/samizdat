@@ -18,27 +18,27 @@ FUN_IMPL_DECL(Io0_cwd) {
 
 // Documented in spec.
 FUN_IMPL_DECL(Io0_fileType) {
-    zvalue path = args[0];
+    zvalue path = args.elems[0];
     return ioFileType(path);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(Io0_readDirectory) {
-    return ioReadDirectory(args[0]);
+    return ioReadDirectory(args.elems[0]);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(Io0_readFileUtf8) {
-    return ioReadFileUtf8(args[0]);
+    return ioReadFileUtf8(args.elems[0]);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(Io0_readLink) {
-    return ioReadLink(args[0]);
+    return ioReadLink(args.elems[0]);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(Io0_writeFileUtf8) {
-    ioWriteFileUtf8(args[0], args[1]);
+    ioWriteFileUtf8(args.elems[0], args.elems[1]);
     return NULL;
 }

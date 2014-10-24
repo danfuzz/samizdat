@@ -137,20 +137,20 @@ zarray zarrayFromList(zvalue list) {
 
 // Documented in spec.
 CMETH_IMPL_rest(List, new, values) {
-    return listFromArray(valuesSize, values);
+    return listFromArray(values.size, values.elems);
 }
 
 // Documented in spec.
 METH_IMPL_rest(List, cat, args) {
-    if (argsSize == 0) {
+    if (args.size == 0) {
         return ths;
     }
 
     zint thsSize = getInfo(ths)->size;
 
     zint size = thsSize;
-    for (zint i = 0; i < argsSize; i++) {
-        zvalue one = args[i];
+    for (zint i = 0; i < args.size; i++) {
+        zvalue one = args.elems[i];
         assertHasClass(one, CLS_List);
         size += getInfo(one)->size;
     }
@@ -158,9 +158,9 @@ METH_IMPL_rest(List, cat, args) {
     zvalue elems[size];
     zint at = thsSize;
     arrayFromList(elems, ths);
-    for (zint i = 0; i < argsSize; i++) {
-        arrayFromList(&elems[at], args[i]);
-        at += getInfo(args[i])->size;
+    for (zint i = 0; i < args.size; i++) {
+        arrayFromList(&elems[at], args.elems[i]);
+        at += getInfo(args.elems[i])->size;
     }
 
     return listFrom(size, elems, NULL, 0, NULL);
@@ -198,7 +198,7 @@ METH_IMPL_rest(List, del, ns) {
     zvalue elems[size];
     bool any = false;
 
-    if ((nsSize == 0) || (size == 0)) {
+    if ((ns.size == 0) || (size == 0)) {
         // Easy outs: Not actually deleting anything, and/or starting out
         // with the empty list.
         return ths;
@@ -208,8 +208,8 @@ METH_IMPL_rest(List, del, ns) {
     utilCpy(zvalue, elems, info->elems, size);
 
     // Null out the values at any valid `n` (leniently).
-    for (zint i = 0; i < nsSize; i++) {
-        zint index = seqNthIndexLenient(ns[i]);
+    for (zint i = 0; i < ns.size; i++) {
+        zint index = seqNthIndexLenient(ns.elems[i]);
         if ((index >= 0) && (index < size)) {
             any = true;
             elems[index] = NULL;

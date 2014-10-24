@@ -16,20 +16,19 @@
  * Concatenates all the arguments into a unified string, returning that
  * string. It must be freed with `utilFree()` when done.
  */
-static char *unifiedString(zint argCount, const zvalue *args,
-        const char *ifNone) {
-    if (argCount == 0) {
+static char *unifiedString(zarray args, const char *ifNone) {
+    if (args.size == 0) {
         return utilStrdup((ifNone == NULL) ? "" : ifNone);
     }
 
     zint size = 1;  // Starts at 1, to count the terminal null byte.
-    for (zint i = 0; i < argCount; i++) {
-        size += utf8SizeFromString(args[i]);
+    for (zint i = 0; i < args.size; i++) {
+        size += utf8SizeFromString(args.elems[i]);
     }
 
     char *result = utilAlloc(size);
-    for (zint i = 0, at = 0; i < argCount; i++) {
-        at += utf8FromString(size - at, &result[at], args[i]);
+    for (zint i = 0, at = 0; i < args.size; i++) {
+        at += utf8FromString(size - at, &result[at], args.elems[i]);
         at--;  // Back up over the terminal null byte.
     }
 
@@ -43,13 +42,13 @@ static char *unifiedString(zint argCount, const zvalue *args,
 
 // Documented in spec.
 FUN_IMPL_DECL(die) {
-    char *str = unifiedString(argCount, args, "Alas.");
+    char *str = unifiedString(args, "Alas.");
     die("%s", str);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(note) {
-    char *str = unifiedString(argCount, args, NULL);
+    char *str = unifiedString(args, NULL);
 
     note("%s", str);
     utilFree(str);
