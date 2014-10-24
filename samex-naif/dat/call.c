@@ -95,8 +95,8 @@ static zvalue methCall0(zvalue target, zint nameIndex, zint argCount,
     zvalue cls = classOf(target);
 
     if ((cls == CLS_Builtin) && (nameIndex == SYMIDX(call))) {
-        // We are looking at an invocation of `Builtin.call()`. Handle this
-        // as a special case, in order to break the recursion.
+        // We are doing an invocation of `Builtin.call()`. Handle this as a
+        // special case, in order to break the recursion.
         return builtinCall(target, argCount, args);
     }
 
@@ -138,12 +138,6 @@ zvalue methApply(zvalue target, zvalue name, zvalue args) {
 // Documented in header.
 zvalue methCall(zvalue target, zvalue name, zint argCount,
         const zvalue *args) {
-    if (argCount < 0) {
-        die("Invalid argument count for method call: %lld", argCount);
-    } else if ((args == NULL) && (argCount != 0)) {
-        die("Method call argument inconsistency.");
-    }
-
     zint nameIndex = symbolIndex(name);
 
     StackTraceEntry ste = {.target = target, .name = name};
