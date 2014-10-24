@@ -1019,8 +1019,8 @@ DEF_PARSE(methodDef) {
     zvalue baseClosure = PARSE_OR_REJECT(functionCommon);
 
     zvalue closure = withFormals(baseClosure,
-        cm_cat(
-            listFrom1(tableFrom1(SYM(name), SYM(this))),
+        listPrepend(
+            tableFrom1(SYM(name), SYM(this)),
             cm_get(baseClosure, SYM(formals))));
 
     return cm_new(Record, scope, get_data(closure));
@@ -1122,8 +1122,7 @@ DEF_PARSE(importSource2) {
     zvalue first = PARSE_OR_REJECT(nameSymbol);
     zvalue rest = PARSE_STAR(importSourceDotName);
 
-    zvalue name = METH_APPLY(EMPTY_STRING, cat,
-        cm_cat(listFrom1(first), rest));
+    zvalue name = METH_APPLY(EMPTY_STRING, cat, listPrepend(first, rest));
     return recordFrom1(SYM(external), SYM(name), name);
 }
 
