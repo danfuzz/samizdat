@@ -108,8 +108,7 @@ static ClosureInfo *getInfo(zvalue closure) {
  * storage in the cache.
  */
 static zvalue buildCachedClosure(zvalue defMap) {
-    zvalue formals = cm_get(defMap, SYM(formals));
-    zint formalsSize = get_size(formals);
+    zarray formals = zarrayFromList(cm_get(defMap, SYM(formals)));
 
     // Build out most of the result.
 
@@ -117,24 +116,22 @@ static zvalue buildCachedClosure(zvalue defMap) {
     ClosureInfo *info = getInfo(result);
 
     info->defMap = defMap;
-    info->formalsSize = formalsSize;
+    info->formalsSize = formals.size;
     info->statements = cm_get(defMap, SYM(statements));
     info->yield = cm_get(defMap, SYM(yield));
     info->yieldDef = cm_get(defMap, SYM(yieldDef));
 
     // Validate and transform all the formals.
 
-    if (formalsSize > LANG_MAX_FORMALS) {
-        die("Too many formals: %lld", formalsSize);
+    if (formals.size > LANG_MAX_FORMALS) {
+        die("Too many formals: %lld", formals.size);
     }
 
-    zvalue formalsArr[formalsSize];
     zvalue names = EMPTY_MAP;
     zint formalNameCount = 0;
-    arrayFromList(formalsArr, formals);
 
-    for (zint i = 0; i < formalsSize; i++) {
-        zvalue formal = formalsArr[i];
+    for (zint i = 0; i < formals.size; i++) {
+        zvalue formal = formals.elems[i];
         zvalue name = cm_get(formal, SYM(name));
         zvalue repeat = cm_get(formal, SYM(repeat));
         zrepeat rep;
