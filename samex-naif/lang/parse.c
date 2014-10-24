@@ -1014,13 +1014,16 @@ DEF_PARSE(attribute) {
 DEF_PARSE(methodDef) {
     MARK();
 
+    zvalue scope = SYM(instanceMethod);  // FIXME!
     MATCH_OR_REJECT(fn);
-    zvalue closure = PARSE_OR_REJECT(functionCommon);
+    zvalue baseClosure = PARSE_OR_REJECT(functionCommon);
 
-    return withFormals(closure,
+    zvalue closure = withFormals(baseClosure,
         cm_cat(
             listFrom1(tableFrom1(SYM(name), SYM(this))),
-            cm_get(closure, SYM(formals))));
+            cm_get(baseClosure, SYM(formals))));
+
+    return cm_new(Record, scope, get_data(closure));
 }
 
 // Documented in spec.
