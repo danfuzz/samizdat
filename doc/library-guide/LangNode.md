@@ -162,7 +162,8 @@ same arguments.
 
 Makes a class definition node. This is a `top` variable definition of a class
 with the given name. `attributes` must be a list of single-binding symbol
-tables, and `methods` must be a list of named closures.
+tables, and `methods` must be a list of an arbitrary mix of `classMethod`
+and `instanceMethod` nodes.
 
 #### `makeDynamicImport(node) -> [node+]`
 
