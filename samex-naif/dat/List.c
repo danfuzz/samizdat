@@ -127,7 +127,7 @@ zvalue listFromArray(zint size, const zvalue *values) {
 zarray zarrayFromList(zvalue list) {
     assertHasClass(list, CLS_List);
     ListInfo *info = getInfo(list);
-    return (zarray) { info->size, info->elems };
+    return (zarray) {info->size, info->elems};
 }
 
 

@@ -18,17 +18,15 @@ zvalue methApply(zvalue target, zvalue name, zvalue args);
 
 /**
  * Calls the method `name` on target `target`, with the given list of
- * `args`. `name` must be a symbol, and `argCount` must be non-negative. If
- * `argCount` is positive, then `args` must not be `NULL`. In addition, all
- * elements of `args` must be non-`NULL`.
+ * `args`. `name` must be a symbol, and all elements of `args` must be
+ * non-`NULL`.
  *
  * **Note:** Since in the vast majority of cases it's statically known that
  * `args[*]` is non-`NULL`, those checks are not performed here. If the
  * checks in question need to be performed, then they need to be done on
  * the caller side, e.g. with calls to `datNonVoid()`.
  */
-zvalue methCall(zvalue target, zvalue name, zint argCount,
-        const zvalue *args);
+zvalue methCall(zvalue target, zvalue name, zarray args);
 
 /**
  * Function which should never get called. This is used to wrap calls which
@@ -70,8 +68,7 @@ zvalue mustNotYield(zvalue value)
  */
 #define FUN_CALL(func, ...) \
     methCall(func, SYM(call), \
-        CALL_ARG_COUNT(__VA_ARGS__), \
-        CALL_ARG_ARRAY(__VA_ARGS__))
+        (zarray) {CALL_ARG_COUNT(__VA_ARGS__), CALL_ARG_ARRAY(__VA_ARGS__)})
 
 /**
  * `METH_APPLY(target, name, args)`: Calls a method by (unadorned) name,
@@ -86,7 +83,6 @@ zvalue mustNotYield(zvalue value)
  */
 #define METH_CALL(target, name, ...) \
     methCall((target), SYM(name), \
-        CALL_ARG_COUNT(__VA_ARGS__), \
-        CALL_ARG_ARRAY(__VA_ARGS__))
+        (zarray) {CALL_ARG_COUNT(__VA_ARGS__), CALL_ARG_ARRAY(__VA_ARGS__)})
 
 #endif

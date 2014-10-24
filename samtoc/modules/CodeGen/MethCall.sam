@@ -41,9 +41,9 @@ class MethCall
             "methCall(",
             data::target.flatten(), ", ",
             data::name.flatten(), ", ",
-            "\(#args), ",
+            "(zarray) {\(#args), ",
             argStr,
-            ")"
+            "})"
         )
     };
 

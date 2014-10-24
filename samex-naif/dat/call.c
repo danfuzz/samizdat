@@ -90,14 +90,13 @@ static char *callReporter(void *state) {
  * Helper for `methCall`, which does most of the work but skips argument
  * validation, reference frame, and stack trace setup.
  */
-static zvalue methCall0(zvalue target, zint nameIndex, zint argCount,
-        const zvalue *args) {
+static zvalue methCall0(zvalue target, zint nameIndex, zarray args) {
     zvalue cls = classOf(target);
 
     if ((cls == CLS_Builtin) && (nameIndex == SYMIDX(call))) {
         // We are doing an invocation of `Builtin.call()`. Handle this as a
         // special case, in order to break the recursion.
-        return builtinCall(target, argCount, args);
+        return builtinCall(target, args);
     }
 
     zvalue function = classFindMethodUnchecked(cls, nameIndex);
@@ -109,12 +108,13 @@ static zvalue methCall0(zvalue target, zint nameIndex, zint argCount,
     }
 
     // Prepend `target` as a new first argument for a call to `function`.
-    zvalue newArgs[argCount + 1];
+    zint newSize = args.size + 1;
+    zvalue newArgs[newSize];
     newArgs[0] = target;
-    utilCpy(zvalue, &newArgs[1], args, argCount);
+    utilCpy(zvalue, &newArgs[1], args.elems, args.size);
 
     // Invoke `function.call(target, args*)`.
-    return methCall0(function, SYMIDX(call), argCount + 1, newArgs);
+    return methCall0(function, SYMIDX(call), (zarray) {newSize, newArgs});
 }
 
 
@@ -127,23 +127,21 @@ zvalue methApply(zvalue target, zvalue name, zvalue args) {
     zint argCount = (args == NULL) ? 0 : get_size(args);
 
     if (argCount == 0) {
-        return methCall(target, name, 0, NULL);
+        return methCall(target, name, EMPTY_ZARRAY);
     } else {
-        zarray arr = zarrayFromList(args);
-        return methCall(target, name, arr.size, arr.elems);
+        return methCall(target, name, zarrayFromList(args));
     }
 }
 
 // Documented in header.
-zvalue methCall(zvalue target, zvalue name, zint argCount,
-        const zvalue *args) {
+zvalue methCall(zvalue target, zvalue name, zarray args) {
     zint nameIndex = symbolIndex(name);
 
     StackTraceEntry ste = {.target = target, .name = name};
     UTIL_TRACE_START(callReporter, &ste);
 
     zstackPointer save = datFrameStart();
-    zvalue result = methCall0(target, nameIndex, argCount, args);
+    zvalue result = methCall0(target, nameIndex, args);
     datFrameReturn(save, result);
 
     UTIL_TRACE_END();

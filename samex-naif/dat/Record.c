@@ -101,7 +101,7 @@ METH_IMPL_rest(Record, cat, args) {
     // new instance with the same `name` as `ths`.
 
     RecordInfo *info = getInfo(ths);
-    zvalue data = methCall(info->data, SYM(cat), argsSize, args);
+    zvalue data = methCall(info->data, SYM(cat), (zarray) {argsSize, args});
 
     return cm_new(Record, info->name, data);
 }
@@ -125,7 +125,7 @@ METH_IMPL_0(Record, debugString) {
 METH_IMPL_rest(Record, del, keys) {
     RecordInfo *info = getInfo(ths);
     zvalue data = info->data;
-    zvalue newData = methCall(data, SYM(del), keysSize, keys);
+    zvalue newData = methCall(data, SYM(del), (zarray) {keysSize, keys});
 
     return (newData == data)
         ? ths

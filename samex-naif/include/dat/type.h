@@ -33,6 +33,9 @@ typedef struct {
     const zvalue *elems;
 } zarray;
 
+/** The empty `zarray`. */
+#define EMPTY_ZARRAY ((zarray) {0, NULL})
+
 /**
  * Arbitrary (key, value) mapping.
  */
