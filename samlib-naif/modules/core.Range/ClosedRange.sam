@@ -41,15 +41,15 @@ class ClosedRange
     fn nextValue(box) {
         def data = this.(ACCESS)();
 
-        return? ifValue { ge(data::size, 0) }
+        return? ifValue { gt(data::size, 0) }
             { size ->
                 def firstValue = data::firstValue;
                 def increment = data::increment;
                 box* := firstValue;
-                makeClosedRange(
-                    rangeAdd(firstValue, increment),
-                    size.sub(1),
-                    increment)
+                ClosedRange.(NEW)(@{
+                    firstValue: rangeAdd(firstValue, increment),
+                    increment,
+                    size:       size.sub(1)})
             }
     };
 };
