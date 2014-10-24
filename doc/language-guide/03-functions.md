@@ -317,10 +317,10 @@ Classes are defined using a `class` statement, which has the general form:
 class NameOfClass
         access: ACCESS,
         new: NEW {
-    fn instanceMethodName(arg) {
+    .instanceMethodName(arg) {
         ...
     };
-    class fn classMethodName(arg) {
+    class.classMethodName(arg) {
         ...
     };
     ...
@@ -329,9 +329,10 @@ class NameOfClass
 
 Within a `class` definition, instance methods are defined using a syntax
 identical to the regular function statement syntax (as described above),
-and class methods are the same except prefixed with `class`. In both cases,
-the variable `this` is bound in the body of the method to the instance or
-class that the method was called on.
+except with `.` instead of `fn`. Class methods are defined the same way as
+instance methods, except prefixed with `class.` instead of just `.`. In both
+cases, the variable `this` is bound in the body of the method to the instance
+or class that the method was called on.
 
 The `access...` and `new...` lines are used to define the (effectively
 private) methods used to access instance state and construct an instance
