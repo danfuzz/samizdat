@@ -1014,7 +1014,7 @@ DEF_PARSE(attribute) {
 DEF_PARSE(methodDef) {
     MARK();
 
-    zvalue scope = SYM(instanceMethod);  // FIXME!
+    zvalue scope = MATCH(class) ? SYM(classMethod) : SYM(instanceMethod);
     MATCH_OR_REJECT(fn);
     zvalue baseClosure = PARSE_OR_REJECT(functionCommon);
 
