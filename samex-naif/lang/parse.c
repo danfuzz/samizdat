@@ -1014,13 +1014,16 @@ DEF_PARSE(attribute) {
 DEF_PARSE(methodDef) {
     MARK();
 
+    zvalue scope = MATCH(class) ? SYM(classMethod) : SYM(instanceMethod);
     MATCH_OR_REJECT(fn);
-    zvalue closure = PARSE_OR_REJECT(functionCommon);
+    zvalue baseClosure = PARSE_OR_REJECT(functionCommon);
 
-    return withFormals(closure,
-        cm_cat(
-            listFrom1(tableFrom1(SYM(name), SYM(this))),
-            cm_get(closure, SYM(formals))));
+    zvalue closure = withFormals(baseClosure,
+        listPrepend(
+            tableFrom1(SYM(name), SYM(this)),
+            cm_get(baseClosure, SYM(formals))));
+
+    return cm_new(Record, scope, get_data(closure));
 }
 
 // Documented in spec.
@@ -1119,8 +1122,7 @@ DEF_PARSE(importSource2) {
     zvalue first = PARSE_OR_REJECT(nameSymbol);
     zvalue rest = PARSE_STAR(importSourceDotName);
 
-    zvalue name = METH_APPLY(EMPTY_STRING, cat,
-        cm_cat(listFrom1(first), rest));
+    zvalue name = METH_APPLY(EMPTY_STRING, cat, listPrepend(first, rest));
     return recordFrom1(SYM(external), SYM(name), name);
 }
 

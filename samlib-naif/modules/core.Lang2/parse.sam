@@ -666,10 +666,15 @@ def parAttribute = {:
 
 ## Parses a single method definition.
 def parMethodDef = {:
+    scope = (@class { @classMethod } | { @instanceMethod })
     @fn
-    closure = parFunctionCommon
+    baseClosure = parFunctionCommon
 
-    { withFormals(closure, [@{name: @this}, closure::formals*]) }
+    {
+        def closure =
+            withFormals(baseClosure, [@{name: @this}, baseClosure::formals*]);
+        @(scope){closure*}
+    }
 :};
 
 ## Parses a class definition.

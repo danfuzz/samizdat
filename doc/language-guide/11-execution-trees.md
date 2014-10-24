@@ -426,6 +426,16 @@ data of the resource is to be interpreted.
 
 These are values that appear within the data payloads of various nodes.
 
+#### `classMethod` &mdash; `@classMethod{name: symbol, ...}`
+
+* `name: symbol` &mdash; The name of the method.
+
+* Other bindings identical to `closure`.
+
+This is a representation of a class method, as part of a list of methods
+for a class definition. Nodes of this type are not ever executed. Rather,
+they are used as elements of the method list passed to `makeClassDef`.
+
 #### `external` &mdash; `@external{name: string}`
 
 * `name` &mdash; String that represents an external module name. External
@@ -474,6 +484,16 @@ Examples:
 If no `repeat` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
+
+#### `instanceMethod` &mdash; `@instanceMethod{name: symbol, ...}`
+
+* `name: symbol` &mdash; The name of the method.
+
+* Other bindings identical to `closure`.
+
+This is a representation of an instance method, as part of a list of methods
+for a class definition. Nodes of this type are not ever executed. Rather,
+they are used as elements of the method list passed to `makeClassDef`.
 
 #### `internal` &mdash; `@internal{name: string}`
 

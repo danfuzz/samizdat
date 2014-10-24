@@ -123,6 +123,32 @@ static zvalue expandYield(zvalue table) {
 };
 
 // Documented in `LangNode` source.
+static zvalue extractMethods(zvalue allMethods, zvalue scope) {
+    zarray methArr = zarrayFromList(allMethods);
+    zvalue converted = EMPTY_MAP;
+
+    for (zint i = 0; i < methArr.size; i++) {
+        zvalue one = methArr.elems[i];
+        zvalue name = cm_get(one, SYM(name));
+
+        if (!valEq(scope, get_name(one))) {
+            continue;
+        } else if (cm_get(converted, name)) {
+            die("Duplicate method: %s", cm_debugString(name));
+        }
+
+        converted = mapAppend(converted,
+            name,
+            listFrom2(
+                makeLiteral(name),
+                cm_new(Record, SYM(closure), get_data(one))));
+    }
+
+    return makeCall(LITS(SymbolTable), SYMS(new),
+        METH_APPLY(EMPTY_LIST, cat, METH_CALL(converted, valueList)));
+}
+
+// Documented in `LangNode` source.
 static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
         zvalue emptyLit) {
     zint size = get_size(mappings);
@@ -459,28 +485,12 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     zvalue config = makeSymbolTableExpression(
         listFrom2(accessSecret, newSecret));
 
-    zvalue instanceMethods = EMPTY_MAP;
-    zint methSize = get_size(methods);
-
-    for (zint i = 0; i < methSize; i++) {
-        zvalue one = cm_nth(methods, i);
-        zvalue name = cm_get(one, SYM(name));
-        if (cm_get(instanceMethods, name) != NULL) {
-            die("Duplicate method: %s", cm_debugString(name));
-        }
-        instanceMethods = mapAppend(instanceMethods,
-            name, listFrom2(makeLiteral(name), one));
-    }
-
-    zvalue instanceMethodTable = makeCall(LITS(SymbolTable), SYMS(new),
-        METH_APPLY(EMPTY_LIST, cat, METH_CALL(instanceMethods, valueList)));
-
     zvalue call = makeCall(LITS(Object), SYMS(subclass),
         listFrom4(
             makeLiteral(name),
             config,
-            LITS(EMPTY_SYMBOL_TABLE),
-            instanceMethodTable));
+            extractMethods(methods, SYM(classMethod)),
+            extractMethods(methods, SYM(instanceMethod))));
 
     return withTop(makeVarDef(name, call));
 }
