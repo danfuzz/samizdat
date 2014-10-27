@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-ClosedRange
------------
+core.Range :: ClosedRange
+-------------------------
 
 A `ClosedRange` represents a sequential range of either numeric or
 character values, with a finite size.

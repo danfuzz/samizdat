@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-OpenRange
----------
+core.Range :: OpenRange
+-----------------------
 
 An `OpenRange` represents an open-ended (unbounded) sequential range of
 either numeric or character values.
