@@ -115,10 +115,9 @@ Ranges can also optionally be specified with an `increment` expression.
 If not specified, the `increment` defaults to `1`. Even if the `first` and
 `limit` are strings, the `increment` if specified must always be an int.
 
-Ranges all bottom out in their evaluation to calls to one of the
-functions `$Range::makeExclusiveRange`, `$Range::makeInclusiveRange`,
-or `$Range::makeOpenRange`. Refer to the documentation on those functions
-for how to interpret the various combinations.
+Ranges all bottom out in their evaluation to calls to one of the class methods
+on `$Range::ClosedRange` or `$Range::OpenRange`. Refer to the documentation on
+those classes for how to interpret the various combinations.
 
 Syntactically, a range expression consists of one or more expressions
 in either parentheses `(...)` or square brackets `[...]`, with the
@@ -129,24 +128,24 @@ generator, and square brackets are used to indicate a range list.
 Details for the generator variants are as follows:
 
 * `(first..limit)` &mdash; Inclusive range with increment 1. This is
-  equivalent to `$Range::makeInclusiveRange(first, limit)`.
+  equivalent to `$Range::ClosedRange.newInclusive(first, limit)`.
 
 * `(first..limit by increment)` &mdash; Inclusive range with arbitrary
   increment. This is equivalent to
-  `$Range::makeInclusiveRange(first, limit, increment)`.
+  `$Range::ClosedRange.newInclusive(first, limit, increment)`.
 
 * `(first..!limit)` &mdash; Exclusive range with increment 1. This is
-  equivalent to `$Range::makeExclusiveRange(first, limit)`.
+  equivalent to `$Range::ClosedRange.newExclusive(first, limit)`.
 
 * `(first..!limit by increment)` &mdash; Exclusive range with arbitrary
   increment. This is equivalent to
-  `$Range::makeExclusiveRange(first, limit, increment)`.
+  `$Range::ClosedRange.newExclusive(first, limit, increment)`.
 
 * `(first..)` &mdash; Open range with increment 1. This is equivalent to
-  `$Range::makeOpenRange(first)`.
+  `$Range::OpenRange.new(first)`.
 
 * `(first.. by increment)` &mdash; Open range with arbitrary increment. This
-  is equivalent to `$Range::makeOpenRange(first, increment)`.
+  is equivalent to `$Range::OpenRange.new(first, increment)`.
 
 All of the *closed* range variants are valid using the square bracket list
 form, but no open range variants are allowed to be bracketed, as Samizdat
