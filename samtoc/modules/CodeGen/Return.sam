@@ -6,7 +6,7 @@
 ## Return tree.
 ##
 
-import ./CodeString :: fix;
+import ./CodeString :: *;
 import ./Wrapper :: *;
 import ./indentation :: *;
 
@@ -49,5 +49,5 @@ export class Return
 ##
 
 export fn genReturn(tree) {
-    return Wrapper.new(Return.(NEW)(@{tree: fix(tree)}))
+    return Wrapper.new(Return.(NEW)(@{tree: CodeString.fix(tree)}))
 };

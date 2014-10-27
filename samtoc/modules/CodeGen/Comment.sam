@@ -6,7 +6,7 @@
 ## Comment tree.
 ##
 
-import ./CodeString :: fix;
+import ./CodeString :: *;
 import ./Wrapper :: *;
 import ./indentation :: *;
 
@@ -61,7 +61,7 @@ export class Comment
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        Wrapper.new(Comment.(NEW)(@{payload: fix(payload), text}))
+        Wrapper.new(Comment.(NEW)(@{payload: CodeString.fix(payload), text}))
     } else {
         Wrapper.new(Comment.(NEW)(@{text}))
     }

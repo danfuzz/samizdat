@@ -6,7 +6,7 @@
 ## Function call tree.
 ##
 
-import ./CodeString :: fix;
+import ./CodeString :: *;
 import ./Wrapper :: *;
 import ./indentation :: *;
 
@@ -64,8 +64,8 @@ export class Call
 ##
 
 export fn genCall(function, args*) {
-    def fixFunction = fix(function);
-    def fixArgs = [ a in args -> fix(a) ];
+    def fixFunction = CodeString.fix(function);
+    def fixArgs = [ a in args -> CodeString.fix(a) ];
     var flatOk = false;
 
     if ((#args < 5) & fixFunction.prefersFlat()) {

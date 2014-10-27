@@ -20,6 +20,18 @@ def NEW = @NEW.toUnlisted();
 export class CodeString
         access: ACCESS,
         new: NEW {
+    class.new(text) {
+        return this.(NEW)(@{text});
+    };
+
+    ## Fixes a tree constructor argument, so that strings (per se) are
+    ## transformed into `CodeString`s.
+    class.fix(treeOrString) {
+        return String.accepts(treeOrString)
+            & this.new(treeOrString)
+            | treeOrString
+    };
+
     .flatten() {
         def data = this.(ACCESS)();
         return data::text
@@ -41,13 +53,5 @@ export class CodeString
 ##
 
 export fn genCodeString(text) {
-    return CodeString.(NEW)(@{text});
-};
-
-## Fixes a tree constructor argument, so that strings (per se) are
-## transformed into `CodeString`s.
-export fn fix(treeOrString) {
-    return String.accepts(treeOrString)
-        & genCodeString(treeOrString)
-        | treeOrString
+    return CodeString.new(text)
 };

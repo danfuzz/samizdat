@@ -6,7 +6,7 @@
 ## Statement tree.
 ##
 
-import ./CodeString :: fix;
+import ./CodeString :: *;
 import ./Wrapper :: *;
 import ./indentation :: *;
 
@@ -45,5 +45,5 @@ export class Statement
 ##
 
 export fn genStatement(tree) {
-    return Wrapper.new(Statement.(NEW)(@{tree: fix(tree)}))
+    return Wrapper.new(Statement.(NEW)(@{tree: CodeString.fix(tree)}))
 };

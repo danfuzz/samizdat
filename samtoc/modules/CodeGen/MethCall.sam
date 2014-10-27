@@ -6,7 +6,7 @@
 ## Method call tree.
 ##
 
-import ./CodeString :: fix;
+import ./CodeString :: *;
 import ./Wrapper :: *;
 import ./indentation :: *;
 
@@ -89,9 +89,9 @@ export class MethCall
 ##
 
 export fn genMethCall(target, name, args*) {
-    def fixTarget = fix(target);
-    def fixName = fix(name);
-    def fixArgs = [ a in args -> fix(a) ];
+    def fixTarget = CodeString.fix(target);
+    def fixName = CodeString.fix(name);
+    def fixArgs = [ a in args -> CodeString.fix(a) ];
     var flatOk = false;
 
     if ((#args < 5) & fixTarget.prefersFlat()) {
