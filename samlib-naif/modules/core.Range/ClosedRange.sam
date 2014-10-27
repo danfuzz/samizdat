@@ -107,18 +107,3 @@ export class ClosedRange
             }
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
-    return ClosedRange.newExclusive(firstValue, limit, optIncrement*)
-};
-
-## Documented in spec.
-export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
-    return ClosedRange.newInclusive(firstValue, limit, optIncrement*)
-};
