@@ -16,7 +16,7 @@ import core.LangNode;
 
 import Reader;
 
-import ./cache;
+import ./ResolverCache :: ResolverCache;
 
 
 ##
@@ -56,7 +56,7 @@ class InternalResolver
     .resolve(source) {
         def data = this.(ACCESS)();
 
-        if (def found = $cache::cacheGet(data::cache, source)) {
+        if (def found = data::cache.get(source)) {
             ## `found` is always a list. See comment below.
             return? found*
         };
@@ -70,7 +70,7 @@ class InternalResolver
         )?;
 
         ## Cache the result, so we don't bother with a search the next time.
-        $cache::cachePut(data::cache, source, result);
+        data::cache.put(source, result);
 
         return? result*
     };
@@ -84,7 +84,7 @@ class InternalResolver
 export fn makeInternalResolver(path, nextResolver) {
     return InternalResolver.(NEW)(
         @{
-            cache: $cache::makeCache(),
+            cache: ResolverCache.new(),
             nextResolver,
             path
         })
