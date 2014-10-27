@@ -337,7 +337,7 @@ fn doExternalResolve(loader, source) {
             note("    ", sourceString(source));
 
             def innerLoader =
-                makeInternalLoader(modulePath, data::globals, loader);
+                InternalLoader.new(modulePath, data::globals, loader);
             def result = resolveMain(innerLoader);
 
             note("        Done.");
@@ -551,11 +551,6 @@ export class InternalLoader
     };
 };
 
-## Documented in spec.
-export fn makeInternalLoader(path, globals, nextLoader) {
-    return InternalLoader.new(path, globals, nextLoader)
-};
-
 
 ##
 ## Private Definitions: Single-file running
@@ -621,7 +616,7 @@ fn runBinaryFile(path, loader, args) {
 ## Documented in spec.
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
-    def mainLoader = makeInternalLoader(libraryPath, primitiveGlobals, null);
+    def mainLoader = InternalLoader.new(libraryPath, primitiveGlobals, null);
     def mainModule = ifValueOr { resolveMain(mainLoader) }
         { die("No core library `main` module found.") };
     def mainFunction = ifValueOr { mainModule::exports::main }
@@ -633,7 +628,7 @@ export fn main(libraryPath, primitiveGlobals) {
 ## Documented in spec.
 export fn run(path, loader, args*) {
     def globals = loadGlobals(loader);
-    def mainLoader = makeInternalLoader(path, globals, loader);
+    def mainLoader = InternalLoader.new(path, globals, loader);
     def mainModule = ifValueOr { resolveMain(mainLoader) }
         { die("No `main` module found on path: ", path) };
     def mainFunction = ifValueOr { mainModule::exports::main }
