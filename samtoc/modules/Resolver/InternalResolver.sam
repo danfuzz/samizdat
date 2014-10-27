@@ -16,7 +16,7 @@ import core.LangNode;
 
 import Reader;
 
-import ./ResolverCache :: ResolverCache;
+import ./ResolverCache :: *;
 
 
 ##
@@ -50,9 +50,18 @@ fn directResolve(self, source) {
     }
 };
 
-class InternalResolver
+export class InternalResolver
         access: ACCESS,
         new: NEW {
+    class.new(path, nextResolver) {
+        return InternalResolver.(NEW)(
+            @{
+                cache: ResolverCache.new(),
+                nextResolver,
+                path
+            })
+    };
+
     .resolve(source) {
         def data = this.(ACCESS)();
 
@@ -74,18 +83,4 @@ class InternalResolver
 
         return? result*
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-export fn makeInternalResolver(path, nextResolver) {
-    return InternalResolver.(NEW)(
-        @{
-            cache: ResolverCache.new(),
-            nextResolver,
-            path
-        })
 };

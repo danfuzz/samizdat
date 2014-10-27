@@ -8,7 +8,7 @@
 
 import core.Io0;
 
-import Resolver;
+import Resolver :: *;
 import Template;
 
 import @utf8 ./template.txt;
@@ -37,9 +37,9 @@ export fn compile(resolver, sourcePath, targetPath) {
 ## Compiles a module en masse. `sourcePath` is a directory.
 export fn compileModule(resolver, sourcePath, targetPath) {
     def captiveResolver =
-        $Resolver::makeExternalResolver("\(sourcePath)/modules", resolver);
+        makeExternalResolver("\(sourcePath)/modules", resolver);
     def internalResolver =
-        $Resolver::makeInternalResolver(sourcePath, captiveResolver);
+        InternalResolver.new(sourcePath, captiveResolver);
     def result = internalResolver.resolve(@internal{name: "main"})
         | die("Unable to resolve `main`: \(sourcePath)");
 

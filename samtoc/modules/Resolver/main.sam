@@ -10,8 +10,8 @@
 ## resolution.
 ##
 
-export import ./ExternalResolver :: makeExternalResolver;
-export import ./InternalResolver :: makeInternalResolver;
+export import ./ExternalResolver :: *;
+export import ./InternalResolver :: *;
 export import ./NullResolver :: nullResolver;
 
 

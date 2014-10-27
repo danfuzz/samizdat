@@ -147,7 +147,7 @@ fn doDirectory(args, sourcePath) {
         };
 
         def internalResolver =
-            makeInternalResolver(sourcePath, captiveResolver);
+            InternalResolver.new(sourcePath, captiveResolver);
         def internalArgs = {args*, resolver: internalResolver};
 
         ## Helper to process an internal directory (including the top-level
@@ -238,7 +238,7 @@ export fn main(selfPath, rawArgs*) {
         & makeResolverChain(dirs, topResolver)
         | topResolver;
     def resolver = (def dir = args::options::\"internal-dir")
-        & makeInternalResolver(dir, externalResolver)
+        & InternalResolver.new(dir, externalResolver)
         | externalResolver;
 
     if (#args::args == 0) {

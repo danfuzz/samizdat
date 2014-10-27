@@ -15,8 +15,8 @@ import core.Io0;
 
 import Reader;
 
-import ./InternalResolver :: makeInternalResolver;
-import ./ResolverCache :: ResolverCache;
+import ./InternalResolver :: *;
+import ./ResolverCache :: *;
 
 
 ##
@@ -43,12 +43,12 @@ fn directResolve(self, source) {
     } else if ($Io0::fileType(dirPath) == @directory) {
         ## We found a source directory for a module. Make an internal resolver
         ## for it, and use that to resolve its `main`.
-        def subResolver = makeInternalResolver(dirPath, self);
+        def subResolver = InternalResolver.new(dirPath, self);
         subResolver.resolve(@internal{name: "main"})
     }
 };
 
-class ExternalResolver
+export class ExternalResolver
         access: ACCESS,
         new: NEW {
     .resolve(source) {
