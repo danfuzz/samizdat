@@ -12,7 +12,7 @@ import core.Format;
 import core.Generator :: filterAll, filterPump;
 import core.LangNode :: *;
 import core.Peg;
-import core.Range :: ClosedRange, makeOpenRange;
+import core.Range :: ClosedRange, OpenRange;
 
 import ./safeVar;
 import ./tokenize :: tokenize;
@@ -1786,7 +1786,7 @@ def parLogicAndExpression = {:
             ## lists.
             def formals = filterAll(most) { clause -> clause::formal };
             def testThunks =
-                filterAll(most, makeOpenRange(0))
+                filterAll(most, OpenRange.new(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             formals.sliceExclusive(0, index))
@@ -1894,7 +1894,7 @@ def parMultiTest = {:
             ## lists.
             def formals = filterAll(clauses) { clause -> clause::formal };
             def testThunks =
-                filterAll(clauses, makeOpenRange(0))
+                filterAll(clauses, OpenRange.new(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             formals.sliceExclusive(0, index))

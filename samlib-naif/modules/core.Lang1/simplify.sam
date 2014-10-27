@@ -15,7 +15,7 @@
 
 import core.Generator :: filterAll;
 import core.LangNode :: *;
-import core.Range :: makeOpenRange;
+import core.Range :: OpenRange;
 
 
 ##
@@ -108,7 +108,7 @@ fn convertPex(node, formals) {
                 ## Convert all the pexes, passing in appropriately-extended
                 ## formals lists to each conversion.
                 def convertedPexes =
-                    filterAll(makeOpenRange(0), node::pexes)
+                    filterAll(OpenRange.new(0), node::pexes)
                         { n, pex ->
                             def subPex = ifIs { pex.hasName(@varDef) }
                                 { pex::value }
