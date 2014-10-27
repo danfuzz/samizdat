@@ -12,7 +12,7 @@ import core.Format;
 import core.Generator :: filterAll, filterPump;
 import core.LangNode :: *;
 import core.Peg;
-import core.Range :: makeInclusiveRange, makeOpenRange;
+import core.Range :: ClosedRange, makeOpenRange;
 
 import ./safeVar;
 import ./tokenize :: tokenize;
@@ -26,7 +26,7 @@ import ./tokenize :: tokenize;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, makeInclusiveRange(1, 50))
+    filterPump(pending, ClosedRange.newInclusive(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -1010,7 +1010,7 @@ def parPexSetString = {:
             ifIs { ne(1, startChar.get_size()) } { yield /out };
             ifIs { ne(1, endChar.get_size()) } { yield /out };
 
-            yield "".cat(makeInclusiveRange(startChar, endChar)*)
+            yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
         }
     |
         { s::value }

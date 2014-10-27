@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import core.Range :: makeInclusiveRange;
+import core.Range :: ClosedRange;
 
 import ./int :: intWithBase;
 
@@ -25,8 +25,8 @@ def CHAR_UNICODE_END = cast(String, 1114111);   ## U+10FFFF
 ## Map of special-case characters to either their stringified forms or
 ## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
-    (makeInclusiveRange(cast(String, 1), cast(String, 31)))*: "x",
-    (makeInclusiveRange(cast(String, 127), cast(String, 159)))*: "x",
+    (ClosedRange.newInclusive(cast(String, 1), cast(String, 31)))*: "x",
+    (ClosedRange.newInclusive(cast(String, 127), cast(String, 159)))*: "x",
     cast(String, 65534): "x",
     cast(String, 65535): "x",
     "\0": "\\0",

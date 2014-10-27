@@ -19,7 +19,7 @@ import core.Generator :: filterPump;
 import core.Lang0;
 import core.LangNode :: *;
 import core.Peg;
-import core.Range :: makeInclusiveRange;
+import core.Range :: ClosedRange;
 import core.Sequence :: reverse;
 
 
@@ -31,7 +31,7 @@ import core.Sequence :: reverse;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, makeInclusiveRange(1, 50))
+    filterPump(pending, ClosedRange.newInclusive(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -1015,7 +1015,7 @@ def parPexSetString = {:
             ifIs { ne(1, startChar.get_size()) } { yield /out };
             ifIs { ne(1, endChar.get_size()) } { yield /out };
 
-            yield "".cat(makeInclusiveRange(startChar, endChar)*)
+            yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
         }
     |
         { s::value }
