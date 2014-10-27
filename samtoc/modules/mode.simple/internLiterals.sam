@@ -6,8 +6,6 @@ import core.LangNode :: *;
 
 import VarCalc :: get_varRefs;
 
-import ./Interner :: intern;
-
 
 ##
 ## Private Definitions
@@ -53,12 +51,12 @@ fn lits(node, interner) {
 
         @importResource: {
             def source = lits(node::source, interner);
-            def format = intern(interner, node::format);
+            def format = interner.intern(node::format);
             @importResource{node*, source, format}
         };
 
         @literal: {
-            @literalRef{id: intern(interner, node::value)}
+            @literalRef{id: interner.intern(node::value)}
         };
 
         @store: {
@@ -70,7 +68,7 @@ fn lits(node, interner) {
         ## Used as the `source` in `import*` nodes.
         @external:
         @internal: {
-            @(nodeName){name: intern(interner, node::name)}
+            @(nodeName){name: interner.intern(node::name)}
         };
 
         @importModule:

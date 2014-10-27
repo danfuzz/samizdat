@@ -20,11 +20,7 @@ import ./collectClosures :: collectClosures;
 import ./internLiterals :: internLiterals;
 import ./translate :: translate, translateStatement;
 import ./vars;
-
-import ./Interner ::
-    get_interns,
-    intern,
-    makeInterner;
+import ./Interner :: *;
 
 import @utf8 ./template.txt;
 
@@ -152,7 +148,7 @@ fn closureBody(cloIdx, clo, literals) {
 ## the global environment and not from local or captured variables.
 fn mainClosureMaker(node, interner) {
     def varRefs = get_varRefs(node);
-    def ids = [ name in varRefs -> intern(interner, name) ];
+    def ids = [ name in varRefs -> interner.intern(name) ];
 
     def stat = genStatement(
         genReturn(
@@ -182,9 +178,9 @@ export fn compile(resolver, sourcePath, targetPath) {
     def sourceTree = $Reader::readProgram(sourcePath, resolveFn);
     def mainNode = withDynamicImports(sourceTree);
 
-    def interner = makeInterner();
+    def interner = Interner.new();
     def litsNode = internLiterals(mainNode, interner);
-    def partialLits = get_interns(interner);  ## For closure declarations.
+    def partialLits = interner.interns;  ## For closure declarations.
 
     def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;
@@ -204,7 +200,7 @@ export fn compile(resolver, sourcePath, targetPath) {
         )*);
     def mainClosure = mainClosureMaker(closuresNode::node, interner);
 
-    def literals = get_interns(interner);
+    def literals = interner.interns;
     def literalDeclarations = "".cat(
         ( index in (0..!#literals) ->
             "static zvalue LIT_\(index) = NULL;\n"

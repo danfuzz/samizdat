@@ -4,36 +4,47 @@
 
 
 ##
-## Exported Definitions
+## Class definition: Interner
+##
+## Payload:
+## * box -- box for map of value->intern-result bindings
 ##
 
-export fn makeInterner() {
-    var values = {};
-    return @Interner{values: values?}
-};
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
 
-export fn intern(this, value) {
-    def box = this::values;
-    def values = box*;
-
-    if (def already = values[value]) {
-        return already;
+export class Interner
+        access: ACCESS,
+        new: NEW {
+    class.new() {
+        var values = {};
+        return this.(NEW)(@{box: values?})
     };
 
-    def result = #values;
+    .intern(value) {
+        def box = this.(ACCESS)()::box;
+        def values = box*;
 
-    box* := {values*, (value): result};
-    return result
-};
+        if (def already = values[value]) {
+            return already;
+        };
 
-export fn get_interns(this) {
-    def map = this::values*;
-    def boxList = [ n in (0..#map) -> def result; result? ];
+        def result = #values;
 
-    for (mapping in map) {
-        def id = mapping.value;
-        boxList[id]* := mapping.key
+        box* := {values*, (value): result};
+        return result
     };
 
-    return [ box in boxList -> box* ]
+    .get_interns() {
+        def box = this.(ACCESS)()::box;
+        def values = box*;
+        def boxList = [ n in (0..#values) -> def result; result? ];
+
+        for (mapping in values) {
+            boxList[mapping.value]* := mapping.key
+        };
+
+        return [ b in boxList -> b* ]
+    };
 };
