@@ -401,11 +401,6 @@ export class ExternalLoader
     };
 };
 
-## Documented in spec.
-export fn makeExternalLoader(path, globals, nextLoader) {
-    return ExternalLoader.new(path, globals, nextLoader)
-};
-
 
 ##
 ## Class Definition: `InternalLoader`
@@ -479,7 +474,7 @@ export class InternalLoader
         def basePath = path.cat("/");
         def modulesDir = basePath.cat("modules");
         def externLoader =
-            makeExternalLoader(modulesDir, globals, fixNullLoader(nextLoader));
+            ExternalLoader.new(modulesDir, globals, fixNullLoader(nextLoader));
 
         ## Forward declaration, for recursive references in the `module_*`
         ## functions immediately below.
