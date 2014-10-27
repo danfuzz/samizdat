@@ -77,16 +77,16 @@ msgTen("Open range (\"!\", 0)",
 note();
 
 msgAll("Closed range (100, 7)",
-    $Range::makeClosedRange(100, 7));
+    $Range::ClosedRange.new(100, 7));
 
 msgAll("Closed range (3, 5, 10)",
-    $Range::makeClosedRange(3, 5, 10));
+    $Range::ClosedRange.new(3, 5, 10));
 
 msgAll("Closed range (3, 0, 10)",
-    $Range::makeClosedRange(3, 0, 10));
+    $Range::ClosedRange.new(3, 0, 10));
 
 msgAll("Closed range (\"9\", 10, -1)",
-    $Range::makeClosedRange("9", 10, -1));
+    $Range::ClosedRange.new("9", 10, -1));
 
 note();
 

@@ -114,11 +114,6 @@ export class ClosedRange
 ##
 
 ## Documented in spec.
-export fn makeClosedRange(firstValue, size, optIncrement?) {
-    return ClosedRange.new(firstValue, size, optIncrement*)
-};
-
-## Documented in spec.
 export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
     return ClosedRange.newExclusive(firstValue, limit, optIncrement*)
 };
