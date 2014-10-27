@@ -131,7 +131,7 @@ fn doDirectory(args, sourcePath) {
         ## First handle a "captive" `modules` directory (if any), then
         ## handle the main implementation files.
         def captiveDir = "\(sourcePath)/modules";
-        def captiveResolver = makeExternalResolver(captiveDir, resolver);
+        def captiveResolver = ExternalResolver.new(captiveDir, resolver);
 
         if (resolver != captiveResolver) {
             ## There's a captive `modules` directory. Iterate over its
@@ -172,7 +172,7 @@ fn doDirectory(args, sourcePath) {
         ## No `main.sam`. Treat it as a `modules` directory. Make an external
         ## resolver for the given directory, and recursively process all
         ## subdirectories.
-        def externalResolver = makeExternalResolver(sourcePath, resolver);
+        def externalResolver = ExternalResolver.new(sourcePath, resolver);
         def subArgs = {args*, resolver: externalResolver};
         def files = $Io0::readDirectory(sourcePath);
         for (one in files) {
@@ -232,7 +232,7 @@ export fn main(selfPath, rawArgs*) {
     def modeModule = loadModule(@external{name: "mode.\(modeName)"});
 
     def topResolver = (def coreDir = args::options::\"core-dir")
-        & makeExternalResolver("\(coreDir)/modules", nullResolver)
+        & ExternalResolver.new("\(coreDir)/modules", nullResolver)
         | nullResolver;
     def externalResolver = (def dirs = args::options::\"external-dirs")
         & makeResolverChain(dirs, topResolver)

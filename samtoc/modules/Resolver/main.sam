@@ -48,7 +48,7 @@ export fn makeResolverChain(paths, next) {
     var result = next;
 
     for (one in pathList) {
-        result := makeExternalResolver(one, result)
+        result := ExternalResolver.new(one, result)
     };
 
     return result

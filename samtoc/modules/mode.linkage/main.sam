@@ -37,7 +37,7 @@ export fn compile(resolver, sourcePath, targetPath) {
 ## Compiles a module en masse. `sourcePath` is a directory.
 export fn compileModule(resolver, sourcePath, targetPath) {
     def captiveResolver =
-        makeExternalResolver("\(sourcePath)/modules", resolver);
+        ExternalResolver.new("\(sourcePath)/modules", resolver);
     def internalResolver =
         InternalResolver.new(sourcePath, captiveResolver);
     def result = internalResolver.resolve(@internal{name: "main"})

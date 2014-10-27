@@ -54,7 +54,7 @@ export class InternalResolver
         access: ACCESS,
         new: NEW {
     class.new(path, nextResolver) {
-        return InternalResolver.(NEW)(
+        return this.(NEW)(
             @{
                 cache: ResolverCache.new(),
                 nextResolver,
