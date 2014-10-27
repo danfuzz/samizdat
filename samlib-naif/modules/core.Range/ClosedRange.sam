@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: nullGenerator, stdCollect;
+import core.Generator :: stdCollect;
 
 import ./rangeAdd :: *;
 
@@ -22,9 +22,63 @@ import ./rangeAdd :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class ClosedRange
+export class ClosedRange
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(firstValue, size, optIncrement?) {
+        def increment = ifValueOr { optIncrement* } { 1 };
+
+        ## The use of `totalLt` ensures that `size` is an int.
+        ifNot { Int.accepts(size) }
+            { die("`size` must be an int.") };
+
+        return this.(NEW)(@{firstValue, increment, size})
+    };
+
+    ## Documented in spec.
+    class.newExclusive(firstValue, limit, optIncrement?) {
+        ## `totalEq` ensures that `firstValue` and `limit` have the same class.
+        def isEmpty = firstValue.totalEq(limit)?;
+        def firstInt = cast(Int, firstValue);
+        def limitInt = cast(Int, limit);
+        def increment = ifValueOr { optIncrement* } { 1 };
+
+        ## `totalEq` ensures that `increment` is an int.
+        ifIs { increment.totalEq(0) }
+            {
+                return ifIs { isEmpty* }
+                    { this.new(0, 0, 0) }
+                    { this.new(firstValue, 1, 0) }
+            };
+
+        ## `increment.sign()` is either `-1` or `+1`, which when subtracted
+        ## from limit "pushes" the limit in the right direction to make the
+        ## truncated division produce the correct result size.
+        def size =
+            limitInt.sub(firstInt).sub(increment.sign()).div(increment).add(1);
+
+        return this.new(firstValue, size, increment);
+    };
+
+    ## Documented in spec.
+    class.newInclusive(firstValue, limit, optIncrement?) {
+        def increment = ifValueOr { optIncrement* } { 1 };
+
+        ## This just ensures that `firstValue` and `limit` have the same class.
+        firstValue.totalEq(limit);
+
+        ## `totalEq` ensures that `increment` is an int.
+        ifIs { increment.totalEq(0) }
+            { return this.new(firstValue, 1, 0) };
+
+        def firstInt = cast(Int, firstValue);
+        def limitInt = cast(Int, limit);
+        def size = limitInt.sub(firstInt).div(increment).add(1);
+
+        return this.new(firstValue, size, increment);
+    };
+
     ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -61,61 +115,15 @@ class ClosedRange
 
 ## Documented in spec.
 export fn makeClosedRange(firstValue, size, optIncrement?) {
-    def increment = ifValueOr { optIncrement* } { 1 };
-
-    ifNot { Int.accepts(size) }
-        { die("`size` must be an int.") };
-
-    return ifIs { gt(size, 0) }
-        { ClosedRange.(NEW)(@{firstValue, increment, size}) }
-        { nullGenerator }
+    return ClosedRange.new(firstValue, size, optIncrement*)
 };
 
 ## Documented in spec.
 export fn makeExclusiveRange(firstValue, limit, optIncrement?) {
-    ## `totalEq` ensures that `firstValue` and `limit` have the same class.
-    def isEmpty = firstValue.totalEq(limit)?;
-    def firstInt = cast(Int, firstValue);
-    def limitInt = cast(Int, limit);
-    def increment = ifValueOr { optIncrement* } { 1 };
-
-    ## `totalEq` ensures that `increment` is an int.
-    ifIs { increment.totalEq(0) }
-        {
-            return ifIs { isEmpty* }
-                { nullGenerator }
-                { makeClosedRange(firstValue, 1, 0) }
-        };
-
-    ## `increment.sign()` is either `-1` or `+1`, which when subtracted from
-    ## limit "pushes" the limit in the right direction to make the truncated
-    ## division produce the correct result size.
-    def size =
-        limitInt.sub(firstInt).sub(increment.sign()).div(increment).add(1);
-
-    ifIs { le(size, 0) }
-        { return nullGenerator };
-
-    return makeClosedRange(firstValue, size, increment);
+    return ClosedRange.newExclusive(firstValue, limit, optIncrement*)
 };
 
 ## Documented in spec.
 export fn makeInclusiveRange(firstValue, limit, optIncrement?) {
-    def increment = ifValueOr { optIncrement* } { 1 };
-
-    ## This just ensures that `firstValue` and `limit` have the same class.
-    firstValue.totalEq(limit);
-
-    ## `totalEq` ensures that `increment` is an int.
-    ifIs { increment.totalEq(0) }
-        { return makeClosedRange(firstValue, 1, 0) };
-
-    def firstInt = cast(Int, firstValue);
-    def limitInt = cast(Int, limit);
-    def size = limitInt.sub(firstInt).div(increment).add(1);
-
-    ifIs { le(size, 0) }
-        { return nullGenerator };
-
-    return makeClosedRange(firstValue, size, increment);
+    return ClosedRange.newInclusive(firstValue, limit, optIncrement*)
 };

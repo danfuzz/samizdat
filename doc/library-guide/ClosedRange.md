@@ -14,10 +14,11 @@ character values, with a finite size.
 #### `.new(firstValue, size, optIncrement?) -> :ClosedRange`
 
 Creates a closed range. `firstValue` must be either a number or
-a single-character string. `size` must be a non-negative int.
+a single-character string. `size` must be an int.
 `optIncrement` defaults to `1` and if supplied must be a number.
 
-**Note:** If `size` is `0`, this returns a valid, but voided, instance.
+**Note:** If `size` is non-positive (`0` or negative), this returns a valid,
+but voided, instance.
 
 #### `.newExclusive(firstValue, limit, optIncrement?) -> :ClosedRange`
 
