@@ -1447,20 +1447,20 @@ def parRangeBody = {:
     {
         ifIs { op.hasName(@"..!") }
             {
-                makeFunCall(
-                    REFS::Range_makeExclusiveRange,
+                makeCall(
+                    REFS::Range_ClosedRange, SYMS::newExclusive,
                     firstValue, optLimit*, optIncrement*)
             }
             {
                 ifValue { optLimit* }
                     { limit ->
-                        makeFunCall(
-                            REFS::Range_makeInclusiveRange,
+                        makeCall(
+                            REFS::Range_ClosedRange, SYMS::newInclusive,
                             firstValue, limit, optIncrement*)
                     }
                     {
-                        makeFunCall(
-                            REFS::Range_makeOpenRange,
+                        makeCall(
+                            REFS::Range_OpenRange, SYMS::new,
                             firstValue, optIncrement*)
                     }
             }
@@ -1481,7 +1481,7 @@ def parRangeExpression = {:
 
     {
         ## The test here is to prevent open ranges from being allowed.
-        ifNot { eq(body::target, REFS::Range_makeOpenRange) }
+        ifNot { eq(body::target, REFS::Range_OpenRange) }
             { makeCallGeneral(LITS::List, SYMS::new, makeInterpolate(body)) }
     }
 :};

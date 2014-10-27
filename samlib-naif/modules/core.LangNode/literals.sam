@@ -33,6 +33,8 @@ def SYMBOLS = [
     @mul,
     @neg,
     @new,
+    @newExclusive,
+    @newInclusive,
     @not,
     @or,
     @perEq,

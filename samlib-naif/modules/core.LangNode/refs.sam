@@ -66,9 +66,8 @@ def MOD_NAMES = [
     {mod: @Peg,       name: @makeToken},
     {mod: @Peg,       name: @makeTokenSet},
     {mod: @Peg,       name: @makeTokenSetComplement},
-    {mod: @Range,     name: @makeExclusiveRange},
-    {mod: @Range,     name: @makeInclusiveRange},
-    {mod: @Range,     name: @makeOpenRange},
+    {mod: @Range,     name: @ClosedRange},
+    {mod: @Range,     name: @OpenRange},
     {mod: @Sequence,  name: @reverseNth},
     {mod: @Sequence,  name: @sliceGeneral}
 ];
