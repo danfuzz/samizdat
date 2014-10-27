@@ -19,7 +19,7 @@ import ./indentation :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class Call
+export class Call
         access: ACCESS,
         new: NEW {
     .flatten() {

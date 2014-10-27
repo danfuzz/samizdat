@@ -17,7 +17,7 @@ import ./indentation :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class CodeString
+export class CodeString
         access: ACCESS,
         new: NEW {
     .flatten() {

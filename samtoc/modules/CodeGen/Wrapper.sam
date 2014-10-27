@@ -21,7 +21,7 @@ import ./indentation :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class Wrapper
+export class Wrapper
         access: ACCESS,
         new: NEW {
     .flatten() {
