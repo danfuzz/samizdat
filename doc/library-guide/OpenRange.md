@@ -9,7 +9,6 @@ either numeric or character values.
 
 
 <br><br>
-
 ### Class Method Definitions
 
 #### `.new(firstValue, optIncrement?) -> :OpenRange`

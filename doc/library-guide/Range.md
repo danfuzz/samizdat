@@ -8,6 +8,7 @@ The `Range` module defines two range classes, each of which
 represents sequences of numbers or single-character strings.
 
 
+<br><br>
 ### Classes
 
 * Classes

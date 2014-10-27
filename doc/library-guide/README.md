@@ -104,6 +104,8 @@ will be returned, or one of:
   * [core.Lang*](LangN.md)
   * [core.LangNode](LangNode.md)
   * [core.ModuleSystem](ModuleSystem.md)
+    * [ExternalLoader](ExternalLoader.md)
+    * [InternalLoader](InternalLoader.md)
   * [core.Peg (parsing)](Peg.md)
   * [core.Range](Range.md)
     * [ClosedRange](ClosedRange.md)

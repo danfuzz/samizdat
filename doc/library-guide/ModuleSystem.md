@@ -21,6 +21,13 @@ be their own dependencies.
 
 
 <br><br>
+### Classes
+
+* Classes
+  * [ExternalLoader](ExternalLoader.md)
+  * [InternalLoader](InternalLoader.md)
+
+<br><br>
 ### Method Definitions: `Loader` protocol
 
 #### `.readResource(source, format) -> . | void`
@@ -81,41 +88,6 @@ available `format`s.
 
 **Note:** This function is implemented in terms of the `readResource()`
 method.
-
-#### `makeInternalLoader(path, globals, nextLoader) -> InternalLoader`
-
-This creates and returns a module-internal file loader, which knows how
-to load internal modules (private implementation files) and resource
-files.
-
-`path` is the absolute filesystem path to the main module directory.
-`nextLoader` is the loader to use to find required modules that aren't
-defined within this module. `globals` is the global variable environment
-to use when evaluating source.
-
-**Note:** If this loader should not have a module loader, then
-`nextLoader` should be passed as `null`.
-
-#### `makeExternalLoader(path, globals, nextLoader) -> ExternalLoader`
-
-This creates an external module loader, which knows how to load modules
-identified by "external" sources. An external loader will defer to the
-given `nextLoader` for any module or resource requests it cannot find
-directly. Notably, external loaders will never directly return any
-resources, ever.
-
-`path` is the absolute filesystem path to a directory containing module
-definition subdirectories. `nextLoader` is the loader to use to find
-required modules that aren't defined within `path`'s hierarchy. `globals`
-is the global variable environment to use when evaluating source.
-
-If `path` does not exist, then as a special case, this function just returns
-`nextLoader`. (This makes it easy to only construct a loader chain
-when needed.) If `path` exists but is not a directory, this function
-terminates with a fatal error.
-
-**Note:** If this loader should not have a next module loader, then
-`nextLoader` should be passed as `null`.
 
 #### `main(libraryPath, primitiveGlobals) -> {globals*}`
 
