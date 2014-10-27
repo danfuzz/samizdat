@@ -6,7 +6,7 @@
 ## Convert data into C code that constructs that data.
 ##
 
-import CodeGen :: genCall, genCodeString, genMethCall;
+import CodeGen :: *;
 
 
 ##
@@ -14,40 +14,40 @@ import CodeGen :: genCall, genCodeString, genMethCall;
 ##
 
 ## Representation of a C `NULL`.
-def CODE_C_NULL = genCodeString("NULL");
+def CODE_C_NULL = CodeString.new("NULL");
 
 ## Values with special conversions.
 def SPECIAL_VALUES = {
-    (Bool):        genCodeString("CLS_Bool"),
-    (Box):         genCodeString("CLS_Box"),
-    (Cell):        genCodeString("CLS_Cell"),
-    (Class):       genCodeString("CLS_Class"),
-    (Core):        genCodeString("CLS_Core"),
-    (Int):         genCodeString("CLS_Int"),
-    (List):        genCodeString("CLS_List"),
-    (Map):         genCodeString("CLS_Map"),
-    (Metaclass):   genCodeString("CLS_Metaclass"),
-    (Null):        genCodeString("CLS_Null"),
-    (NullBox):     genCodeString("CLS_NullBox"),
-    (Object):      genCodeString("CLS_Object"),
-    (Promise):     genCodeString("CLS_Promise"),
-    (Record):      genCodeString("CLS_Record"),
-    (Result):      genCodeString("CLS_Result"),
-    (String):      genCodeString("CLS_String"),
-    (Symbol):      genCodeString("CLS_Symbol"),
-    (SymbolTable): genCodeString("CLS_SymbolTable"),
-    (Value):       genCodeString("CLS_Value"),
-    (false):       genCodeString("BOOL_FALSE"),
-    (true):        genCodeString("BOOL_TRUE"),
-    (null):        genCodeString("THE_NULL"),
-    (nullBox):     genCodeString("THE_NULL_BOX"),
-    []:            genCodeString("EMPTY_LIST"),
-    {}:            genCodeString("EMPTY_MAP"),
-    @{}:           genCodeString("EMPTY_SYMBOL_TABLE"),
-    "":            genCodeString("EMPTY_STRING"),
-    0:             genCodeString("INT_0"),
-    1:             genCodeString("INT_1"),
-    -1:            genCodeString("INT_NEG1")
+    (Bool):        CodeString.new("CLS_Bool"),
+    (Box):         CodeString.new("CLS_Box"),
+    (Cell):        CodeString.new("CLS_Cell"),
+    (Class):       CodeString.new("CLS_Class"),
+    (Core):        CodeString.new("CLS_Core"),
+    (Int):         CodeString.new("CLS_Int"),
+    (List):        CodeString.new("CLS_List"),
+    (Map):         CodeString.new("CLS_Map"),
+    (Metaclass):   CodeString.new("CLS_Metaclass"),
+    (Null):        CodeString.new("CLS_Null"),
+    (NullBox):     CodeString.new("CLS_NullBox"),
+    (Object):      CodeString.new("CLS_Object"),
+    (Promise):     CodeString.new("CLS_Promise"),
+    (Record):      CodeString.new("CLS_Record"),
+    (Result):      CodeString.new("CLS_Result"),
+    (String):      CodeString.new("CLS_String"),
+    (Symbol):      CodeString.new("CLS_Symbol"),
+    (SymbolTable): CodeString.new("CLS_SymbolTable"),
+    (Value):       CodeString.new("CLS_Value"),
+    (false):       CodeString.new("BOOL_FALSE"),
+    (true):        CodeString.new("BOOL_TRUE"),
+    (null):        CodeString.new("THE_NULL"),
+    (nullBox):     CodeString.new("THE_NULL_BOX"),
+    []:            CodeString.new("EMPTY_LIST"),
+    {}:            CodeString.new("EMPTY_MAP"),
+    @{}:           CodeString.new("EMPTY_SYMBOL_TABLE"),
+    "":            CodeString.new("EMPTY_STRING"),
+    0:             CodeString.new("INT_0"),
+    1:             CodeString.new("INT_1"),
+    -1:            CodeString.new("INT_NEG1")
 };
 
 ## Encode the given values as a list of C-style `\xNN` escapes.

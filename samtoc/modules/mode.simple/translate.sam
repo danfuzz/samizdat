@@ -93,7 +93,7 @@ export fn translate(node, varsBox) {
         };
 
         @literalRef: {
-            genCodeString("LIT_\(node::id)")
+            CodeString.new("LIT_\(node::id)")
         };
 
         @noYield: {
