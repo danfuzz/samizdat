@@ -60,19 +60,19 @@ fn msgTen(header, origGen) {
 ##
 
 msgTen("Open range (10)",
-    $Range::makeOpenRange(10));
+    $Range::OpenRange.new(10));
 
 msgTen("Open range (100, 5)",
-    $Range::makeOpenRange(100, 5));
+    $Range::OpenRange.new(100, 5));
 
 msgTen("Open range (\"z\", -2)",
-    $Range::makeOpenRange("z", -2));
+    $Range::OpenRange.new("z", -2));
 
 msgTen("Open range (333, 0)",
-    $Range::makeOpenRange(333, 0));
+    $Range::OpenRange.new(333, 0));
 
 msgTen("Open range (\"!\", 0)",
-    $Range::makeOpenRange("!", 0));
+    $Range::OpenRange.new("!", 0));
 
 note();
 
@@ -91,39 +91,39 @@ msgAll("Closed range (\"9\", 10, -1)",
 note();
 
 msgAll("Inclusive range (5..10)",
-    $Range::makeInclusiveRange(5, 10));
+    $Range::ClosedRange.newInclusive(5, 10));
 
 msgAll("Inclusive range (10..1 by -2)",
-    $Range::makeInclusiveRange(10, 1, -2));
+    $Range::ClosedRange.newInclusive(10, 1, -2));
 
 msgAll("Inclusive range (\"a\"..\"z\" by 5)",
-    $Range::makeInclusiveRange("a", "z", 5));
+    $Range::ClosedRange.newInclusive("a", "z", 5));
 
 msgAll("Zero-increment inclusive int range",
-    $Range::makeInclusiveRange(10, 20, 0));
+    $Range::ClosedRange.newInclusive(10, 20, 0));
 
 msgAll("Zero-increment inclusive character range",
-    $Range::makeInclusiveRange("x", "a", 0));
+    $Range::ClosedRange.newInclusive("x", "a", 0));
 
 msgAll("Empty inclusive range",
-    $Range::makeInclusiveRange(10, 9, 1));
+    $Range::ClosedRange.newInclusive(10, 9, 1));
 
 note();
 
 msgAll("Exclusive range (5..!10)",
-    $Range::makeExclusiveRange(5, 10));
+    $Range::ClosedRange.newExclusive(5, 10));
 
 msgAll("Exclusive range (10..!1 by -2)",
-    $Range::makeExclusiveRange(10, 1, -2));
+    $Range::ClosedRange.newExclusive(10, 1, -2));
 
 msgAll("Exclusive range (\"a\"..!\"z\" by 5)",
-    $Range::makeExclusiveRange("a", "z", 5));
+    $Range::ClosedRange.newExclusive("a", "z", 5));
 
 msgAll("Zero-increment exclusive int range",
-    $Range::makeExclusiveRange(10, 20, 0));
+    $Range::ClosedRange.newExclusive(10, 20, 0));
 
 msgAll("Zero-increment exclusive character range",
-    $Range::makeExclusiveRange("x", "a", 0));
+    $Range::ClosedRange.newExclusive("x", "a", 0));
 
 msgAll("Empty exclusive range",
-    $Range::makeExclusiveRange(10, 9, 1));
+    $Range::ClosedRange.newExclusive(10, 9, 1));

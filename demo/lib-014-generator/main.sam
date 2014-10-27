@@ -119,8 +119,8 @@ note("Got: ", $Format::source(pumped), "\n");
 
 msgAll("ParaGenerator with open ranges",
     $Generator::makeParaGenerator(
-        $Range::makeOpenRange("a"),
-        $Range::makeOpenRange(100, 10),
+        $Range::OpenRange.new("a"),
+        $Range::OpenRange.new(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SerialGenerator",
