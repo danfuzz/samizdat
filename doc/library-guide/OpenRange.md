@@ -9,6 +9,23 @@ either numeric or character values.
 
 
 <br><br>
+
+### Class Method Definitions
+
+#### `.new(firstValue, optIncrement?) -> :OpenRange`
+
+Creates an open (never voided) range generator for numbers or single-character
+strings. `firstValue` must be either a number or a single-character string.
+`optIncrement` defaults to `1` and if supplied must be a number.
+
+The first `nextValue` call to the resulting generator yields the `firstValue`,
+and each subsequent call yields the previous value plus the given increment
+(converted to a single-character string if `firstValue` is a string).
+
+**Syntax Note:** Used in the translation of `(expression..)` forms.
+
+
+<br><br>
 ### Method Definitions: `Generator` protocol.
 
 #### `.collect(optFilterFunction?) -> list`
@@ -30,14 +47,4 @@ the remaining elements.
 <br><br>
 ### In-Language Definitions: `Range` module
 
-#### `makeOpenRange(firstValue, optIncrement?) -> range`
-
-Creates an open (never voided) range generator for numbers or single-character
-strings. `firstValue` must be either a number or a single-character string.
-`optIncrement` defaults to `1` and if supplied must be a number.
-
-The first `nextValue` call to the resulting generator yields the `firstValue`,
-and each subsequent call yields the previous value plus the given increment
-(converted to a single-character string if `firstValue` is a string).
-
-**Syntax Note:** Used in the translation of `(expression..)` forms.
+(none)
