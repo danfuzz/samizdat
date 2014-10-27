@@ -50,6 +50,6 @@ export class Assign
 ##
 
 export fn genAssign(target, value) {
-    return genWrapper(
+    return Wrapper.new(
         Assign.(NEW)(@{target: fix(target), value: fix(value)}))
 };

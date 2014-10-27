@@ -78,7 +78,7 @@ export fn genCall(function, args*) {
         }
     };
 
-    return genWrapper(
+    return Wrapper.new(
         Call.(NEW)(
             @{
                 function: fixFunction,

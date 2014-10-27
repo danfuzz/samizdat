@@ -49,5 +49,5 @@ export class Return
 ##
 
 export fn genReturn(tree) {
-    return genWrapper(Return.(NEW)(@{tree: fix(tree)}))
+    return Wrapper.new(Return.(NEW)(@{tree: fix(tree)}))
 };

@@ -61,8 +61,8 @@ export class Comment
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        genWrapper(Comment.(NEW)(@{payload: fix(payload), text}))
+        Wrapper.new(Comment.(NEW)(@{payload: fix(payload), text}))
     } else {
-        genWrapper(Comment.(NEW)(@{text}))
+        Wrapper.new(Comment.(NEW)(@{text}))
     }
 };
