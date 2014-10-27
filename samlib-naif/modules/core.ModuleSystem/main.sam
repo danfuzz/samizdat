@@ -345,9 +345,35 @@ fn doExternalResolve(loader, source) {
         }
 };
 
-class ExternalLoader
+export class ExternalLoader
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(path, globals, nextLoader) {
+        checkAbsolutePath(path);
+
+        ## Check for existence and directoriness.
+        def pathType = $Io0::fileType(path);
+        ifIs { eq(pathType, @absent) }
+            {
+                ## No such file or directory.
+                return fixNullLoader(nextLoader)
+            };
+        ifNot { eq(pathType, @directory) }
+            {
+                die("Module loader path exists but is not a directory: ",
+                    path)
+            };
+
+        return this.(NEW)(
+            @{
+                basePath: path.cat("/"),
+                globals,
+                loadedBox: Cell.new({}),
+                nextLoader: fixNullLoader(nextLoader)
+            })
+    };
+
     ## Documented in spec.
     .readResource(source, format) {
         ## Always just defer to the next loader.
@@ -377,25 +403,7 @@ class ExternalLoader
 
 ## Documented in spec.
 export fn makeExternalLoader(path, globals, nextLoader) {
-    checkAbsolutePath(path);
-
-    ## Check for existence and directoriness.
-    def pathType = $Io0::fileType(path);
-    ifIs { eq(pathType, @absent) }
-        {
-            ## No such file or directory.
-            return fixNullLoader(nextLoader)
-        };
-    ifNot { eq(pathType, @directory) }
-        { die("Module loader path exists but is not a directory: ", path) };
-
-    return ExternalLoader.(NEW)(
-        @{
-            basePath: path.cat("/"),
-            globals,
-            loadedBox: Cell.new({}),
-            nextLoader: fixNullLoader(nextLoader)
-        })
+    return ExternalLoader.new(path, globals, nextLoader)
 };
 
 
@@ -462,9 +470,49 @@ def INTERNAL_READERS = {
     @utf8: readResource_utf8
 };
 
-class InternalLoader
+export class InternalLoader
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(path, globals, nextLoader) {
+        checkAbsolutePath(path);
+        def basePath = path.cat("/");
+        def modulesDir = basePath.cat("modules");
+        def externLoader =
+            makeExternalLoader(modulesDir, globals, fixNullLoader(nextLoader));
+
+        ## Forward declaration, for recursive references in the `module_*`
+        ## functions immediately below.
+        def loader;
+
+        fn glo_loadModule(source) {
+            return loadModule(loader, source)
+        };
+        fn glo_loadResource(src, fmt) {
+            return loadResource(loader, src, fmt)
+        };
+        fn glo_thisLoader() {
+            return loader
+        };
+
+        def fullGlobals = @{
+            globals*,
+            loadModule:   glo_loadModule,
+            loadResource: glo_loadResource,
+            thisLoader:   glo_thisLoader
+        };
+
+        loader := this.(NEW)(
+            @{
+                basePath,
+                globals:    fullGlobals,
+                loadedBox:  Cell.new({}),
+                nextLoader: externLoader
+            });
+
+        return loader
+    };
+
     ## Documented in spec.
     .readResource(source, format) {
         def data = this.(ACCESS)();
@@ -505,36 +553,7 @@ class InternalLoader
 
 ## Documented in spec.
 export fn makeInternalLoader(path, globals, nextLoader) {
-    checkAbsolutePath(path);
-    def basePath = path.cat("/");
-    def modulesDir = basePath.cat("modules");
-    def externLoader =
-        makeExternalLoader(modulesDir, globals, fixNullLoader(nextLoader));
-
-    ## Forward declaration, for recursive references in the `module_*`
-    ## functions immediately below.
-    def loader;
-
-    fn glo_loadModule(source)     { return loadModule(loader, source)     };
-    fn glo_loadResource(src, fmt) { return loadResource(loader, src, fmt) };
-    fn glo_thisLoader()           { return loader                         };
-
-    def fullGlobals = @{
-        globals*,
-        loadModule:   glo_loadModule,
-        loadResource: glo_loadResource,
-        thisLoader:   glo_thisLoader
-    };
-
-    loader := InternalLoader.(NEW)(
-        @{
-            basePath,
-            globals:    fullGlobals,
-            loadedBox:  Cell.new({}),
-            nextLoader: externLoader
-        });
-
-    return loader
+    return InternalLoader.new(path, globals, nextLoader)
 };
 
 
