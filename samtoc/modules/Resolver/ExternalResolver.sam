@@ -20,6 +20,27 @@ import ./ResolverCache :: *;
 
 
 ##
+## Private Definitions
+##
+
+## Helper for `splitPaths` which does the actual splitting.
+def parPathList = {:
+    (
+        &.
+        chars = [! ":"]*
+        (":" | !.)
+
+        { $Peg::stringFromTokenList(chars) }
+    )*
+:};
+
+## Parses a colon-separated string into a list.
+fn splitPaths(paths) {
+    return $Peg::apply(parPathList, paths)
+};
+
+
+##
 ## Class definition
 ##
 
@@ -66,6 +87,20 @@ export class ExternalResolver
                 nextResolver,
                 path
             })
+    };
+
+    ## Makes a chain of external resolvers corresponding to the given `paths`
+    ## string. `paths` must be a colon-separated list of `modules`-style
+    ## directories.
+    class.newChain(paths, next) {
+        def pathList = splitPaths(paths);
+        var result = next;
+
+        for (one in pathList) {
+            result := this.new(one, result)
+        };
+
+        return result
     };
 
     .resolve(source) {

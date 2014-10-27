@@ -235,7 +235,7 @@ export fn main(selfPath, rawArgs*) {
         & ExternalResolver.new("\(coreDir)/modules", nullResolver)
         | nullResolver;
     def externalResolver = (def dirs = args::options::\"external-dirs")
-        & makeResolverChain(dirs, topResolver)
+        & ExternalResolver.newChain(dirs, topResolver)
         | topResolver;
     def resolver = (def dir = args::options::\"internal-dir")
         & InternalResolver.new(dir, externalResolver)
