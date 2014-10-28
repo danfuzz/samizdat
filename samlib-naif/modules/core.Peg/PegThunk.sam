@@ -18,7 +18,7 @@
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class PegThunk
+export class PegThunk
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
