@@ -56,8 +56,8 @@ for (x in [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55], y in "fibonacci") {
     print(x, y)
 };
 
-note("\nExplicit generator.");
-for (value in $Generator::makeFilterGenerator({ x -> x * x }, [1, 2, 3, 4])) {
+note("\nExplicit generator expression.");
+for (value in ( x in [1, 2, 3, 4] -> x * x )) {
     print(value)
 };
 
