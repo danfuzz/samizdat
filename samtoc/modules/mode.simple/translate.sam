@@ -31,12 +31,12 @@ fn varDefCommon(name, value, varsBox) {
     def binding = {name: localVarName(name, index), kind: "local"};
 
     varsBox* := {vars*, (name): binding};
-    return genComment("\%q(name)", genAssign(decl, value));
+    return genComment("\%q(name)", Assign.new(decl, value));
 };
 
 ## Wrap the given expression in a "non-void" guarantee call.
 fn nonVoid(value) {
-    return genCall("datNonVoid", value)
+    return Call.new("datNonVoid", value)
 };
 
 
@@ -54,16 +54,16 @@ export fn translate(node, varsBox) {
 
             if (values.hasName(@maybe)) {
                 def vTrans = translate(values::value, varsBox);
-                genCall("methApply", target, name, vTrans)
+                Call.new("methApply", target, name, vTrans)
             } else if (values.hasName(@void)) {
                 ## A void `values` binding just devolves into a no-argument
                 ## (but otherwise regular) function call.
-                genMethCall(target, name)
+                MethCall.new(target, name)
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
                 ## non-void.
                 def vTrans = nonVoid(translate(values, varsBox));
-                genCall("methApply", target, name, vTrans)
+                Call.new("methApply", target, name, vTrans)
             }
         };
 
@@ -73,14 +73,14 @@ export fn translate(node, varsBox) {
             def values = ( a in node::values ->
                 nonVoid(translate(a, varsBox))
             );
-            genMethCall(target, name, values*)
+            MethCall.new(target, name, values*)
         };
 
         @closureRef: {
             ## This passes each of the `varRefs` as an argument to the
             ## closure maker.
             def vars = varsBox*;
-            genCall("makeClosure_\(node::id)",
+            Call.new("makeClosure_\(node::id)",
                 ( name in get_varRefs(node) ->
                     vars[name]::name
                         | die("Capture of undefined variable: \%q(name)");
@@ -89,7 +89,7 @@ export fn translate(node, varsBox) {
 
         @fetch: {
             def target = nonVoid(translate(node::target, varsBox));
-            genMethCall(target, "SYM(fetch)")
+            MethCall.new(target, "SYM(fetch)")
         };
 
         @literalRef: {
@@ -98,7 +98,7 @@ export fn translate(node, varsBox) {
 
         @noYield: {
             def value = translate(node::value, varsBox);
-            genCall("mustNotYield", value)
+            Call.new("mustNotYield", value)
         };
 
         @store: {
@@ -107,22 +107,22 @@ export fn translate(node, varsBox) {
 
             if (value.hasName(@maybe)) {
                 def vTrans = translate(value::value, varsBox);
-                genCall("cm_store", target, vTrans)
+                Call.new("cm_store", target, vTrans)
             } else if (value.hasName(@void)) {
-                genMethCall(target, "SYM(store)")
+                MethCall.new(target, "SYM(store)")
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
                 ## non-void.
                 def vTrans = nonVoid(translate(value, varsBox));
-                genMethCall(target, "SYM(store)", vTrans)
+                MethCall.new(target, "SYM(store)", vTrans)
             }
         };
 
         @varDef: {
             def value = (def v = node::value)
-                & genMethCall("CLS_Result", "SYM(new)",
+                & MethCall.new("CLS_Result", "SYM(new)",
                     nonVoid(translate(v, varsBox)))
-                | genMethCall("CLS_Promise", "SYM(new)");
+                | MethCall.new("CLS_Promise", "SYM(new)");
 
             varDefCommon(node::name, value, varsBox)
         };
@@ -130,7 +130,7 @@ export fn translate(node, varsBox) {
         @varDefMutable: {
             def optValue = ((def v = node::value) & translate(v, varsBox))?;
             varDefCommon(node::name,
-                nonVoid(genMethCall("CLS_Cell", "SYM(new)", optValue*)),
+                nonVoid(MethCall.new("CLS_Cell", "SYM(new)", optValue*)),
                 varsBox)
         };
 

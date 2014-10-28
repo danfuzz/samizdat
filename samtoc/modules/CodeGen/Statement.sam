@@ -22,6 +22,10 @@ def NEW = @NEW.toUnlisted();
 export class Statement
         access: ACCESS,
         new: NEW {
+    class.new(tree) {
+        return Wrapper.new(this.(NEW)(@{tree: CodeString.fix(tree)}))
+    };
+
     .flatten() {
         def data = this.(ACCESS)();
         return "\(data::tree.flatten());"
@@ -37,13 +41,4 @@ export class Statement
         return? data::tree.prefersFlat()
             & this
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-export fn genStatement(tree) {
-    return Wrapper.new(Statement.(NEW)(@{tree: CodeString.fix(tree)}))
 };

@@ -22,6 +22,32 @@ def NEW = @NEW.toUnlisted();
 export class MethCall
         access: ACCESS,
         new: NEW {
+    class.new(target, name, args*) {
+        def fixTarget = CodeString.fix(target);
+        def fixName = CodeString.fix(name);
+        def fixArgs = [ a in args -> CodeString.fix(a) ];
+        var flatOk = false;
+
+        if ((#args < 5) & fixTarget.prefersFlat()) {
+            flatOk := true;
+            for (a in fixArgs) {
+                if (!a.prefersFlat()) {
+                    flatOk := false;
+                    break
+                }
+            }
+        };
+
+        return Wrapper.new(
+            this.(NEW)(
+                @{
+                    target: fixTarget,
+                    name:   fixName,
+                    args:   fixArgs,
+                    flatOk
+                }))
+    };
+
     .flatten() {
         def data = this.(ACCESS)();
         def args = data::args;
@@ -81,35 +107,4 @@ export class MethCall
         def data = this.(ACCESS)();
         return? data::flatOk** & this;
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-export fn genMethCall(target, name, args*) {
-    def fixTarget = CodeString.fix(target);
-    def fixName = CodeString.fix(name);
-    def fixArgs = [ a in args -> CodeString.fix(a) ];
-    var flatOk = false;
-
-    if ((#args < 5) & fixTarget.prefersFlat()) {
-        flatOk := true;
-        for (a in fixArgs) {
-            if (!a.prefersFlat()) {
-                flatOk := false;
-                break
-            }
-        }
-    };
-
-    return Wrapper.new(
-        MethCall.(NEW)(
-            @{
-                target: fixTarget,
-                name:   fixName,
-                args:   fixArgs,
-                flatOk
-            }))
 };

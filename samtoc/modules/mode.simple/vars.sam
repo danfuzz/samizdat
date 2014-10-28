@@ -64,10 +64,10 @@ fn processFormalsWithRepeat(clo, names) {
                 name,
                 origName,
                 preInit: [
-                    genAssign("zvalue \(rawName)", parse::parse),
+                    Assign.new("zvalue \(rawName)", parse::parse),
                     parse::update
                 ],
-                init: genMethCall("CLS_Result", "SYM(new)", rawName)
+                init: MethCall.new("CLS_Result", "SYM(new)", rawName)
             }
         } else {
             ## Note: Because we have to adjust `argAt` for unnamed formals, we
@@ -106,7 +106,7 @@ fn processFormals(clo) {
                 origName: name,
                 kind:     "arg",
                 name:     safeName("arg", name, idx),
-                init:     genMethCall("CLS_Result", "SYM(new)",
+                init:     MethCall.new("CLS_Result", "SYM(new)",
                               "args.elems[\(idx)]")
             }}
     );
@@ -129,7 +129,7 @@ fn processYieldDef(clo) {
                     origName: cast(Symbol, "<\(name)>"),
                     kind:     "yield",
                     name:     safeName("yield", name),
-                    init:     genMethCall("CLS_Result", "SYM(new)", "jump")
+                    init:     MethCall.new("CLS_Result", "SYM(new)", "jump")
                 }}
         }
     } else {
@@ -208,7 +208,7 @@ export fn processVars(clo) {
         def binding = vars[name];
         genComment(
             "\%q(cast(String, binding::origName))",
-            genAssign("zvalue \(binding::name)", binding::init));
+            Assign.new("zvalue \(binding::name)", binding::init));
     );
 
     return {
