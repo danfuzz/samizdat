@@ -115,9 +115,9 @@ will be returned, or one of:
     * [ExternalLoader](core.ModuleSystem/ExternalLoader.md)
     * [InternalLoader](core.ModuleSystem/InternalLoader.md)
   * [core.Peg (parsing)](Peg.md)
-  * [core.Range](Range.md)
-    * [ClosedRange](ClosedRange.md)
-    * [OpenRange](OpenRange.md)
+  * [core.Range](core.Range/README.md)
+    * [ClosedRange](core.Range/ClosedRange.md)
+    * [OpenRange](core.Range/OpenRange.md)
 
 * Other
   * [Constants](constants.md)
