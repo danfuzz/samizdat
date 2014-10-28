@@ -4,7 +4,8 @@ NOTICE!
 This project is an incomplete work-in-progress.
 
 * Much of the documentation is more aspirational than factual.
-* There are *many* things missing from the implementation.
+* There are tons of rough edges and *many* things missing from the
+  implementation.
 * Nearly everything is subject to change.
 
 - - - - - - - - - -
