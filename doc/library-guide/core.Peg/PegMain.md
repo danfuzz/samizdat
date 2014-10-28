@@ -4,35 +4,29 @@ Samizdat Layer 0: Core Library
 core.Peg :: PegMain
 -------------------
 
-This class represents -- TODO: FILL ME IN!! --
+An instance of this class is a rule which provides a fresh (empty)
+parsed item scope for another rule. The direct evaluation result of a parser
+expression (`{: ... :}`) is always an instance of this class.
 
 
 <br><br>
 ### Class Method Definitions
 
-#### `.new(...) -> :PegMain`
+#### `.new(rule) -> :PegMain`
 
-Creates an instance of this class.
+Creates an instance of this class which wraps the given `rule`.
 
+#### `.newChoice(rules*) -> :PegMain`
+
+Creates an instance of this class which wraps a `PegChoice` constructed
+from the given `rules`.
+
+#### `.newSequence(rules*) -> :PegMain`
+
+Creates an instance of this class which wraps a `PegSequence` constructed
+from the given `rules`.
 
 <br><br>
 ### Method Definitions: `Parser` protocol.
 
 Works as documented per the specification for the protocol.
-
-
-#### `makeMainChoice(rules*) -> rule`
-
-Makes and returns a parser rule which tries the given rules in order until
-one succeeds. This is identical to `makeChoice` (see which), except that
-it provides a fresh (empty) parsed item scope.
-
-This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
-
-#### `makeMainSequence(rules*) -> rule`
-
-Makes and returns a parser rule which runs a sequence of given other rules
-(in order). This is identical to `makeSequence` (see which), except that
-it provides a fresh (empty) parsed item scope.
-
-This is equivalent to the syntactic form `{: rule1 rule2 etc :}`.
