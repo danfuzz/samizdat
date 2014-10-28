@@ -183,7 +183,7 @@ def evalExpressions = {:
 
 export fn main(selfPath, origArgs*) {
     def args = ifValueOr { ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
-    def argFilter = makeFilterGenerator(args) { arg -> arg.cat("\n") };
+    def argFilter = FilterGenerator.new(args) { arg -> arg.cat("\n") };
     def exprString = "".cat(argFilter*);
     $Peg::apply(evalExpressions, exprString);
 };

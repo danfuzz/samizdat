@@ -39,7 +39,7 @@ export fn filterAll(filterFunction, generators*) {
         }
         {
             ## The general case.
-            makeFilterGenerator(filterFunction, generators*).collect()
+            FilterGenerator.new(filterFunction, generators*).collect()
         }
 };
 

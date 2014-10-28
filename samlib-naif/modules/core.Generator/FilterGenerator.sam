@@ -66,8 +66,8 @@ export class FilterGenerator
                         }
                         {
                             ## The filter discarded the value. As this doesn't
-                            ## `return` (per se) it will fall through to the end
-                            ## of the loop body and iterate.
+                            ## `return` (per se) it will fall through to the
+                            ## end of the loop body and iterate.
                             innerGen := nextGen;
                         }
                 }
@@ -77,14 +77,4 @@ export class FilterGenerator
                 }
         }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeFilterGenerator(filterFunction, generators*) {
-    return FilterGenerator.new(filterFunction, generators*)
 };

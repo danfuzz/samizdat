@@ -108,7 +108,7 @@ the results of running it into a list.
 This is a convenient and idiomatic shorthand for saying something like:
 
 ```
-[(makeFilterGenerator(generator, ...) { ... code ... })*]
+[(FilterGenerator.new(generator, ...) { ... code ... })*]
 ```
 
 **Syntax Note:** Used in the translation of comprehension forms.
@@ -126,7 +126,7 @@ constructed with the same arguments as a call to this function,
 that is, something like:
 
 ```
-generatorPump(makeFilterGenerator(generator, ...) { ... code ... })
+generatorPump(FilterGenerator.new(generator, ...) { ... code ... })
 ```
 
 **Syntax Note:** Used in the translation of `for` forms.

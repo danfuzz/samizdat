@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: makeFilterGenerator;
+import core.Generator :: FilterGenerator;
 
 import ./PegResult :: makeResult;
 import ./PegSequence :: makeSequence;
@@ -38,7 +38,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the class name.
-            makeFilterGenerator(input) { ch -> @(cast(Symbol, ch)){} }
+            FilterGenerator.new(input) { ch -> @(cast(Symbol, ch)){} }
         }
         { input };
 
