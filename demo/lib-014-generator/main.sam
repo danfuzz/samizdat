@@ -8,6 +8,8 @@
 
 #= language core.Lang0
 
+import core.Generator :: *;
+
 
 ##
 ## Private Definitions
@@ -50,48 +52,48 @@ fn msgAll(header, origGen) {
 msgAll("Empty list", []);
 msgAll("Empty map", {});
 msgAll("Empty string", "");
-msgAll("NullGenerator", $Generator::nullGenerator);
-msgAll("Empty ListWrapGenerator", $Generator::makeListWrapGenerator([]));
-msgAll("Empty ParaGenerator", $Generator::makeParaGenerator());
-msgAll("Empty SerialGenerator", $Generator::makeSerialGenerator());
-msgAll("Empty RepeatGenerator", $Generator::makeRepeatGenerator(0));
+msgAll("NullGenerator", nullGenerator);
+msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
+msgAll("Empty ParaGenerator", makeParaGenerator());
+msgAll("Empty SerialGenerator", makeSerialGenerator());
+msgAll("Empty RepeatGenerator", makeRepeatGenerator(0));
 msgAll("RepeatGenerator with default value",
-    $Generator::makeRepeatGenerator(7));
+    makeRepeatGenerator(7));
 msgAll("RepeatGenerator with string value",
-    $Generator::makeRepeatGenerator(3, "blort"));
+    makeRepeatGenerator(3, "blort"));
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", {one: 1, two: 2, three: 3, four: 4, five: "fizmo"});
 msgAll("String", "Happy string!");
 
-msgAll("ListWrapGenerator", $Generator::makeListWrapGenerator("frotz"));
+msgAll("ListWrapGenerator", makeListWrapGenerator("frotz"));
 
 msgAll("Single-item ParaGenerator",
-    $Generator::makeParaGenerator(["blort", "igram", "fizmo"]));
+    makeParaGenerator(["blort", "igram", "fizmo"]));
 
 msgAll("All-finite ParaGenerator",
-    $Generator::makeParaGenerator(
+    makeParaGenerator(
         [1, 2, 3],
         "abcdefg",
         {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("ParaGenerator with opt element and ValueGenerator",
-    $Generator::makeParaGenerator(
-        $Generator::makeOptGenerator([1, 2, 3]),
-        $Generator::makeValueGenerator("blort"),
+    makeParaGenerator(
+        makeOptGenerator([1, 2, 3]),
+        makeValueGenerator("blort"),
         "abcdefg",
         {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("FilterGenerator (square even numbers)",
-    $Generator::makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
             ifIs { eq(value.mod(2), 0) }
                 { value.mul(value) }
         });
 
 note("generatorPump on FilterGenerator");
-var pumped = $Generator::generatorPump(
-    $Generator::makeFilterGenerator([1, 2, 3, 4])
+var pumped = generatorPump(
+    makeFilterGenerator([1, 2, 3, 4])
         { value ->
             note("    Yay ", $Format::source(value));
             ifIs { eq(value, 3) }
@@ -100,7 +102,7 @@ var pumped = $Generator::generatorPump(
 note("Got: ", $Format::source(pumped), "\n");
 
 note("filterPump (one generator)");
-pumped := $Generator::filterPump([1, 2, 3, 4])
+pumped := filterPump([1, 2, 3, 4])
     { value ->
         note("    Yay ", $Format::source(value));
         ifIs { le(value, 3) }
@@ -109,7 +111,7 @@ pumped := $Generator::filterPump([1, 2, 3, 4])
 note("Got: ", $Format::source(pumped), "\n");
 
 note("filterPump (two generators)");
-pumped := $Generator::filterPump("abcdefg", [1, 2, 3, 4])
+pumped := filterPump("abcdefg", [1, 2, 3, 4])
     { ch, value ->
         note("    Yay ", ch, " ", $Format::source(value));
         ifIs { eq(value, 3) }
@@ -118,24 +120,24 @@ pumped := $Generator::filterPump("abcdefg", [1, 2, 3, 4])
 note("Got: ", $Format::source(pumped), "\n");
 
 msgAll("ParaGenerator with open ranges",
-    $Generator::makeParaGenerator(
+    makeParaGenerator(
         $Range::OpenRange.new("a"),
         $Range::OpenRange.new(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SerialGenerator",
-    $Generator::makeSerialGenerator({a: 10, b: 20, c: 30}));
+    makeSerialGenerator({a: 10, b: 20, c: 30}));
 
 msgAll("Size two SerialGenerator",
-    $Generator::makeSerialGenerator(
+    makeSerialGenerator(
         {a: 10, b: 20, c: 30},
         "defg"));
 
 msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
-    $Generator::makeSerialGenerator(
+    makeSerialGenerator(
         "abc",
         [],
         [],
-        $Generator::nullGenerator,
+        nullGenerator,
         ["def", "ghi"],
         []));

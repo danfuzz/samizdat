@@ -8,6 +8,8 @@
 
 #= language core.Lang0
 
+import core.Generator :: *;
+
 
 ##
 ## Private Definitions
@@ -21,7 +23,7 @@ fn msg(value) {
 ## Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
     note(header);
-    $Generator::filterAll([gen*]) { elem -> msg(elem) };
+    filterAll([gen*]) { elem -> msg(elem) };
     note("  [fin]");
     note("  value: ", $Format::source(gen));
     note()
