@@ -602,7 +602,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(fn\b|\.|class\.) *(\*?\.?@*[_$a-zA-Z][._$a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
+					<string>(fn\b|\.|class\.) *(\*?\.?@*[_$a-zA-Z][._$a-zA-Z0-9]*)? *\(([^\)"]*)\)</string>
 				</dict>
 				<dict>
 					<key>begin</key>
