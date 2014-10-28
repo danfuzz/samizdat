@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import ./ListWrapGenerator :: makeListWrapGenerator;
+import ./ListWrapGenerator :: *;
 import ./NullGenerator :: nullGenerator;
 
 
@@ -33,7 +33,7 @@ export class ParaGenerator
         ## Return a `ListWrapGenerator` if we were only passed one argument.
         ## This saves some overhead.
         ifIs { eq(generators.get_size(), 1) }
-            { return makeListWrapGenerator(generators*) };
+            { return ListWrapGenerator.new(generators*) };
 
         return this.(NEW)(@{generators})
     };

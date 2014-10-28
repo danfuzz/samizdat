@@ -22,6 +22,11 @@ export class ListWrapGenerator
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(generator) {
+        return this.(NEW)(@{generator})
+    };
+
+    ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
         return Generator_stdCollect(this, optFilterFunction*)
@@ -41,17 +46,7 @@ export class ListWrapGenerator
         return? ifValue { data::generator.nextValue(result?) }
             { nextGenerator ->
                 box* := [result];
-                makeListWrapGenerator(nextGenerator)
+                ListWrapGenerator.new(nextGenerator)
             }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeListWrapGenerator(generator) {
-    return ListWrapGenerator.(NEW)(@{generator})
 };
