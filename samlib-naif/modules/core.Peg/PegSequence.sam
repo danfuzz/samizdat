@@ -26,6 +26,20 @@ export class PegSequence
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(rules*) {
+        ## Trivial case: No rules. Return the empty rule.
+        ifIs { eq(rules, []) }
+            { return empty };
+
+        ## Trivial case: One rule. Return that rule directly.
+        ifIs { eq(rules.get_size(), 1) }
+            { return rules* };
+
+        ## The general case.
+        return this.(NEW)(@{rules})
+    };
+
+    ## Documented in spec.
     .parse(box, input, items*) {
         ## Each rule after the first gets passed as additional arguments
         ## the matched results of all the previous rules, in order.
@@ -51,23 +65,4 @@ export class PegSequence
         box* := result;
         return remainingInput
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeSequence(rules*) {
-    ## Trivial case: No rules. Return the empty rule.
-    ifIs { eq(rules, []) }
-        { return empty };
-
-    ## Trivial case: One rule. Return that rule directly.
-    ifIs { eq(rules.get_size(), 1) }
-        { return rules* };
-
-    ## The general case.
-    return PegSequence.(NEW)(@{rules})
 };

@@ -117,7 +117,7 @@ fn convertPex(node, formals) {
                                 [formals*, newFormals.sliceExclusive(0, n)*])
                         };
 
-                makeFunCall(REFS::Peg_makeSequence, convertedPexes*)
+                makeCall(REFS::Peg_PegSequence, SYMS::new, convertedPexes*)
             },
 
             @star: { . ->

@@ -11,7 +11,7 @@
 import core.Generator :: FilterGenerator;
 
 import ./PegResult :: makeResult;
-import ./PegSequence :: makeSequence;
+import ./PegSequence :: *;
 import ./PegTokenSet :: makeToken, makeTokenSet;
 import ./PegTokenSetComplement :: makeTokenSetComplement;
 
@@ -78,7 +78,7 @@ export fn makeString(string) {
     def names = nameListFromString(string);
     def chars = names.collect(makeToken);
 
-    return makeSequence(chars*, makeResult(@(resultType){}))
+    return PegSequence.new(chars*, makeResult(@(resultType){}))
 };
 
 ## Documented in spec.

@@ -27,7 +27,7 @@ def tokWhitespace = makeMainSequence(
     makeRepeat(
         PegChoice.new(
             makeRepeat(makeCharSet(" \n"), 1),
-            makeSequence(
+            PegSequence.new(
                 makeString("#"),
                 makeCharSet("#!="),
                 makeRepeat(makeCharSetComplement("\n")))),
@@ -57,29 +57,29 @@ def tokInt = makeMainSequence(
 
 ## Documented in spec.
 def tokStringPart = makeMainChoice(
-    makeSequence(
+    PegSequence.new(
         makeRepeat(makeCharSetComplement("\\\"\n"), 1),
         makeCode(stringFromTokenList)),
-    makeSequence(
+    PegSequence.new(
         makeString("\n"),
         makeRepeat(makeString(" ")),
         makeResult("\n")),
-    makeSequence(
+    PegSequence.new(
         makeString("\\"),
         PegChoice.new(
-            makeSequence(makeString("\\"), makeResult("\\")),
-            makeSequence(makeString("\""), makeResult("\"")),
-            makeSequence(makeString("n"),  makeResult("\n")),
-            makeSequence(makeString("r"),  makeResult("\r")),
-            makeSequence(makeString("t"),  makeResult("\t")),
-            makeSequence(makeString("0"),  makeResult("\0")))));
+            PegSequence.new(makeString("\\"), makeResult("\\")),
+            PegSequence.new(makeString("\""), makeResult("\"")),
+            PegSequence.new(makeString("n"),  makeResult("\n")),
+            PegSequence.new(makeString("r"),  makeResult("\r")),
+            PegSequence.new(makeString("t"),  makeResult("\t")),
+            PegSequence.new(makeString("0"),  makeResult("\0")))));
 
 ## Documented in spec.
 def tokString = makeMainSequence(
     makeString("\""),
     makeRepeat(tokStringPart),
     PegChoice.new(
-        makeSequence(
+        PegSequence.new(
             makeString("\""),
             makeCode { ., parts, . -> @string{value: "".cat(parts*)} }),
         makeCode { ., . -> @error{value: "Unterminated string literal."} }));
@@ -128,7 +128,7 @@ def tokToken = makeMainChoice(
 ## Documented in spec.
 def tokFile = makeMainSequence(
     makeRepeat(
-        makeSequence(
+        PegSequence.new(
             makeRepeat(tokWhitespace, 0, 1),
             tokToken)),
     makeRepeat(tokWhitespace, 0, 1),
