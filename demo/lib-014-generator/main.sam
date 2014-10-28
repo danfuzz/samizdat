@@ -55,7 +55,7 @@ msgAll("Empty string", "");
 msgAll("NullGenerator", nullGenerator);
 msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
 msgAll("Empty ParaGenerator", makeParaGenerator());
-msgAll("Empty SerialGenerator", makeSerialGenerator());
+msgAll("Empty SerialGenerator", SerialGenerator.new());
 msgAll("Empty RepeatGenerator", makeRepeatGenerator(0));
 msgAll("RepeatGenerator with default value",
     makeRepeatGenerator(7));
@@ -126,15 +126,15 @@ msgAll("ParaGenerator with open ranges",
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SerialGenerator",
-    makeSerialGenerator({a: 10, b: 20, c: 30}));
+    SerialGenerator.new({a: 10, b: 20, c: 30}));
 
 msgAll("Size two SerialGenerator",
-    makeSerialGenerator(
+    SerialGenerator.new(
         {a: 10, b: 20, c: 30},
         "defg"));
 
 msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
-    makeSerialGenerator(
+    SerialGenerator.new(
         "abc",
         [],
         [],

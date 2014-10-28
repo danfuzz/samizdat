@@ -23,6 +23,20 @@ def NEW = @NEW.toUnlisted();
 export class SerialGenerator
         access: ACCESS,
         new: NEW {
+    class.new(generators*) {
+        ## Return the `nullGenerator` if we weren't passed any arguments.
+        ifIs { eq(generators, []) }
+            { return nullGenerator };
+
+        ## Return the argument directly if we were only passed one.
+        ## This saves some gratuitous call wrapping / double yields.
+        ifIs { eq(generators.get_size(), 1) }
+            { return generators* };
+
+        return this.(NEW)(@{generators})
+    };
+
+
     ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -51,27 +65,8 @@ export class SerialGenerator
                     }
                     {
                         ## First generator was voided.
-                        makeSerialGenerator(moreGens*).nextValue(box)
+                        SerialGenerator.new(moreGens*).nextValue(box)
                     }
             }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeSerialGenerator(generators*) {
-    ## Return the `nullGenerator` if we weren't passed any arguments.
-    ifIs { eq(generators, []) }
-        { return nullGenerator };
-
-    ## Return the argument directly if we were only passed one.
-    ## This saves some gratuitous call wrapping / double yields.
-    ifIs { eq(generators.get_size(), 1) }
-        { return generators* };
-
-    return SerialGenerator.(NEW)(@{generators})
 };
