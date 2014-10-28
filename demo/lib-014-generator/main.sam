@@ -56,11 +56,11 @@ msgAll("NullGenerator", nullGenerator);
 msgAll("Empty ListWrapGenerator", ListWrapGenerator.new([]));
 msgAll("Empty ParaGenerator", ParaGenerator.new());
 msgAll("Empty SerialGenerator", SerialGenerator.new());
-msgAll("Empty RepeatGenerator", makeRepeatGenerator(0));
+msgAll("Empty RepeatGenerator", RepeatGenerator.new(0));
 msgAll("RepeatGenerator with default value",
-    makeRepeatGenerator(7));
+    RepeatGenerator.new(7));
 msgAll("RepeatGenerator with string value",
-    makeRepeatGenerator(3, "blort"));
+    RepeatGenerator.new(3, "blort"));
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", {one: 1, two: 2, three: 3, four: 4, five: "fizmo"});

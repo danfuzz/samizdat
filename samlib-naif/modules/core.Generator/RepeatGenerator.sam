@@ -24,6 +24,19 @@ export class RepeatGenerator
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(size, optValue?) {
+        ifIs { perLe(size, 0) }
+            {
+                ifIs { perLt(size, 0) }
+                    { die("Invalid negative size for RepeatGenerator.") };
+                return nullGenerator
+            };
+
+        def value = ifValueOr { optValue* } { null };
+        return this.(NEW)(@{size, value})
+    };
+
+    ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
         return Generator_stdCollect(this, optFilterFunction*)
@@ -44,7 +57,7 @@ export class RepeatGenerator
             {
                 def value = data::value;
                 box* := value;
-                makeRepeatGenerator(size.sub(1), value)
+                RepeatGenerator.new(size.sub(1), value)
             }
     };
 };
@@ -56,13 +69,5 @@ export class RepeatGenerator
 
 ## Documented in spec.
 export fn makeRepeatGenerator(size, optValue?) {
-    ifIs { perLe(size, 0) }
-        {
-            ifIs { perLt(size, 0) }
-                { die("Invalid negative size for RepeatGenerator.") };
-            return nullGenerator
-        };
-
-    def value = ifValueOr { optValue* } { null };
-    return RepeatGenerator.(NEW)(@{size, value})
+    return RepeatGenerator.new(size, optValue*)
 };

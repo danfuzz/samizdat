@@ -4,8 +4,6 @@ Samizdat Layer 0: Core Library
 core.Generator :: RepeatGenerator
 ---------------------------------
 
-#### `makeRepeatGenerator(size, optValue?) -> generator`
-
 This class is a repeated-value generator, which repeatedly generates a
 given value a finite number of times before becoming voided.
 
