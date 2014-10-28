@@ -21,9 +21,18 @@ import ./ParaGenerator :: makeParaGenerator;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class FilterGenerator
+export class FilterGenerator
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(filterFunction, generators*) {
+        return this.(NEW)(
+            @{
+                filterFunction,
+                generator: makeParaGenerator(generators*)
+            })
+    };
+
     ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -77,9 +86,5 @@ class FilterGenerator
 
 ## Documented in spec.
 export fn makeFilterGenerator(filterFunction, generators*) {
-    return FilterGenerator.(NEW)(
-        @{
-            filterFunction,
-            generator: makeParaGenerator(generators*)
-        })
+    return FilterGenerator.new(filterFunction, generators*)
 };
