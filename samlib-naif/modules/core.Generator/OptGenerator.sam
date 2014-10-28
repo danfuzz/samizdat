@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import ./ValueGenerator :: makeValueGenerator;
+import ./ValueGenerator :: *;
 import ./unbounded :: unboundedCollect, unboundedFetch;
 
 
@@ -46,7 +46,7 @@ export class OptGenerator
                 box* := [result];
                 makeOptGenerator(nextGenerator)
             }
-            { makeValueGenerator([]).nextValue(box) }
+            { ValueGenerator.new([]).nextValue(box) }
     };
 };
 
