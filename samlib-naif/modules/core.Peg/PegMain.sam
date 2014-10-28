@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import ./PegChoice :: makeChoice;
+import ./PegChoice :: *;
 import ./PegSequence :: makeSequence;
 
 
@@ -39,7 +39,7 @@ export class PegMain
 
 ## Documented in spec.
 export fn makeMainChoice(rules*) {
-    return PegMain.(NEW)(@{rule: makeChoice(rules*)})
+    return PegMain.(NEW)(@{rule: PegChoice.new(rules*)})
 };
 
 ## Documented in spec.

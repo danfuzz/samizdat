@@ -26,6 +26,20 @@ export class PegChoice
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(rules*) {
+        ## Trivial case: No rules. Return the failure rule.
+        ifIs { eq(rules, []) }
+            { return fail };
+
+        ## Trivial case: One rule. Return that rule directly.
+        ifIs { eq(rules.get_size(), 1) }
+            { return rules* };
+
+        ## The general case.
+        return this.(NEW)(@{rules})
+    };
+
+    ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
         filterPump(data::rules) { rule ->
@@ -37,23 +51,3 @@ export class PegChoice
         return
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeChoice(rules*) {
-    ## Trivial case: No rules. Return the failure rule.
-    ifIs { eq(rules, []) }
-        { return fail };
-
-    ## Trivial case: One rule. Return that rule directly.
-    ifIs { eq(rules.get_size(), 1) }
-        { return rules* };
-
-    ## The general case.
-    return PegChoice.(NEW)(@{rules})
-};
-

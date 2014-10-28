@@ -188,10 +188,10 @@ def parSymbolTable = makeMainSequence(
 ## Documented in spec.
 def parRecord = makeMainSequence(
     makeToken(@"@"),
-    makeChoice(
+    PegChoice.new(
         parIdentifierSymbol,
         parParenExpression),
-    makeChoice(
+    PegChoice.new(
         parParenExpression,
         makeSequence(
             makeToken(@"{"),
@@ -313,7 +313,7 @@ def parPostfixOperator = makeMainChoice(
         makeCode { . -> { node -> makeMaybeValue(node) } }),
     makeSequence(
         makeToken(@"."),
-        makeChoice(
+        PegChoice.new(
             makeSequence(
                 parNameSymbol,
                 makeCode { ., symbol -> makeLiteral(symbol) }),
@@ -341,7 +341,7 @@ def parPostfixOperator = makeMainChoice(
 
 ## Documented in spec.
 def parUnaryExpression = makeMainSequence(
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             parTerm,
             makeCode { base -> {base, prefixes: []} }),
@@ -360,7 +360,7 @@ def parUnaryExpression = makeMainSequence(
 ## Documented in spec.
 parAssignExpression := makeMainSequence(
     makeParserThunk { parOpExpression },
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeToken(@":="),
             parExpression,
@@ -373,14 +373,14 @@ parAssignExpression := makeMainSequence(
 def parYieldOrNonlocal = makeMainSequence(
     makeTokenSet(@break, @continue, @return, @yield),
     makeRepeat(makeToken(@"?"), 0, 1),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeCode { op, . -> op.hasName(@yield) },
-            makeChoice(
+            PegChoice.new(
                 makeSequence(makeToken(@"/"), parVarLvalue),
                 makeResult(@yield{}))),
         makeCode { op, . -> makeVarFetch(op.get_name()) }),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             parExpression,
             makeCode { ., optQuest, ., v ->
@@ -427,14 +427,14 @@ def parOptYieldDef = makeMainChoice(
 
 ## Documented in spec.
 def parFormal = makeMainSequence(
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             parNameSymbol,
             makeCode { n -> @{name: n} }),
         makeSequence(
             makeToken(@"."),
             makeResult(@{}))),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeTokenSet(@"?", @"*", @"+"),
             makeCode { ., r -> @{repeat: r.get_name()} }),
@@ -452,9 +452,9 @@ def parFormalsList = makeMainChoice(
 ## Documented in spec.
 def parClosureDeclarations = makeMainChoice(
     makeSequence(
-        makeChoice(
+        PegChoice.new(
             makeSequence(
-                makeChoice(
+                PegChoice.new(
                     makeSequence(
                         parNameSymbol,
                         makeCode { n -> @{name: n} }),
@@ -505,7 +505,7 @@ def parAttribute = makeMainSequence(
 
 ## Documented in spec.
 def parMethodDef = makeMainSequence(
-    makeChoice(
+    PegChoice.new(
         makeSequence(makeToken(@class), makeResult(@classMethod)),
         makeResult(@instanceMethod)),
     makeToken(@"."),
@@ -520,7 +520,7 @@ def parMethodDef = makeMainSequence(
 def parClassDef = makeMainSequence(
     makeToken(@class),
     parNameSymbol,
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             parAttribute,
             makeRepeat(makeSequence(makeToken(@","), parAttribute)),
@@ -528,7 +528,7 @@ def parClassDef = makeMainSequence(
         makeResult([])),
     makeToken(@"{"),
     makeRepeat(makeToken(@";")),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             parMethodDef,
             makeRepeat(
@@ -544,7 +544,7 @@ def parClassDef = makeMainSequence(
 def parImportName = makeMainChoice(
     makeSequence(
         parNameSymbol,
-        makeChoice(
+        PegChoice.new(
             makeSequence(
                 makeToken(@"*"),
                 makeResult(@prefix)),
@@ -598,7 +598,7 @@ def parImportSource = makeMainChoice(
 def parImportSelect = makeMainChoice(
     makeSequence(
         makeToken(@"::"),
-        makeChoice(
+        PegChoice.new(
             makeSequence(
                 makeToken(@"*"),
                 makeResult(@{select: @"*"})),
@@ -635,7 +635,7 @@ def parProgramStatement = makeMainChoice(
     parStatement,
     makeSequence(
         makeToken(@export),
-        makeChoice(
+        PegChoice.new(
             makeSequence(
                 parNameSymbolList,
                 makeCode { ., select -> makeExportSelection(select*) }),
@@ -651,7 +651,7 @@ def parClosureBody = makeMainSequence(
             parStatement,
             makeRepeat(makeToken(@";"), 1),
             makeCode { s, . -> s })),
-    makeChoice(
+    PegChoice.new(
         makeMainSequence(
             parStatement,
             makeCode { s -> @{statements: [s]} }),
@@ -674,7 +674,7 @@ parRawClosure := makeMainSequence(
 
 ## Documented in spec.
 def parProgram = makeMainSequence(
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeRepeat(makeToken(@";")),
             parImportStatement,
@@ -684,9 +684,9 @@ def parProgram = makeMainSequence(
                     parImportStatement)),
             makeCode { ., first, rest -> [first, rest*] }),
         makeResult([])),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
-            makeChoice(
+            PegChoice.new(
                 makeSequence(
                     makeCode { imports -> ne(imports, []) },
                     makeRepeat(makeToken(@";"), 1)),
@@ -777,7 +777,7 @@ def parPexToken = makeMainSequence(
 ## Documented in spec.
 def parPexSetString = makeMainSequence(
     makeToken(@string),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeToken(@".."),
             makeToken(@string),
@@ -796,12 +796,12 @@ def parPexSetString = makeMainSequence(
 ## Documented in spec.
 def parPexSet = makeMainSequence(
     makeToken(@"["),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeToken(@"!"),
             makeResult(@tokenSetComplement)),
         makeResult(@tokenSet)),
-    makeChoice(
+    PegChoice.new(
         makeMainSequence(
             makeRepeat(parPexSetString, 1),
             makeCode { strings ->
@@ -846,7 +846,7 @@ def parPexTerm = makeMainChoice(
 ## Documented in spec.
 def parPexRepeat = makeMainSequence(
     parPexTerm,
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeTokenSet(@"?", @"*", @"+"),
             makeCode { pex, repeat ->

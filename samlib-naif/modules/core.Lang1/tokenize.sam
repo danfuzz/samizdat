@@ -25,7 +25,7 @@ import core.Peg :: *;
 def tokWhitespace = makeMainSequence(
     makeLookaheadSuccess(makeCharSet("# \n")),
     makeRepeat(
-        makeChoice(
+        PegChoice.new(
             makeRepeat(makeCharSet(" \n"), 1),
             makeSequence(
                 makeString("#"),
@@ -37,7 +37,7 @@ def tokWhitespace = makeMainSequence(
 def tokPunctuation = makeMainSequence(
     makeLookaheadSuccess(
         makeCharSet("@:.,=-+?;*/<>{}()[]", "&|!%")),
-    makeChoice(
+    PegChoice.new(
         makeString("->"),
         makeString(":="),
         makeString("::"),
@@ -66,7 +66,7 @@ def tokStringPart = makeMainChoice(
         makeResult("\n")),
     makeSequence(
         makeString("\\"),
-        makeChoice(
+        PegChoice.new(
             makeSequence(makeString("\\"), makeResult("\\")),
             makeSequence(makeString("\""), makeResult("\"")),
             makeSequence(makeString("n"),  makeResult("\n")),
@@ -78,7 +78,7 @@ def tokStringPart = makeMainChoice(
 def tokString = makeMainSequence(
     makeString("\""),
     makeRepeat(tokStringPart),
-    makeChoice(
+    PegChoice.new(
         makeSequence(
             makeString("\""),
             makeCode { ., parts, . -> @string{value: "".cat(parts*)} }),

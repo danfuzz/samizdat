@@ -55,7 +55,7 @@ fn convertPex(node, formals) {
             @choice: { . ->
                 def convertedPexes = filterAll(node::pexes)
                     { pex -> convertPex(pex, formals) };
-                makeFunCall(REFS::Peg_makeChoice, convertedPexes*)
+                makeCall(REFS::Peg_PegChoice, SYMS::new, convertedPexes*)
             },
 
             @code: { . ->
