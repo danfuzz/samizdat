@@ -61,13 +61,3 @@ export class RepeatGenerator
             }
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeRepeatGenerator(size, optValue?) {
-    return RepeatGenerator.new(size, optValue*)
-};
