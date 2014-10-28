@@ -10,7 +10,7 @@
 
 #= language core.Lang0
 
-import ./ParaGenerator :: makeParaGenerator;
+import ./ParaGenerator :: *;
 
 
 ##
@@ -29,7 +29,7 @@ export class FilterGenerator
         return this.(NEW)(
             @{
                 filterFunction,
-                generator: makeParaGenerator(generators*)
+                generator: ParaGenerator.new(generators*)
             })
     };
 

@@ -68,7 +68,7 @@ export fn filterPump(filterFunction, generators*) {
         }
         {
             ## General case of multiple (or zero) generators.
-            var gen = makeParaGenerator(generators*);
+            var gen = ParaGenerator.new(generators*);
             loop {
                 ifValue { gen.nextValue(innerResult?) }
                     { nextGen ->

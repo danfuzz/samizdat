@@ -25,6 +25,20 @@ export class ParaGenerator
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(generators*) {
+        ## Return the `nullGenerator` if we weren't passed any arguments.
+        ifIs { eq(generators, []) }
+            { return nullGenerator };
+
+        ## Return a `ListWrapGenerator` if we were only passed one argument.
+        ## This saves some overhead.
+        ifIs { eq(generators.get_size(), 1) }
+            { return makeListWrapGenerator(generators*) };
+
+        return this.(NEW)(@{generators})
+    };
+
+    ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
         return Generator_stdCollect(this, optFilterFunction*)
@@ -61,23 +75,4 @@ export class ParaGenerator
         box* := yields;
         return ParaGenerator.(NEW)(@{generators: nexts})
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeParaGenerator(generators*) {
-    ## Return the `nullGenerator` if we weren't passed any arguments.
-    ifIs { eq(generators, []) }
-        { return nullGenerator };
-
-    ## Return a `ListWrapGenerator` if we were only passed one argument.
-    ## This saves some overhead.
-    ifIs { eq(generators.get_size(), 1) }
-        { return makeListWrapGenerator(generators*) };
-
-    return ParaGenerator.(NEW)(@{generators})
 };

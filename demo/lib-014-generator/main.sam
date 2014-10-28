@@ -54,7 +54,7 @@ msgAll("Empty map", {});
 msgAll("Empty string", "");
 msgAll("NullGenerator", nullGenerator);
 msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
-msgAll("Empty ParaGenerator", makeParaGenerator());
+msgAll("Empty ParaGenerator", ParaGenerator.new());
 msgAll("Empty SerialGenerator", SerialGenerator.new());
 msgAll("Empty RepeatGenerator", makeRepeatGenerator(0));
 msgAll("RepeatGenerator with default value",
@@ -69,16 +69,16 @@ msgAll("String", "Happy string!");
 msgAll("ListWrapGenerator", makeListWrapGenerator("frotz"));
 
 msgAll("Single-item ParaGenerator",
-    makeParaGenerator(["blort", "igram", "fizmo"]));
+    ParaGenerator.new(["blort", "igram", "fizmo"]));
 
 msgAll("All-finite ParaGenerator",
-    makeParaGenerator(
+    ParaGenerator.new(
         [1, 2, 3],
         "abcdefg",
         {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("ParaGenerator with opt element and ValueGenerator",
-    makeParaGenerator(
+    ParaGenerator.new(
         makeOptGenerator([1, 2, 3]),
         ValueGenerator.new("blort"),
         "abcdefg",
@@ -120,7 +120,7 @@ pumped := filterPump("abcdefg", [1, 2, 3, 4])
 note("Got: ", $Format::source(pumped), "\n");
 
 msgAll("ParaGenerator with open ranges",
-    makeParaGenerator(
+    ParaGenerator.new(
         $Range::OpenRange.new("a"),
         $Range::OpenRange.new(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
