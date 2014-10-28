@@ -113,7 +113,7 @@ will be returned, or one of:
   * [core.ModuleSystem](core.ModuleSystem/README.md)
     * [ExternalLoader](core.ModuleSystem/ExternalLoader.md)
     * [InternalLoader](core.ModuleSystem/InternalLoader.md)
-  * [core.Peg (parsing)](Peg.md)
+  * [core.Peg (parsing)](core.Peg/README.md)
   * [core.Range](core.Range/README.md)
     * [ClosedRange](core.Range/ClosedRange.md)
     * [OpenRange](core.Range/OpenRange.md)

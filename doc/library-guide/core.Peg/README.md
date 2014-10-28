@@ -57,6 +57,71 @@ syntax for explanatory purposes.
 
 
 <br><br>
+### Classes
+
+* [PegAny](PegAny.sam)
+* [PegChoice](PegChoice.sam)
+* [PegCode](PegCode.sam)
+* [PegEof](PegEof.sam)
+* [PegFail](PegFail.sam)
+* [PegLookaheadFailure](PegLookaheadFailure.sam)
+* [PegLookaheadSuccess](PegLookaheadSuccess.sam)
+* [PegMain](PegMain.sam)
+* [PegRepeat](PegRepeat.sam)
+* [PegResult](PegResult.sam)
+* [PegSequence](PegSequence.sam)
+* [PegThunk](PegThunk.sam)
+* [PegTokenSet](PegTokenSet.sam)
+* [PegTokenSetComplement](PegTokenSetComplement.sam)
+
+
+<br><br>
+### Constants
+
+#### Rule: `any`
+
+Parser rule which matches any input item, consuming and yielding it. It
+succeeds on any non-empty input. It is an instance of `PegAny`.
+
+This is a direct parser rule, meant to be referred to by value instead of
+called directly.
+
+This is equivalent to the syntactic form `{: . :}`.
+
+#### Rule: `empty`
+
+Parser rule which always succeeds, and never consumes input. It always
+yields `null`. It is an instance of `PegResult`.
+
+This is a direct parser rule, meant to be referred to by value instead of
+called directly.
+
+This is equivalent to the syntactic form `{: () :}`.
+
+#### Rule: `eof`
+
+Parser rule which succeeds only when the input is empty. When successful,
+it always yields `null`. It is an instance of `PegEof`.
+
+This is a direct parser rule, meant to be referred to by value instead of
+called directly.
+
+This is equivalent to the syntactic form `{: !. :}`.
+
+#### Rule: `fail`
+
+Parser rule which always fails. It is an instance of `PegFail`.
+
+This is a direct parser rule, meant to be referred to by value instead of
+called directly.
+
+This is equivalent to the syntactic form `{: !() :}` (that is, attempting
+to find a lookahead failure for the empty rule, said rule which always
+succeeds). It is also equivalent to the syntactic form `{: [] :}` (that is,
+the empty set of tokens or characters).
+
+
+<br><br>
 ### Method Definitions: `Parser` protocol
 
 #### `.parse(box, input, items*) -> newInput`
@@ -260,45 +325,3 @@ This function is intended to aid in the building of tokenizers.
 
 Like `stringFromTokenList`, except returns an interned symbol instead of
 a string.
-
-#### Rule: `any`
-
-Parser rule which matches any input item, consuming and yielding it. It
-succeeds on any non-empty input.
-
-This is a direct parser rule, meant to be referred to by value instead of
-called directly.
-
-This is equivalent to the syntactic form `{: . :}`.
-
-#### Rule: `empty`
-
-Parser rule which always succeeds, and never consumes input. It always
-yields `null`.
-
-This is a direct parser rule, meant to be referred to by value instead of
-called directly.
-
-This is equivalent to the syntactic form `{: () :}`.
-
-#### Rule: `eof`
-
-Parser rule which succeeds only when the input is empty. When successful,
-it always yields `null`.
-
-This is a direct parser rule, meant to be referred to by value instead of
-called directly.
-
-This is equivalent to the syntactic form `{: !. :}`.
-
-#### Rule: `fail`
-
-Parser rule which always fails.
-
-This is a direct parser rule, meant to be referred to by value instead of
-called directly.
-
-This is equivalent to the syntactic form `{: !() :}` (that is, attempting
-to find a lookahead failure for the empty rule, said rule which always
-succeeds). It is also equivalent to the syntactic form `{: [] :}` (that is,
-the empty set of tokens or characters).
