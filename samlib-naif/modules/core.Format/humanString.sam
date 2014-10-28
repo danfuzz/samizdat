@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: makeFilterGenerator;
+import core.Generator :: FilterGenerator;
 
 import ./sourceGeneral :: sourceGeneral;
 
@@ -19,7 +19,7 @@ export fn humanString(value) {
         { classOf(value) },
         {
             (List): { . ->
-                def elems = makeFilterGenerator(value)
+                def elems = FilterGenerator.new(value)
                     { elem -> humanString(elem) };
                 "".cat(elems*)
             },

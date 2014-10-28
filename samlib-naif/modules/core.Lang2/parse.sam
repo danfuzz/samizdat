@@ -1349,7 +1349,7 @@ def parGeneratorDef = {:
     size = parExpression
 
     {
-        def init = makeFunCall(REFS::Generator_makeRepeatGenerator, size);
+        def init = makeCall(REFS::Generator_RepeatGenerator, SYMS::new, size);
         {formal: {}, init}
     }
 :};
@@ -1375,7 +1375,7 @@ def parGeneratorList = {:
 
 ## Helper for `parComprehensionExpression`, which parses the body of a
 ## comprehension, yielding appropriate arguments for a call to either
-## `makeFilterGenerator` or `filterAll`.
+## `FilterGenerator.new` or `filterAll`.
 def parComprehensionBody = {:
     genList = parGeneratorList
     @"->"
@@ -1399,7 +1399,7 @@ def parComprehensionBody = {:
 ## ```
 ## =>
 ## ```
-## $Generator::makeFilterGenerator(expr1, expr2)
+## $Generator::FilterGenerator.new(expr1, expr2)
 ##     { name1, name2 -> filterBody }
 ## ```
 ##
@@ -1416,7 +1416,7 @@ def parComprehensionExpression = {:
     body = parComprehensionBody
     @")"
 
-    { makeFunCall(REFS::Generator_makeFilterGenerator, body*) }
+    { makeCall(REFS::Generator_FilterGenerator, SYMS::new, body*) }
 |
     @"["
     body = parComprehensionBody

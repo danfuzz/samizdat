@@ -8,7 +8,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll, makeFilterGenerator;
+import core.Generator :: FilterGenerator, filterAll;
 
 import ./identifier :: isIdentifier;
 import ./int :: intWithBase;
@@ -128,7 +128,7 @@ fn Record_source(value, adorn) {
 
 ## Stringifies a string.
 fn String_source(value, adorn) {
-    def bodyChars = makeFilterGenerator(value)
+    def bodyChars = FilterGenerator.new(value)
         { ch -> stringChar(ch) };
     return adornIf(adorn, "\"", "".cat(bodyChars*), "\"")
 };

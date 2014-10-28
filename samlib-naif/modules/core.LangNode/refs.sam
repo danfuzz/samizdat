@@ -47,10 +47,10 @@ def NAMES = [
 def MOD_NAMES = [
     {mod: @Format,    name: @formatterFor},
     {mod: @Format,    name: @usual},
+    {mod: @Generator, name: @FilterGenerator},
+    {mod: @Generator, name: @RepeatGenerator},
     {mod: @Generator, name: @filterAll},
     {mod: @Generator, name: @filterPump},
-    {mod: @Generator, name: @makeRepeatGenerator},
-    {mod: @Generator, name: @makeFilterGenerator},
     {mod: @Peg,       name: @any},
     {mod: @Peg,       name: @empty},
     {mod: @Peg,       name: @makeChoice},

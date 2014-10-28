@@ -20,9 +20,22 @@ import ./NullGenerator :: nullGenerator;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class RepeatGenerator
+export class RepeatGenerator
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(size, optValue?) {
+        ifIs { perLe(size, 0) }
+            {
+                ifIs { perLt(size, 0) }
+                    { die("Invalid negative size for RepeatGenerator.") };
+                return nullGenerator
+            };
+
+        def value = ifValueOr { optValue* } { null };
+        return this.(NEW)(@{size, value})
+    };
+
     ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -44,25 +57,7 @@ class RepeatGenerator
             {
                 def value = data::value;
                 box* := value;
-                makeRepeatGenerator(size.sub(1), value)
+                RepeatGenerator.new(size.sub(1), value)
             }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeRepeatGenerator(size, optValue?) {
-    ifIs { perLe(size, 0) }
-        {
-            ifIs { perLt(size, 0) }
-                { die("Invalid negative size for RepeatGenerator.") };
-            return nullGenerator
-        };
-
-    def value = ifValueOr { optValue* } { null };
-    return RepeatGenerator.(NEW)(@{size, value})
 };

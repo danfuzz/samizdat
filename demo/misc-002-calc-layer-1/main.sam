@@ -8,6 +8,8 @@
 
 #= language core.Lang1
 
+import core.Generator :: *;
+
 
 ##
 ## Private Definitions
@@ -33,7 +35,7 @@ def UNARY_OPS = {
 fn applyAll(initialValue, functions) {
     var result = initialValue;
 
-    $Generator::filterPump(functions) { function ->
+    filterPump(functions) { function ->
         result := function(result)
     };
 
@@ -79,7 +81,7 @@ fn applyShuntingYard(initialValue, opValues) {
     var ops = [];
     var values = [initialValue];
 
-    $Generator::filterPump(opValues) { opValue ->
+    filterPump(opValues) { opValue ->
         def op = opValue::op;
         def value = opValue::value;
         def opVal = reducePending(ops, values, op::precedence);
@@ -108,7 +110,7 @@ def number = {:
     digits = digit+
     {
         var result = 0;
-        $Generator::filterPump(digits) { digit ->
+        filterPump(digits) { digit ->
             result := digit.add(result.mul(10))
         };
         result
@@ -181,8 +183,7 @@ def evalExpressions = {:
 
 export fn main(selfPath, origArgs*) {
     def args = ifValueOr { ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
-    def argFilter = $Generator::makeFilterGenerator(args)
-        { arg -> arg.cat("\n") };
+    def argFilter = FilterGenerator.new(args) { arg -> arg.cat("\n") };
     def exprString = "".cat(argFilter*);
     $Peg::apply(evalExpressions, exprString);
 };

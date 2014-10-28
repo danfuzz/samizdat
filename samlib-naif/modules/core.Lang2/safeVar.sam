@@ -5,7 +5,7 @@
 #= language core.Lang1
 
 import core.Format;
-import core.Generator;
+import core.Generator :: filterPump, filterAll;
 import core.LangNode :: *;
 
 
@@ -21,7 +21,7 @@ def CHAR_0 = cast(Int, "0");
 fn intOrVoid(string) {
     var value = 0;
 
-    $Generator::filterPump(string) { ch ->
+    filterPump(string) { ch ->
         ifIs { perLt(ch, "0") } { return };
         ifIs { perGt(ch, "9") } { return };
         def digit = cast(Int, ch).sub(CHAR_0);
@@ -36,7 +36,7 @@ fn intOrVoid(string) {
 fn maxOf(values*) {
     var max = -1;
 
-    $Generator::filterPump(values) { v ->
+    filterPump(values) { v ->
         ifIs { perGt(v, max) }
             { max := v }
     };
@@ -49,7 +49,7 @@ fn maxOf(values*) {
 fn safeIndexForNames(baseStr, names*) {
     def baseSz = baseStr.get_size();
 
-    def indexes = $Generator::filterAll(names) { name /next ->
+    def indexes = filterAll(names) { name /next ->
         def nameStr = cast(String, name);
         ifIs { perLt(nameStr.get_size(), baseSz) }
             {
@@ -68,7 +68,7 @@ fn safeIndexForNames(baseStr, names*) {
 
 ## Maps / reduces `safeIndex` over the given nodes.
 fn safeIndexForNodes(baseStr, nodes*) {
-    def indexes = $Generator::filterAll(nodes)
+    def indexes = filterAll(nodes)
         { node -> safeIndex(node, baseStr) };
     return maxOf(indexes*)
 };

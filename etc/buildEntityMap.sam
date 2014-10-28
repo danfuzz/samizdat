@@ -47,7 +47,7 @@ def parCodePoint = {:
 
     {
         var value = 0;
-        $Generator::filterPump(digits) { digit ->
+        for (digit in digits) {
             value := value * 16 + digit
         };
         cast(String, value)

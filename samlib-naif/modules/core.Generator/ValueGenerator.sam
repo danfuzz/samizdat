@@ -20,9 +20,14 @@ import ./unbounded :: unboundedCollect, unboundedFetch;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class ValueGenerator
+export class ValueGenerator
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(value) {
+        return this.(NEW)(@{value})
+    };
+
     ## Documented in spec.
     .collect(optFilterFunction?) {
         ## It is an "unbounded collect" error to call this.
@@ -41,14 +46,4 @@ class ValueGenerator
         box* := data::value;
         return this
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeValueGenerator(value) {
-    return ValueGenerator.(NEW)(@{value})
 };

@@ -10,7 +10,7 @@
 
 #= language core.Lang0
 
-import ./ParaGenerator :: makeParaGenerator;
+import ./ParaGenerator :: *;
 
 
 ##
@@ -21,9 +21,18 @@ import ./ParaGenerator :: makeParaGenerator;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class FilterGenerator
+export class FilterGenerator
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(filterFunction, generators*) {
+        return this.(NEW)(
+            @{
+                filterFunction,
+                generator: ParaGenerator.new(generators*)
+            })
+    };
+
     ## Documented in spec.
     .collect(optFilterFunction?) {
         ## Just use the standard implementation.
@@ -57,8 +66,8 @@ class FilterGenerator
                         }
                         {
                             ## The filter discarded the value. As this doesn't
-                            ## `return` (per se) it will fall through to the end
-                            ## of the loop body and iterate.
+                            ## `return` (per se) it will fall through to the
+                            ## end of the loop body and iterate.
                             innerGen := nextGen;
                         }
                 }
@@ -68,18 +77,4 @@ class FilterGenerator
                 }
         }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeFilterGenerator(filterFunction, generators*) {
-    return FilterGenerator.(NEW)(
-        @{
-            filterFunction,
-            generator: makeParaGenerator(generators*)
-        })
 };
