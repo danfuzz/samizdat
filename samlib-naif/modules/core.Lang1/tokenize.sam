@@ -22,7 +22,7 @@ import core.Peg :: *;
 ##
 
 ## Documented in spec.
-def tokWhitespace = makeMainSequence(
+def tokWhitespace = PegMain.newSequence(
     makeLookaheadSuccess(makeCharSet("# \n")),
     makeRepeat(
         PegChoice.new(
@@ -34,7 +34,7 @@ def tokWhitespace = makeMainSequence(
         1));
 
 ## Documented in spec.
-def tokPunctuation = makeMainSequence(
+def tokPunctuation = PegMain.newSequence(
     makeLookaheadSuccess(
         makeCharSet("@:.,=-+?;*/<>{}()[]", "&|!%")),
     PegChoice.new(
@@ -47,16 +47,16 @@ def tokPunctuation = makeMainSequence(
         any));
 
 ## Documented in spec.
-def tokDecDigit = makeMainSequence(
+def tokDecDigit = PegMain.newSequence(
     makeCharSet("_0123456789"));
 
 ## Documented in spec.
-def tokInt = makeMainSequence(
+def tokInt = PegMain.newSequence(
     makeRepeat(tokDecDigit, 1),
     makeCode { digits -> @int{value: intFromDigits(10, digits)} });
 
 ## Documented in spec.
-def tokStringPart = makeMainChoice(
+def tokStringPart = PegMain.newChoice(
     PegSequence.new(
         makeRepeat(makeCharSetComplement("\\\"\n"), 1),
         makeCode(stringFromTokenList)),
@@ -75,7 +75,7 @@ def tokStringPart = makeMainChoice(
             PegSequence.new(makeString("0"),  makeResult("\0")))));
 
 ## Documented in spec.
-def tokString = makeMainSequence(
+def tokString = PegMain.newSequence(
     makeString("\""),
     makeRepeat(tokStringPart),
     PegChoice.new(
@@ -92,7 +92,7 @@ def IDENTIFIER_START_CHARS =
 def IDENTIFIER_CHARS = IDENTIFIER_START_CHARS.cat("0123456789");
 
 ## Documented in spec.
-def tokIdentifier = makeMainSequence(
+def tokIdentifier = PegMain.newSequence(
     makeCharSet(IDENTIFIER_START_CHARS),
     makeRepeat(makeCharSet(IDENTIFIER_CHARS)),
     makeCode { one, rest ->
@@ -102,13 +102,13 @@ def tokIdentifier = makeMainSequence(
     });
 
 ## Documented in spec.
-def tokQuotedIdentifier = makeMainSequence(
+def tokQuotedIdentifier = PegMain.newSequence(
     makeString("\\"),
     tokString,
     makeCode { ., s -> @identifier{value: cast(Symbol, s::value)} });
 
 ## Documented in spec.
-def tokError = makeMainSequence(
+def tokError = PegMain.newSequence(
     any,
     makeRepeat(makeCharSetComplement("\n")),
     makeCode { badCh, . ->
@@ -117,7 +117,7 @@ def tokError = makeMainSequence(
     });
 
 ## Documented in spec.
-def tokToken = makeMainChoice(
+def tokToken = PegMain.newChoice(
     tokString,
     tokIdentifier,
     tokQuotedIdentifier,
@@ -126,7 +126,7 @@ def tokToken = makeMainChoice(
     tokError);
 
 ## Documented in spec.
-def tokFile = makeMainSequence(
+def tokFile = PegMain.newSequence(
     makeRepeat(
         PegSequence.new(
             makeRepeat(tokWhitespace, 0, 1),

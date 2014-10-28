@@ -35,6 +35,7 @@ def SYMBOLS = [
     @new,
     @newExclusive,
     @newInclusive,
+    @newSequence,
     @not,
     @or,
     @perEq,

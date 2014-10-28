@@ -57,7 +57,7 @@ def MOD_NAMES = [
     {mod: @Peg,       name: @makeCode},
     {mod: @Peg,       name: @makeLookaheadFailure},
     {mod: @Peg,       name: @makeLookaheadSuccess},
-    {mod: @Peg,       name: @makeMainSequence},
+    {mod: @Peg,       name: @PegMain},
     {mod: @Peg,       name: @makeParserThunk},
     {mod: @Peg,       name: @makeRepeat},
     {mod: @Peg,       name: @makeResult},

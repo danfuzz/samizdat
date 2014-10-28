@@ -27,6 +27,11 @@ fn convertPexInList(nodes) {
     return filterAll(nodes) { node -> convertPexIn(node) }
 };
 
+## Converts a pex to a method call on its converted inner pex.
+fn makeCallPex(target, name, node, formals, moreArgs*) {
+    return makeCall(target, name, convertPex(node::pex, formals), moreArgs*)
+};
+
 ## Converts a pex to a function call on its converted inner pex.
 fn makeFunCallPex(function, node, formals, moreArgs*) {
     return makeFunCall(function, convertPex(node::pex, formals), moreArgs*)
@@ -198,7 +203,7 @@ fn convertPexIn(node) {
 
             @parser: { . ->
                 ## This is where the juicy stuff happens!
-                makeFunCallPex(REFS::Peg_makeMainSequence, node, [])
+                makeCallPex(REFS::Peg_PegMain, SYMS::newSequence, node, [])
             },
 
             @store: { . ->

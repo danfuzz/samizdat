@@ -25,24 +25,24 @@ export class PegMain
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(rule) {
+        return this.(NEW)(@{rule})
+    };
+
+    ## Documented in spec.
+    class.newChoice(rules*) {
+        return PegMain.new(PegChoice.new(rules*))
+    };
+
+    ## Documented in spec.
+    class.newSequence(rules*) {
+        return PegMain.new(PegSequence.new(rules*))
+    };
+
+    ## Documented in spec.
     .parse(box, input, .*) {
         ## The point of this implementation is to drop the `items` context.
         def data = this.(ACCESS)();
         return? data::rule.parse(box, input)
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeMainChoice(rules*) {
-    return PegMain.(NEW)(@{rule: PegChoice.new(rules*)})
-};
-
-## Documented in spec.
-export fn makeMainSequence(rules*) {
-    return PegMain.(NEW)(@{rule: PegSequence.new(rules*)})
 };
