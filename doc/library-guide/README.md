@@ -111,7 +111,7 @@ will be returned, or one of:
   * [core.Io0](Io0.md)
   * [core.Lang*](LangN.md)
   * [core.LangNode](LangNode.md)
-  * [core.ModuleSystem](core.ModuleSystem/)
+  * [core.ModuleSystem](core.ModuleSystem/README.md)
     * [ExternalLoader](core.ModuleSystem/ExternalLoader.md)
     * [InternalLoader](core.ModuleSystem/InternalLoader.md)
   * [core.Peg (parsing)](Peg.md)
