@@ -22,15 +22,27 @@ the syntactic form `{: "string" :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(rules*) -> :PegSequence`
+#### `.new(rules*) -> :Parser`
 
 Creates an instance of this class.
 
-#### `.newString(string) -> :PegSequence`
+Special cases:
+
+* If no arguments are passed, this returns `core.Peg :: empty`.
+* If exactly one argument is passed, this returns that rule directly.
+
+#### `.newString(string) -> :Parser`
 
 Creates an instance of this class, which matches the given string
 exactly, as a sequence of characters. `string` must be a string. The result of
 successful parsing is an empty-payload token with `@string` as its name.
+
+Special cases:
+
+* If no arguments are pased, or all arguments are the empty string (`""`),
+  then this returns `PegResult.new(@""{})`.
+* If there is only one character in all of the arguments, this returns
+  `PegTokenSet.new(@"c")`, where `"c"` is the character in question.
 
 <br><br>
 ### Method Definitions: `Parser` protocol.

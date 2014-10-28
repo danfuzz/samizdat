@@ -14,10 +14,14 @@ This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(rules*) -> :PegChoice`
+#### `.new(rules*) -> :Parser`
 
 Creates an instance of this class.
 
+Special cases:
+
+* If no arguments are passed, this returns `core.Peg :: fail`.
+* If exactly one argument is passed, this returns that rule directly.
 
 <br><br>
 ### Method Definitions: `Parser` protocol.
