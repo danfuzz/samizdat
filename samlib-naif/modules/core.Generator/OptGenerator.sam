@@ -25,6 +25,11 @@ export class OptGenerator
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(generator) {
+        return this.(NEW)(@{generator})
+    };
+
+    ## Documented in spec.
     .collect(optFilterFunction?) {
         ## It is an "unbounded collect" error to call this.
         unboundedCollect(this)
@@ -44,18 +49,8 @@ export class OptGenerator
         return ifValue { data::generator.nextValue(result?) }
             { nextGenerator ->
                 box* := [result];
-                makeOptGenerator(nextGenerator)
+                OptGenerator.new(nextGenerator)
             }
             { ValueGenerator.new([]).nextValue(box) }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeOptGenerator(generator) {
-    return OptGenerator.(NEW)(@{generator})
 };
