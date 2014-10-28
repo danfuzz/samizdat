@@ -57,7 +57,7 @@ For specific details on which names are mapped, refer to the source.
 
 
 <br><br>
-### Function Definitions
+### Functions
 
 #### `canYieldVoid(node) -> node | void`
 

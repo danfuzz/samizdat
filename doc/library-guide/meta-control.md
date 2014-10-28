@@ -8,7 +8,7 @@ These functions "break out" of the semantic model of Samizdat, in a manner
 of speaking.
 
 <br><br>
-### Primitive Definitions
+### Functions
 
 #### `die(strings*) -> n/a  ## Terminates the runtime.`
 
@@ -22,9 +22,3 @@ by concatenating all the strings together (with no separators).
 
 This is intended for debugging, and as such this will generally end up
 emitting to (something akin to) a standard-error stream.
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

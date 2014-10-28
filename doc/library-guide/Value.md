@@ -138,7 +138,7 @@ of all cross-class ordering functions.
 
 
 <br><br>
-### Primitive Definitions
+### Functions
 
 #### `cast(cls, value) -> .`
 
@@ -163,44 +163,6 @@ non-void return value of `totalEq` and always returns the given `value`
 argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
-
-#### `maybeCast(cls, value) -> . | void`
-
-"Soft" cast operation. This attempts to cast (convert in a maximally
-data-preserving fashion) the given `value` to the indicated class `cls`.
-
-This function operates by first checking to see if `value` is already of
-a proper class, and returning it directly if so.
-
-If not, this function calls `value.castToward(cls)` to give `value` "first
-dibs" on conversion. If it results in a value of an appropriate class, then
-that value is then returned.
-
-If not, this function then calls `cls.castFrom(value)`, passing it the
-non-void result of the previous step (if any) or the original value (if not).
-If this call results in a value of an appropriate class, then that value is
-then returned.
-
-If not, this function returns void.
-
-#### `order(value, other) -> int`
-
-Returns the order of the two given values, using the total order of values.
-
-The return value is one of `@less` `@same` `@more` indicating how the two
-values order with respect to each other, just like `perOrder` and
-`totalOrder`.
-
-This function works by calling `perOrder` on the classes of the two arguments
-if they are different, or by calling `totalOrder` on the arguments themselves
-if they both have the same class.
-
-**Note:** This is the function which underlies the implementation
-of all cross-class ordering functions.
-
-
-<br><br>
-### In-Language Definitions
 
 #### `ge(value, other) -> logic`
 
@@ -234,12 +196,46 @@ returns void.
 
 **Syntax Note:** Used in the translation of `expression \< expression` forms.
 
+#### `maybeCast(cls, value) -> . | void`
+
+"Soft" cast operation. This attempts to cast (convert in a maximally
+data-preserving fashion) the given `value` to the indicated class `cls`.
+
+This function operates by first checking to see if `value` is already of
+a proper class, and returning it directly if so.
+
+If not, this function calls `value.castToward(cls)` to give `value` "first
+dibs" on conversion. If it results in a value of an appropriate class, then
+that value is then returned.
+
+If not, this function then calls `cls.castFrom(value)`, passing it the
+non-void result of the previous step (if any) or the original value (if not).
+If this call results in a value of an appropriate class, then that value is
+then returned.
+
+If not, this function returns void.
+
 #### `ne(value, other) -> logic`
 
 Checks for inequality, using the total order of values. Returns `value` if
 the two given values are not identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
+
+#### `order(value, other) -> int`
+
+Returns the order of the two given values, using the total order of values.
+
+The return value is one of `@less` `@same` `@more` indicating how the two
+values order with respect to each other, just like `perOrder` and
+`totalOrder`.
+
+This function works by calling `perOrder` on the classes of the two arguments
+if they are different, or by calling `totalOrder` on the arguments themselves
+if they both have the same class.
+
+**Note:** This is the function which underlies the implementation
+of all cross-class ordering functions.
 
 #### `perGe(value, other) -> logic`
 

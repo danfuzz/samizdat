@@ -8,7 +8,7 @@ The `Globals` module is the provider of the standard global variable
 environment used when evaluating Samizdat source in the usual manner.
 
 <br><br>
-### In-Language Definitions
+### Functions
 
 #### `earlyEnvironment() -> map`
 

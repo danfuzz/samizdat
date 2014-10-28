@@ -78,7 +78,7 @@ Returns the elements of `this`, always as a list per se.
 
 
 <br><br>
-### In-Language Definitions
+### Functions
 
 #### `reverseNth(sequence, n) -> . | void`
 

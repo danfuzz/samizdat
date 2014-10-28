@@ -40,15 +40,3 @@ order.
 #### `.call(args*) -> . | void`
 
 Calls the given builtin with the given arguments.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

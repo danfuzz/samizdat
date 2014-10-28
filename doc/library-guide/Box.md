@@ -151,17 +151,13 @@ Calling this method always results in the runtime terminating with an error.
 
 
 <br><br>
-### Primitive Definitions
+### Constants
 
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-#### Constant: `nullBox`
+#### `nullBox`
 
 A value that represents a permanently empty (un-set, un-stored) box.
 `nullBox.store(value)` is effectively a no-op. This arrangement is done in
 order to make it easy to pass a box into functions that require one, but where
 the box value is never needed.
+
+This is an instance of `NullBox`.

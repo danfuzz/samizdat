@@ -9,19 +9,7 @@ functionality. For convenience, it exports `runCommandLine` to the default
 global variable environment.
 
 <br><br>
-### Method Definitions
-
-(none)
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
+### Functions
 
 #### `parseArgs(args) -> map`
 

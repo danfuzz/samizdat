@@ -9,13 +9,7 @@ of Samizdat language parsing and evaluation. There are modules for
 layers 0, 1, and 2.
 
 <br><br>
-### Method Definitions
-
-(none)
-
-
-<br><br>
-### Function Definitions
+### Functions
 
 #### `languageOf(string) -> string | void`
 

@@ -83,15 +83,3 @@ none left.
 
 **Note:** It is possible to manually construct a `ClosedRange` that will
 return void, but with normal usage, this never happens.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions: `Range` module
-
-(none)

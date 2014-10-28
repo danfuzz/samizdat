@@ -60,7 +60,7 @@ to a known module but, for some reason, failed to be successfully loaded.
 
 
 <br><br>
-### In-Language Definitions
+### Functions
 
 #### `loadModule(loader, source) -> .`
 

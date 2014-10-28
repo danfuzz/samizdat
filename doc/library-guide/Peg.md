@@ -69,13 +69,7 @@ store anything into `box` and returns void.
 
 
 <br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
+### Functions
 
 #### `apply(rule, input) -> . | void`
 
