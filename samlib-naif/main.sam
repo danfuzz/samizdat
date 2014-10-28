@@ -26,7 +26,7 @@ export fn main(libraryPath, primitiveGlobals) {
 
     note("\nLoading core library...");
 
-    def loader = $ModuleSystem::makeExternalLoader(
+    def loader = $ModuleSystem::ExternalLoader.new(
         libraryPath.cat("/modules"), earlyGlobals, null);
 
     def innerGlobals =

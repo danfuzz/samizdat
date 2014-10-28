@@ -66,18 +66,16 @@ will be returned, or one of:
 
 ### Contents
 
-* Classes
+* Global Classes
   * [Bool](Bool.md)
   * [Builtin](Builtin.md)
   * [Class](Class.md)
-  * [ClosedRange](ClosedRange.md) (part of `Range` module)
   * [Core](Core.md)
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)
   * [Null](Null.md)
   * [Object](Object.md)
-  * [OpenRange](OpenRange.md) (part of `Range` module)
   * [Record](Record.md)
   * [Symbol](Symbol.md)
   * [SymbolTable](SymbolTable.md)
@@ -106,8 +104,12 @@ will be returned, or one of:
   * [core.Lang*](LangN.md)
   * [core.LangNode](LangNode.md)
   * [core.ModuleSystem](ModuleSystem.md)
+    * [ExternalLoader](ExternalLoader.md)
+    * [InternalLoader](InternalLoader.md)
   * [core.Peg (parsing)](Peg.md)
   * [core.Range](Range.md)
+    * [ClosedRange](ClosedRange.md)
+    * [OpenRange](OpenRange.md)
 
 * Other
   * [Constants](constants.md)

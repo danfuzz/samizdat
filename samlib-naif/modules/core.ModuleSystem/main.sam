@@ -337,7 +337,7 @@ fn doExternalResolve(loader, source) {
             note("    ", sourceString(source));
 
             def innerLoader =
-                makeInternalLoader(modulePath, data::globals, loader);
+                InternalLoader.new(modulePath, data::globals, loader);
             def result = resolveMain(innerLoader);
 
             note("        Done.");
@@ -345,9 +345,35 @@ fn doExternalResolve(loader, source) {
         }
 };
 
-class ExternalLoader
+export class ExternalLoader
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(path, globals, nextLoader) {
+        checkAbsolutePath(path);
+
+        ## Check for existence and directoriness.
+        def pathType = $Io0::fileType(path);
+        ifIs { eq(pathType, @absent) }
+            {
+                ## No such file or directory.
+                return fixNullLoader(nextLoader)
+            };
+        ifNot { eq(pathType, @directory) }
+            {
+                die("Module loader path exists but is not a directory: ",
+                    path)
+            };
+
+        return this.(NEW)(
+            @{
+                basePath: path.cat("/"),
+                globals,
+                loadedBox: Cell.new({}),
+                nextLoader: fixNullLoader(nextLoader)
+            })
+    };
+
     ## Documented in spec.
     .readResource(source, format) {
         ## Always just defer to the next loader.
@@ -373,29 +399,6 @@ class ExternalLoader
 
         return? resolveHelper(data::loadedBox, source, externalResolve)
     };
-};
-
-## Documented in spec.
-export fn makeExternalLoader(path, globals, nextLoader) {
-    checkAbsolutePath(path);
-
-    ## Check for existence and directoriness.
-    def pathType = $Io0::fileType(path);
-    ifIs { eq(pathType, @absent) }
-        {
-            ## No such file or directory.
-            return fixNullLoader(nextLoader)
-        };
-    ifNot { eq(pathType, @directory) }
-        { die("Module loader path exists but is not a directory: ", path) };
-
-    return ExternalLoader.(NEW)(
-        @{
-            basePath: path.cat("/"),
-            globals,
-            loadedBox: Cell.new({}),
-            nextLoader: fixNullLoader(nextLoader)
-        })
 };
 
 
@@ -462,9 +465,49 @@ def INTERNAL_READERS = {
     @utf8: readResource_utf8
 };
 
-class InternalLoader
+export class InternalLoader
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(path, globals, nextLoader) {
+        checkAbsolutePath(path);
+        def basePath = path.cat("/");
+        def modulesDir = basePath.cat("modules");
+        def externLoader =
+            ExternalLoader.new(modulesDir, globals, fixNullLoader(nextLoader));
+
+        ## Forward declaration, for recursive references in the `module_*`
+        ## functions immediately below.
+        def loader;
+
+        fn glo_loadModule(source) {
+            return loadModule(loader, source)
+        };
+        fn glo_loadResource(src, fmt) {
+            return loadResource(loader, src, fmt)
+        };
+        fn glo_thisLoader() {
+            return loader
+        };
+
+        def fullGlobals = @{
+            globals*,
+            loadModule:   glo_loadModule,
+            loadResource: glo_loadResource,
+            thisLoader:   glo_thisLoader
+        };
+
+        loader := this.(NEW)(
+            @{
+                basePath,
+                globals:    fullGlobals,
+                loadedBox:  Cell.new({}),
+                nextLoader: externLoader
+            });
+
+        return loader
+    };
+
     ## Documented in spec.
     .readResource(source, format) {
         def data = this.(ACCESS)();
@@ -501,40 +544,6 @@ class InternalLoader
 
         return? resolveHelper(data::loadedBox, source, internalResolve)
     };
-};
-
-## Documented in spec.
-export fn makeInternalLoader(path, globals, nextLoader) {
-    checkAbsolutePath(path);
-    def basePath = path.cat("/");
-    def modulesDir = basePath.cat("modules");
-    def externLoader =
-        makeExternalLoader(modulesDir, globals, fixNullLoader(nextLoader));
-
-    ## Forward declaration, for recursive references in the `module_*`
-    ## functions immediately below.
-    def loader;
-
-    fn glo_loadModule(source)     { return loadModule(loader, source)     };
-    fn glo_loadResource(src, fmt) { return loadResource(loader, src, fmt) };
-    fn glo_thisLoader()           { return loader                         };
-
-    def fullGlobals = @{
-        globals*,
-        loadModule:   glo_loadModule,
-        loadResource: glo_loadResource,
-        thisLoader:   glo_thisLoader
-    };
-
-    loader := InternalLoader.(NEW)(
-        @{
-            basePath,
-            globals:    fullGlobals,
-            loadedBox:  Cell.new({}),
-            nextLoader: externLoader
-        });
-
-    return loader
 };
 
 
@@ -602,7 +611,7 @@ fn runBinaryFile(path, loader, args) {
 ## Documented in spec.
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
-    def mainLoader = makeInternalLoader(libraryPath, primitiveGlobals, null);
+    def mainLoader = InternalLoader.new(libraryPath, primitiveGlobals, null);
     def mainModule = ifValueOr { resolveMain(mainLoader) }
         { die("No core library `main` module found.") };
     def mainFunction = ifValueOr { mainModule::exports::main }
@@ -614,7 +623,7 @@ export fn main(libraryPath, primitiveGlobals) {
 ## Documented in spec.
 export fn run(path, loader, args*) {
     def globals = loadGlobals(loader);
-    def mainLoader = makeInternalLoader(path, globals, loader);
+    def mainLoader = InternalLoader.new(path, globals, loader);
     def mainModule = ifValueOr { resolveMain(mainLoader) }
         { die("No `main` module found on path: ", path) };
     def mainFunction = ifValueOr { mainModule::exports::main }

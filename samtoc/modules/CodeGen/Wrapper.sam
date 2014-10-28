@@ -21,9 +21,14 @@ import ./indentation :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class Wrapper
+export class Wrapper
         access: ACCESS,
         new: NEW {
+    class.new(tree) {
+        def flat;
+        return this.(NEW)(@{tree, flatBox: flat?})
+    };
+
     .flatten() {
         def data = this.(ACCESS)();
         def flatBox = data::flatBox;
@@ -51,14 +56,4 @@ class Wrapper
         def data = this.(ACCESS)();
         return? data::tree.prefersFlat() & this;
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-export fn genWrapper(tree) {
-    def flat;
-    return Wrapper.(NEW)(@{tree, flatBox: flat?})
 };

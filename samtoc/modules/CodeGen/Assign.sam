@@ -6,7 +6,7 @@
 ## Variable assignment tree.
 ##
 
-import ./CodeString :: fix;
+import ./CodeString :: *;
 import ./Wrapper :: *;
 import ./indentation :: *;
 
@@ -19,9 +19,17 @@ import ./indentation :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class Assign
+export class Assign
         access: ACCESS,
         new: NEW {
+    class.new(target, value) {
+        return Wrapper.new(
+            this.(NEW)(@{
+                target: CodeString.fix(target),
+                value: CodeString.fix(value)
+            }))
+    };
+
     .flatten() {
         def data = this.(ACCESS)();
         return "\(data::target.flatten()) = \(data::value.flatten())"
@@ -42,14 +50,4 @@ class Assign
             & data::value.prefersFlat()
             & this
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-export fn genAssign(target, value) {
-    return genWrapper(
-        Assign.(NEW)(@{target: fix(target), value: fix(value)}))
 };

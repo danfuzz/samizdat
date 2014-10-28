@@ -6,7 +6,7 @@
 ## Comment tree.
 ##
 
-import ./CodeString :: fix;
+import ./CodeString :: *;
 import ./Wrapper :: *;
 import ./indentation :: *;
 
@@ -19,7 +19,7 @@ import ./indentation :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class Comment
+export class Comment
         access: ACCESS,
         new: NEW {
     .flatten() {
@@ -61,8 +61,8 @@ class Comment
 
 export fn genComment(text, optPayload?) {
     return if (def payload = optPayload*) {
-        genWrapper(Comment.(NEW)(@{payload: fix(payload), text}))
+        Wrapper.new(Comment.(NEW)(@{payload: CodeString.fix(payload), text}))
     } else {
-        genWrapper(Comment.(NEW)(@{text}))
+        Wrapper.new(Comment.(NEW)(@{text}))
     }
 };

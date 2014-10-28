@@ -22,9 +22,15 @@ import ./rangeAdd :: *;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class OpenRange
+export class OpenRange
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(firstValue, optIncrement?) {
+        def increment = ifValueOr { optIncrement* } { 1 };
+        return this.(NEW)(@{firstValue, increment})
+    };
+
     ## Documented in spec.
     .collect(optFilterFunction?) {
         ## It is an "unbounded collect" error to call this.
@@ -47,16 +53,4 @@ class OpenRange
         return OpenRange.(NEW)(
             @{firstValue: rangeAdd(firstValue, increment), increment})
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeOpenRange(firstValue, optIncrement?) {
-    def increment = ifValueOr { optIncrement* } { 1 };
-
-    return OpenRange.(NEW)(@{firstValue, increment})
 };

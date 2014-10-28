@@ -15,8 +15,29 @@ import core.Io0;
 
 import Reader;
 
-import ./InternalResolver :: makeInternalResolver;
-import ./cache;
+import ./InternalResolver :: *;
+import ./ResolverCache :: *;
+
+
+##
+## Private Definitions
+##
+
+## Helper for `splitPaths` which does the actual splitting.
+def parPathList = {:
+    (
+        &.
+        chars = [! ":"]*
+        (":" | !.)
+
+        { $Peg::stringFromTokenList(chars) }
+    )*
+:};
+
+## Parses a colon-separated string into a list.
+fn splitPaths(paths) {
+    return $Peg::apply(parPathList, paths)
+};
 
 
 ##
@@ -43,18 +64,49 @@ fn directResolve(self, source) {
     } else if ($Io0::fileType(dirPath) == @directory) {
         ## We found a source directory for a module. Make an internal resolver
         ## for it, and use that to resolve its `main`.
-        def subResolver = makeInternalResolver(dirPath, self);
+        def subResolver = InternalResolver.new(dirPath, self);
         subResolver.resolve(@internal{name: "main"})
     }
 };
 
-class ExternalResolver
+export class ExternalResolver
         access: ACCESS,
         new: NEW {
+    ## Makes an external resolver. As a handy convenience, if the `path`
+    ## isn't an existing directory, this just returns the given `nextResolver`.
+    ## This means you can call this function on an optional captive modules
+    ## directory and get sensible behavior.
+    class.new(path, nextResolver) {
+        if ($Io0::fileType(path) != @directory) {
+            return nextResolver
+        };
+
+        return this.(NEW)(
+            @{
+                cache: ResolverCache.new(),
+                nextResolver,
+                path
+            })
+    };
+
+    ## Makes a chain of external resolvers corresponding to the given `paths`
+    ## string. `paths` must be a colon-separated list of `modules`-style
+    ## directories.
+    class.newChain(paths, next) {
+        def pathList = splitPaths(paths);
+        var result = next;
+
+        for (one in pathList) {
+            result := this.new(one, result)
+        };
+
+        return result
+    };
+
     .resolve(source) {
         def data = this.(ACCESS)();
 
-        if (def found = $cache::cacheGet(data::cache, source)) {
+        if (def found = data::cache.get(source)) {
             ## `found` is always a list. See comment below.
             return? found*
         };
@@ -68,30 +120,8 @@ class ExternalResolver
         )?;
 
         ## Cache the result, so we don't bother with a search the next time.
-        $cache::cachePut(data::cache, source, result);
+        data::cache.put(source, result);
 
         return? result*
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Makes an external resolver. As a handy convenience, if the `path`
-## isn't an existing directory, this just returns the given `nextResolver`.
-## This means you can call this function on an optional captive modules
-## directory and get sensible behavior.
-export fn makeExternalResolver(path, nextResolver) {
-    if ($Io0::fileType(path) != @directory) {
-        return nextResolver
-    };
-
-    return ExternalResolver.(NEW)(
-        @{
-            cache: $cache::makeCache(),
-            nextResolver,
-            path
-        })
 };

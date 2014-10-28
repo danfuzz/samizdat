@@ -8,7 +8,7 @@
 
 export import ./Assign :: *;
 export import ./Call :: *;
-export import ./CodeString :: genCodeString;
+export import ./CodeString :: *;
 export import ./Comment :: *;
 export import ./MethCall :: *;
 export import ./Return :: *;
