@@ -10,6 +10,18 @@ utility functions for making and using various generators.
 Note that all collections are also generators (which generate their
 elements in sequence).
 
+<br><br>
+### Classes
+
+* [FilterGenerator](FilterGenerator.md)
+* [ListWrapGenerator](ListWrapGenerator.md)
+* [NullGenerator](NullGenerator.md)
+* [OptGenerator](OptGenerator.md)
+* [ParaGenerator](ParaGenerator.md)
+* [RepeatGenerator](RepeatGenerator.md)
+* [SerialGenerator](SerialGenerator.md)
+* [ValueGenerator](ValueGenerator.md)
+
 
 <br><br>
 ### Method Definitions: `Generator` protocol.
@@ -86,8 +98,7 @@ appropriate classes.
 
 #### Constant: `nullGenerator`
 
-A generator which is perennially voided. It is defined as `@NullGenerator`,
-along with generator method bindings for that class.
+A generator which is perennially voided.
 
 #### `filterAll(filterFunction, generators*) -> list`
 
@@ -127,119 +138,3 @@ it repeatedly until it becomes voided.
 
 This function returns the last value yielded by the generator. If the
 generator never yielded a value, this function returns void.
-
-#### `makeFilterGenerator(filterFunction, generators*) -> generator`
-
-Filtering generator constructor. This takes any number of arbitrary
-generators, and returns a generator which filters the generated results
-with the given filter function. This works as follows:
-
-Each time `nextValue()` is called on the outer (result) generator, it calls
-`nextValue()` on the argument generators. If any of the argument generators
-has been voided, then the outer generator also becomes voided.
-
-Otherwise, the values yielded from the inner generators are passed to the
-`filterFunction` as its arguments (in generator order). If that function
-returns a value, then that value in turn becomes the yielded result of
-the outer generator. If the filter function yields void, then the
-value-in-progress is discarded, and the inner generator is retried, with
-the same void-or-value behavior.
-
-**Note:** This function makes a value of class `"FilterGenerator"`
-with `filterFunction` and either a `ParaGenerator` or `ListWrapGenerator`
-as the payload. That class has appropriate `Generator` method bindings.
-
-**Syntax Note:** Used in the translation of comprehension forms.
-
-#### `makeListWrapGenerator(generator) -> generator`
-
-List wrapping generator combination constructor. This takes a single
-generator, and returns a generator that yields single-element lists.
-This is a special case of `makeParaGenerator` and exists so that
-single-element para-generators can be implemented without undue overhead.
-
-Each yielded list consists of values yielded from the individual generators,
-in passed order. The generator becomes voided when *any* of the individual
-generators is voided.
-
-**Note:** This function makes a value of class `"ListWrapGenerator"`
-with `generator` as the payload. That class has appropriate `Generator`
-method bindings.
-
-#### `makeOptGenerator(generator) -> generator`
-
-"Optional" generator constructor. This takes an arbitrary generator,
-returning a new generator that always yields lists and never
-becomes voided. As long as the underlying generator yields a value, the
-returned generator yields a single-element list of that value. Once the
-underlying generator is voided, the returned generator yields the empty
-list, and will continue doing so ad infinitum.
-
-**Note:** This function makes a value of the class `"OptGenerator"` with
-the given `generator` as the payload. That class has
-appropriate `Generator` method bindings.
-
-#### `makeParaGenerator(generators*) -> generator`
-
-Parallel generator combination constructor. This takes an arbitrary number of
-generators, and returns a generator that yields lists.
-
-Each yielded list consists of values yielded from the individual generators,
-in passed order. The generator becomes voided when *any* of the individual
-generators is voided.
-
-Special cases:
-
-* If passed no arguments, this returns `nullGenerator`.
-
-* If passed one argument, this returns a result from `makeListWrapGenerator`.
-
-**Note:** Special cases aside, this function makes a value of class
-`"ParaGenerator"` with `[generators*]` as the payload. That class has
-appropriate `Generator` method bindings.
-
-**Syntax Note:** Used in the translation of `for` forms.
-
-#### `makeRepeatGenerator(size, optValue?) -> generator`
-
-Repeated-value generator. This takes a size, which must be a non-negative
-int, and an optional value, producing a generator that yields the given
-value (or `null` if no value was supplied) the indicated number of times.
-
-Special cases:
-
-* If passed `0` for `size`, this returns `nullGenerator`.
-
-**Note:** Special cases aside, this function makes a value of class
-`"RepeatGenerator"` with `{size, value}` as the payload. That class has
-appropriate `Generator` method bindings.
-
-**Syntax Note:** Used in the translation of `for` and comprehension forms.
-
-#### `makeSerialGenerator(generators*) -> generator`
-
-Sequential generator combination constructor. This takes an arbitrary number
-of generators, and returns a generator that yields from each of
-the generators in argument order.
-
-As each generator becomes voided, the next one (in argument order) is called
-upon to generate further elements. The generator becomes voided after the
-final argument is voided.
-
-Special cases:
-
-* If passed no arguments, this returns `nullGenerator`.
-
-* If passed one argument, this returns that argument directly.
-
-**Note:** Special cases aside, this function makes a value of class
-`"SerialGenerator"` with `[generators*]` as the payload. That class has
-appropriate `Generator` method bindings.
-
-#### `makeValueGenerator(value) -> generator`
-
-Creates an unnbounded generator (one with infinite elements) which always
-yields the given `value` upon `nextValue()` call.
-
-**Note:** This function makes a value of class `"ValueGenerator"` with `value`
-as the payload. That class has appropriate `Generator` method bindings.

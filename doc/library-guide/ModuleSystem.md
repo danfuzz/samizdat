@@ -23,9 +23,8 @@ be their own dependencies.
 <br><br>
 ### Classes
 
-* Classes
-  * [ExternalLoader](ExternalLoader.md)
-  * [InternalLoader](InternalLoader.md)
+* [ExternalLoader](ExternalLoader.md)
+* [InternalLoader](InternalLoader.md)
 
 <br><br>
 ### Method Definitions: `Loader` protocol
