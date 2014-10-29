@@ -127,15 +127,3 @@ list. Terminates with an error in all other cases.
 
 On a non-empty list, calls `box.store(this[0])` and returns
 `this[1..]`. On an empty list, this just returns void.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

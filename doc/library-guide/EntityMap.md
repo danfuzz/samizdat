@@ -7,7 +7,7 @@ core.EntityMap
 This module defines a map of XML-style entity names to corresponding strings.
 
 <br><br>
-### In-Language Definitions
+### Constants
 
 #### `ENTITY_MAP`
 

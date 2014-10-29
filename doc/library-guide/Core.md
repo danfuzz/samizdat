@@ -17,13 +17,3 @@ same name.
 ### Method Definitions: `Core` protocol
 
 (none)
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-<br><br>
-### In-Language Definitions
-
-(none)

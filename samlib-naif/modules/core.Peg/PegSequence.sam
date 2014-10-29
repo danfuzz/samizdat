@@ -10,7 +10,8 @@
 
 import core.Generator :: filterPump;
 
-import ./PegResult :: empty;
+import ./PegResult :: *;
+import ./PegSet :: *;
 
 
 ##
@@ -22,9 +23,44 @@ import ./PegResult :: empty;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class PegSequence
+export class PegSequence
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(rules*) {
+        ## Trivial case: No rules. Return the empty rule.
+        ifIs { eq(rules, []) }
+            { return empty };
+
+        ## Trivial case: One rule. Return that rule directly.
+        ifIs { eq(rules.get_size(), 1) }
+            { return rules* };
+
+        ## The general case.
+        return this.(NEW)(@{rules})
+    };
+
+    ## Documented in spec.
+    class.newString(string) {
+        def resultType = cast(Symbol, string);
+
+        ## Trivial case: Empty string. Return an always-successful yield of `@""`.
+        ifIs { eq(string, "") }
+            { return PegResult.new(@""{}) };
+
+        ## Trivial case: One-char string. Return a simple one-char rule.
+        ifIs { eq(string.get_size(), 1) }
+            { return PegSet.new(resultType) };
+
+        ## This is implemented as, in effect, `(@"1" @"2" ... { string })`,
+        ## which allows us to minimize code duplication.
+
+        ## Make a list of rules per character.
+        def chars = string.collect { ch -> PegSet.new(cast(Symbol, ch)) };
+
+        return this.new(chars*, PegResult.new(@(resultType){}))
+    };
+
     ## Documented in spec.
     .parse(box, input, items*) {
         ## Each rule after the first gets passed as additional arguments
@@ -51,23 +87,4 @@ class PegSequence
         box* := result;
         return remainingInput
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeSequence(rules*) {
-    ## Trivial case: No rules. Return the empty rule.
-    ifIs { eq(rules, []) }
-        { return empty };
-
-    ## Trivial case: One rule. Return that rule directly.
-    ifIs { eq(rules.get_size(), 1) }
-        { return rules* };
-
-    ## The general case.
-    return PegSequence.(NEW)(@{rules})
 };

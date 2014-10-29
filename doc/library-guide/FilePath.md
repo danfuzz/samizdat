@@ -20,13 +20,7 @@ I/O.
 
 
 <br><br>
-### Method Definitions
-
-(none)
-
-
-<br><br>
-### Function Definitions
+### Functions
 
 #### `fixPath(path, basePaths*) -> path`
 

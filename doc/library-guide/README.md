@@ -16,29 +16,28 @@ Each section covers definitions for one conceptual area, either
 concerning a class, data type, or some more nebulous concept.
 
 Each section is divided into subsections: methods (one section
-per protocol), primitive definitions, and one for in-language definitions.
-The first sections are where methods are specified as a general
-definition, as well as where particular classes indicate which methods they
-bind and with what specific meaning. From the perspective of "client"
-code written in the language, there is no distinction between the final
-two sections, but from the perspective of implementation, there is.
-In particular, an implementation of Samizdat 0 must provide the primitive
-definitions, but it can rely on the canonical in-language library source
-for the remainder, which is written in terms of the primitives.
+per protocol), functions, and constants. The method sections are where methods
+are specified as a general definition, as well as where particular classes
+indicate which methods they bind and with what specific meaning. The
+other two sections indicate functions and constants that are exported from
+the module but not tied directly to any particular class.
 
 In addition, functions that are used in the translation of syntactic
 constructs are marked with a note along the lines of,
 "**Syntax Note:** Used in the translation of `example` forms."
 
-Each function listed here is introduced with a "prototype" that has
-the following form, meant to mimic how functions are defined in the
+Each method and function listed here is introduced with a "prototype" that
+has the following form, meant to mimic how functions are defined in the
 language:
 
 ```
-functionName(argument, argument?, argument*) -> returnValue
+name(argument, argument?, argument*) -> returnValue
 ```
 
-* `functionName` &mdash; The name of the function.
+* `name` &mdash; The name of the function or method. In the case of a
+  method, it is prefixed with a dot (e.g. `.name() ...`). In the case of a
+  class method, it is further prefixed with `class` literally (e.g.
+  `class.name() ...`).
 
 * `argument` (with no suffix) &mdash; A required (non-optional) argument.
 
@@ -98,26 +97,40 @@ will be returned, or one of:
   * [core.EntityMap](EntityMap.md)
   * [core.Format (string formatting)](Format.md)
   * [core.FilePath](FilePath.md)
-  * [core.Generator](Generator.md)
-    * [FilterGenerator](FilterGenerator.md)
-    * [ListWrapGenerator](ListWrapGenerator.md)
-    * [NullGenerator](NullGenerator.md)
-    * [OptGenerator](OptGenerator.md)
-    * [ParaGenerator](ParaGenerator.md)
-    * [RepeatGenerator](RepeatGenerator.md)
-    * [SerialGenerator](SerialGenerator.md)
-    * [ValueGenerator](ValueGenerator.md)
+  * [core.Generator](core.Generator/README.md)
+    * [FilterGenerator](core.Generator/FilterGenerator.md)
+    * [ListWrapGenerator](core.Generator/ListWrapGenerator.md)
+    * [NullGenerator](core.Generator/NullGenerator.md)
+    * [OptGenerator](core.Generator/OptGenerator.md)
+    * [ParaGenerator](core.Generator/ParaGenerator.md)
+    * [RepeatGenerator](core.Generator/RepeatGenerator.md)
+    * [SerialGenerator](core.Generator/SerialGenerator.md)
+    * [ValueGenerator](core.Generator/ValueGenerator.md)
   * [core.Globals](Globals.md)
   * [core.Io0](Io0.md)
   * [core.Lang*](LangN.md)
   * [core.LangNode](LangNode.md)
-  * [core.ModuleSystem](ModuleSystem.md)
-    * [ExternalLoader](ExternalLoader.md)
-    * [InternalLoader](InternalLoader.md)
-  * [core.Peg (parsing)](Peg.md)
-  * [core.Range](Range.md)
-    * [ClosedRange](ClosedRange.md)
-    * [OpenRange](OpenRange.md)
+  * [core.ModuleSystem](core.ModuleSystem/README.md)
+    * [ExternalLoader](core.ModuleSystem/ExternalLoader.md)
+    * [InternalLoader](core.ModuleSystem/InternalLoader.md)
+  * [core.Peg (parsing)](core.Peg/README.md)
+    * [PegAny](PegAny.sam)
+    * [PegChoice](PegChoice.sam)
+    * [PegCode](PegCode.sam)
+    * [PegEof](PegEof.sam)
+    * [PegFail](PegFail.sam)
+    * [PegLookaheadFailure](PegLookaheadFailure.sam)
+    * [PegLookaheadSuccess](PegLookaheadSuccess.sam)
+    * [PegMain](PegMain.sam)
+    * [PegRepeat](PegRepeat.sam)
+    * [PegResult](PegResult.sam)
+    * [PegSet](PegSet.sam)
+    * [PegSetComplement](PegSetComplement.sam)
+    * [PegSequence](PegSequence.sam)
+    * [PegThunk](PegThunk.sam)
+  * [core.Range](core.Range/README.md)
+    * [ClosedRange](core.Range/ClosedRange.md)
+    * [OpenRange](core.Range/OpenRange.md)
 
 * Other
   * [Constants](constants.md)

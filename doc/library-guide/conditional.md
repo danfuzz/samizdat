@@ -5,7 +5,7 @@ Conditionals And Iteration
 --------------------------
 
 <br><br>
-### Primitive Definitions
+### Functions
 
 #### `ifIs(testFunction, isFunction, notFunction?) -> . | void`
 
@@ -148,9 +148,3 @@ fn maybeValue(function) {
 
 **Syntax Note:** Used in the translation of string interpolation and
 `expression?` forms.
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

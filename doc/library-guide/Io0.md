@@ -8,13 +8,7 @@ This module defines primitive filesystem I/O operations.
 
 
 <br><br>
-### Method Definitions
-
-(none)
-
-
-<br><br>
-### Function Definitions
+### Functions
 
 #### `cwd() -> path`
 

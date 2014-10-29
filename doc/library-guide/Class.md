@@ -81,15 +81,3 @@ Compares two classes. Two different classes are never equal.
 
 This is identical to `.perEq()`, except it first asserts that `other` has the
 same direct class as `this` (which in practice is only true of metaclasses).
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

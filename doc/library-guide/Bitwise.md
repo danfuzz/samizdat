@@ -62,15 +62,3 @@ to `shl`. This must always be equivalent to saying `this.shl(-int)`.
 #### `.xor(other) -> bitwise`
 
 Returns the binary-xor (bitwise not-equal) of the given values.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

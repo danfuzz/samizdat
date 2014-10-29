@@ -183,14 +183,3 @@ Terminates with an error in all other cases.
 On a non-empty map, calls `box.store(mapping)` where `mapping` is
 the first mapping in the map in its iteration order, and returns
 a map of the remaining mappings. On an empty map, this just returns void.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-<br><br>
-### In-Language Definitions
-
-(none)

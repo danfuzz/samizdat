@@ -22,67 +22,67 @@ import core.Peg :: *;
 ##
 
 ## Documented in spec.
-def tokWhitespace = makeMainSequence(
-    makeLookaheadSuccess(makeCharSet("# \n")),
-    makeRepeat(
-        makeChoice(
-            makeRepeat(makeCharSet(" \n"), 1),
-            makeSequence(
-                makeString("#"),
-                makeCharSet("#!="),
-                makeRepeat(makeCharSetComplement("\n")))),
+def tokWhitespace = PegMain.newSequence(
+    PegLookaheadSuccess.new(PegSet.newChars("# \n")),
+    PegRepeat.new(
+        PegChoice.new(
+            PegRepeat.new(PegSet.newChars(" \n"), 1),
+            PegSequence.new(
+                PegSequence.newString("#"),
+                PegSet.newChars("#!="),
+                PegRepeat.new(PegSetComplement.newChars("\n")))),
         1));
 
 ## Documented in spec.
-def tokPunctuation = makeMainSequence(
-    makeLookaheadSuccess(
-        makeCharSet("@:.,=-+?;*/<>{}()[]", "&|!%")),
-    makeChoice(
-        makeString("->"),
-        makeString(":="),
-        makeString("::"),
-        makeString(".."),
-        makeString("{:"),
-        makeString(":}"),
+def tokPunctuation = PegMain.newSequence(
+    PegLookaheadSuccess.new(
+        PegSet.newChars("@:.,=-+?;*/<>{}()[]", "&|!%")),
+    PegChoice.new(
+        PegSequence.newString("->"),
+        PegSequence.newString(":="),
+        PegSequence.newString("::"),
+        PegSequence.newString(".."),
+        PegSequence.newString("{:"),
+        PegSequence.newString(":}"),
         any));
 
 ## Documented in spec.
-def tokDecDigit = makeMainSequence(
-    makeCharSet("_0123456789"));
+def tokDecDigit = PegMain.newSequence(
+    PegSet.newChars("_0123456789"));
 
 ## Documented in spec.
-def tokInt = makeMainSequence(
-    makeRepeat(tokDecDigit, 1),
-    makeCode { digits -> @int{value: intFromDigits(10, digits)} });
+def tokInt = PegMain.newSequence(
+    PegRepeat.new(tokDecDigit, 1),
+    PegCode.new { digits -> @int{value: intFromDigits(10, digits)} });
 
 ## Documented in spec.
-def tokStringPart = makeMainChoice(
-    makeSequence(
-        makeRepeat(makeCharSetComplement("\\\"\n"), 1),
-        makeCode(stringFromTokenList)),
-    makeSequence(
-        makeString("\n"),
-        makeRepeat(makeString(" ")),
-        makeResult("\n")),
-    makeSequence(
-        makeString("\\"),
-        makeChoice(
-            makeSequence(makeString("\\"), makeResult("\\")),
-            makeSequence(makeString("\""), makeResult("\"")),
-            makeSequence(makeString("n"),  makeResult("\n")),
-            makeSequence(makeString("r"),  makeResult("\r")),
-            makeSequence(makeString("t"),  makeResult("\t")),
-            makeSequence(makeString("0"),  makeResult("\0")))));
+def tokStringPart = PegMain.newChoice(
+    PegSequence.new(
+        PegRepeat.new(PegSetComplement.newChars("\\\"\n"), 1),
+        PegCode.new(stringFromTokenList)),
+    PegSequence.new(
+        PegSequence.newString("\n"),
+        PegRepeat.new(PegSequence.newString(" ")),
+        PegResult.new("\n")),
+    PegSequence.new(
+        PegSequence.newString("\\"),
+        PegChoice.new(
+            PegSequence.new(PegSequence.newString("\\"), PegResult.new("\\")),
+            PegSequence.new(PegSequence.newString("\""), PegResult.new("\"")),
+            PegSequence.new(PegSequence.newString("n"),  PegResult.new("\n")),
+            PegSequence.new(PegSequence.newString("r"),  PegResult.new("\r")),
+            PegSequence.new(PegSequence.newString("t"),  PegResult.new("\t")),
+            PegSequence.new(PegSequence.newString("0"),  PegResult.new("\0")))));
 
 ## Documented in spec.
-def tokString = makeMainSequence(
-    makeString("\""),
-    makeRepeat(tokStringPart),
-    makeChoice(
-        makeSequence(
-            makeString("\""),
-            makeCode { ., parts, . -> @string{value: "".cat(parts*)} }),
-        makeCode { ., . -> @error{value: "Unterminated string literal."} }));
+def tokString = PegMain.newSequence(
+    PegSequence.newString("\""),
+    PegRepeat.new(tokStringPart),
+    PegChoice.new(
+        PegSequence.new(
+            PegSequence.newString("\""),
+            PegCode.new { ., parts, . -> @string{value: "".cat(parts*)} }),
+        PegCode.new { ., . -> @error{value: "Unterminated string literal."} }));
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -92,32 +92,32 @@ def IDENTIFIER_START_CHARS =
 def IDENTIFIER_CHARS = IDENTIFIER_START_CHARS.cat("0123456789");
 
 ## Documented in spec.
-def tokIdentifier = makeMainSequence(
-    makeCharSet(IDENTIFIER_START_CHARS),
-    makeRepeat(makeCharSet(IDENTIFIER_CHARS)),
-    makeCode { one, rest ->
+def tokIdentifier = PegMain.newSequence(
+    PegSet.newChars(IDENTIFIER_START_CHARS),
+    PegRepeat.new(PegSet.newChars(IDENTIFIER_CHARS)),
+    PegCode.new { one, rest ->
         def name = symbolFromTokenList([one, rest*]);
         ifValueOr { KEYWORDS.get(name) }
             { @identifier{value: name} }
     });
 
 ## Documented in spec.
-def tokQuotedIdentifier = makeMainSequence(
-    makeString("\\"),
+def tokQuotedIdentifier = PegMain.newSequence(
+    PegSequence.newString("\\"),
     tokString,
-    makeCode { ., s -> @identifier{value: cast(Symbol, s::value)} });
+    PegCode.new { ., s -> @identifier{value: cast(Symbol, s::value)} });
 
 ## Documented in spec.
-def tokError = makeMainSequence(
+def tokError = PegMain.newSequence(
     any,
-    makeRepeat(makeCharSetComplement("\n")),
-    makeCode { badCh, . ->
+    PegRepeat.new(PegSetComplement.newChars("\n")),
+    PegCode.new { badCh, . ->
         def msg = "Unrecognized character: ".cat(badCh.get_name());
         @error{value: msg}
     });
 
 ## Documented in spec.
-def tokToken = makeMainChoice(
+def tokToken = PegMain.newChoice(
     tokString,
     tokIdentifier,
     tokQuotedIdentifier,
@@ -126,13 +126,13 @@ def tokToken = makeMainChoice(
     tokError);
 
 ## Documented in spec.
-def tokFile = makeMainSequence(
-    makeRepeat(
-        makeSequence(
-            makeRepeat(tokWhitespace, 0, 1),
+def tokFile = PegMain.newSequence(
+    PegRepeat.new(
+        PegSequence.new(
+            PegRepeat.new(tokWhitespace, 0, 1),
             tokToken)),
-    makeRepeat(tokWhitespace, 0, 1),
-    makeCode { tokens, . -> tokens });
+    PegRepeat.new(tokWhitespace, 0, 1),
+    PegCode.new { tokens, . -> tokens });
 
 
 ##

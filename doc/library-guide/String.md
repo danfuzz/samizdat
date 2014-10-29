@@ -143,15 +143,3 @@ Terminates with an error in all other cases.
 
 On a non-empty string, calls `box.store(string[0])` and returns
 `string[1..]`. On an empty string, this returns void.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

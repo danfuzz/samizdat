@@ -36,15 +36,3 @@ Compares the given `Null` values for order. As there is only one instance
 of `Null`, this will only ever return `0` when called appropriately. That is,
 this function returns `0` if called as `null.totalOrder(null)` and will
 terminate with an error in all other cases.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

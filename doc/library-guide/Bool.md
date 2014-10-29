@@ -109,15 +109,3 @@ It is a terminal error to try to shift `true` left by any amount.
 #### `.xor(other) -> bool`
 
 Straightforward protocol implementation.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

@@ -35,15 +35,3 @@ Reports a fatal error, as `OpenRange` values are unbounded generators.
 
 Yields the first element of the range, and returns a range representing
 the remaining elements.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions: `Range` module
-
-(none)

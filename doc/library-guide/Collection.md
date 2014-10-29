@@ -75,15 +75,3 @@ check for the existence of `key` in the original.
 #### `.valueList() -> list`
 
 Returns the list of values mapped by the collection.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

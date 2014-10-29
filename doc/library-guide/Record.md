@@ -99,14 +99,3 @@ equal data payloads.
 
 Compares two records for order. Records order by name as the major order
 and data payload as minor order.
-
-
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

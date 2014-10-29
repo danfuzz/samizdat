@@ -60,14 +60,3 @@ Orders symbols by internedness (primary) and name (secondary), with
 interned symbols getting ordered *before* unlisted symbols. Two
 different unlisted symbols with the same name are considered unordered
 (but not equal).
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-<br><br>
-### In-Language Definitions
-
-(none)

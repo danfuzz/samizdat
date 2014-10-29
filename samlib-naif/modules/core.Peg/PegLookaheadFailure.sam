@@ -23,9 +23,23 @@ import ./PegResult :: empty;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class PegLookaheadFailure
+export class PegLookaheadFailure
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(rule) {
+        ## Optimiziation: Representation of `!.`.
+        ifIs { eq(rule, any) }
+            { return eof };
+
+        ## Optimization: Representation of `!()`.
+        ifIs { eq(rule, empty) }
+            { return fail };
+
+        ## The general case.
+        return this.(NEW)(@{rule})
+    };
+
     ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
@@ -36,23 +50,3 @@ class PegLookaheadFailure
             }
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeLookaheadFailure(rule) {
-    ## Optimiziation: Representation of `!.`.
-    ifIs { eq(rule, any) }
-        { return eof };
-
-    ## Optimization: Representation of `!()`.
-    ifIs { eq(rule, empty) }
-        { return fail };
-
-    ## The general case.
-    return PegLookaheadFailure.(NEW)(@{rule})
-};
-

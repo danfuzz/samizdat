@@ -78,7 +78,7 @@ fn safeIndexForNodes(baseStr, nodes*) {
 fn safeIndex(node, baseStr) {
     return ifSwitch(
         { node.get_name() },
-        {
+        @{
             @apply: { . ->
                 safeIndexForNodes(baseStr,
                     node::target, node::name, node::values);

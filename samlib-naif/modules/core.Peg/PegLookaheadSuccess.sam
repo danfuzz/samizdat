@@ -18,23 +18,17 @@
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class PegLookaheadSuccess
+export class PegLookaheadSuccess
         access: ACCESS,
         new: NEW {
+    class.new(rule) {
+        return this.(NEW)(@{rule})
+    };
+
     ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
         return? ifIs { data::rule.parse(box, input, items*) }
             { input }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeLookaheadSuccess(rule) {
-    return PegLookaheadSuccess.(NEW)(@{rule})
 };

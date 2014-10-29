@@ -126,15 +126,3 @@ Straightforward protocol implementation.
 #### `.sub(other) -> number`
 
 Straightforward protocol implementation.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

@@ -8,14 +8,9 @@ This module provides a handful of functions for taking arbitrary values
 and formatting them into strings. Many of the functions are used
 implicitly by the string interpolation system.
 
-<br><br>
-### Method Definitions
-
-(none)
-
 
 <br><br>
-### Function Definitions
+### Functions
 
 #### `formatterFor(formatSpec) -> function`
 

@@ -33,6 +33,12 @@ export fn makeCall(target, name, values*) {
 };
 
 ## Documented in spec.
+export fn makeCallLiterals(target, name, values*) {
+    def literals = values.collect { one -> makeLiteral(one) };
+    return makeCall(target, name, literals*)
+};
+
+## Documented in spec.
 export fn makeExport(node) {
     return @export{value: node}
 };
@@ -52,12 +58,6 @@ export fn makeFunCall(function, values*) {
             makeCall(first, function, rest*)
         }
         { makeCall(function, SYMS::call, values*) }
-};
-
-## Documented in spec.
-export fn makeFunCallLiterals(function, values*) {
-    def literals = filterAll(values) { one -> makeLiteral(one) };
-    return makeFunCall(function, literals*)
 };
 
 ## Documented in spec.

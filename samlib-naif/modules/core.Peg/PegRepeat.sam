@@ -18,9 +18,16 @@
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class PegRepeat
+export class PegRepeat
         access: ACCESS,
         new: NEW {
+    ## Documented in spec.
+    class.new(rule, optMinSize?, optMaxSize?) {
+        def minSize = ifValueOr { optMinSize* } { 0 };
+        def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
+        return this.(NEW)(@{maxMap*, minSize, rule})
+    };
+
     ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
@@ -65,16 +72,4 @@ class PegRepeat
                 remainingInput
             }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeRepeat(rule, optMinSize?, optMaxSize?) {
-    def minSize = ifValueOr { optMinSize* } { 0 };
-    def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
-    return PegRepeat.(NEW)(@{maxMap*, minSize, rule})
 };

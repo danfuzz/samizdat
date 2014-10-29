@@ -27,9 +27,9 @@ fn convertPexInList(nodes) {
     return filterAll(nodes) { node -> convertPexIn(node) }
 };
 
-## Converts a pex to a function call on its converted inner pex.
-fn makeFunCallPex(function, node, formals, moreArgs*) {
-    return makeFunCall(function, convertPex(node::pex, formals), moreArgs*)
+## Converts a pex to a method call on its converted inner pex.
+fn makeCallPex(target, name, node, formals, moreArgs*) {
+    return makeCall(target, name, convertPex(node::pex, formals), moreArgs*)
 };
 
 ## Makes a node with additional / replacement bindings from the original.
@@ -47,7 +47,7 @@ fn withFinalBindings(orig, more) {
 fn convertPex(node, formals) {
     return ifSwitch(
         { node.get_name() },
-        {
+        @{
             @any: { . ->
                 REFS::Peg_any
             },
@@ -55,23 +55,26 @@ fn convertPex(node, formals) {
             @choice: { . ->
                 def convertedPexes = filterAll(node::pexes)
                     { pex -> convertPex(pex, formals) };
-                makeFunCall(REFS::Peg_makeChoice, convertedPexes*)
+                makeCall(REFS::Peg_PegChoice, SYMS::new, convertedPexes*)
             },
 
             @code: { . ->
                 ## Use the lexical `formals` context to make a regular closure
                 ## node, and just convert that. As a special case, notice if
                 ## the closure is just a yield of a literal, and convert that
-                ## with `makeResult`.
+                ## with `PegResult.new`.
                 def closurePayload = @{node*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
                 ifValueAndElse
                     { eq(fullClosure::statements, []) }
                     { . -> fullClosure::yield.hasName(@literal) }
-                    { ., yNode -> makeFunCall(REFS::Peg_makeResult, yNode) }
+                    { ., yNode ->
+                        makeCall(REFS::Peg_PegResult, SYMS::new, yNode)
+                    }
                     {
-                        makeFunCall(REFS::Peg_makeCode, convertPexIn(fullClosure))
+                        makeCall(REFS::Peg_PegCode, SYMS::new,
+                            convertPexIn(fullClosure))
                     };
             },
 
@@ -80,20 +83,22 @@ fn convertPex(node, formals) {
             },
 
             @lookaheadFailure: { . ->
-                makeFunCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
+                makeCallPex(REFS::Peg_PegLookaheadFailure, SYMS::new,
+                    node, formals)
             },
 
             @lookaheadSuccess: { . ->
-                makeFunCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
+                makeCallPex(REFS::Peg_PegLookaheadSuccess, SYMS::new,
+                    node, formals)
             },
 
             @opt: { . ->
-                makeFunCallPex(REFS::Peg_makeRepeat,
+                makeCallPex(REFS::Peg_PegRepeat, SYMS::new,
                     node, formals, LITS::INT_0, LITS::INT_1)
             },
 
             @plus: { . ->
-                makeFunCallPex(REFS::Peg_makeRepeat,
+                makeCallPex(REFS::Peg_PegRepeat, SYMS::new,
                     node, formals, LITS::INT_1)
             },
 
@@ -117,15 +122,16 @@ fn convertPex(node, formals) {
                                 [formals*, newFormals.sliceExclusive(0, n)*])
                         };
 
-                makeFunCall(REFS::Peg_makeSequence, convertedPexes*)
+                makeCall(REFS::Peg_PegSequence, SYMS::new, convertedPexes*)
             },
 
             @star: { . ->
-                makeFunCallPex(REFS::Peg_makeRepeat, node, formals)
+                makeCallPex(REFS::Peg_PegRepeat, SYMS::new, node, formals)
             },
 
             @string: { . ->
-                makeFunCallLiterals(REFS::Peg_makeString, node::value)
+                makeCallLiterals(REFS::Peg_PegSequence, SYMS::newString,
+                    node::value)
             },
 
             @thunk: { . ->
@@ -137,19 +143,20 @@ fn convertPex(node, formals) {
                 });
                 def convertedClosure = convertPexIn(closure);
 
-                makeFunCall(REFS::Peg_makeParserThunk, convertedClosure)
+                makeCall(REFS::Peg_PegThunk, SYMS::new, convertedClosure)
             },
 
             @token: { . ->
-                makeFunCallLiterals(REFS::Peg_makeToken, node::value)
+                makeCallLiterals(REFS::Peg_PegSet, SYMS::new, node::value)
             },
 
             @tokenSet: { . ->
-                makeFunCallLiterals(REFS::Peg_makeTokenSet, node::values*)
+                makeCallLiterals(REFS::Peg_PegSet, SYMS::new,
+                    node::values*)
             },
 
             @tokenSetComplement: { . ->
-                makeFunCallLiterals(REFS::Peg_makeTokenSetComplement,
+                makeCallLiterals(REFS::Peg_PegSetComplement, SYMS::new,
                     node::values*)
             },
 
@@ -167,7 +174,7 @@ fn convertPex(node, formals) {
 fn convertPexIn(node) {
     return ifSwitch(
         { node.get_name() },
-        {
+        @{
             @apply: { . ->
                 def target = convertPexIn(node::target);
                 def name = convertPexIn(node::name);
@@ -198,7 +205,7 @@ fn convertPexIn(node) {
 
             @parser: { . ->
                 ## This is where the juicy stuff happens!
-                makeFunCallPex(REFS::Peg_makeMainSequence, node, [])
+                makeCallPex(REFS::Peg_PegMain, SYMS::newSequence, node, [])
             },
 
             @store: { . ->

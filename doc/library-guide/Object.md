@@ -32,15 +32,3 @@ passing `@{}` (the empty symbol table).
 
 **Note:** If you call this function twice with identical arguments, the
 results will be two *different* classes with the same `name`.
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

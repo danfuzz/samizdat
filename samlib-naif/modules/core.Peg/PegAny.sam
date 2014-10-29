@@ -17,7 +17,7 @@
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-class PegAny
+export class PegAny
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
