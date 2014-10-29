@@ -61,12 +61,6 @@ export fn makeFunCall(function, values*) {
 };
 
 ## Documented in spec.
-export fn makeFunCallLiterals(function, values*) {
-    def literals = filterAll(values) { one -> makeLiteral(one) };
-    return makeFunCall(function, literals*)
-};
-
-## Documented in spec.
 export fn makeGet(collArg, keyArg) {
     return makeCall(collArg, SYMS::get, keyArg)
 };
