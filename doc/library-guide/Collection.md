@@ -72,22 +72,6 @@ iteration order. The result is a one-element map of the key and corresponding
 value. Returns void if `n < 0` or `n >= #this`. It is an error
 (terminating the runtime) if `n` is not an `Int`.
 
-#### `.put(key, value) -> collection`
-
-Returns a collection just like the given one, except that
-the mapping for the given `key` is to the given `value`. This will
-replace an existing mapping for the `key`, or add a new one.
-
-It is an error (terminating the runtime) if the `key` or `value` is
-invalid for `this`.
-
-**Note:** On sequence-like collections, the only valid keys are ints
-in the range `0..#this` (inclusive of the size).
-
-**Note:** To differentiate between adding a new mapping versus replacing
-a mapping, either check the sizes of the original and result, or
-check for the existence of `key` in the original.
-
 #### `.valueList() -> list`
 
 Returns the list of values mapped by the collection.

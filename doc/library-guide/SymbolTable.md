@@ -91,10 +91,3 @@ symbol table. If there is no such mapping, then this returns void.
 #### `.get_size() -> int`
 
 Returns the number of mappings contained within `this`.
-
-#### `.put(key, value) -> symbolTable`
-
-Returns a symbol table just like `this`, except with a new mapping
-for `key` to `value`. The result has a replacement for the existing
-mapping for `key` if such a one existed, or has an additional mapping
-in cases where `key` was not already bound.

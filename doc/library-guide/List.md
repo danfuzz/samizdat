@@ -83,11 +83,6 @@ Gets the nth element of the string.
 
 Gets the nth mapping of the list.
 
-#### `.put(n, value) -> list`
-
-Returns a list like the given one, but with the `n`th element replaced
-with the given `value`, or added if `n == get_size(list)`.
-
 #### `.reverse() -> list`
 
 Returns a list like the one given, except with elements in the opposite

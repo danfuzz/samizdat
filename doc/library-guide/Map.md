@@ -153,13 +153,6 @@ Returns a list of all the keys mapped by the given `map`, in sorted order.
 
 Gets the nth mapping of the given map.
 
-#### `.put(key, value) -> map`
-
-Returns a map just like the given one, except with a new mapping
-for `key` to `value`. The result has a replacement for the existing
-mapping for `key` in `map` if such a one existed, or has an
-additional mapping in cases where `map` didn't already bind `key`.
-
 #### `.valueList() -> list`
 
 Returns a list of all the values mapped by the given `map`, in order of the
