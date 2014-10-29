@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Peg :: PegTokenSetComplement
----------------------------------
+core.Peg :: PegSetComplement
+----------------------------
 
 An instance of this class is a parser rule which matches a token whose name
 matches that of any *but* the given ones, consuming it upon success.
@@ -24,7 +24,6 @@ equivalent to the syntactic form `{: [! "string1" "string2" "etc."] :}`.
 Creates an instance of this class.
 
 As a special case, if no arguments are passed, this returns `core.Peg :: any`.
-
 
 #### `.newChars(strings*) -> :Parser`
 

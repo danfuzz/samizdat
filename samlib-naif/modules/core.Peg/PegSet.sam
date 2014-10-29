@@ -3,12 +3,12 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## `PegTokenSetComplement` class
+## `PegSet` class
 ##
 
 #= language core.Lang0
 
-import ./PegAny :: any;
+import ./PegFail :: fail;
 
 
 ##
@@ -20,20 +20,21 @@ import ./PegAny :: any;
 def ACCESS = @ACCESS.toUnlisted();
 def NEW = @NEW.toUnlisted();
 
-export class PegTokenSetComplement
+export class PegSet
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
     class.new(names*) {
         ifIs { eq(names, []) }
             {
-                ## Trivial case: Empty set, so any token will do.
-                return any
+                ## Trivial case: Empty set, so it can never succeed in
+                ## matching.
+                return fail
             };
 
         def set = @{names*: true};  ## A set-like table of all the token names.
 
-        return this.(NEW)(@{set})
+        return PegSet.(NEW)(@{set})
     };
 
     ## Documented in spec.
@@ -52,7 +53,7 @@ export class PegTokenSetComplement
 
         return? ifValue { input.nextValue(result?) }
             { newInput ->
-                ifNot { data::set.get(result.get_name()) }
+                ifIs { data::set.get(result.get_name()) }
                     {
                         box* := result;
                         newInput

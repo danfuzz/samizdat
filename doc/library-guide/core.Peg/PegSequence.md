@@ -42,7 +42,7 @@ Special cases:
 * If no arguments are pased, or all arguments are the empty string (`""`),
   then this returns `PegResult.new(@""{})`.
 * If there is only one character in all of the arguments, this returns
-  `PegTokenSet.new(@"c")`, where `"c"` is the character in question.
+  `PegSet.new(@"c")`, where `"c"` is the character in question.
 
 <br><br>
 ### Method Definitions: `Parser` protocol.

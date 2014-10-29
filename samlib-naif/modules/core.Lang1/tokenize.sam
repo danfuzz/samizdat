@@ -23,20 +23,20 @@ import core.Peg :: *;
 
 ## Documented in spec.
 def tokWhitespace = PegMain.newSequence(
-    PegLookaheadSuccess.new(PegTokenSet.newChars("# \n")),
+    PegLookaheadSuccess.new(PegSet.newChars("# \n")),
     PegRepeat.new(
         PegChoice.new(
-            PegRepeat.new(PegTokenSet.newChars(" \n"), 1),
+            PegRepeat.new(PegSet.newChars(" \n"), 1),
             PegSequence.new(
                 PegSequence.newString("#"),
-                PegTokenSet.newChars("#!="),
-                PegRepeat.new(PegTokenSetComplement.newChars("\n")))),
+                PegSet.newChars("#!="),
+                PegRepeat.new(PegSetComplement.newChars("\n")))),
         1));
 
 ## Documented in spec.
 def tokPunctuation = PegMain.newSequence(
     PegLookaheadSuccess.new(
-        PegTokenSet.newChars("@:.,=-+?;*/<>{}()[]", "&|!%")),
+        PegSet.newChars("@:.,=-+?;*/<>{}()[]", "&|!%")),
     PegChoice.new(
         PegSequence.newString("->"),
         PegSequence.newString(":="),
@@ -48,7 +48,7 @@ def tokPunctuation = PegMain.newSequence(
 
 ## Documented in spec.
 def tokDecDigit = PegMain.newSequence(
-    PegTokenSet.newChars("_0123456789"));
+    PegSet.newChars("_0123456789"));
 
 ## Documented in spec.
 def tokInt = PegMain.newSequence(
@@ -58,7 +58,7 @@ def tokInt = PegMain.newSequence(
 ## Documented in spec.
 def tokStringPart = PegMain.newChoice(
     PegSequence.new(
-        PegRepeat.new(PegTokenSetComplement.newChars("\\\"\n"), 1),
+        PegRepeat.new(PegSetComplement.newChars("\\\"\n"), 1),
         PegCode.new(stringFromTokenList)),
     PegSequence.new(
         PegSequence.newString("\n"),
@@ -93,8 +93,8 @@ def IDENTIFIER_CHARS = IDENTIFIER_START_CHARS.cat("0123456789");
 
 ## Documented in spec.
 def tokIdentifier = PegMain.newSequence(
-    PegTokenSet.newChars(IDENTIFIER_START_CHARS),
-    PegRepeat.new(PegTokenSet.newChars(IDENTIFIER_CHARS)),
+    PegSet.newChars(IDENTIFIER_START_CHARS),
+    PegRepeat.new(PegSet.newChars(IDENTIFIER_CHARS)),
     PegCode.new { one, rest ->
         def name = symbolFromTokenList([one, rest*]);
         ifValueOr { KEYWORDS.get(name) }
@@ -110,7 +110,7 @@ def tokQuotedIdentifier = PegMain.newSequence(
 ## Documented in spec.
 def tokError = PegMain.newSequence(
     any,
-    PegRepeat.new(PegTokenSetComplement.newChars("\n")),
+    PegRepeat.new(PegSetComplement.newChars("\n")),
     PegCode.new { badCh, . ->
         def msg = "Unrecognized character: ".cat(badCh.get_name());
         @error{value: msg}

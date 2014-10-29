@@ -11,7 +11,7 @@
 import core.Generator :: filterPump;
 
 import ./PegResult :: *;
-import ./PegTokenSet :: *;
+import ./PegSet :: *;
 
 
 ##
@@ -50,13 +50,13 @@ export class PegSequence
 
         ## Trivial case: One-char string. Return a simple one-char rule.
         ifIs { eq(string.get_size(), 1) }
-            { return PegTokenSet.new(resultType) };
+            { return PegSet.new(resultType) };
 
         ## This is implemented as, in effect, `(@"1" @"2" ... { string })`,
         ## which allows us to minimize code duplication.
 
         ## Make a list of rules per character.
-        def chars = string.collect { ch -> PegTokenSet.new(cast(Symbol, ch)) };
+        def chars = string.collect { ch -> PegSet.new(cast(Symbol, ch)) };
 
         return this.new(chars*, PegResult.new(@(resultType){}))
     };

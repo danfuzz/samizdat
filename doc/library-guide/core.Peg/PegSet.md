@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-core.Peg :: PegTokenSet
------------------------
+core.Peg :: PegSet
+------------------
 
 An instance of this class is a parser rule which matches a token whose name
 matches that of any of the given ones, consuming it upon success.
@@ -28,7 +28,7 @@ Creates an instance of this class.
 
 As a special case, if no `names` are passed, this returns `core.Peg :: fail`.
 
-#### `.newChars(strings*) -> :PegTokenSet`
+#### `.newChars(strings*) -> :PegSet`
 
 Creates a character set instance of this class, which matches any of the
 characters of the given `strings`. Each argument must be a string. The result

@@ -69,10 +69,10 @@ syntax for explanatory purposes.
 * [PegMain](PegMain.sam)
 * [PegRepeat](PegRepeat.sam)
 * [PegResult](PegResult.sam)
+* [PegSet](PegSet.sam)
+* [PegSetComplement](PegSetComplement.sam)
 * [PegSequence](PegSequence.sam)
 * [PegThunk](PegThunk.sam)
-* [PegTokenSet](PegTokenSet.sam)
-* [PegTokenSetComplement](PegTokenSetComplement.sam)
 
 
 <br><br>
