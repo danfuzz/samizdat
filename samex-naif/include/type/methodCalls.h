@@ -86,11 +86,6 @@ zvalue cm_nth(zvalue x, zint index);
 zorder cm_order(zvalue x, zvalue other);
 
 /**
- * Calls `x.put(key, value)`. **Note:** This is a macro.
- */
-#define cm_put(x, key, value) (METH_CALL((x), put, (key), (value)))
-
-/**
  * Calls `x.store(...)`. **Note:** This is a macro.
  */
 #define cm_store(x, ...) (METH_CALL((x), store, __VA_ARGS__))
