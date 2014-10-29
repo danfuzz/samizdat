@@ -76,7 +76,7 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 
     // Unlike the `LangNode` version, this one doesn't de-duplicate formats.
     formats = listAppend(formats, format);
-    return cm_cat(map, tableFrom1(source, formats));
+    return cm_cat(map, mapFrom1(source, formats));
 }
 
 // Documented in `LangNode` source.
