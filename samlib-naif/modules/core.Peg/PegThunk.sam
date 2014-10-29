@@ -22,21 +22,14 @@ export class PegThunk
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(function) {
+        return this.(NEW)(@{function})
+    };
+
+    ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
             { thunkResult -> thunkResult.parse(box, input, items*) }
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeParserThunk(function) {
-    return PegThunk.(NEW)(@{function})
-};
-
-

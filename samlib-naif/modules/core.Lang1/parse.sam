@@ -57,7 +57,7 @@ def parOpExpression;
 
 ## Documented in spec.
 def parExpression = PegMain.newChoice(
-    makeParserThunk { parAssignExpression });
+    PegThunk.new { parAssignExpression });
 
 ## Documented in spec.
 def parParenExpression = PegMain.newSequence(
@@ -239,7 +239,7 @@ def parList = PegMain.newSequence(
 ## Documented in spec.
 def parFullClosure = PegMain.newSequence(
     makeLookaheadSuccess(makeToken(@"{")),
-    makeParserThunk { . -> parRawClosure },
+    PegThunk.new { . -> parRawClosure },
     PegCode.new { ., raw ->
         def closure = makeFullClosure(raw);
         withoutTops(closure)
@@ -248,7 +248,7 @@ def parFullClosure = PegMain.newSequence(
 ## Documented in spec.
 def parBasicClosure = PegMain.newSequence(
     makeLookaheadSuccess(makeToken(@"{")),
-    makeParserThunk { . -> parRawClosure },
+    PegThunk.new { . -> parRawClosure },
     PegCode.new { ., raw ->
         def closure = makeBasicClosure(raw);
         withoutTops(closure)
@@ -280,7 +280,7 @@ def parTerm = PegMain.newChoice(
     ## it clear what is required to "jump into" Layer 1 parsing.
     PegSequence.new(
         makeLookaheadSuccess(makeToken(@"{:")),
-        makeParserThunk { . -> parPexBlock }));
+        PegThunk.new { . -> parPexBlock }));
 
 ## Documented in spec.
 def parActualsList = PegMain.newChoice(
@@ -359,7 +359,7 @@ def parUnaryExpression = PegMain.newSequence(
 
 ## Documented in spec.
 parAssignExpression := PegMain.newSequence(
-    makeParserThunk { parOpExpression },
+    PegThunk.new { parOpExpression },
     PegChoice.new(
         PegSequence.new(
             makeToken(@":="),
@@ -747,14 +747,14 @@ def PEX_TYPES = {
 ## Documented in spec.
 parPexBlock := PegMain.newSequence(
     makeToken(@"{:"),
-    makeParserThunk { . -> parPexChoice },
+    PegThunk.new { . -> parPexChoice },
     makeToken(@":}"),
     PegCode.new { ., pex, . -> @parser{pex} });
 
 ## Documented in spec.
 def parPexParenExpression = PegMain.newSequence(
     makeToken(@"("),
-    makeParserThunk { . -> parPexChoice },
+    PegThunk.new { . -> parPexChoice },
     makeToken(@")"),
     PegCode.new { ., pex, . -> pex });
 
