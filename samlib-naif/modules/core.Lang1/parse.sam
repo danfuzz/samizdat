@@ -129,7 +129,7 @@ def parLiteral = PegMain.newChoice(
     PegSequence.new(
         makeToken(@"@"),
         parIdentifierSymbol,
-        PegLookaheadFailure.new(makeTokenSet(@"(", @"{")),
+        PegLookaheadFailure.new(PegTokenSet.new(@"(", @"{")),
         PegCode.new { ., symbol, . -> symbol }));
 
 ## Documented in spec.
@@ -371,7 +371,7 @@ parAssignExpression := PegMain.newSequence(
 
 ## Documented in spec.
 def parYieldOrNonlocal = PegMain.newSequence(
-    makeTokenSet(@break, @continue, @return, @yield),
+    PegTokenSet.new(@break, @continue, @return, @yield),
     PegRepeat.new(makeToken(@"?"), 0, 1),
     PegChoice.new(
         PegSequence.new(
@@ -436,7 +436,7 @@ def parFormal = PegMain.newSequence(
             PegResult.new(@{}))),
     PegChoice.new(
         PegSequence.new(
-            makeTokenSet(@"?", @"*", @"+"),
+            PegTokenSet.new(@"?", @"*", @"+"),
             PegCode.new { ., r -> @{repeat: r.get_name()} }),
         PegResult.new(@{})),
     PegCode.new { name, repeat -> @{name*, repeat*} });
@@ -848,7 +848,7 @@ def parPexRepeat = PegMain.newSequence(
     parPexTerm,
     PegChoice.new(
         PegSequence.new(
-            makeTokenSet(@"?", @"*", @"+"),
+            PegTokenSet.new(@"?", @"*", @"+"),
             PegCode.new { pex, repeat ->
                 @(PEX_TYPES.get(repeat.get_name())){pex}
             }),
@@ -857,7 +857,7 @@ def parPexRepeat = PegMain.newSequence(
 ## Documented in spec.
 def parPexLookahead = PegMain.newChoice(
     PegSequence.new(
-        makeTokenSet(@"&", @"!"),
+        PegTokenSet.new(@"&", @"!"),
         parPexRepeat,
         PegCode.new { lookahead, pex ->
             @(PEX_TYPES.get(lookahead.get_name())){pex}

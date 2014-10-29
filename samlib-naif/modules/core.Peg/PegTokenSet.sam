@@ -24,6 +24,19 @@ export class PegTokenSet
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(names*) {
+        ifIs { eq(names, []) }
+            {
+                ## Trivial case: Empty set, so it can never succeed in matching.
+                return fail
+            };
+
+        def set = {names*: true};  ## A set-like map of all the token names.
+
+        return PegTokenSet.(NEW)(@{set})
+    };
+
+    ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
         def result;
@@ -50,18 +63,5 @@ export fn makeToken(name) {
     ## between that and doing a more special-case single item name check is
     ## probably negligible.
 
-    return makeTokenSet(name)
-};
-
-## Documented in spec.
-export fn makeTokenSet(names*) {
-    ifIs { eq(names, []) }
-        {
-            ## Trivial case: Empty set, so it can never succeed in matching.
-            return fail
-        };
-
-    def set = {names*: true};  ## A set-like map of all the token names.
-
-    return PegTokenSet.(NEW)(@{set})
+    return PegTokenSet.new(name)
 };

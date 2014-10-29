@@ -22,9 +22,11 @@ equivalent to the syntactic form `{: ["string1" "string2" "etc"] :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(names*) -> :PegTokenSet`
+#### `.new(names*) -> :Parser`
 
 Creates an instance of this class.
+
+As a special case, if no `names` are passed, this returns `core.Peg :: fail`.
 
 #### `.newCharSet(strings*) -> :PegTokenSet`
 
