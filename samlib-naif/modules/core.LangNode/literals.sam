@@ -41,6 +41,7 @@ def SYMBOLS = [
     @or,
     @perEq,
     @reverse,
+    @set,
     @shl,
     @singleValue,
     @sliceExclusive,
