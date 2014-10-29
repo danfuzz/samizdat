@@ -127,8 +127,8 @@ static zvalue buildCachedClosure(zvalue defMap) {
         die("Too many formals: %lld", formals.size);
     }
 
-    zvalue names = EMPTY_MAP;
-    zint formalNameCount = 0;
+    zmapping names[formals.size];  // For detecting duplicates.
+    zint namesAt = 0;
 
     for (zint i = 0; i < formals.size; i++) {
         zvalue formal = formals.elems[i];
@@ -137,11 +137,8 @@ static zvalue buildCachedClosure(zvalue defMap) {
         zrepeat rep;
 
         if (name != NULL) {
-            if (cm_get(names, name) != NULL) {
-                die("Duplicate formal name: %s", cm_debugString(name));
-            }
-            names = cm_put(names, name, name);
-            formalNameCount++;
+            names[namesAt] = (zmapping) {name, name};
+            namesAt++;
         }
 
         if (repeat == NULL) {
@@ -157,13 +154,21 @@ static zvalue buildCachedClosure(zvalue defMap) {
             }
         }
 
-        info->formals[i].name = name;
-        info->formals[i].repeat = rep;
+        info->formals[i] = (zformal) {.name = name, .repeat = rep};
+    }
+
+    // Detect duplicates by making a map of `names[]` and verifying the size.
+
+    if (namesAt != 0) {
+        zvalue namesMap = mapFromArray(namesAt, names);
+        if (get_size(namesMap) != namesAt) {
+            die("Duplicate formal name.");
+        }
     }
 
     // All's well. Finish up.
 
-    info->formalNameCount = formalNameCount + (info->yieldDef ? 1 : 0);
+    info->formalNameCount = namesAt + (info->yieldDef ? 1 : 0);
     return result;
 }
 
@@ -188,7 +193,8 @@ static zvalue getCachedClosure(zvalue node) {
 
     if (result == NULL) {
         result = buildCachedClosure(get_data(node));
-        nodeCache = cm_put(nodeCache, node, result);
+        nodeCache = cm_cat(nodeCache,
+            mapFromMapping((zmapping) {node, result}));
         cm_store(nodeCacheBox, nodeCache);
     }
 

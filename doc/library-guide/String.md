@@ -8,7 +8,7 @@ String
 <br><br>
 ### Class Method Definitions
 
-#### `.castFrom(value) -> string | void`
+#### `class.castFrom(value) -> string | void`
 
 This class knows how to cast as follows:
 
@@ -102,12 +102,6 @@ Gets the nth character of the string, as a single-element string.
 #### `.nthMapping(n) -> map | void`
 
 Gets the nth mapping of the string.
-
-#### `.put(n, char) -> string`
-
-Returns a string like the given one, but with the `n`th character replaced
-with the given `char`, or added if `n == #string`. It is an error
-if `char` is not a string of size `1`.
 
 #### `.reverse() -> string`
 

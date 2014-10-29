@@ -74,21 +74,6 @@ zint seqNthIndexStrict(zint size, zvalue n) {
     }
 }
 
-// Documented in header.
-zint seqPutIndexStrict(zint size, zvalue n) {
-    if (classAccepts(CLS_Int, n)) {
-        zint index = zintFromInt(n);
-        if (index < 0) {
-            die("Invalid index for `put` (negative).");
-        } else if (index > size) {
-            die("Invalid index for `put`: %lld, size %lld", index, size);
-        }
-        return index;
-    } else {
-        die("Invalid class for `put` (non-int).");
-    }
-}
-
 
 //
 // Class(ish) Definition: `Sequence`

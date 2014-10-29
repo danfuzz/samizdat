@@ -13,7 +13,7 @@ resources, ever.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(path, globals, nextLoader) -> ExternalLoader`
+#### `class.new(path, globals, nextLoader) -> ExternalLoader`
 
 This creates an external module loader.
 

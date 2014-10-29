@@ -71,6 +71,9 @@ expectEq("eq 2", @{blort: "splort"}, @{@blort: "splort"});
 expectNe("ne 1", @{blort: "splort"}, @{blort: "zlort"});
 expectNe("ne 2", @{blort: "splort"}, @{zlort: "splort"});
 
+expectEq("cat 1", @{x: 10, y: 20}, @{x: 10}.cat(@{@y: 20}));
+expectEq("cat 2", @{x: 10, y: 20}, @{x: 10, y: 10}.cat(@{@y: 20}));
+
 expectEq("del 1",  @{},           @{}.del());
 expectEq("del 2",  @{a: 1},       @{a: 1}.del());
 expectEq("del 3",  @{a: 1},       @{a: 1}.del(@b));
@@ -85,11 +88,5 @@ expectEq("del 11", @{b: 2},       @{a: 1, b: 2, c: 3, d: 4}.del(@a, @c, @d));
 
 expectEq("interpolate 1", @{x: 10}, @{@{x: 10}*});
 expectEq("interpolate 2", @{x: 10, y: 20}, @{y: 20, @{x: 10}*});
-
-expectEq("put 1", @{x: 10, y: 20}, @{x: 10}.put(@y, 20));
-expectEq("put 2", @{x: 10, y: 20}, @{x: 10, y: 10}.put(@y, 20));
-
-expectEq("del 1", @{x: 10}, @{x: 10}.del(@y));
-expectEq("del 2", @{x: 10}, @{x: 10, y: 20}.del(@y));
 
 note("All good.");

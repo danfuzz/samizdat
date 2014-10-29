@@ -460,9 +460,16 @@ Lvalues include:
 
 * Simple named variable references, e.g. `blort`. In this case, the variable
   in question must be settable (e.g. a mutable variable).
+
 * An interpolation reference, that is, an arbitrary expression suffixed
   with `*`. In this case, the expression must evaluate to a value which
   supports the `Box` protocol.
+
+* A collection index reference, that is, the form `value[key]`. In
+  this case, `value` must evaluate to a mutable collection, and assignment is
+  equivalent to calling `value.set(key, expr)`. **Note:** The core collection
+  classes are all immutable and do not define the `.set()` method.
+
 * A getter/setter expression, that is, an arbitrary expression followed
   by `.memberName` and *without* method application parentheses after that.
   In this case, assignment is equivalent to calling `.set_memberName()` with

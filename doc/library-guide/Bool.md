@@ -11,7 +11,7 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Class Method Definitions
 
-#### `.castFrom(value) -> bool | void`
+#### `class.castFrom(value) -> bool | void`
 
 This class knows how to cast as follows:
 
@@ -20,7 +20,7 @@ This class knows how to cast as follows:
 * `Int` &mdash; Returns `false` given `0`, or `1` given `true`.
 * `Value` &mdash; Returns `value`.
 
-#### `.fromLogic(value?) -> bool`
+#### `class.fromLogic(value?) -> bool`
 
 Returns the boolean equivalent of the argument-or-not. This is a bridge
 from value-or-void logic. If given an argument, this returns `true`. If

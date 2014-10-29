@@ -11,7 +11,7 @@ character values, with a finite size.
 <br><br>
 ### Class Method Definitions:
 
-#### `.new(firstValue, size, optIncrement?) -> :ClosedRange`
+#### `class.new(firstValue, size, optIncrement?) -> :ClosedRange`
 
 Creates a closed range. `firstValue` must be either a number or
 a single-character string. `size` must be an int.
@@ -20,7 +20,7 @@ a single-character string. `size` must be an int.
 **Note:** If `size` is non-positive (`0` or negative), this returns a valid,
 but voided, instance.
 
-#### `.newExclusive(firstValue, limit, optIncrement?) -> :ClosedRange`
+#### `class.newExclusive(firstValue, limit, optIncrement?) -> :ClosedRange`
 
 End-exclusive range generator for int or single-character strings.
 This is a convenient wrapper for `.new()`.
@@ -47,7 +47,7 @@ Special cases:
 **Syntax Note:** Used in the translation of `(expression..!expression)`
 forms.
 
-#### `.newInclusive(firstValue, limit, optIncrement?) -> :ClosedRange`
+#### `class.newInclusive(firstValue, limit, optIncrement?) -> :ClosedRange`
 
 End-inclusive range generator for int or single-character strings.
 This is a convenient wrapper for `.new()`.

@@ -62,13 +62,6 @@ static zvalue mapFromArrayUnchecked(zint size, zmapping *mappings) {
 }
 
 /**
- * Constructs and returns a single-mapping map.
- */
-static zvalue mapFrom1(zmapping elem) {
-    return mapFromArrayUnchecked(1, &elem);
-}
-
-/**
  * Allocates and returns a map with up to two mappings. This will return a
  * single-mapping map if the two keys are the same, in which case the *second*
  * value is used.
@@ -82,18 +75,17 @@ static zvalue mapFrom2(zmapping elem1, zmapping elem2) {
             return mapFromArrayUnchecked(2, (zmapping[]) {elem2, elem1});
         }
         default: {
-            return mapFrom1(elem2);
+            return mapFromMapping(elem2);
         }
     }
 }
 
 /**
- * Given a map, find the index of the given key. `map` must be a map.
- * Returns the index of the key if found. If not found, then this returns
+ * Given a map and its info struct, find the index of the given key. Returns
+ * the index of the key if found. If not found, then this returns
  * `~insertionIndex` (a negative number).
  */
-static zint mapFind(zvalue map, zvalue key) {
-    MapInfo *info = getInfo(map);
+static zint mapFind(zvalue map, MapInfo *info, zvalue key) {
     zmapping *elems = info->elems;
 
     // Take care of a couple trivial cases.
@@ -151,6 +143,49 @@ static int mappingOrder(const void *m1, const void *m2) {
     return cm_order(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
+/**
+ * Put a new mapping into a map, either adding or replacing a key. Returns
+ * a new map. `map` is assumed to be a valid map.
+ */
+static zvalue putMapping(zvalue map, zmapping mapping) {
+    MapInfo *info = getInfo(map);
+    zmapping *elems = info->elems;
+    zint size = info->size;
+
+    switch (size) {
+        case 0: {
+            // `map` is empty (`{}`).
+            return mapFromMapping(mapping);
+        }
+        case 1: {
+            return mapFrom2(elems[0], mapping);
+        }
+    }
+
+    zint index = mapFind(map, info, mapping.key);
+    zvalue result;
+    zmapping *resultElems;
+
+    if (index >= 0) {
+        // The key exists in the given map, so we need to perform
+        // a replacement.
+        result = allocMap(size);
+        resultElems = getInfo(result)->elems;
+        utilCpy(zmapping, getInfo(result)->elems, elems, size);
+    } else {
+        // The key wasn't found, so we need to insert a new one.
+        index = ~index;
+        result = allocMap(size + 1);
+        resultElems = getInfo(result)->elems;
+        utilCpy(zmapping, resultElems, elems, index);
+        utilCpy(zmapping, &resultElems[index + 1], &elems[index],
+            (size - index));
+    }
+
+    resultElems[index] = mapping;
+    return result;
+}
+
 
 //
 // Exported Definitions
@@ -176,7 +211,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
     // Handle special cases that are particularly easy.
     switch (size) {
         case 0: { return EMPTY_MAP;                          }
-        case 1: { return mapFrom1(mappings[0]);              }
+        case 1: { return mapFromMapping(mappings[0]);        }
         case 2: { return mapFrom2(mappings[0], mappings[1]); }
     }
 
@@ -205,6 +240,11 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     // Allocate, populate, and return the result.
     return mapFromArrayUnchecked(at, mappings);
+}
+
+// Documented in header.
+zvalue mapFromMapping(zmapping mapping) {
+    return mapFromArrayUnchecked(1, &mapping);
 }
 
 
@@ -309,6 +349,28 @@ METH_IMPL_rest(Map, cat, args) {
         size += getInfo(maps[i])->size;
     }
 
+    // Special cases for efficiency.
+
+    if (size == thsSize) {
+        // All the arguments were empty.
+        return ths;
+    }
+
+    if (args.size == 1) {
+        if (thsSize == 0) {
+            // This is `{}.cat(arg)` with a single argument.
+            return maps[0];
+        }
+
+        MapInfo *info = getInfo(maps[0]);
+        if (info->size == 1) {
+            // This is `map.cat(arg)`, where `arg` is a single mapping.
+            return putMapping(ths, info->elems[0]);
+        }
+    }
+
+    // The general case.
+
     zmapping elems[size];
     zint at = thsSize;
     arrayFromMap(elems, ths);
@@ -361,7 +423,7 @@ METH_IMPL_rest(Map, del, keys) {
 
     // Null out the `key` for any of the given `keys`.
     for (zint i = 0; i < keys.size; i++) {
-        zint index = mapFind(ths, keys.elems[i]);
+        zint index = mapFind(ths, info, keys.elems[i]);
         if (index >= 0) {
             any = true;
             elems[index].key = NULL;
@@ -428,8 +490,9 @@ METH_IMPL_0(Map, gcMark) {
 
 // Documented in spec.
 METH_IMPL_1(Map, get, key) {
-    zint index = mapFind(ths, key);
-    return (index < 0) ? NULL : getInfo(ths)->elems[index].value;
+    MapInfo *info = getInfo(ths);
+    zint index = mapFind(ths, info, key);
+    return (index < 0) ? NULL : info->elems[index].value;
 }
 
 // Documented in spec.
@@ -492,7 +555,7 @@ METH_IMPL_1(Map, nextValue, box) {
             // Make a mapping for the first element, yield it, and return
             // a map of the remainder.
             zmapping *elems = info->elems;
-            zvalue mapping = mapFrom1(elems[0]);
+            zvalue mapping = mapFromMapping(elems[0]);
             cm_store(box, mapping);
             return mapFromArrayUnchecked(size - 1, &elems[1]);
         }
@@ -509,53 +572,8 @@ METH_IMPL_1(Map, nthMapping, n) {
     } else if (info->size == 1) {
         return ths;
     } else {
-        return mapFrom1(info->elems[index]);
+        return mapFromMapping(info->elems[index]);
     }
-}
-
-// Documented in spec.
-METH_IMPL_2(Map, put, key, value) {
-    MapInfo *info = getInfo(ths);
-    zmapping *elems = info->elems;
-    zint size = info->size;
-
-    if (DAT_CONSTRUCTION_PARANOIA) {
-        assertValid(key);
-        assertValid(value);
-    }
-
-    switch (size) {
-        case 0: {
-            // `put({}, ...)`
-            return mapFrom1((zmapping) {key, value});
-        }
-        case 1: {
-            return mapFrom2(elems[0], (zmapping) {key, value});
-        }
-    }
-
-    zint index = mapFind(ths, key);
-    zvalue result;
-    zmapping *resultElems;
-
-    if (index >= 0) {
-        // The key exists in the given map, so we need to perform
-        // a replacement.
-        result = allocMap(size);
-        resultElems = getInfo(result)->elems;
-        utilCpy(zmapping, getInfo(result)->elems, elems, size);
-    } else {
-        // The key wasn't found, so we need to insert a new one.
-        index = ~index;
-        result = allocMap(size + 1);
-        resultElems = getInfo(result)->elems;
-        utilCpy(zmapping, resultElems, elems, index);
-        utilCpy(zmapping, &resultElems[index + 1], &elems[index],
-            (size - index));
-    }
-
-    resultElems[index] = (zmapping) {key, value};
-    return result;
 }
 
 // Documented in spec.
@@ -657,7 +675,6 @@ MOD_INIT(Map) {
             METH_BIND(Map, keyList),
             METH_BIND(Map, nextValue),
             METH_BIND(Map, nthMapping),
-            METH_BIND(Map, put),
             METH_BIND(Map, totalEq),
             METH_BIND(Map, totalOrder),
             METH_BIND(Map, valueList)));

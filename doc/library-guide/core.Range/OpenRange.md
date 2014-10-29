@@ -11,7 +11,7 @@ either numeric or character values.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(firstValue, optIncrement?) -> :OpenRange`
+#### `class.new(firstValue, optIncrement?) -> :OpenRange`
 
 Creates an open (never voided) range generator for numbers or single-character
 strings. `firstValue` must be either a number or a single-character string.

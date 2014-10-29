@@ -13,7 +13,7 @@ methods of `Collection`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(args*) -> map`
+#### `class.new(args*) -> map`
 
 This makes a symbol table from a series of mappings, given as pairs of
 symbol-then-value arguments. This function is meant to be exactly parallel to
@@ -21,7 +21,7 @@ symbol-then-value arguments. This function is meant to be exactly parallel to
 
 **Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
 
-#### `.singleValue(keys*, value) -> map`
+#### `class.singleValue(keys*, value) -> map`
 
 This makes a symbol table which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns
@@ -91,10 +91,3 @@ symbol table. If there is no such mapping, then this returns void.
 #### `.get_size() -> int`
 
 Returns the number of mappings contained within `this`.
-
-#### `.put(key, value) -> symbolTable`
-
-Returns a symbol table just like `this`, except with a new mapping
-for `key` to `value`. The result has a replacement for the existing
-mapping for `key` if such a one existed, or has an additional mapping
-in cases where `key` was not already bound.

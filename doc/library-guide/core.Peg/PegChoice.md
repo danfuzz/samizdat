@@ -14,7 +14,7 @@ This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(rules*) -> :Parser`
+#### `class.new(rules*) -> :Parser`
 
 Creates an instance of this class.
 

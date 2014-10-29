@@ -63,7 +63,7 @@ zvalue ioReadDirectory(zvalue path) {
             default:     { type = SYM(other);     break; }
         }
 
-        result = cm_put(result, name, type);
+        result = cm_cat(result, mapFromMapping((zmapping) {name, type}));
     }
 
     if (closedir(dir) != 0) {

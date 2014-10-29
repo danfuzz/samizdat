@@ -83,7 +83,7 @@ Concrete subclasses have differing behavior in response to this method.
 <br><br>
 ### Class Method Definitions: `Cell` class
 
-#### `.new(value?) -> cell`
+#### `class.new(value?) -> cell`
 
 Constructs a new cell. If `value` is specified, that is the value stored
 in the cell. If `value` is not specified, the cell initially stores void.
@@ -113,7 +113,7 @@ refer to the so-specified value.
 <br><br>
 ### Class Method Definitions: `Promise` class
 
-#### `.new() -> promise`
+#### `class.new() -> promise`
 
 Constructs a new promise. It initially stores void, and may be `.store()`d
 to no more than once.
@@ -133,7 +133,7 @@ it is invalid to call this method twice on the same promise.
 <br><br>
 ### Class Method Definitions: `Result` class
 
-#### `.new(value?) -> cell`
+#### `class.new(value?) -> cell`
 
 Constructs a new result. If `value` is specified, that is the value stored
 in the result. If `value` is not specified, the result stores void. Once

@@ -9,7 +9,7 @@ A `List` is a kind of `Sequence`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(values*) -> list`
+#### `class.new(values*) -> list`
 
 Constructs a list consisting of the given values, in order.
 These equivalences hold for Samizdat Layer 0 source code:
@@ -82,11 +82,6 @@ Gets the nth element of the string.
 #### `.nthMapping(n) -> map | void`
 
 Gets the nth mapping of the list.
-
-#### `.put(n, value) -> list`
-
-Returns a list like the given one, but with the `n`th element replaced
-with the given `value`, or added if `n == get_size(list)`.
 
 #### `.reverse() -> list`
 

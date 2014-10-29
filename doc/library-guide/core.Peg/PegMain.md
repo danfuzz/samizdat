@@ -12,16 +12,16 @@ expression (`{: ... :}`) is always an instance of this class.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(rule) -> :PegMain`
+#### `class.new(rule) -> :PegMain`
 
 Creates an instance of this class which wraps the given `rule`.
 
-#### `.newChoice(rules*) -> :PegMain`
+#### `class.newChoice(rules*) -> :PegMain`
 
 Creates an instance of this class which wraps a `PegChoice` constructed
 from the given `rules`.
 
-#### `.newSequence(rules*) -> :PegMain`
+#### `class.newSequence(rules*) -> :PegMain`
 
 Creates an instance of this class which wraps a `PegSequence` constructed
 from the given `rules`.

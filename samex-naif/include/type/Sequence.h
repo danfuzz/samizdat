@@ -54,13 +54,4 @@ zint seqNthIndexLenient(zvalue key);
  */
 zint seqNthIndexStrict(zint size, zvalue n);
 
-/**
- * Returns an index to use for an `put` style function, given a collection
- * `size` and client-supplied index `n`. This returns `-1` to indicate that
- * the caller should in turn return `NULL`. This is strict in that
- * all invalid `n` (non-int, negative int, or `> size`) cause runtime
- * termination.
- */
-zint seqPutIndexStrict(zint size, zvalue n);
-
 #endif

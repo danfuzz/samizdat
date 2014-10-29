@@ -20,7 +20,7 @@ These syntactic equivalences hold:
 <br><br>
 ### Class Method Definitions
 
-#### `.new(rule, optMinSize?, optMaxSize?) -> :PegRepeat`
+#### `class.new(rule, optMinSize?, optMaxSize?) -> :PegRepeat`
 
 Creates an instance of this class.
 

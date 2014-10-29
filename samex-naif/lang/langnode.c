@@ -49,7 +49,7 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
  * Adds a `{(name): Value}` binding to the given map or table.
  */
 static zvalue addTypeBinding(zvalue map, zvalue name) {
-    return cm_put(map, name, CLS_Value);
+    return cm_cat(map, tableFrom1(name, CLS_Value));
 }
 
 /**
@@ -60,7 +60,7 @@ static zvalue addImportBinding(zvalue map, zvalue source, zvalue name) {
     zvalue names = cm_get(map, source);
 
     names = addTypeBinding((names == NULL) ? EMPTY_MAP : names, name);
-    return cm_put(map, source, names);
+    return cm_cat(map, mapFrom1(source, names));
 }
 
 /**
@@ -76,7 +76,7 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 
     // Unlike the `LangNode` version, this one doesn't de-duplicate formats.
     formats = listAppend(formats, format);
-    return cm_put(map, source, formats);
+    return cm_cat(map, mapFrom1(source, formats));
 }
 
 // Documented in `LangNode` source.
@@ -635,7 +635,7 @@ zvalue makeImport(zvalue baseData) {
         zvalue name = cm_cat(
             STR_CH_DOLLAR,
             get_baseName(cm_get(baseData, SYM(source))));
-        data = cm_put(data, SYM(name), symbolFromString(name));
+        data = cm_cat(data, tableFrom1(SYM(name), symbolFromString(name)));
     }
 
     if (cm_get(data, SYM(format)) != NULL) {
@@ -888,8 +888,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             } else {
                 // It's a wildcard select.
                 select = METH_CALL(exports, keyList);
-                return cm_new(Record, SYM(importModuleSelection),
-                    cm_put(get_data(node), SYM(select), select));
+                return cm_cat(node, tableFrom1(SYM(select), select));
             }
         }
         default: {
@@ -900,8 +899,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
-    return cm_new(Record, get_name(node),
-        cm_put(get_data(node), SYM(formals), formals));
+    return cm_cat(node, tableFrom1(SYM(formals), formals));
 }
 
 // Documented in spec.

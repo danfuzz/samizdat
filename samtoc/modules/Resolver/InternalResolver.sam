@@ -79,7 +79,7 @@ export class InternalResolver
         )?;
 
         ## Cache the result, so we don't bother with a search the next time.
-        data::cache.put(source, result);
+        data::cache[source] := result;
 
         return? result*
     };

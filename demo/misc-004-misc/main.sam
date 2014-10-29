@@ -45,11 +45,6 @@ export fn main(selfPath, name?, rest*) {
 
     process(selfPath);
     process(rest);
-    process(["pie", "fishburgers", "croissants"].del(1));
-    process({one: 1, two: 2, three: 3}.del(@two));
-    process("bizcuits".put(2, "s"));
-    process(["scones", "natto"].put(1, "ice cream"));
-    process({one: 1, two: 2, three: 3}.put("four", 4));
     process([@a, @b, @c].keyList());
     process("abcde".keyList());
     process({a: "apple", b: "butter"}.keyList());

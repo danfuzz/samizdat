@@ -13,7 +13,7 @@ becomes voided after the final wrapped generator is voided.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(generators*) -> :SerialGenerator`
+#### `class.new(generators*) -> :SerialGenerator`
 
 Creates an instance of this class.
 

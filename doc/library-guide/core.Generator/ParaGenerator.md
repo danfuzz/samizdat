@@ -14,7 +14,7 @@ generators is voided.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(generators*) -> :ParaGenerator`
+#### `class.new(generators*) -> :ParaGenerator`
 
 Creates an instance of this class.
 

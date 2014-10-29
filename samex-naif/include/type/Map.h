@@ -37,4 +37,9 @@ void arrayFromMap(zmapping *result, zvalue map);
  */
 zvalue mapFromArray(zint size, zmapping *mappings);
 
+/**
+ * Gets a single-mapping map of the given mapping.
+ */
+zvalue mapFromMapping(zmapping mapping);
+
 #endif

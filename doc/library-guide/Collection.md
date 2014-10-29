@@ -16,9 +16,20 @@ would expect.
 
 #### `.cat(more*) -> collection`
 
-(Implementation of `OneOff` method.)
+Returns the concatenation of all of the given `more*` values to `this`.
+The `more*` values must be "compatible" with `this` (as defined by the class
+of `this`), and the result is typically expected to be of the same class as
+`this`. It is an error (terminating the runtime) if one of the arguments is
+incompatible.
 
-Concatenates the given collections.
+To the extent that a value is unconstrained in terms of its constituent
+elements and their arrangement, the result of concatenation consists
+of the elements of all the original values, in order, in the order of the
+arguments.
+
+For classes that have element constraints, a concatenation will not
+necessarily contain all the original constituent elements, and the order might
+be different. See individual implementation docs for details.
 
 #### `.del(keys*) -> collection`
 
@@ -35,15 +46,20 @@ not `[1]`. Similarly, `[0, 1, 2].del(0, 0)` returns `[1, 2]`.
 
 #### `.get(key) -> . | void`
 
-(Implementation of `OneOff` method.)
+Returns the constituent element of `this` that corresponds to the given
+`key`. `key` is an arbitrary value. Returns void if there is no unique
+corresponding value for the given `key` (including if `key` is not
+bound in `this` at all).
 
-Gets the value in `this` associated with the given `key`.
+**Syntax Note:** This is the method that underlies the `value[key]`
+syntactic form.
 
 #### `.get_size() -> int`
 
-(Implementation of `OneOff` method.)
-
 Gets the size (element count) of `this`.
+
+**Syntax Note:** This is the method underlying the `#value` syntactic
+form (prefix `#` operator).
 
 #### `.keyList() -> list`
 
@@ -55,22 +71,6 @@ Returns the nth (zero-based) mapping of the collection, in its predefined
 iteration order. The result is a one-element map of the key and corresponding
 value. Returns void if `n < 0` or `n >= #this`. It is an error
 (terminating the runtime) if `n` is not an `Int`.
-
-#### `.put(key, value) -> collection`
-
-Returns a collection just like the given one, except that
-the mapping for the given `key` is to the given `value`. This will
-replace an existing mapping for the `key`, or add a new one.
-
-It is an error (terminating the runtime) if the `key` or `value` is
-invalid for `this`.
-
-**Note:** On sequence-like collections, the only valid keys are ints
-in the range `0..#this` (inclusive of the size).
-
-**Note:** To differentiate between adding a new mapping versus replacing
-a mapping, either check the sizes of the original and result, or
-check for the existence of `key` in the original.
 
 #### `.valueList() -> list`
 

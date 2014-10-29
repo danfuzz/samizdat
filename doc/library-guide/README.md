@@ -90,7 +90,6 @@ will be returned, or one of:
   * [Generator](Generator.md)
   * [Number](Number.md)
   * [Sequence](Sequence.md)
-  * [One-Off Methods](OneOff.md)
 
 * Implementation Modules
   * [core.Code](Code.md)
