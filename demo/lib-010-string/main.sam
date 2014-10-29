@@ -107,6 +107,14 @@ expect("keyList", [0, 1, 2, 3, 4], { "blort".keyList() });
 
 expect("valueList", ["b", "l", "o", "r", "t"], { "blort".valueList() });
 
+expectEq("repeat 1", "",                 "".repeat(0));
+expectEq("repeat 2", "",                 "".repeat(1));
+expectEq("repeat 3", "",                 "".repeat(1000));
+expectEq("repeat 4", "",                 "muffin".repeat(0));
+expectEq("repeat 5", "muffin",           "muffin".repeat(1));
+expectEq("repeat 6", "muffinmuffin",     "muffin".repeat(2));
+expectEq("repeat 7", "xxxxxxxxxxxxxxxx", "x".repeat(16));
+
 expect("castFrom 1", "fizmo", { String.castFrom("fizmo") });
 expect("castFrom 2", "fizmo", { Core.castFrom("fizmo") });
 expect("castFrom 3", "fizmo", { Value.castFrom("fizmo") });
