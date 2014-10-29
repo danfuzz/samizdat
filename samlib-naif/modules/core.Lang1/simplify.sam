@@ -146,7 +146,7 @@ fn convertPex(node, formals) {
             },
 
             @token: { . ->
-                makeFunCallLiterals(REFS::Peg_makeToken, node::value)
+                makeCallLiterals(REFS::Peg_PegTokenSet, SYMS::new, node::value)
             },
 
             @tokenSet: { . ->

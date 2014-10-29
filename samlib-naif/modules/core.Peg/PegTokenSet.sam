@@ -51,17 +51,3 @@ export class PegTokenSet
             }
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeToken(name) {
-    ## This just makes a single-item token set. The performance difference
-    ## between that and doing a more special-case single item name check is
-    ## probably negligible.
-
-    return PegTokenSet.new(name)
-};

@@ -61,20 +61,20 @@ def parExpression = PegMain.newChoice(
 
 ## Documented in spec.
 def parParenExpression = PegMain.newSequence(
-    makeToken(@"("),
+    PegTokenSet.new(@"("),
     parExpression,
-    makeToken(@")"),
+    PegTokenSet.new(@")"),
     PegCode.new { ., ex, . -> withoutIntermediates(ex) });
 
 ## Documented in spec.
 def parNameSymbol = PegMain.newSequence(
-    makeToken(@identifier),
+    PegTokenSet.new(@identifier),
     PegCode.new { nameIdent -> nameIdent::value });
 
 ## Documented in spec.
 def parNameSymbolList = PegMain.newSequence(
     parNameSymbol,
-    PegRepeat.new(PegSequence.new(makeToken(@","), parNameSymbol)),
+    PegRepeat.new(PegSequence.new(PegTokenSet.new(@","), parNameSymbol)),
     PegCode.new { first, rest -> [first, rest*] });
 
 ## Documented in spec.
@@ -85,7 +85,7 @@ def parVarLvalue = PegMain.newSequence(
 ## Documented in spec.
 def parIdentifierSymbol = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@string),
+        PegTokenSet.new(@string),
         PegCode.new { s -> makeSymbolLiteral(s::value) }),
     PegSequence.new(
         parNameSymbol,
@@ -101,33 +101,33 @@ def parIdentifierSymbol = PegMain.newChoice(
 ## Documented in spec.
 def parKeyLiteral = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@string),
+        PegTokenSet.new(@string),
         PegCode.new { s -> makeLiteral(s::value) }),
     parIdentifierSymbol);
 
 ## Documented in spec.
 def parLiteral = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@"-"),
-        makeToken(@int),
+        PegTokenSet.new(@"-"),
+        PegTokenSet.new(@int),
         PegCode.new { ., i -> makeLiteral(i::value.neg()) }),
     PegSequence.new(
-        makeToken(@int),
+        PegTokenSet.new(@int),
         PegCode.new { i -> makeLiteral(i::value) }),
     PegSequence.new(
-        makeToken(@string),
+        PegTokenSet.new(@string),
         PegCode.new { s -> makeLiteral(s::value) }),
     PegSequence.new(
-        makeToken(@false),
+        PegTokenSet.new(@false),
         PegResult.new(LITS::false)),
     PegSequence.new(
-        makeToken(@true),
+        PegTokenSet.new(@true),
         PegResult.new(LITS::true)),
     PegSequence.new(
-        makeToken(@null),
+        PegTokenSet.new(@null),
         PegResult.new(LITS::null)),
     PegSequence.new(
-        makeToken(@"@"),
+        PegTokenSet.new(@"@"),
         parIdentifierSymbol,
         PegLookaheadFailure.new(PegTokenSet.new(@"(", @"{")),
         PegCode.new { ., symbol, . -> symbol }));
@@ -136,11 +136,11 @@ def parLiteral = PegMain.newChoice(
 def parKey = PegMain.newChoice(
     PegSequence.new(
         parKeyLiteral,
-        makeToken(@":"),
+        PegTokenSet.new(@":"),
         PegCode.new { key, . -> key }),
     PegSequence.new(
         parExpression,
-        makeToken(@":"),
+        PegTokenSet.new(@":"),
         PegCode.new { key, . -> key }));
 
 ## Documented in spec.
@@ -164,39 +164,39 @@ def parMapping = PegMain.newChoice(
 def parMappings = PegMain.newChoice(
     PegSequence.new(
         parMapping,
-        PegRepeat.new(PegSequence.new(makeToken(@","), parMapping)),
+        PegRepeat.new(PegSequence.new(PegTokenSet.new(@","), parMapping)),
         PegCode.new { one, rest -> [one, rest*] }),
     PegResult.new([]));
 
 ## Documented in spec.
 def parMap = PegMain.newSequence(
-    makeToken(@"{"),
+    PegTokenSet.new(@"{"),
     parMappings,
-    makeToken(@"}"),
+    PegTokenSet.new(@"}"),
     PegCode.new { ., mappings, . -> makeMapExpression(mappings*) });
 
 ## Documented in spec.
 def parSymbolTable = PegMain.newSequence(
-    makeToken(@"@"),
-    makeToken(@"{"),
+    PegTokenSet.new(@"@"),
+    PegTokenSet.new(@"{"),
     parMappings,
-    makeToken(@"}"),
+    PegTokenSet.new(@"}"),
     PegCode.new { ., ., mappings, . -> makeSymbolTableExpression(mappings*) });
 
 ## Documented in spec.
 
 ## Documented in spec.
 def parRecord = PegMain.newSequence(
-    makeToken(@"@"),
+    PegTokenSet.new(@"@"),
     PegChoice.new(
         parIdentifierSymbol,
         parParenExpression),
     PegChoice.new(
         parParenExpression,
         PegSequence.new(
-            makeToken(@"{"),
+            PegTokenSet.new(@"{"),
             parMappings,
-            makeToken(@"}"),
+            PegTokenSet.new(@"}"),
             PegCode.new { ., ., ., mappings, . ->
                 makeSymbolTableExpression(mappings*)
             })),
@@ -209,7 +209,7 @@ def parListItem = PegMain.newSequence(
     parExpression,
     PegRepeat.new(
         PegSequence.new(
-            makeToken(@":"),
+            PegTokenSet.new(@":"),
             PegCode.new { ., . ->
                 die("Mapping syntax not valid as a list item or call argument.")
             }),
@@ -221,15 +221,15 @@ def parUnadornedList = PegMain.newChoice(
     PegSequence.new(
         parListItem,
         PegRepeat.new(
-            PegSequence.new(makeToken(@","), parListItem)),
+            PegSequence.new(PegTokenSet.new(@","), parListItem)),
         PegCode.new { one, rest -> [one, rest*] }),
     PegResult.new([]));
 
 ## Documented in spec.
 def parList = PegMain.newSequence(
-    makeToken(@"["),
+    PegTokenSet.new(@"["),
     parUnadornedList,
-    makeToken(@"]"),
+    PegTokenSet.new(@"]"),
     PegCode.new { ., expressions, . ->
         ifIs { eq(expressions, []) }
             { LITS::EMPTY_LIST }
@@ -238,7 +238,7 @@ def parList = PegMain.newSequence(
 
 ## Documented in spec.
 def parFullClosure = PegMain.newSequence(
-    PegLookaheadSuccess.new(makeToken(@"{")),
+    PegLookaheadSuccess.new(PegTokenSet.new(@"{")),
     PegThunk.new { . -> parRawClosure },
     PegCode.new { ., raw ->
         def closure = makeFullClosure(raw);
@@ -247,7 +247,7 @@ def parFullClosure = PegMain.newSequence(
 
 ## Documented in spec.
 def parBasicClosure = PegMain.newSequence(
-    PegLookaheadSuccess.new(makeToken(@"{")),
+    PegLookaheadSuccess.new(PegTokenSet.new(@"{")),
     PegThunk.new { . -> parRawClosure },
     PegCode.new { ., raw ->
         def closure = makeBasicClosure(raw);
@@ -279,15 +279,15 @@ def parTerm = PegMain.newChoice(
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     PegSequence.new(
-        PegLookaheadSuccess.new(makeToken(@"{:")),
+        PegLookaheadSuccess.new(PegTokenSet.new(@"{:")),
         PegThunk.new { . -> parPexBlock }));
 
 ## Documented in spec.
 def parActualsList = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@"("),
+        PegTokenSet.new(@"("),
         parUnadornedList,
-        makeToken(@")"),
+        PegTokenSet.new(@")"),
         PegRepeat.new(parFullClosure),
         PegCode.new { ., normalActuals, ., closureActuals ->
             [closureActuals*, normalActuals*]
@@ -302,17 +302,17 @@ def parPostfixOperator = PegMain.newChoice(
             { node -> makeFunCallGeneral(node, actuals*) }
         }),
     PegSequence.new(
-        makeToken(@"::"),
+        PegTokenSet.new(@"::"),
         parKeyLiteral,
         PegCode.new { ., key -> { node -> makeGet(node, key) } }),
     PegSequence.new(
-        makeToken(@"*"),
+        PegTokenSet.new(@"*"),
         PegCode.new { . -> { node -> makeInterpolate(node) } }),
     PegSequence.new(
-        makeToken(@"?"),
+        PegTokenSet.new(@"?"),
         PegCode.new { . -> { node -> makeMaybeValue(node) } }),
     PegSequence.new(
-        makeToken(@"."),
+        PegTokenSet.new(@"."),
         PegChoice.new(
             PegSequence.new(
                 parNameSymbol,
@@ -323,7 +323,7 @@ def parPostfixOperator = PegMain.newChoice(
             { node -> makeCallGeneral(node, name, actuals*) }
         }),
     PegSequence.new(
-        makeToken(@"."),
+        PegTokenSet.new(@"."),
         parNameSymbol,
         PegCode.new { ., name ->
             def getterRef = makeSymbolLiteral("get_".cat(name));
@@ -362,7 +362,7 @@ parAssignExpression := PegMain.newSequence(
     PegThunk.new { parOpExpression },
     PegChoice.new(
         PegSequence.new(
-            makeToken(@":="),
+            PegTokenSet.new(@":="),
             parExpression,
             PegCode.new { target, ., value ->
                 makeAssignmentIfPossible(target, value)
@@ -372,12 +372,12 @@ parAssignExpression := PegMain.newSequence(
 ## Documented in spec.
 def parYieldOrNonlocal = PegMain.newSequence(
     PegTokenSet.new(@break, @continue, @return, @yield),
-    PegRepeat.new(makeToken(@"?"), 0, 1),
+    PegRepeat.new(PegTokenSet.new(@"?"), 0, 1),
     PegChoice.new(
         PegSequence.new(
             PegCode.new { op, . -> op.hasName(@yield) },
             PegChoice.new(
-                PegSequence.new(makeToken(@"/"), parVarLvalue),
+                PegSequence.new(PegTokenSet.new(@"/"), parVarLvalue),
                 PegResult.new(@yield{}))),
         PegCode.new { op, . -> makeVarFetch(op.get_name()) }),
     PegChoice.new(
@@ -397,25 +397,25 @@ def parYieldOrNonlocal = PegMain.newSequence(
 
 ## Documented in spec.
 def parVarDef = PegMain.newSequence(
-    makeToken(@def),
+    PegTokenSet.new(@def),
     parNameSymbol,
-    PegRepeat.new(PegSequence.new(makeToken(@"="), parExpression), 0, 1),
+    PegRepeat.new(PegSequence.new(PegTokenSet.new(@"="), parExpression), 0, 1),
     PegCode.new { ., name, optExpr ->
         makeVarDef(name, optExpr*)
     });
 
 ## Documented in spec.
 def parVarDefMutable = PegMain.newSequence(
-    makeToken(@var),
+    PegTokenSet.new(@var),
     parNameSymbol,
-    PegRepeat.new(PegSequence.new(makeToken(@"="), parExpression), 0, 1),
+    PegRepeat.new(PegSequence.new(PegTokenSet.new(@"="), parExpression), 0, 1),
     PegCode.new { ., name, optExpr ->
         makeVarDefMutable(name, optExpr*)
     });
 
 ## Documented in spec.
 def parYieldDef = PegMain.newSequence(
-    makeToken(@"/"),
+    PegTokenSet.new(@"/"),
     parNameSymbol);
 
 ## Documented in spec.
@@ -432,7 +432,7 @@ def parFormal = PegMain.newSequence(
             parNameSymbol,
             PegCode.new { n -> @{name: n} }),
         PegSequence.new(
-            makeToken(@"."),
+            PegTokenSet.new(@"."),
             PegResult.new(@{}))),
     PegChoice.new(
         PegSequence.new(
@@ -445,7 +445,7 @@ def parFormal = PegMain.newSequence(
 def parFormalsList = PegMain.newChoice(
     PegSequence.new(
         parFormal,
-        PegRepeat.new(PegSequence.new(makeToken(@","), parFormal)),
+        PegRepeat.new(PegSequence.new(PegTokenSet.new(@","), parFormal)),
         PegCode.new { one, rest -> [one, rest*] }),
     PegResult.new([]));
 
@@ -459,24 +459,24 @@ def parClosureDeclarations = PegMain.newChoice(
                         parNameSymbol,
                         PegCode.new { n -> @{name: n} }),
                     PegResult.new(@{})),
-                makeToken(@"("),
+                PegTokenSet.new(@"("),
                 parFormalsList,
-                makeToken(@")"),
+                PegTokenSet.new(@")"),
                 PegCode.new { name, ., formals, . -> @{name*, formals} }),
             PegSequence.new(
                 parFormalsList,
                 PegCode.new { formals -> @{formals} })),
         parOptYieldDef,
-        makeToken(@"->"),
+        PegTokenSet.new(@"->"),
         PegCode.new { most, yieldDef, . -> @{most*, yieldDef*} }),
     PegResult.new(@{formals: []}));
 
 ## Documented in spec.
 def parFunctionCommon = PegMain.newSequence(
     parNameSymbol,
-    makeToken(@"("),
+    PegTokenSet.new(@"("),
     parFormalsList,
-    makeToken(@")"),
+    PegTokenSet.new(@")"),
     parBasicNullaryClosure,
     PegCode.new { name, ., formals, ., code ->
         def basic = withName(
@@ -490,7 +490,7 @@ def parFunctionCommon = PegMain.newSequence(
 
 ## Documented in spec.
 def parFunctionDef = PegMain.newSequence(
-    makeToken(@fn),
+    PegTokenSet.new(@fn),
     parFunctionCommon,
     PegCode.new { ., closure ->
         withTop(makeVarDef(closure::name, closure))
@@ -499,16 +499,16 @@ def parFunctionDef = PegMain.newSequence(
 ## Documented in spec.
 def parAttribute = PegMain.newSequence(
     parNameSymbol,
-    makeToken(@":"),
+    PegTokenSet.new(@":"),
     parTerm,
     PegCode.new { key, ., value -> @{(key): value} });
 
 ## Documented in spec.
 def parMethodDef = PegMain.newSequence(
     PegChoice.new(
-        PegSequence.new(makeToken(@class), PegResult.new(@classMethod)),
+        PegSequence.new(PegTokenSet.new(@class), PegResult.new(@classMethod)),
         PegResult.new(@instanceMethod)),
-    makeToken(@"."),
+    PegTokenSet.new(@"."),
     parFunctionCommon,
     PegCode.new { scope, ., baseClosure ->
         def closure =
@@ -518,24 +518,24 @@ def parMethodDef = PegMain.newSequence(
 
 ## Documented in spec.
 def parClassDef = PegMain.newSequence(
-    makeToken(@class),
+    PegTokenSet.new(@class),
     parNameSymbol,
     PegChoice.new(
         PegSequence.new(
             parAttribute,
-            PegRepeat.new(PegSequence.new(makeToken(@","), parAttribute)),
+            PegRepeat.new(PegSequence.new(PegTokenSet.new(@","), parAttribute)),
             PegCode.new { ., ., first, rest -> [first, rest*] }),
         PegResult.new([])),
-    makeToken(@"{"),
-    PegRepeat.new(makeToken(@";")),
+    PegTokenSet.new(@"{"),
+    PegRepeat.new(PegTokenSet.new(@";")),
     PegChoice.new(
         PegSequence.new(
             parMethodDef,
             PegRepeat.new(
-                PegSequence.new(PegRepeat.new(makeToken(@";"), 1), parMethodDef)),
+                PegSequence.new(PegRepeat.new(PegTokenSet.new(@";"), 1), parMethodDef)),
             PegCode.new { ., ., ., ., ., first, rest -> [first, rest*] }),
         PegResult.new([])),
-    makeToken(@"}"),
+    PegTokenSet.new(@"}"),
     PegCode.new { ., name, attributes, ., ., methods, . ->
         makeClassDef(name, attributes, methods)
     });
@@ -546,17 +546,17 @@ def parImportName = PegMain.newChoice(
         parNameSymbol,
         PegChoice.new(
             PegSequence.new(
-                makeToken(@"*"),
+                PegTokenSet.new(@"*"),
                 PegResult.new(@prefix)),
             PegResult.new(@name)),
-        makeToken(@"="),
+        PegTokenSet.new(@"="),
         PegCode.new { name, key, . -> @{(key): name} }),
     PegResult.new(@{}));
 
 ## Documented in spec.
 def parImportFormat = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@"@"),
+        PegTokenSet.new(@"@"),
         parIdentifierSymbol,
         PegCode.new { ., f -> @{format: f::value} }),
     PegResult.new(@{}));
@@ -564,17 +564,17 @@ def parImportFormat = PegMain.newChoice(
 ## Documented in spec.
 def parImportSource = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@"."),
-        makeToken(@"/"),
+        PegTokenSet.new(@"."),
+        PegTokenSet.new(@"/"),
         parNameSymbol,
         PegRepeat.new(
             PegSequence.new(
-                makeToken(@"/"),
+                PegTokenSet.new(@"/"),
                 parNameSymbol,
                 PegCode.new { ., ., ., ., n -> "/".cat(n) })),
         PegRepeat.new(
             PegSequence.new(
-                makeToken(@"."),
+                PegTokenSet.new(@"."),
                 parNameSymbol,
                 PegCode.new { ., ., ., ., ., n -> ".".cat(n) }),
             0, 1),
@@ -586,7 +586,7 @@ def parImportSource = PegMain.newChoice(
         parNameSymbol,
         PegRepeat.new(
             PegSequence.new(
-                makeToken(@"."),
+                PegTokenSet.new(@"."),
                 parNameSymbol,
                 PegCode.new { ., ., n -> ".".cat(n) })),
         PegCode.new { first, rest ->
@@ -597,10 +597,10 @@ def parImportSource = PegMain.newChoice(
 ## Documented in spec.
 def parImportSelect = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@"::"),
+        PegTokenSet.new(@"::"),
         PegChoice.new(
             PegSequence.new(
-                makeToken(@"*"),
+                PegTokenSet.new(@"*"),
                 PegResult.new(@{select: @"*"})),
             PegSequence.new(
                 parNameSymbolList,
@@ -609,8 +609,8 @@ def parImportSelect = PegMain.newChoice(
 
 ## Documented in spec.
 def parImportStatement = PegMain.newSequence(
-    PegRepeat.new(makeToken(@export), 0, 1),
-    makeToken(@import),
+    PegRepeat.new(PegTokenSet.new(@export), 0, 1),
+    PegTokenSet.new(@import),
     parImportName,
     parImportFormat,
     parImportSource,
@@ -634,7 +634,7 @@ def parStatement = PegMain.newChoice(
 def parProgramStatement = PegMain.newChoice(
     parStatement,
     PegSequence.new(
-        makeToken(@export),
+        PegTokenSet.new(@export),
         PegChoice.new(
             PegSequence.new(
                 parNameSymbolList,
@@ -645,11 +645,11 @@ def parProgramStatement = PegMain.newChoice(
 
 ## Documented in spec.
 def parClosureBody = PegMain.newSequence(
-    PegRepeat.new(makeToken(@";")),
+    PegRepeat.new(PegTokenSet.new(@";")),
     PegRepeat.new(
         PegMain.newSequence(
             parStatement,
-            PegRepeat.new(makeToken(@";"), 1),
+            PegRepeat.new(PegTokenSet.new(@";"), 1),
             PegCode.new { s, . -> s })),
     PegChoice.new(
         PegMain.newSequence(
@@ -659,28 +659,28 @@ def parClosureBody = PegMain.newSequence(
             parYieldOrNonlocal,
             PegCode.new { y -> @{statements: [], yield: y} }),
         PegResult.new(@{statements: []})),
-    PegRepeat.new(makeToken(@";")),
+    PegRepeat.new(PegTokenSet.new(@";")),
     PegCode.new { ., most, last, . ->
         @{last*, statements: [most*, last::statements*]}
     });
 
 ## Documented in spec.
 parRawClosure := PegMain.newSequence(
-    makeToken(@"{"),
+    PegTokenSet.new(@"{"),
     parClosureDeclarations,
     parClosureBody,
-    makeToken(@"}"),
+    PegTokenSet.new(@"}"),
     PegCode.new { ., decls, body, . -> @{decls*, body*} });
 
 ## Documented in spec.
 def parProgram = PegMain.newSequence(
     PegChoice.new(
         PegSequence.new(
-            PegRepeat.new(makeToken(@";")),
+            PegRepeat.new(PegTokenSet.new(@";")),
             parImportStatement,
             PegRepeat.new(
                 PegSequence.new(
-                    PegRepeat.new(makeToken(@";"), 1),
+                    PegRepeat.new(PegTokenSet.new(@";"), 1),
                     parImportStatement)),
             PegCode.new { ., first, rest -> [first, rest*] }),
         PegResult.new([])),
@@ -689,16 +689,16 @@ def parProgram = PegMain.newSequence(
             PegChoice.new(
                 PegSequence.new(
                     PegCode.new { imports -> ne(imports, []) },
-                    PegRepeat.new(makeToken(@";"), 1)),
-                PegRepeat.new(makeToken(@";"))),
+                    PegRepeat.new(PegTokenSet.new(@";"), 1)),
+                PegRepeat.new(PegTokenSet.new(@";"))),
             parProgramStatement,
             PegRepeat.new(
                 PegSequence.new(
-                    PegRepeat.new(makeToken(@";"), 1),
+                    PegRepeat.new(PegTokenSet.new(@";"), 1),
                     parProgramStatement)),
             PegCode.new { ., ., first, rest -> [first, rest*] }),
         PegResult.new([])),
-    PegRepeat.new(makeToken(@";")),
+    PegRepeat.new(PegTokenSet.new(@";")),
     PegCode.new { imports, body, . ->
         def closure = makeFullClosure(@{
             statements: [imports*, body*],
@@ -746,16 +746,16 @@ def PEX_TYPES = {
 
 ## Documented in spec.
 parPexBlock := PegMain.newSequence(
-    makeToken(@"{:"),
+    PegTokenSet.new(@"{:"),
     PegThunk.new { . -> parPexChoice },
-    makeToken(@":}"),
+    PegTokenSet.new(@":}"),
     PegCode.new { ., pex, . -> @parser{pex} });
 
 ## Documented in spec.
 def parPexParenExpression = PegMain.newSequence(
-    makeToken(@"("),
+    PegTokenSet.new(@"("),
     PegThunk.new { . -> parPexChoice },
-    makeToken(@")"),
+    PegTokenSet.new(@")"),
     PegCode.new { ., pex, . -> pex });
 
 ## Parses a variable reference parsing expression.
@@ -764,11 +764,11 @@ def parPexVarRef = PegMain.newSequence(
     PegCode.new { name -> makeVarRef(name) });
 
 ## Documented in spec.
-def parPexString = PegMain.newSequence(makeToken(@string));
+def parPexString = PegMain.newSequence(PegTokenSet.new(@string));
 
 ## Documented in spec.
 def parPexToken = PegMain.newSequence(
-    makeToken(@"@"),
+    PegTokenSet.new(@"@"),
     parIdentifierSymbol,
     PegCode.new { ., type ->
         @token{value: type::value}
@@ -776,11 +776,11 @@ def parPexToken = PegMain.newSequence(
 
 ## Documented in spec.
 def parPexSetString = PegMain.newSequence(
-    makeToken(@string),
+    PegTokenSet.new(@string),
     PegChoice.new(
         PegSequence.new(
-            makeToken(@".."),
-            makeToken(@string),
+            PegTokenSet.new(@".."),
+            PegTokenSet.new(@string),
             PegCode.new { s, ., end /out ->
                 def startChar = s::value;
                 def endChar = end::value;
@@ -795,10 +795,10 @@ def parPexSetString = PegMain.newSequence(
 
 ## Documented in spec.
 def parPexSet = PegMain.newSequence(
-    makeToken(@"["),
+    PegTokenSet.new(@"["),
     PegChoice.new(
         PegSequence.new(
-            makeToken(@"!"),
+            PegTokenSet.new(@"!"),
             PegResult.new(@tokenSetComplement)),
         PegResult.new(@tokenSet)),
     PegChoice.new(
@@ -811,7 +811,7 @@ def parPexSet = PegMain.newSequence(
             PegRepeat.new(parPexToken, 1),
             PegCode.new { tokens -> tokens.collect({ n -> n::value }) }),
         PegResult.new([])),
-    makeToken(@"]"),
+    PegTokenSet.new(@"]"),
     PegCode.new { ., type, terminals, . -> @(type){values: terminals} });
 
 ## Documented in spec.
@@ -822,18 +822,18 @@ def parPexCode = PegMain.newSequence(
 
 ## Documented in spec.
 def parPexThunk = PegMain.newSequence(
-    makeToken(@"%"),
+    PegTokenSet.new(@"%"),
     parTerm,
     PegCode.new { ., value -> @thunk{value} });
 
 ## Documented in spec.
 def parPexTerm = PegMain.newChoice(
     PegSequence.new(
-        makeToken(@"."),
+        PegTokenSet.new(@"."),
         PegResult.new(@any{})),
     PegSequence.new(
-        makeToken(@"("),
-        makeToken(@")"),
+        PegTokenSet.new(@"("),
+        PegTokenSet.new(@")"),
         PegResult.new(@empty{})),
     parPexVarRef,
     parPexString,
@@ -868,7 +868,7 @@ def parPexLookahead = PegMain.newChoice(
 def parPexName = PegMain.newChoice(
     PegSequence.new(
         parNameSymbol,
-        makeToken(@"="),
+        PegTokenSet.new(@"="),
         parPexLookahead,
         PegCode.new { name, ., pex ->
             @varDef{name, value: pex}
@@ -885,7 +885,7 @@ parPexChoice := PegMain.newSequence(
     parPexSequence,
     PegRepeat.new(
         PegSequence.new(
-            makeToken(@"|"),
+            PegTokenSet.new(@"|"),
             parPexSequence)),
     PegCode.new { one, rest -> @choice{pexes: [one, rest*]} });
 
