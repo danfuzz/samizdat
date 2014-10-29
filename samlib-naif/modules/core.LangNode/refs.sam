@@ -65,7 +65,7 @@ def MOD_NAMES = [
     {mod: @Peg,       name: @PegThunk},
     {mod: @Peg,       name: @makeToken},
     {mod: @Peg,       name: @makeTokenSet},
-    {mod: @Peg,       name: @makeTokenSetComplement},
+    {mod: @Peg,       name: @PegTokenSetComplement},
     {mod: @Range,     name: @ClosedRange},
     {mod: @Range,     name: @OpenRange},
     {mod: @Sequence,  name: @reverseNth},

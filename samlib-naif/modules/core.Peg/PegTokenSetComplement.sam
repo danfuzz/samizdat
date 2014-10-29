@@ -24,6 +24,19 @@ export class PegTokenSetComplement
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(names*) {
+        ifIs { eq(names, []) }
+            {
+                ## Trivial case: Empty set, so any token will do.
+                return any
+            };
+
+        def set = {names*: true};  ## A set-like map of all the token names.
+
+        return this.(NEW)(@{set})
+    };
+
+    ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
         def result;
@@ -37,22 +50,4 @@ export class PegTokenSetComplement
                     }
             }
     };
-};
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeTokenSetComplement(names*) {
-    ifIs { eq(names, []) }
-        {
-            ## Trivial case: Empty set, so any token will do.
-            return any
-        };
-
-    def set = {names*: true};  ## A set-like map of all the token names.
-
-    return PegTokenSetComplement.(NEW)(@{set})
 };
