@@ -39,28 +39,41 @@ static void makePrimitiveEnvironment(void) {
         return;
     }
 
-    zvalue env = EMPTY_SYMBOL_TABLE;
+    // Count the definitions.
 
-    // Bind all the primitive functions.
+    zint size = 0;
 
-    #define PRIM_FUNC(name, minArgs, maxArgs) \
-        do { \
-            zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = cm_put(env, nameSymbol, \
-                makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), 0, \
-                    nameSymbol)); \
-        } while(0)
+    #define PRIM_DEF(name, value) size++
+    #define PRIM_FUNC(name, minArgs, maxArgs) size++
+    #include "prim-def.h"
+    #undef PRIM_DEF
+    #undef PRIM_FUNC
+
+    // Make an environment with them all.
+
+    zmapping defs[size];
+    size = 0;
 
     #define PRIM_DEF(name, value) \
         do { \
             zvalue nameSymbol = symbolFromUtf8(-1, #name); \
-            env = cm_put(env, nameSymbol, value); \
+            defs[size] = (zmapping) {nameSymbol, value}; \
+            size++; \
+        } while(0)
+
+    #define PRIM_FUNC(name, minArgs, maxArgs) \
+        do { \
+            zvalue nameSymbol = symbolFromUtf8(-1, #name); \
+            zvalue value = makeBuiltin(minArgs, maxArgs, FUN_IMPL_NAME(name), \
+                0, nameSymbol); \
+            defs[size] = (zmapping) {nameSymbol, value}; \
+            size++; \
         } while(0)
 
     #include "prim-def.h"
 
     // Set the final value, and make it immortal.
-    PRIMITIVE_ENVIRONMENT = datImmortalize(env);
+    PRIMITIVE_ENVIRONMENT = datImmortalize(symbolTableFromArray(size, defs));
 }
 
 /**
