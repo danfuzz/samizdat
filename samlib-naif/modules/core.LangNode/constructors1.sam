@@ -33,6 +33,12 @@ export fn makeCall(target, name, values*) {
 };
 
 ## Documented in spec.
+export fn makeCallLiterals(target, name, values*) {
+    def literals = values.collect { one -> makeLiteral(one) };
+    return makeCall(target, name, literals*)
+};
+
+## Documented in spec.
 export fn makeExport(node) {
     return @export{value: node}
 };

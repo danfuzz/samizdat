@@ -158,6 +158,11 @@ Otherwise, if there are no `interpolate` nodes in `values`, the end result is
 a straightforward `call` node, identical to having called `makeCall` with the
 same arguments.
 
+#### `makeCallLiterals(target, name, values*) -> node`
+
+Like `makeCall`, except that each of the `values` is made to be a literal
+value.
+
 #### `makeClassDef(name, attributes, methods) -> node`
 
 Makes a class definition node. This is a `top` variable definition of a class
@@ -240,11 +245,6 @@ Like `makeCallGeneral`, except this takes a `function` instead of a
 
 The result is a `call` or `apply` node with `function` as the target and
 literal `@call` as the name.
-
-#### `makeFunCallLiterals(function, values*) -> node`
-
-Like `makeFunCall`, except that each of the `values` is made to be a literal
-value.
 
 #### `makeFunCallThunks(function, values*) -> node`
 
