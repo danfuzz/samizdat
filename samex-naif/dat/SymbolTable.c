@@ -210,6 +210,22 @@ zint symbolTableSize(zvalue symbolTable) {
     return getInfo(symbolTable)->size;
 }
 
+zvalue symbolTableWithNewMapping(zvalue symbolTable, zmapping mapping) {
+    assertHasClass(symbolTable, CLS_SymbolTable);
+
+    zvalue result = allocClone(symbolTable);
+    SymbolTableInfo *info = getInfo(result);
+    zint expectSize = info->size + 1;
+
+    putInto(&result, &info, mapping);
+
+    if (info->size != expectSize) {
+        return NULL;
+    }
+
+    return result;
+}
+
 
 //
 // Class Definition
