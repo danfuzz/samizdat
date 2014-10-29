@@ -14,7 +14,7 @@ import ./PegFail :: fail;
 ##
 ## Class Definition
 ##
-## Payload: {set: @{names*: null}}
+## Payload: {set: @{names*: true}}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();

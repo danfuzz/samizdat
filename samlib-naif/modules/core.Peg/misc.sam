@@ -13,14 +13,13 @@ import core.Generator :: FilterGenerator;
 import ./PegResult :: *;
 import ./PegSequence :: *;
 import ./PegTokenSet :: *;
-import ./PegTokenSetComplement :: *;
 
 
 ##
 ## Private Definitions
 ##
 
-## Helper for `makeCharSet*` and `makeString`, which takes a string and
+## Helper for `makeString`, which takes a string and
 ## produces a list of token names for the characters.
 fn nameListFromString(string) {
     return string.collect { ch -> cast(Symbol, ch) }
@@ -44,12 +43,6 @@ export fn apply(rule, input) {
 
     return? ifIs { rule.parse(result?, generator) }
         { result }
-};
-
-## Documented in spec.
-export fn makeCharSetComplement(strings*) {
-    ## See comment in `makeCharSet`.
-    return PegTokenSetComplement.new(nameListFromString("".cat(strings*))*)
 };
 
 ## Documented in spec.

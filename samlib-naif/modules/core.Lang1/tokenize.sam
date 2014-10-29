@@ -30,7 +30,7 @@ def tokWhitespace = PegMain.newSequence(
             PegSequence.new(
                 makeString("#"),
                 PegTokenSet.newChars("#!="),
-                PegRepeat.new(makeCharSetComplement("\n")))),
+                PegRepeat.new(PegTokenSetComplement.newChars("\n")))),
         1));
 
 ## Documented in spec.
@@ -58,7 +58,7 @@ def tokInt = PegMain.newSequence(
 ## Documented in spec.
 def tokStringPart = PegMain.newChoice(
     PegSequence.new(
-        PegRepeat.new(makeCharSetComplement("\\\"\n"), 1),
+        PegRepeat.new(PegTokenSetComplement.newChars("\\\"\n"), 1),
         PegCode.new(stringFromTokenList)),
     PegSequence.new(
         makeString("\n"),
@@ -110,7 +110,7 @@ def tokQuotedIdentifier = PegMain.newSequence(
 ## Documented in spec.
 def tokError = PegMain.newSequence(
     any,
-    PegRepeat.new(makeCharSetComplement("\n")),
+    PegRepeat.new(PegTokenSetComplement.newChars("\n")),
     PegCode.new { badCh, . ->
         def msg = "Unrecognized character: ".cat(badCh.get_name());
         @error{value: msg}
