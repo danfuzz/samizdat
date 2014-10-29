@@ -26,11 +26,14 @@ Creates an instance of this class.
 As a special case, if no arguments are passed, this returns `core.Peg :: any`.
 
 
-#### `.newCharSet(strings*) -> :PegTokenSetComplement`
+#### `.newChars(strings*) -> :Parser`
 
-Creates a character set instance of this class. Each argument must be
-a string. The result of successful parsing is a character-as-token of the
-parsed character.
+Creates a character set instance of this class, which matches any token
+*except* the characters of the given `strings`. Each argument must be a
+string. The result of successful parsing is a character-as-token of the parsed
+character.
+
+As a special case, if no arguments are passed, this returns `core.Peg :: any`.
 
 
 <br><br>
