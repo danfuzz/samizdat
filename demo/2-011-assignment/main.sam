@@ -1,0 +1,149 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Assignment syntax demo
+##
+
+
+##
+## Private Definitions
+##
+
+## Checks an expected result.
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
+        {
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+
+##
+## Main demos
+##
+
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
+
+note("Assignment ops.");
+
+## Variable assignment.
+
+note("\nVariable");
+
+var x = 10;
+x := 20;
+expectEq("var 1", 20, x);
+expectEq("var 2", 30, (x := 30));
+
+## Box(-like) assignment.
+
+note("\nBox");
+
+def box = x?;
+box* := 40;
+expectEq("box 1", 40, x);
+expectEq("box 2", 50, (box* := 50));
+
+## Setter assignment.
+
+note("\nSetter");
+
+class Blort
+        access: ACCESS,
+        new: NEW {
+    class.new() {
+        var x = 0;
+        return this.(NEW)(@{box: x?})
+    };
+
+    .get_foo() {
+        def box = this.(ACCESS)()::box;
+        return box*
+    };
+
+    .set_foo(value) {
+        def box = this.(ACCESS)()::box;
+        box* := value + 1;
+        return value
+    };
+};
+
+def b = Blort.new();
+expectEq("setter 1", 0, b.foo);
+b.foo := 10;
+expectEq("setter 2", 11, b.foo);
+expectEq("setter 3", 20, (b.foo := 20));
+expectEq("setter 4", 21, b.foo);
+
+## Index assignment.
+
+note("\nIndex");
+
+class Fizmo
+        access: ACCESS,
+        new: NEW {
+    class.new() {
+        var x = @{};
+        return this.(NEW)(@{box: x?})
+    };
+
+    .get(key) {
+        def box = this.(ACCESS)()::box;
+        return? (box*)[key]
+    };
+
+    .set(key, value) {
+        def box = this.(ACCESS)()::box;
+        box* := @{(box*)*, (key): value + 1};
+        return value
+    };
+};
+
+def f = Fizmo.new();
+expectVoid("index 1", { f[@x] });
+f[@x] := 10;
+expectEq("index 2", 11, f[@x]);
+expectEq("index 3", 20, (f[@y] := 20));
+expectEq("index 4", 21, f[@y]);
+
+note("All good.");
