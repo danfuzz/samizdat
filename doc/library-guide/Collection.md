@@ -16,9 +16,20 @@ would expect.
 
 #### `.cat(more*) -> collection`
 
-(Implementation of `OneOff` method.)
+Returns the concatenation of all of the given `more*` values to `this`.
+The `more*` values must be "compatible" with `this` (as defined by the class
+of `this`), and the result is typically expected to be of the same class as
+`this`. It is an error (terminating the runtime) if one of the arguments is
+incompatible.
 
-Concatenates the given collections.
+To the extent that a value is unconstrained in terms of its constituent
+elements and their arrangement, the result of concatenation consists
+of the elements of all the original values, in order, in the order of the
+arguments.
+
+For classes that have element constraints, a concatenation will not
+necessarily contain all the original constituent elements, and the order might
+be different. See individual implementation docs for details.
 
 #### `.del(keys*) -> collection`
 
@@ -35,15 +46,20 @@ not `[1]`. Similarly, `[0, 1, 2].del(0, 0)` returns `[1, 2]`.
 
 #### `.get(key) -> . | void`
 
-(Implementation of `OneOff` method.)
+Returns the constituent element of `this` that corresponds to the given
+`key`. `key` is an arbitrary value. Returns void if there is no unique
+corresponding value for the given `key` (including if `key` is not
+bound in `this` at all).
 
-Gets the value in `this` associated with the given `key`.
+**Syntax Note:** This is the method that underlies the `value[key]`
+syntactic form.
 
 #### `.get_size() -> int`
 
-(Implementation of `OneOff` method.)
-
 Gets the size (element count) of `this`.
+
+**Syntax Note:** This is the method underlying the `#value` syntactic
+form (prefix `#` operator).
 
 #### `.keyList() -> list`
 

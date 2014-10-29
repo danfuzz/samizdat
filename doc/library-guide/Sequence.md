@@ -33,8 +33,6 @@ given `n`.
 
 #### `.nth(n) -> . | void`
 
-(Implementation of `OneOff` method.)
-
 Returns the nth (zero-based) element of the sequence.
 
 #### `.reverse() -> sequence`
@@ -42,7 +40,7 @@ Returns the nth (zero-based) element of the sequence.
 Returns a sequence just like the given one, except with elements in
 the opposite order.
 
-**Syntax Note:** This is the function that underlies the `^this`
+**Syntax Note:** This is the function that underlies the `^value`
 syntactic form (prefix `^` operator).
 
 #### `.sliceExclusive(start, end?) -> sequence | void`
