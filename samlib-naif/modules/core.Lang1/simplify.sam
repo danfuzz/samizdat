@@ -67,14 +67,16 @@ fn convertPex(node, formals) {
                 ## Use the lexical `formals` context to make a regular closure
                 ## node, and just convert that. As a special case, notice if
                 ## the closure is just a yield of a literal, and convert that
-                ## with `makeResult`.
+                ## with `PegResult.new`.
                 def closurePayload = @{node*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
                 ifValueAndElse
                     { eq(fullClosure::statements, []) }
                     { . -> fullClosure::yield.hasName(@literal) }
-                    { ., yNode -> makeFunCall(REFS::Peg_makeResult, yNode) }
+                    { ., yNode ->
+                        makeCall(REFS::Peg_PegResult, SYMS::new, yNode)
+                    }
                     {
                         makeCall(REFS::Peg_PegCode, SYMS::new,
                             convertPexIn(fullClosure))

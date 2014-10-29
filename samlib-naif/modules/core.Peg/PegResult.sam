@@ -22,6 +22,11 @@ export class PegResult
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(value) {
+        return this.(NEW)(@{value})
+    };
+
+    ## Documented in spec.
     .parse(box, input, .*) {
         def data = this.(ACCESS)();
         box* := data::value;
@@ -35,9 +40,4 @@ export class PegResult
 ##
 
 ## Documented in spec.
-export fn makeResult(value) {
-    return PegResult.(NEW)(@{value})
-};
-
-## Documented in spec.
-export def empty = makeResult(null);
+export def empty = Result.new(null);

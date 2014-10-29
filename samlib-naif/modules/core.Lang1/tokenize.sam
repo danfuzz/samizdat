@@ -63,16 +63,16 @@ def tokStringPart = PegMain.newChoice(
     PegSequence.new(
         makeString("\n"),
         makeRepeat(makeString(" ")),
-        makeResult("\n")),
+        PegResult.new("\n")),
     PegSequence.new(
         makeString("\\"),
         PegChoice.new(
-            PegSequence.new(makeString("\\"), makeResult("\\")),
-            PegSequence.new(makeString("\""), makeResult("\"")),
-            PegSequence.new(makeString("n"),  makeResult("\n")),
-            PegSequence.new(makeString("r"),  makeResult("\r")),
-            PegSequence.new(makeString("t"),  makeResult("\t")),
-            PegSequence.new(makeString("0"),  makeResult("\0")))));
+            PegSequence.new(makeString("\\"), PegResult.new("\\")),
+            PegSequence.new(makeString("\""), PegResult.new("\"")),
+            PegSequence.new(makeString("n"),  PegResult.new("\n")),
+            PegSequence.new(makeString("r"),  PegResult.new("\r")),
+            PegSequence.new(makeString("t"),  PegResult.new("\t")),
+            PegSequence.new(makeString("0"),  PegResult.new("\0")))));
 
 ## Documented in spec.
 def tokString = PegMain.newSequence(

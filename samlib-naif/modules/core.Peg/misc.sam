@@ -10,7 +10,7 @@
 
 import core.Generator :: FilterGenerator;
 
-import ./PegResult :: makeResult;
+import ./PegResult :: *;
 import ./PegSequence :: *;
 import ./PegTokenSet :: makeToken, makeTokenSet;
 import ./PegTokenSetComplement :: makeTokenSetComplement;
@@ -65,7 +65,7 @@ export fn makeString(string) {
 
     ## Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { eq(string, "") }
-        { return makeResult(@""{}) };
+        { return PegResult.new(@""{}) };
 
     ## Trivial case: One-char string. Return a simple one-char rule.
     ifIs { eq(string.get_size(), 1) }
@@ -78,7 +78,7 @@ export fn makeString(string) {
     def names = nameListFromString(string);
     def chars = names.collect(makeToken);
 
-    return PegSequence.new(chars*, makeResult(@(resultType){}))
+    return PegSequence.new(chars*, PegResult.new(@(resultType){}))
 };
 
 ## Documented in spec.
