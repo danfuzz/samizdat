@@ -259,7 +259,7 @@ export fn makeClassDef(name, attributes, methods) {
 export fn makeDynamicImport(node) {
     return ifSwitch(
         { node.get_name() },
-        {
+        @{
             @importModule: { . ->
                 ## The translation is approximately
                 ## `def name = loadModule(source)`.

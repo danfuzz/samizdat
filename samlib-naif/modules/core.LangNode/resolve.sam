@@ -48,7 +48,7 @@ fn sourceString(source) {
 export fn resolveImport(node, resolveFn) {
     return ifSwitch(
         { node.get_name() },
-        {
+        @{
             @importModule: { . ->
                 ## No need to modify, just validate.
                 resolveAndCheck(resolveFn, node::source);

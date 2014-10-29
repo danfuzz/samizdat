@@ -52,7 +52,7 @@ fn withFinalBindings(orig, more) {
 fn convertPex(node, formals) {
     return ifSwitch(
         { node.get_name() },
-        {
+        @{
             @any: { . ->
                 REFS::Peg_any
             },
@@ -175,7 +175,7 @@ fn convertPex(node, formals) {
 fn convertPexIn(node) {
     return ifSwitch(
         { node.get_name() },
-        {
+        @{
             @apply: { . ->
                 def target = convertPexIn(node::target);
                 def name = convertPexIn(node::name);
