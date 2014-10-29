@@ -76,10 +76,11 @@ The only operators recognized in Layer 0 are:
 
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
 * `expr.name(expr, ...) { block } ...` &mdash; Method calls.
-* `name := expr` &mdash; Assignment.
 * `expr::name` &mdash; Collection-style indexing by name.
 * `expr*` &mdash; Interpolation.
 * `expr?` &mdash; Optional-value-to-list conversion.
+* `name := expr` &mdash; Variable assignment.
+* `expr* := expr` &mdash; Box assignment.
 
 In addition, Layer 1 recognizes:
 
