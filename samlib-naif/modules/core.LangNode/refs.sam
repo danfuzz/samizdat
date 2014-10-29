@@ -54,7 +54,7 @@ def MOD_NAMES = [
     {mod: @Peg,       name: @any},
     {mod: @Peg,       name: @empty},
     {mod: @Peg,       name: @PegChoice},
-    {mod: @Peg,       name: @makeCode},
+    {mod: @Peg,       name: @PegCode},
     {mod: @Peg,       name: @makeLookaheadFailure},
     {mod: @Peg,       name: @makeLookaheadSuccess},
     {mod: @Peg,       name: @PegMain},

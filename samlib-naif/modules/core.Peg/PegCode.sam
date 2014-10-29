@@ -22,6 +22,11 @@ export class PegCode
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(function) {
+        return this.(NEW)(@{function})
+    };
+
+    ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
@@ -31,14 +36,3 @@ export class PegCode
             }
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeCode(function) {
-    return PegCode.(NEW)(@{function})
-};
-

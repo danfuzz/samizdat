@@ -76,7 +76,8 @@ fn convertPex(node, formals) {
                     { . -> fullClosure::yield.hasName(@literal) }
                     { ., yNode -> makeFunCall(REFS::Peg_makeResult, yNode) }
                     {
-                        makeFunCall(REFS::Peg_makeCode, convertPexIn(fullClosure))
+                        makeCall(REFS::Peg_PegCode, SYMS::new,
+                            convertPexIn(fullClosure))
                     };
             },
 

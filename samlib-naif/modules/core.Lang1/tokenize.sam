@@ -53,13 +53,13 @@ def tokDecDigit = PegMain.newSequence(
 ## Documented in spec.
 def tokInt = PegMain.newSequence(
     makeRepeat(tokDecDigit, 1),
-    makeCode { digits -> @int{value: intFromDigits(10, digits)} });
+    PegCode.new { digits -> @int{value: intFromDigits(10, digits)} });
 
 ## Documented in spec.
 def tokStringPart = PegMain.newChoice(
     PegSequence.new(
         makeRepeat(makeCharSetComplement("\\\"\n"), 1),
-        makeCode(stringFromTokenList)),
+        PegCode.new(stringFromTokenList)),
     PegSequence.new(
         makeString("\n"),
         makeRepeat(makeString(" ")),
@@ -81,8 +81,8 @@ def tokString = PegMain.newSequence(
     PegChoice.new(
         PegSequence.new(
             makeString("\""),
-            makeCode { ., parts, . -> @string{value: "".cat(parts*)} }),
-        makeCode { ., . -> @error{value: "Unterminated string literal."} }));
+            PegCode.new { ., parts, . -> @string{value: "".cat(parts*)} }),
+        PegCode.new { ., . -> @error{value: "Unterminated string literal."} }));
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -95,7 +95,7 @@ def IDENTIFIER_CHARS = IDENTIFIER_START_CHARS.cat("0123456789");
 def tokIdentifier = PegMain.newSequence(
     makeCharSet(IDENTIFIER_START_CHARS),
     makeRepeat(makeCharSet(IDENTIFIER_CHARS)),
-    makeCode { one, rest ->
+    PegCode.new { one, rest ->
         def name = symbolFromTokenList([one, rest*]);
         ifValueOr { KEYWORDS.get(name) }
             { @identifier{value: name} }
@@ -105,13 +105,13 @@ def tokIdentifier = PegMain.newSequence(
 def tokQuotedIdentifier = PegMain.newSequence(
     makeString("\\"),
     tokString,
-    makeCode { ., s -> @identifier{value: cast(Symbol, s::value)} });
+    PegCode.new { ., s -> @identifier{value: cast(Symbol, s::value)} });
 
 ## Documented in spec.
 def tokError = PegMain.newSequence(
     any,
     makeRepeat(makeCharSetComplement("\n")),
-    makeCode { badCh, . ->
+    PegCode.new { badCh, . ->
         def msg = "Unrecognized character: ".cat(badCh.get_name());
         @error{value: msg}
     });
@@ -132,7 +132,7 @@ def tokFile = PegMain.newSequence(
             makeRepeat(tokWhitespace, 0, 1),
             tokToken)),
     makeRepeat(tokWhitespace, 0, 1),
-    makeCode { tokens, . -> tokens });
+    PegCode.new { tokens, . -> tokens });
 
 
 ##
