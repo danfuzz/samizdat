@@ -81,12 +81,11 @@ static zvalue mapFrom2(zmapping elem1, zmapping elem2) {
 }
 
 /**
- * Given a map, find the index of the given key. `map` must be a map.
- * Returns the index of the key if found. If not found, then this returns
+ * Given a map and its info struct, find the index of the given key. Returns
+ * the index of the key if found. If not found, then this returns
  * `~insertionIndex` (a negative number).
  */
-static zint mapFind(zvalue map, zvalue key) {
-    MapInfo *info = getInfo(map);
+static zint mapFind(zvalue map, MapInfo *info, zvalue key) {
     zmapping *elems = info->elems;
 
     // Take care of a couple trivial cases.
@@ -163,7 +162,7 @@ static zvalue putMapping(zvalue map, zmapping mapping) {
         }
     }
 
-    zint index = mapFind(map, mapping.key);
+    zint index = mapFind(map, info, mapping.key);
     zvalue result;
     zmapping *resultElems;
 
@@ -424,7 +423,7 @@ METH_IMPL_rest(Map, del, keys) {
 
     // Null out the `key` for any of the given `keys`.
     for (zint i = 0; i < keys.size; i++) {
-        zint index = mapFind(ths, keys.elems[i]);
+        zint index = mapFind(ths, info, keys.elems[i]);
         if (index >= 0) {
             any = true;
             elems[index].key = NULL;
@@ -491,8 +490,9 @@ METH_IMPL_0(Map, gcMark) {
 
 // Documented in spec.
 METH_IMPL_1(Map, get, key) {
-    zint index = mapFind(ths, key);
-    return (index < 0) ? NULL : getInfo(ths)->elems[index].value;
+    MapInfo *info = getInfo(ths);
+    zint index = mapFind(ths, info, key);
+    return (index < 0) ? NULL : info->elems[index].value;
 }
 
 // Documented in spec.
