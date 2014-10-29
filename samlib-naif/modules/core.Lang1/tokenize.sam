@@ -23,20 +23,20 @@ import core.Peg :: *;
 
 ## Documented in spec.
 def tokWhitespace = PegMain.newSequence(
-    PegLookaheadSuccess.new(makeCharSet("# \n")),
+    PegLookaheadSuccess.new(PegTokenSet.newChars("# \n")),
     PegRepeat.new(
         PegChoice.new(
-            PegRepeat.new(makeCharSet(" \n"), 1),
+            PegRepeat.new(PegTokenSet.newChars(" \n"), 1),
             PegSequence.new(
                 makeString("#"),
-                makeCharSet("#!="),
+                PegTokenSet.newChars("#!="),
                 PegRepeat.new(makeCharSetComplement("\n")))),
         1));
 
 ## Documented in spec.
 def tokPunctuation = PegMain.newSequence(
     PegLookaheadSuccess.new(
-        makeCharSet("@:.,=-+?;*/<>{}()[]", "&|!%")),
+        PegTokenSet.newChars("@:.,=-+?;*/<>{}()[]", "&|!%")),
     PegChoice.new(
         makeString("->"),
         makeString(":="),
@@ -48,7 +48,7 @@ def tokPunctuation = PegMain.newSequence(
 
 ## Documented in spec.
 def tokDecDigit = PegMain.newSequence(
-    makeCharSet("_0123456789"));
+    PegTokenSet.newChars("_0123456789"));
 
 ## Documented in spec.
 def tokInt = PegMain.newSequence(
@@ -93,8 +93,8 @@ def IDENTIFIER_CHARS = IDENTIFIER_START_CHARS.cat("0123456789");
 
 ## Documented in spec.
 def tokIdentifier = PegMain.newSequence(
-    makeCharSet(IDENTIFIER_START_CHARS),
-    PegRepeat.new(makeCharSet(IDENTIFIER_CHARS)),
+    PegTokenSet.newChars(IDENTIFIER_START_CHARS),
+    PegRepeat.new(PegTokenSet.newChars(IDENTIFIER_CHARS)),
     PegCode.new { one, rest ->
         def name = symbolFromTokenList([one, rest*]);
         ifValueOr { KEYWORDS.get(name) }

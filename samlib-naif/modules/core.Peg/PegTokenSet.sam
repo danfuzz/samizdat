@@ -14,7 +14,7 @@ import ./PegFail :: fail;
 ##
 ## Class Definition
 ##
-## Payload: {set: {names*: null}}
+## Payload: {set: @{names*: null}}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -27,13 +27,23 @@ export class PegTokenSet
     class.new(names*) {
         ifIs { eq(names, []) }
             {
-                ## Trivial case: Empty set, so it can never succeed in matching.
+                ## Trivial case: Empty set, so it can never succeed in
+                ## matching.
                 return fail
             };
 
-        def set = {names*: true};  ## A set-like map of all the token names.
+        def set = @{names*: true};  ## A set-like table of all the token names.
 
         return PegTokenSet.(NEW)(@{set})
+    };
+
+    ## Documented in spec.
+    class.newChars(strings*) {
+        ## Make a combined string, passing it to the general constructor,
+        ## which then splays all the characters out as a set of table keys.
+        def string = "".cat(strings*);
+        def names = string.collect { ch -> cast(Symbol, ch) };
+        return this.new(names*)
     };
 
     ## Documented in spec.
