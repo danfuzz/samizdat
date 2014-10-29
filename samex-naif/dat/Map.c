@@ -62,13 +62,6 @@ static zvalue mapFromArrayUnchecked(zint size, zmapping *mappings) {
 }
 
 /**
- * Constructs and returns a single-mapping map.
- */
-static zvalue mapFrom1(zmapping elem) {
-    return mapFromArrayUnchecked(1, &elem);
-}
-
-/**
  * Allocates and returns a map with up to two mappings. This will return a
  * single-mapping map if the two keys are the same, in which case the *second*
  * value is used.
@@ -82,7 +75,7 @@ static zvalue mapFrom2(zmapping elem1, zmapping elem2) {
             return mapFromArrayUnchecked(2, (zmapping[]) {elem2, elem1});
         }
         default: {
-            return mapFrom1(elem2);
+            return mapFromMapping(elem2);
         }
     }
 }
@@ -176,7 +169,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
     // Handle special cases that are particularly easy.
     switch (size) {
         case 0: { return EMPTY_MAP;                          }
-        case 1: { return mapFrom1(mappings[0]);              }
+        case 1: { return mapFromMapping(mappings[0]);        }
         case 2: { return mapFrom2(mappings[0], mappings[1]); }
     }
 
@@ -205,6 +198,11 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     // Allocate, populate, and return the result.
     return mapFromArrayUnchecked(at, mappings);
+}
+
+// Documented in header.
+zvalue mapFromMapping(zmapping mapping) {
+    return mapFromArrayUnchecked(1, &mapping);
 }
 
 
@@ -492,7 +490,7 @@ METH_IMPL_1(Map, nextValue, box) {
             // Make a mapping for the first element, yield it, and return
             // a map of the remainder.
             zmapping *elems = info->elems;
-            zvalue mapping = mapFrom1(elems[0]);
+            zvalue mapping = mapFromMapping(elems[0]);
             cm_store(box, mapping);
             return mapFromArrayUnchecked(size - 1, &elems[1]);
         }
@@ -509,7 +507,7 @@ METH_IMPL_1(Map, nthMapping, n) {
     } else if (info->size == 1) {
         return ths;
     } else {
-        return mapFrom1(info->elems[index]);
+        return mapFromMapping(info->elems[index]);
     }
 }
 
@@ -527,7 +525,7 @@ METH_IMPL_2(Map, put, key, value) {
     switch (size) {
         case 0: {
             // `put({}, ...)`
-            return mapFrom1((zmapping) {key, value});
+            return mapFromMapping((zmapping) {key, value});
         }
         case 1: {
             return mapFrom2(elems[0], (zmapping) {key, value});
