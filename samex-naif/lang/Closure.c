@@ -127,7 +127,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
         die("Too many formals: %lld", formals.size);
     }
 
-    zvalue names = EMPTY_MAP;
+    zvalue names = EMPTY_SYMBOL_TABLE;
     zint formalNameCount = 0;
 
     for (zint i = 0; i < formals.size; i++) {
