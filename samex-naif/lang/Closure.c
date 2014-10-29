@@ -189,7 +189,8 @@ static zvalue getCachedClosure(zvalue node) {
 
     if (result == NULL) {
         result = buildCachedClosure(get_data(node));
-        nodeCache = cm_put(nodeCache, node, result);
+        nodeCache = cm_cat(nodeCache,
+            mapFromMapping((zmapping) {node, result}));
         cm_store(nodeCacheBox, nodeCache);
     }
 
