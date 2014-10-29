@@ -9,7 +9,7 @@
 // `DEF_LITERAL(name, value)` -- an arbitrary literal value.
 // `DEF_STRING(name, "string")` -- a string constant.
 // `DEF_SYMBOL(name, "string")` -- an interned symbol and token (empty record).
-// `DEF_TOKEN(name, "string")` -- just a token; symbol assumed to exist.
+// `DEF_TOKEN(name)` -- just a token; symbol assumed to exist.
 //
 
 DEF_STRING(CH_DOLLAR, "$");
@@ -78,7 +78,6 @@ DEF_SYMBOL(noYield,               "noYield");
 DEF_SYMBOL(nonlocalExit,          "nonlocalExit");
 DEF_SYMBOL(null,                  "null");
 DEF_SYMBOL(prefix,                "prefix");
-DEF_SYMBOL(repeat,                "repeat");
 DEF_SYMBOL(return,                "return");
 DEF_SYMBOL(select,                "select");
 DEF_SYMBOL(source,                "source");
@@ -99,9 +98,10 @@ DEF_SYMBOL(yieldDef,              "yieldDef");
 DEF_SYMBOL(zfalse,                "false");  // `z` avoids clash with C.
 DEF_SYMBOL(ztrue,                 "true");   // `z` avoids clash with C.
 
-DEF_TOKEN(call,  "call");
-DEF_TOKEN(fetch, "fetch");
-DEF_TOKEN(store, "store");
+DEF_TOKEN(call);
+DEF_TOKEN(fetch);
+DEF_TOKEN(repeat);
+DEF_TOKEN(store);
 
 // Literals have to be defined after everything else, in particular after the
 // constants used during calls to `makeLiteral()`.
