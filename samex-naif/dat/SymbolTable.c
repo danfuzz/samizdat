@@ -387,15 +387,6 @@ METH_IMPL_0(SymbolTable, get_size) {
 }
 
 // Documented in spec.
-METH_IMPL_2(SymbolTable, put, key, value) {
-    zvalue result = allocClone(ths);
-    SymbolTableInfo *info = getInfo(result);
-
-    putInto(&result, &info, (zmapping) {key, value});
-    return result;
-}
-
-// Documented in spec.
 METH_IMPL_1(SymbolTable, totalEq, other) {
     if (ths == other) {
         return ths;
@@ -499,7 +490,6 @@ void bindMethodsForSymbolTable(void) {
             METH_BIND(SymbolTable, gcMark),
             METH_BIND(SymbolTable, get),
             METH_BIND(SymbolTable, get_size),
-            METH_BIND(SymbolTable, put),
             METH_BIND(SymbolTable, totalEq),
             METH_BIND(SymbolTable, totalOrder)));
 

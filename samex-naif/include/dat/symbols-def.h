@@ -76,7 +76,6 @@ DEF_SYMBOL(nthMapping);
 DEF_SYMBOL(or);
 DEF_SYMBOL(perEq);
 DEF_SYMBOL(perOrder);
-DEF_SYMBOL(put);
 DEF_SYMBOL(readResource);
 DEF_SYMBOL(resolve);
 DEF_SYMBOL(reverse);

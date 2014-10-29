@@ -577,16 +577,6 @@ METH_IMPL_1(Map, nthMapping, n) {
 }
 
 // Documented in spec.
-METH_IMPL_2(Map, put, key, value) {
-    if (DAT_CONSTRUCTION_PARANOIA) {
-        assertValid(key);
-        assertValid(value);
-    }
-
-    return putMapping(ths, (zmapping) {key, value});
-}
-
-// Documented in spec.
 METH_IMPL_1(Map, totalEq, other) {
     assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
     MapInfo *info1 = getInfo(ths);
@@ -685,7 +675,6 @@ MOD_INIT(Map) {
             METH_BIND(Map, keyList),
             METH_BIND(Map, nextValue),
             METH_BIND(Map, nthMapping),
-            METH_BIND(Map, put),
             METH_BIND(Map, totalEq),
             METH_BIND(Map, totalOrder),
             METH_BIND(Map, valueList)));

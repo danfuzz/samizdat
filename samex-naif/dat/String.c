@@ -533,28 +533,6 @@ METH_IMPL_1(String, nth, n) {
 }
 
 // Documented in spec.
-METH_IMPL_2(String, put, key, value) {
-    assertStringSize1(value);
-
-    StringInfo *info = getInfo(ths);
-    zint size = info->s.size;
-    zint index = seqPutIndexStrict(size, key);
-
-    if (index == size) {
-        // This is an append operation.
-        return cm_cat(ths, value);
-    }
-
-    zchar *resultChars = allocArray(size);
-    arrayFromZstring(resultChars, getInfo(ths)->s);
-    resultChars[index] = zcharFromString(value);
-
-    zvalue result = stringFromZstring((zstring) {size, resultChars});
-    freeArray(resultChars);
-    return result;
-}
-
-// Documented in spec.
 METH_IMPL_0(String, reverse) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -624,7 +602,6 @@ MOD_INIT(String) {
             METH_BIND(String, get_size),
             METH_BIND(String, nextValue),
             METH_BIND(String, nth),
-            METH_BIND(String, put),
             METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),

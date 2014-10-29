@@ -302,21 +302,6 @@ METH_IMPL_1(List, nth, n) {
 }
 
 // Documented in spec.
-METH_IMPL_2(List, put, key, value) {
-    ListInfo *info = getInfo(ths);
-    zvalue *elems = info->elems;
-    zint size = info->size;
-    zint index = seqPutIndexStrict(size, key);
-
-    if (index == size) {
-        // This is an append operation.
-        return listFrom(size, elems, value, 0, NULL);
-    }
-
-    return listFrom(index, elems, value, size - index - 1, &elems[index + 1]);
-}
-
-// Documented in spec.
 METH_IMPL_0(List, reverse) {
     ListInfo *info = getInfo(ths);
     zint size = info->size;
@@ -411,7 +396,6 @@ MOD_INIT(List) {
             METH_BIND(List, get_size),
             METH_BIND(List, nextValue),
             METH_BIND(List, nth),
-            METH_BIND(List, put),
             METH_BIND(List, reverse),
             METH_BIND(List, sliceExclusive),
             METH_BIND(List, sliceInclusive),
