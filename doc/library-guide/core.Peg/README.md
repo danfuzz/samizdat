@@ -59,20 +59,20 @@ syntax for explanatory purposes.
 <br><br>
 ### Classes
 
-* [PegAny](PegAny.sam)
-* [PegChoice](PegChoice.sam)
-* [PegCode](PegCode.sam)
-* [PegEof](PegEof.sam)
-* [PegFail](PegFail.sam)
-* [PegLookaheadFailure](PegLookaheadFailure.sam)
-* [PegLookaheadSuccess](PegLookaheadSuccess.sam)
-* [PegMain](PegMain.sam)
-* [PegRepeat](PegRepeat.sam)
-* [PegResult](PegResult.sam)
-* [PegSet](PegSet.sam)
-* [PegSetComplement](PegSetComplement.sam)
-* [PegSequence](PegSequence.sam)
-* [PegThunk](PegThunk.sam)
+* [PegAny](PegAny.md)
+* [PegChoice](PegChoice.md)
+* [PegCode](PegCode.md)
+* [PegEof](PegEof.md)
+* [PegFail](PegFail.md)
+* [PegLookaheadFailure](PegLookaheadFailure.md)
+* [PegLookaheadSuccess](PegLookaheadSuccess.md)
+* [PegMain](PegMain.md)
+* [PegRepeat](PegRepeat.md)
+* [PegResult](PegResult.md)
+* [PegSet](PegSet.md)
+* [PegSetComplement](PegSetComplement.md)
+* [PegSequence](PegSequence.md)
+* [PegThunk](PegThunk.md)
 
 
 <br><br>
