@@ -91,6 +91,14 @@ expectEq("del 10", ["y"],  ["x", "y"].del(0, 0));
 expectEq("del 11", [],     ["x", "y"].del(0, 1));
 expectEq("del 12", [2, 3], [0, 1, 2, 3, 4].del(0, 1, 4));
 
+expectEq("repeat 1", [],                   [].repeat(0));
+expectEq("repeat 2", [],                   [].repeat(1));
+expectEq("repeat 3", [],                   [].repeat(1000));
+expectEq("repeat 4", [],                   [1, 2, 3].repeat(0));
+expectEq("repeat 5", [1, 2, 3],            [1, 2, 3].repeat(1));
+expectEq("repeat 6", [1, 2, 3, 1, 2, 3],   [1, 2, 3].repeat(2));
+expectEq("repeat 7", ["x", "x", "x", "x"], ["x"].repeat(4));
+
 expectEq("sliceInclusive", [], [1].sliceInclusive(1));
 
 note("All good.");
