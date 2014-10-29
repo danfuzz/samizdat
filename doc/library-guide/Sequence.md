@@ -35,6 +35,11 @@ given `n`.
 
 Returns the nth (zero-based) element of the sequence.
 
+#### `.repeat(count) -> sequence`
+
+Returns a sequence consisting of `count` repetitions of the contents of `this`.
+`count` must be a non-negative int.
+
 #### `.reverse() -> sequence`
 
 Returns a sequence just like the given one, except with elements in

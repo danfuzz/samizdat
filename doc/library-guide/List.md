@@ -83,6 +83,11 @@ Gets the nth element of the string.
 
 Gets the nth mapping of the list.
 
+#### `.repeat(count) -> list`
+
+Returns a list consisting of `count` repetitions of the contents of `this`.
+`count` must be a non-negative int.
+
 #### `.reverse() -> list`
 
 Returns a list like the one given, except with elements in the opposite

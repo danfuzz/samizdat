@@ -103,6 +103,11 @@ Gets the nth character of the string, as a single-element string.
 
 Gets the nth mapping of the string.
 
+#### `.repeat(count) -> string`
+
+Returns a string consisting of `count` repetitions of the contents of `this`.
+`count` must be a non-negative int.
+
 #### `.reverse() -> string`
 
 Returns a string like the one given, except with characters in the opposite
