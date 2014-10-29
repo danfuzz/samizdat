@@ -144,6 +144,49 @@ static int mappingOrder(const void *m1, const void *m2) {
     return cm_order(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
+/**
+ * Put a new mapping into a map, either adding or replacing a key. Returns
+ * a new map. `map` is assumed to be a valid map.
+ */
+static zvalue putMapping(zvalue map, zmapping mapping) {
+    MapInfo *info = getInfo(map);
+    zmapping *elems = info->elems;
+    zint size = info->size;
+
+    switch (size) {
+        case 0: {
+            // `map` is empty (`{}`).
+            return mapFromMapping(mapping);
+        }
+        case 1: {
+            return mapFrom2(elems[0], mapping);
+        }
+    }
+
+    zint index = mapFind(map, mapping.key);
+    zvalue result;
+    zmapping *resultElems;
+
+    if (index >= 0) {
+        // The key exists in the given map, so we need to perform
+        // a replacement.
+        result = allocMap(size);
+        resultElems = getInfo(result)->elems;
+        utilCpy(zmapping, getInfo(result)->elems, elems, size);
+    } else {
+        // The key wasn't found, so we need to insert a new one.
+        index = ~index;
+        result = allocMap(size + 1);
+        resultElems = getInfo(result)->elems;
+        utilCpy(zmapping, resultElems, elems, index);
+        utilCpy(zmapping, &resultElems[index + 1], &elems[index],
+            (size - index));
+    }
+
+    resultElems[index] = mapping;
+    return result;
+}
+
 
 //
 // Exported Definitions
@@ -306,6 +349,28 @@ METH_IMPL_rest(Map, cat, args) {
         }
         size += getInfo(maps[i])->size;
     }
+
+    // Special cases for efficiency.
+
+    if (size == thsSize) {
+        // All the arguments were empty.
+        return ths;
+    }
+
+    if (args.size == 1) {
+        if (thsSize == 0) {
+            // This is `{}.cat(arg)` with a single argument.
+            return maps[0];
+        }
+
+        MapInfo *info = getInfo(maps[0]);
+        if (info->size == 1) {
+            // This is `map.cat(arg)`, where `arg` is a single mapping.
+            return putMapping(ths, info->elems[0]);
+        }
+    }
+
+    // The general case.
 
     zmapping elems[size];
     zint at = thsSize;
@@ -513,47 +578,12 @@ METH_IMPL_1(Map, nthMapping, n) {
 
 // Documented in spec.
 METH_IMPL_2(Map, put, key, value) {
-    MapInfo *info = getInfo(ths);
-    zmapping *elems = info->elems;
-    zint size = info->size;
-
     if (DAT_CONSTRUCTION_PARANOIA) {
         assertValid(key);
         assertValid(value);
     }
 
-    switch (size) {
-        case 0: {
-            // `put({}, ...)`
-            return mapFromMapping((zmapping) {key, value});
-        }
-        case 1: {
-            return mapFrom2(elems[0], (zmapping) {key, value});
-        }
-    }
-
-    zint index = mapFind(ths, key);
-    zvalue result;
-    zmapping *resultElems;
-
-    if (index >= 0) {
-        // The key exists in the given map, so we need to perform
-        // a replacement.
-        result = allocMap(size);
-        resultElems = getInfo(result)->elems;
-        utilCpy(zmapping, getInfo(result)->elems, elems, size);
-    } else {
-        // The key wasn't found, so we need to insert a new one.
-        index = ~index;
-        result = allocMap(size + 1);
-        resultElems = getInfo(result)->elems;
-        utilCpy(zmapping, resultElems, elems, index);
-        utilCpy(zmapping, &resultElems[index + 1], &elems[index],
-            (size - index));
-    }
-
-    resultElems[index] = (zmapping) {key, value};
-    return result;
+    return putMapping(ths, (zmapping) {key, value});
 }
 
 // Documented in spec.
