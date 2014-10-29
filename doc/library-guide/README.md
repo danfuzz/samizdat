@@ -13,14 +13,15 @@ is implemented in-language in terms of the primitive functions and the
 language syntax.
 
 Each section covers definitions for one conceptual area, either
-concerning a class, data type, or some more nebulous concept.
+concerning a class, data type, module, or some more nebulous concept.
 
-Each section is divided into subsections: methods (one section
-per protocol), functions, and constants. The method sections are where methods
-are specified as a general definition, as well as where particular classes
-indicate which methods they bind and with what specific meaning. The
-other two sections indicate functions and constants that are exported from
-the module but not tied directly to any particular class.
+Each section is divided into subsections: classes, methods (one section
+per protocol), functions, and constants. The classes section links to
+classes defined in the area (generally as part of a module). The method
+sections are where methods are specified as a general definition, as well as
+where particular classes indicate which methods they bind and with what
+specific meaning. The other two sections indicate functions and constants that
+are exported from the module but not tied directly to any particular class.
 
 In addition, functions that are used in the translation of syntactic
 constructs are marked with a note along the lines of,
