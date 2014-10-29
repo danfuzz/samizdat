@@ -9,6 +9,7 @@
 #include "type/Box.h"
 #include "type/String.h"
 #include "type/Symbol.h"
+#include "type/SymbolTable.h"
 #include "util.h"
 
 #include "impl.h"
@@ -43,9 +44,9 @@ void frameMark(Frame *frame) {
 // Documented in header.
 void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue vars = frame->vars;
-    zvalue newVars = cm_put(vars, name, box);
+    zvalue newVars = symbolTableWithNewMapping(vars, (zmapping) {name, box});
 
-    if (get_size(vars) == get_size(newVars)) {
+    if (newVars == NULL) {
         zvalue nameStr = cm_castFrom(CLS_String, name);
         die("Variable already defined: %s", cm_debugString(nameStr));
     }
