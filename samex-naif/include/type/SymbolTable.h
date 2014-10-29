@@ -32,6 +32,11 @@ void arrayFromSymbolTable(zmapping *result, zvalue symbolTable);
 zvalue symbolTableFromArray(zint size, zmapping *mappings);
 
 /**
+ * Gets a single-mapping symbol table of the given mapping.
+ */
+zvalue symbolTableFromMapping(zmapping mapping);
+
+/**
  * Gets the size of a symbol table.
  */
 zint symbolTableSize(zvalue symbolTable);

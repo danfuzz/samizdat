@@ -200,6 +200,11 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
 }
 
 // Documented in header.
+zvalue symbolTableFromMapping(zmapping mapping) {
+    return symbolTableFromArray(1, &mapping);
+}
+
+// Documented in header.
 zint symbolTableSize(zvalue symbolTable) {
     assertHasClass(symbolTable, CLS_SymbolTable);
     return getInfo(symbolTable)->size;
