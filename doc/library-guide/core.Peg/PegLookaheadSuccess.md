@@ -15,7 +15,7 @@ This is equivalent to the syntactic form `{: &rule :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(...) -> :PegLookaheadSuccess`
+#### `class.new(rule) -> :PegLookaheadSuccess`
 
 Creates an instance of this class.
 

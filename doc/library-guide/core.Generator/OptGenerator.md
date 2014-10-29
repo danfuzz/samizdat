@@ -13,7 +13,7 @@ infinitum, never becoming voided.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(generator) -> :OptGenerator`
+#### `class.new(generator) -> :OptGenerator`
 
 Creates an instance of this class.
 

@@ -11,7 +11,7 @@ given `value`, never becoming voided.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(value) -> :ValueGenerator`
+#### `class.new(value) -> :ValueGenerator`
 
 Creates an instance of this class.
 

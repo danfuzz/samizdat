@@ -19,7 +19,7 @@ This is equivalent to the syntactic form `{: %term :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `.new(function) -> :PegThunk`
+#### `class.new(function) -> :PegThunk`
 
 Creates an instance of this class.
 

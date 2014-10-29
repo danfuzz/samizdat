@@ -11,7 +11,7 @@ as defined by the global function `order()`.
 <br><br>
 ### Class Method Definitions
 
-#### `.castFrom(value) -> map | void`
+#### `class.castFrom(value) -> map | void`
 
 This class knows how to cast as follows:
 
@@ -29,7 +29,7 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `value`.
 
-#### `.new(args*) -> map`
+#### `class.new(args*) -> map`
 
 This makes a map from a series of mappings, given as pairs of
 key-then-value arguments. For example:
@@ -46,7 +46,7 @@ arguments to this function.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `.singleValue(keys*, value) -> map`
+#### `class.singleValue(keys*, value) -> map`
 
 This makes a map which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns

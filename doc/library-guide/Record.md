@@ -7,7 +7,7 @@ Record
 <br><br>
 ### Class Method Definitions
 
-#### `.new(name, data?) -> record`
+#### `class.new(name, data?) -> record`
 
 Returns a record with the given name (a symbol) and optional `data` payload.
 If `data` is not specified, it defaults to `@{}` (the empty symbol table).
