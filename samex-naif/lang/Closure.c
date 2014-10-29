@@ -140,7 +140,8 @@ static zvalue buildCachedClosure(zvalue defMap) {
             if (cm_get(names, name) != NULL) {
                 die("Duplicate formal name: %s", cm_debugString(name));
             }
-            names = cm_put(names, name, name);
+            names = cm_cat(names,
+                symbolTableFromMapping((zmapping) {name, name}));
             formalNameCount++;
         }
 
