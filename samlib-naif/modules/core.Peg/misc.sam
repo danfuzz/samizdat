@@ -10,21 +10,6 @@
 
 import core.Generator :: FilterGenerator;
 
-import ./PegResult :: *;
-import ./PegSequence :: *;
-import ./PegTokenSet :: *;
-
-
-##
-## Private Definitions
-##
-
-## Helper for `makeString`, which takes a string and
-## produces a list of token names for the characters.
-fn nameListFromString(string) {
-    return string.collect { ch -> cast(Symbol, ch) }
-};
-
 
 ##
 ## Exported Definitions
@@ -43,28 +28,6 @@ export fn apply(rule, input) {
 
     return? ifIs { rule.parse(result?, generator) }
         { result }
-};
-
-## Documented in spec.
-export fn makeString(string) {
-    def resultType = cast(Symbol, string);
-
-    ## Trivial case: Empty string. Return an always-successful yield of `@""`.
-    ifIs { eq(string, "") }
-        { return PegResult.new(@""{}) };
-
-    ## Trivial case: One-char string. Return a simple one-char rule.
-    ifIs { eq(string.get_size(), 1) }
-        { return PegTokenSet.new(resultType) };
-
-    ## This is implemented as, in effect, `(@"1" @"2" ... { string })`,
-    ## which allows us to minimize code duplication.
-
-    ## Make a list of rules per character.
-    def names = nameListFromString(string);
-    def chars = names.collect { ch -> PegTokenSet.new(ch) };
-
-    return PegSequence.new(chars*, PegResult.new(@(resultType){}))
 };
 
 ## Documented in spec.

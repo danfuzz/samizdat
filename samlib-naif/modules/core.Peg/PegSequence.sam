@@ -10,7 +10,8 @@
 
 import core.Generator :: filterPump;
 
-import ./PegResult :: empty;
+import ./PegResult :: *;
+import ./PegTokenSet :: *;
 
 
 ##
@@ -37,6 +38,27 @@ export class PegSequence
 
         ## The general case.
         return this.(NEW)(@{rules})
+    };
+
+    ## Documented in spec.
+    class.newString(string) {
+        def resultType = cast(Symbol, string);
+
+        ## Trivial case: Empty string. Return an always-successful yield of `@""`.
+        ifIs { eq(string, "") }
+            { return PegResult.new(@""{}) };
+
+        ## Trivial case: One-char string. Return a simple one-char rule.
+        ifIs { eq(string.get_size(), 1) }
+            { return PegTokenSet.new(resultType) };
+
+        ## This is implemented as, in effect, `(@"1" @"2" ... { string })`,
+        ## which allows us to minimize code duplication.
+
+        ## Make a list of rules per character.
+        def chars = string.collect { ch -> PegTokenSet.new(cast(Symbol, ch)) };
+
+        return this.new(chars*, PegResult.new(@(resultType){}))
     };
 
     ## Documented in spec.

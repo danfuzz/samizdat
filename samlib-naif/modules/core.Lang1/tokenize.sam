@@ -28,7 +28,7 @@ def tokWhitespace = PegMain.newSequence(
         PegChoice.new(
             PegRepeat.new(PegTokenSet.newChars(" \n"), 1),
             PegSequence.new(
-                makeString("#"),
+                PegSequence.newString("#"),
                 PegTokenSet.newChars("#!="),
                 PegRepeat.new(PegTokenSetComplement.newChars("\n")))),
         1));
@@ -38,12 +38,12 @@ def tokPunctuation = PegMain.newSequence(
     PegLookaheadSuccess.new(
         PegTokenSet.newChars("@:.,=-+?;*/<>{}()[]", "&|!%")),
     PegChoice.new(
-        makeString("->"),
-        makeString(":="),
-        makeString("::"),
-        makeString(".."),
-        makeString("{:"),
-        makeString(":}"),
+        PegSequence.newString("->"),
+        PegSequence.newString(":="),
+        PegSequence.newString("::"),
+        PegSequence.newString(".."),
+        PegSequence.newString("{:"),
+        PegSequence.newString(":}"),
         any));
 
 ## Documented in spec.
@@ -61,26 +61,26 @@ def tokStringPart = PegMain.newChoice(
         PegRepeat.new(PegTokenSetComplement.newChars("\\\"\n"), 1),
         PegCode.new(stringFromTokenList)),
     PegSequence.new(
-        makeString("\n"),
-        PegRepeat.new(makeString(" ")),
+        PegSequence.newString("\n"),
+        PegRepeat.new(PegSequence.newString(" ")),
         PegResult.new("\n")),
     PegSequence.new(
-        makeString("\\"),
+        PegSequence.newString("\\"),
         PegChoice.new(
-            PegSequence.new(makeString("\\"), PegResult.new("\\")),
-            PegSequence.new(makeString("\""), PegResult.new("\"")),
-            PegSequence.new(makeString("n"),  PegResult.new("\n")),
-            PegSequence.new(makeString("r"),  PegResult.new("\r")),
-            PegSequence.new(makeString("t"),  PegResult.new("\t")),
-            PegSequence.new(makeString("0"),  PegResult.new("\0")))));
+            PegSequence.new(PegSequence.newString("\\"), PegResult.new("\\")),
+            PegSequence.new(PegSequence.newString("\""), PegResult.new("\"")),
+            PegSequence.new(PegSequence.newString("n"),  PegResult.new("\n")),
+            PegSequence.new(PegSequence.newString("r"),  PegResult.new("\r")),
+            PegSequence.new(PegSequence.newString("t"),  PegResult.new("\t")),
+            PegSequence.new(PegSequence.newString("0"),  PegResult.new("\0")))));
 
 ## Documented in spec.
 def tokString = PegMain.newSequence(
-    makeString("\""),
+    PegSequence.newString("\""),
     PegRepeat.new(tokStringPart),
     PegChoice.new(
         PegSequence.new(
-            makeString("\""),
+            PegSequence.newString("\""),
             PegCode.new { ., parts, . -> @string{value: "".cat(parts*)} }),
         PegCode.new { ., . -> @error{value: "Unterminated string literal."} }));
 
@@ -103,7 +103,7 @@ def tokIdentifier = PegMain.newSequence(
 
 ## Documented in spec.
 def tokQuotedIdentifier = PegMain.newSequence(
-    makeString("\\"),
+    PegSequence.newString("\\"),
     tokString,
     PegCode.new { ., s -> @identifier{value: cast(Symbol, s::value)} });
 

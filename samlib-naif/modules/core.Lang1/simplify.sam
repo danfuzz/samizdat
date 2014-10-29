@@ -130,7 +130,8 @@ fn convertPex(node, formals) {
             },
 
             @string: { . ->
-                makeFunCallLiterals(REFS::Peg_makeString, node::value)
+                makeCallLiterals(REFS::Peg_PegSequence, SYMS::newString,
+                    node::value)
             },
 
             @thunk: { . ->
