@@ -19,6 +19,11 @@ This is equivalent to the syntactic form `{: !rule :}`.
 
 Creates an instance of this class.
 
+Special cases:
+
+* If `rule` is `core.Peg :: any`, this returns `core.Peg :: eof`.
+* If `rule` is `core.Peg :: empty`, this returns `core.Peg :: fail`.
+
 
 <br><br>
 ### Method Definitions: `Parser` protocol.

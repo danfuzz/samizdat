@@ -23,7 +23,7 @@ import core.Peg :: *;
 
 ## Documented in spec.
 def tokWhitespace = PegMain.newSequence(
-    makeLookaheadSuccess(makeCharSet("# \n")),
+    PegLookaheadSuccess.new(makeCharSet("# \n")),
     PegRepeat.new(
         PegChoice.new(
             PegRepeat.new(makeCharSet(" \n"), 1),
@@ -35,7 +35,7 @@ def tokWhitespace = PegMain.newSequence(
 
 ## Documented in spec.
 def tokPunctuation = PegMain.newSequence(
-    makeLookaheadSuccess(
+    PegLookaheadSuccess.new(
         makeCharSet("@:.,=-+?;*/<>{}()[]", "&|!%")),
     PegChoice.new(
         makeString("->"),

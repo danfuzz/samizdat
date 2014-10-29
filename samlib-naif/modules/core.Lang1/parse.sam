@@ -129,7 +129,7 @@ def parLiteral = PegMain.newChoice(
     PegSequence.new(
         makeToken(@"@"),
         parIdentifierSymbol,
-        makeLookaheadFailure(makeTokenSet(@"(", @"{")),
+        PegLookaheadFailure.new(makeTokenSet(@"(", @"{")),
         PegCode.new { ., symbol, . -> symbol }));
 
 ## Documented in spec.
@@ -238,7 +238,7 @@ def parList = PegMain.newSequence(
 
 ## Documented in spec.
 def parFullClosure = PegMain.newSequence(
-    makeLookaheadSuccess(makeToken(@"{")),
+    PegLookaheadSuccess.new(makeToken(@"{")),
     PegThunk.new { . -> parRawClosure },
     PegCode.new { ., raw ->
         def closure = makeFullClosure(raw);
@@ -247,7 +247,7 @@ def parFullClosure = PegMain.newSequence(
 
 ## Documented in spec.
 def parBasicClosure = PegMain.newSequence(
-    makeLookaheadSuccess(makeToken(@"{")),
+    PegLookaheadSuccess.new(makeToken(@"{")),
     PegThunk.new { . -> parRawClosure },
     PegCode.new { ., raw ->
         def closure = makeBasicClosure(raw);
@@ -279,7 +279,7 @@ def parTerm = PegMain.newChoice(
     ## Defined by Samizdat Layer 1. The lookahead is just to make
     ## it clear what is required to "jump into" Layer 1 parsing.
     PegSequence.new(
-        makeLookaheadSuccess(makeToken(@"{:")),
+        PegLookaheadSuccess.new(makeToken(@"{:")),
         PegThunk.new { . -> parPexBlock }));
 
 ## Documented in spec.

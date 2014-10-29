@@ -32,11 +32,6 @@ fn makeCallPex(target, name, node, formals, moreArgs*) {
     return makeCall(target, name, convertPex(node::pex, formals), moreArgs*)
 };
 
-## Converts a pex to a function call on its converted inner pex.
-fn makeFunCallPex(function, node, formals, moreArgs*) {
-    return makeFunCall(function, convertPex(node::pex, formals), moreArgs*)
-};
-
 ## Makes a node with additional / replacement bindings from the original.
 fn withBindings(orig, more) {
     return @(orig.get_name()){orig*, more*}
@@ -88,11 +83,13 @@ fn convertPex(node, formals) {
             },
 
             @lookaheadFailure: { . ->
-                makeFunCallPex(REFS::Peg_makeLookaheadFailure, node, formals)
+                makeCallPex(REFS::Peg_PegLookaheadFailure, SYMS::new,
+                    node, formals)
             },
 
             @lookaheadSuccess: { . ->
-                makeFunCallPex(REFS::Peg_makeLookaheadSuccess, node, formals)
+                makeCallPex(REFS::Peg_PegLookaheadSuccess, SYMS::new,
+                    node, formals)
             },
 
             @opt: { . ->

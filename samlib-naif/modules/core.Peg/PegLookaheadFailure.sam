@@ -27,6 +27,20 @@ export class PegLookaheadFailure
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
+    class.new(rule) {
+        ## Optimiziation: Representation of `!.`.
+        ifIs { eq(rule, any) }
+            { return eof };
+
+        ## Optimization: Representation of `!()`.
+        ifIs { eq(rule, empty) }
+            { return fail };
+
+        ## The general case.
+        return this.(NEW)(@{rule})
+    };
+
+    ## Documented in spec.
     .parse(box, input, items*) {
         def data = this.(ACCESS)();
         return? ifNot { data::rule.parse(nullBox, input, items*) }
@@ -36,23 +50,3 @@ export class PegLookaheadFailure
             }
     };
 };
-
-
-##
-## Exported Definitions
-##
-
-## Documented in spec.
-export fn makeLookaheadFailure(rule) {
-    ## Optimiziation: Representation of `!.`.
-    ifIs { eq(rule, any) }
-        { return eof };
-
-    ## Optimization: Representation of `!()`.
-    ifIs { eq(rule, empty) }
-        { return fail };
-
-    ## The general case.
-    return PegLookaheadFailure.(NEW)(@{rule})
-};
-
