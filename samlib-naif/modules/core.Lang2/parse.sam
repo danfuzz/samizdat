@@ -1598,13 +1598,31 @@ def parIndexPostfix = {:
         ## syntactically valid.
         index = { optStart* }
 
-        {
-            def funcRef = ifIs { eq(index::origin, @fromStart) }
-                { SYMS::get }
-                { REFS::Sequence_reverseNth };
+        (
+            ## It's a regular (from-start) index. This can also be used as
+            ## an lvalue.
+            { eq(index::origin, @fromStart) }
 
-            { node -> makeFunCall(funcRef, node, index::value) }
-        }
+            {
+                def value = index::value;
+                { node ->
+                    def baseCall = makeCall(node, SYMS::get, value);
+                    @(baseCall.get_name()){
+                        baseCall*,
+                        lvalue: { expr ->
+                            makeCall(node, SYMS::set, value)
+                        }
+                    }
+                }
+            }
+        |
+            ## It's a from-end index.
+            {
+                { node ->
+                    makeFunCall(REFS::Sequence_reverseNth, node, index::value)
+                }
+            }
+        )
     )
 :};
 
