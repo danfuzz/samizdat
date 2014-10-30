@@ -306,15 +306,15 @@ zvalue get_definedNames(zvalue node) {
             zvalue prefix = cm_get(node, SYM(prefix));
             if (prefix != NULL) {
                 zvalue prefixStr = cm_castFrom(CLS_String, prefix);
-                zint size = get_size(select);
-                zvalue arr[size];
-                arrayFromList(arr, select);
+                zarray arr = zarrayFromList(select);
+                zvalue elems[arr.size];
 
-                for (zint i = 0; i < size; i++) {
-                    arr[i] = symbolFromString(cm_cat(prefixStr, arr[i]));
+                for (zint i = 0; i < arr.size; i++) {
+                    elems[i] =
+                        symbolFromString(cm_cat(prefixStr, arr.elems[i]));
                 }
 
-                return listFromArray(size, arr);
+                return listFromArray(arr.size, elems);
             } else {
                 return select;
             }
@@ -971,12 +971,11 @@ zvalue withName(zvalue node, zvalue name) {
 // Documented in spec.
 zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
     zvalue rawStatements = cm_get(node, SYM(statements));
-    zint size = get_size(rawStatements);
-    zvalue arr[size];
-    arrayFromList(arr, rawStatements);
+    zarray arr = zarrayFromList(rawStatements);
+    zvalue elems[arr.size];
 
-    for (zint i = 0; i < size; i++) {
-        zvalue s = arr[i];
+    for (zint i = 0; i < arr.size; i++) {
+        zvalue s = elems[i] = arr.elems[i];
         bool exported = false;
         zvalue defNode = s;
 
@@ -990,7 +989,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
             case EVAL_importModuleSelection:
             case EVAL_importResource: {
                 zvalue resolved = resolveImport(defNode, resolveFn);
-                arr[i] = exported ? makeExport(resolved) : resolved;
+                elems[i] = exported ? makeExport(resolved) : resolved;
             }
             default: {
                 // The rest of the types are intentionally left un-handled.
@@ -999,7 +998,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         }
     }
 
-    zvalue converted = listFromArray(size, arr);
+    zvalue converted = listFromArray(arr.size, elems);
 
     return cm_cat(node, tableFrom1(SYM(statements), converted));
 }
