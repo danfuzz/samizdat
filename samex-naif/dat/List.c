@@ -48,15 +48,15 @@ static zvalue allocList(zint size) {
  * Performs the main action of `listFromArray`, except without checking
  * the validity of elements.
  */
-static zvalue listFromUnchecked(zint size, const zvalue *elems) {
-    if (size == 0) {
+static zvalue listFromUnchecked(zarray arr) {
+    if (arr.size == 0) {
         return EMPTY_LIST;
     }
 
-    zvalue result = allocList(size);
+    zvalue result = allocList(arr.size);
     zvalue *resultElems = getInfo(result)->elems;
 
-    utilCpy(zvalue, resultElems, elems, size);
+    utilCpy(zvalue, resultElems, arr.elems, arr.size);
     return result;
 }
 
@@ -74,7 +74,7 @@ static zvalue doSlice(zvalue ths, bool inclusive,
     if (start == -1) {
         return NULL;
     } else {
-        return listFromUnchecked(end - start, &info->elems[start]);
+        return listFromUnchecked((zarray) {end - start, &info->elems[start]});
     }
 }
 
@@ -91,7 +91,7 @@ zvalue listFromArray(zint size, const zvalue *values) {
         }
     }
 
-    return listFromUnchecked(size, values);
+    return listFromUnchecked((zarray) {size, values});
 }
 
 // Documented in header.
@@ -137,7 +137,7 @@ METH_IMPL_rest(List, cat, args) {
         at += info->size;
     }
 
-    return listFromUnchecked(size, elems);
+    return listFromUnchecked((zarray) {size, elems});
 }
 
 // Documented in spec.
@@ -208,7 +208,7 @@ METH_IMPL_rest(List, del, ns) {
 
     // Construct a new instance with the remaining elements. This call
     // handles returning `EMPTY_LIST` when appropriate.
-    return listFromUnchecked(at, elems);
+    return listFromUnchecked((zarray) {at, elems});
 }
 
 // Documented in spec.
@@ -261,7 +261,7 @@ METH_IMPL_1(List, nextValue, box) {
     // appropriate.
 
     cm_store(box, info->elems[0]);
-    return listFromUnchecked(size - 1, &info->elems[1]);
+    return listFromUnchecked((zarray) {size - 1, &info->elems[1]});
 }
 
 // Documented in spec.
@@ -312,7 +312,7 @@ METH_IMPL_0(List, reverse) {
         arr[i] = elems[j];
     }
 
-    return listFromUnchecked(size, arr);
+    return listFromUnchecked((zarray) {size, arr});
 }
 
 
