@@ -85,13 +85,18 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 
 // Documented in header.
 zvalue listFromArray(zint size, const zvalue *values) {
+    return listFromZarray((zarray) {size, values});
+}
+
+// Documented in header.
+zvalue listFromZarray(zarray arr) {
     if (DAT_CONSTRUCTION_PARANOIA) {
-        for (zint i = 0; i < size; i++) {
-            assertValid(values[i]);
+        for (zint i = 0; i < arr.size; i++) {
+            assertValid(arr.elems[i]);
         }
     }
 
-    return listFromUnchecked((zarray) {size, values});
+    return listFromUnchecked(arr);
 }
 
 // Documented in header.
