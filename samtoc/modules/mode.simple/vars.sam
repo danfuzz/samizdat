@@ -32,14 +32,14 @@ def FORMAL_PARSERS = {
     @"?": {
         parse:
             "(argAt >= args.size) \
-            ? EMPTY_LIST : listFromArray(1, &args.elems[argAt])",
+            ? EMPTY_LIST : listFromValue(args.elems[argAt])",
         update: "if (argAt < args.size) { argAt++; }"
     },
 
     ## Zero-or-more and one-or-more.
     @"*":
     @"+": {
-        parse:  "listFromArray(args.size - argAt, &args.elems[argAt])",
+        parse:  "listFromZarray((zarray) {args.size - argAt, &args.elems[argAt]})",
         update: "argAt = args.size"
     }
 };
