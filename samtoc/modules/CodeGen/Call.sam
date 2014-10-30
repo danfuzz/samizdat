@@ -62,7 +62,7 @@ export class Call
 
     .indent(level, maxColumns) {
         def data = this.(ACCESS)();
-        def prefix = indentation(level);
+        def prefix = INDENTATION[level];
         def args = data::args;
         def nextLevel = level + 1;
 

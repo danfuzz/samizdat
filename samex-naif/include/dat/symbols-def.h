@@ -77,6 +77,7 @@ DEF_SYMBOL(or);
 DEF_SYMBOL(perEq);
 DEF_SYMBOL(perOrder);
 DEF_SYMBOL(readResource);
+DEF_SYMBOL(repeat);
 DEF_SYMBOL(resolve);
 DEF_SYMBOL(reverse);
 DEF_SYMBOL(shl);

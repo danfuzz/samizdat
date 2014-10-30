@@ -26,12 +26,12 @@
 #define DEF_STRING(name, str) \
     zvalue STR_##name = NULL
 
-#define DEF_TOKEN(name, str) \
+#define DEF_TOKEN(name) \
     zvalue TOK_##name = NULL
 
 #define DEF_SYMBOL(name, str) \
     SYM_DEF(name); \
-    DEF_TOKEN(name, str)
+    DEF_TOKEN(name)
 
 #include "const-def.h"
 
@@ -57,12 +57,12 @@ MOD_INIT(lang_const) {
     #define DEF_STRING(name, str) \
         STR_##name = datImmortalize(stringFromUtf8(-1, str))
 
-    #define DEF_TOKEN(name, str) \
+    #define DEF_TOKEN(name) \
         TOK_##name = datImmortalize(cm_new(Record, SYM(name)))
 
     #define DEF_SYMBOL(name, str) \
         SYM_INIT_WITH(name, str); \
-        DEF_TOKEN(name, str)
+        DEF_TOKEN(name)
 
     #include "const-def.h"
 

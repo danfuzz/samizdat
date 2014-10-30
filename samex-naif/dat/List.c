@@ -302,6 +302,29 @@ METH_IMPL_1(List, nth, n) {
 }
 
 // Documented in spec.
+METH_IMPL_1(List, repeat, count) {
+    ListInfo *thsInfo = getInfo(ths);
+    zint n = zintFromInt(count);
+
+    if (n < 0) {
+        die("Invalid negative count for `repeat`.");
+    } else if (n == 0) {
+        return EMPTY_LIST;
+    }
+
+    zint thsSize = thsInfo->size;
+    zint size = n * thsSize;
+    zvalue result = allocList(size);
+    ListInfo *info = getInfo(result);
+
+    for (zint i = 0; i < n; i++) {
+        utilCpy(zvalue, &info->elems[i * thsSize], thsInfo->elems, thsSize);
+    }
+
+    return result;
+}
+
+// Documented in spec.
 METH_IMPL_0(List, reverse) {
     ListInfo *info = getInfo(ths);
     zint size = info->size;
@@ -396,6 +419,7 @@ MOD_INIT(List) {
             METH_BIND(List, get_size),
             METH_BIND(List, nextValue),
             METH_BIND(List, nth),
+            METH_BIND(List, repeat),
             METH_BIND(List, reverse),
             METH_BIND(List, sliceExclusive),
             METH_BIND(List, sliceInclusive),

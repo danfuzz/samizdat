@@ -23,13 +23,13 @@
     extern zvalue STR_##name \
     // No semicolon here, so that use sites require it.
 
-#define DEF_TOKEN(name, str) \
+#define DEF_TOKEN(name) \
     SYM_DECL(name); \
     extern zvalue TOK_##name \
     // No semicolon here, so that use sites require it.
 
 #define DEF_SYMBOL(name, str) \
-    DEF_TOKEN(name, str)
+    DEF_TOKEN(name)
     // No semicolon here, so that use sites require it.
 
 #include "const-def.h"

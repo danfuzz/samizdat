@@ -533,6 +533,29 @@ METH_IMPL_1(String, nth, n) {
 }
 
 // Documented in spec.
+METH_IMPL_1(String, repeat, count) {
+    StringInfo *thsInfo = getInfo(ths);
+    zint n = zintFromInt(count);
+
+    if (n < 0) {
+        die("Invalid negative count for `repeat`.");
+    } else if (n == 0) {
+        return EMPTY_STRING;
+    }
+
+    zint thsSize = thsInfo->s.size;
+    zint size = n * thsSize;
+    zvalue result = allocString(size);
+    StringInfo *info = getInfo(result);
+
+    for (zint i = 0; i < n; i++) {
+        utilCpy(zchar, &info->content[i * thsSize], thsInfo->s.chars, thsSize);
+    }
+
+    return result;
+}
+
+// Documented in spec.
 METH_IMPL_0(String, reverse) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -602,6 +625,7 @@ MOD_INIT(String) {
             METH_BIND(String, get_size),
             METH_BIND(String, nextValue),
             METH_BIND(String, nth),
+            METH_BIND(String, repeat),
             METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),
