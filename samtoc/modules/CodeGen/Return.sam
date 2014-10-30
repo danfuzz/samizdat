@@ -33,7 +33,7 @@ export class Return
 
     .indent(level, maxColumns) {
         def data = this.(ACCESS)();
-        def prefix = indentation(level);
+        def prefix = INDENTATION[level];
 
         return "\
             \(prefix)return

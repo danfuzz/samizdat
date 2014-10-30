@@ -39,7 +39,7 @@ export class CodeString
 
     .indent(level, maxColumns) {
         def data = this.(ACCESS)();
-        return indentation(level).cat(data::text)
+        return INDENTATION[level].cat(data::text)
     };
 
     .prefersFlat() {

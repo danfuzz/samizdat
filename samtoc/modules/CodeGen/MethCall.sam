@@ -75,8 +75,8 @@ export class MethCall
 
     .indent(level, maxColumns) {
         def data = this.(ACCESS)();
-        def prefix1 = indentation(level);
-        def prefix2 = indentation(level + 1);
+        def prefix1 = INDENTATION[level];
+        def prefix2 = INDENTATION[level + 1];
         def args = data::args;
         def nextLevel = level + 1;
 

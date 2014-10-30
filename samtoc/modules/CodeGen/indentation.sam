@@ -7,17 +7,8 @@
 ##
 
 ##
-## Private Definitions
-##
-
-## List of indentation prefixes (index is level of indentation).
-def INDENTATION = [ n in (0..200) -> "\[for n -> "  "]" ];
-
-
-##
 ## Exported Definitions
 ##
 
-export fn indentation(level) {
-    return INDENTATION[level]
-};
+## List of indentation prefixes (index is level of indentation).
+export def INDENTATION = [ n in (0..200) -> "  ".repeat(n) ];

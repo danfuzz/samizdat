@@ -33,7 +33,7 @@ export class Comment
 
     .indent(level, maxColumns) {
         def data = this.(ACCESS)();
-        def prefix = indentation(level);
+        def prefix = INDENTATION[level];
 
         return if (def p = data::payload) {
             "".cat(
