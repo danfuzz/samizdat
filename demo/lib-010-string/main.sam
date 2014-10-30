@@ -63,8 +63,7 @@ fn expectNe(name, v1, v2) {
 ## Main demos
 ##
 
-note("Strings");
-
+note("Hello, Самиздат!\n");
 note($Format::source("This is a string.\n"));
 
 expectEq("eq 1", "", "");
