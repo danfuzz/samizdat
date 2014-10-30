@@ -449,7 +449,7 @@ zvalue langTokenize0(zvalue string) {
         }
     }
 
-    zvalue resultList = listFromArray(out, result);
+    zvalue resultList = listFromZarray((zarray) {out, result});
     datFrameReturn(save, resultList);
     return resultList;
 }
