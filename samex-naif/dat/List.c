@@ -84,11 +84,6 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 //
 
 // Documented in header.
-zvalue listFromArray(zint size, const zvalue *values) {
-    return listFromZarray((zarray) {size, values});
-}
-
-// Documented in header.
 zvalue listFromValue(zvalue value) {
     return listFromZarray((zarray) {1, &value});
 }

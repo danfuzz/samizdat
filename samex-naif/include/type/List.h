@@ -20,11 +20,6 @@ extern zvalue CLS_List;
 extern zvalue EMPTY_LIST;
 
 /**
- * Constructs a list from an array of `zvalue`s of the given size.
- */
-zvalue listFromArray(zint size, const zvalue *values);
-
-/**
  * Constructs a list of size 1 from a single given `value`.
  */
 zvalue listFromValue(zvalue value);
