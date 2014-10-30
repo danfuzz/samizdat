@@ -42,7 +42,7 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
         at = endAt + 1;
     }
 
-    return listFromArray(resultAt, result);
+    return listFromZarray((zarray) {resultAt, result});
 }
 
 /**
@@ -170,7 +170,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
     #define addSingleToCat() do { \
         if (singleAt != 0) { \
             addToCat(makeCall(clsLit, SYMS(new), \
-                listFromArray(singleAt, singleArgs))); \
+                listFromZarray((zarray) {singleAt, singleArgs}))); \
             singleAt = 0; \
         } \
     } while (0)
@@ -207,7 +207,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
     }
 
     addSingleToCat();
-    return makeCall(emptyLit, SYMS(cat), listFromArray(catAt, catArgs));
+    return makeCall(emptyLit, SYMS(cat),
+        listFromZarray((zarray) {catAt, catArgs}));
 };
 
 
@@ -314,7 +315,7 @@ zvalue get_definedNames(zvalue node) {
                         symbolFromString(cm_cat(prefixStr, arr.elems[i]));
                 }
 
-                return listFromArray(arr.size, elems);
+                return listFromZarray((zarray) {arr.size, elems});
             } else {
                 return select;
             }
@@ -415,7 +416,7 @@ zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values) {
     #define addPendingToCooked() do { \
         if (pendAt != 0) { \
             addToCooked(makeCall(LITS(List), SYMS(new), \
-                listFromArray(pendAt, pending))); \
+                listFromZarray((zarray) {pendAt, pending}))); \
             pendAt = 0; \
         } \
     } while (0)
@@ -441,7 +442,7 @@ zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values) {
 
     if (cookAt > 1) {
         zvalue first = cookedValues[0];
-        zvalue rest = listFromArray(cookAt - 1, &cookedValues[1]);
+        zvalue rest = listFromZarray((zarray) {cookAt - 1, &cookedValues[1]});
         return makeApply(target, name, makeCall(first, SYMS(cat), rest));
     } else {
         return makeApply(target, name, cookedValues[0]);
@@ -523,7 +524,7 @@ zvalue makeDynamicImport(zvalue node) {
                         listFrom1(makeLiteral(sel))));
             }
 
-            return listFromArray(size, stats);
+            return listFromZarray((zarray) {size, stats});
         }
         case EVAL_importResource: {
             zvalue stat = makeVarDef(
@@ -998,7 +999,7 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         }
     }
 
-    zvalue converted = listFromArray(arr.size, elems);
+    zvalue converted = listFromZarray((zarray) {arr.size, elems});
 
     return cm_cat(node, tableFrom1(SYM(statements), converted));
 }

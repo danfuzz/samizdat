@@ -245,7 +245,9 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction, zarray args) {
                 }
             }
 
-            value = ignore ? NULL : listFromArray(count, &args.elems[argAt]);
+            value = ignore
+                ? NULL
+                : listFromZarray((zarray) {count, &args.elems[argAt]});
             argAt += count;
         } else if (argAt >= args.size) {
             die("Function called with too few arguments: %lld", args.size);
