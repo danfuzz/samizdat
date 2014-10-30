@@ -20,12 +20,6 @@ extern zvalue CLS_List;
 extern zvalue EMPTY_LIST;
 
 /**
- * Copies all the values of the given list into the given result
- * array, which must be sized large enough to hold all of them.
- */
-void arrayFromList(zvalue *result, zvalue list);
-
-/**
  * Constructs a list from an array of `zvalue`s of the given size.
  */
 zvalue listFromArray(zint size, const zvalue *values);

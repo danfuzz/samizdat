@@ -107,14 +107,6 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 //
 
 // Documented in header.
-void arrayFromList(zvalue *result, zvalue list) {
-    assertHasClass(list, CLS_List);
-    ListInfo *info = getInfo(list);
-
-    utilCpy(zvalue, result, info->elems, info->size);
-}
-
-// Documented in header.
 zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         assertValid(values[i]);
