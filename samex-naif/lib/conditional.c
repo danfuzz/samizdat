@@ -129,5 +129,5 @@ FUN_IMPL_DECL(maybeValue) {
     zvalue function = args.elems[0];
     zvalue value = FUN_CALL(function);
 
-    return (value == NULL) ? EMPTY_LIST : listFromZarray((zarray) {1, &value});
+    return (value == NULL) ? EMPTY_LIST : listFromValue(value);
 }

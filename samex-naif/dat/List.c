@@ -89,6 +89,11 @@ zvalue listFromArray(zint size, const zvalue *values) {
 }
 
 // Documented in header.
+zvalue listFromValue(zvalue value) {
+    return listFromZarray((zarray) {1, &value});
+}
+
+// Documented in header.
 zvalue listFromZarray(zarray arr) {
     if (DAT_CONSTRUCTION_PARANOIA) {
         for (zint i = 0; i < arr.size; i++) {

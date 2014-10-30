@@ -25,6 +25,11 @@ extern zvalue EMPTY_LIST;
 zvalue listFromArray(zint size, const zvalue *values);
 
 /**
+ * Constructs a list of size 1 from a single given `value`.
+ */
+zvalue listFromValue(zvalue value);
+
+/**
  * Constructs a list from a `zarray` (sized array of `zvalue`).
  */
 zvalue listFromZarray(zarray arr);

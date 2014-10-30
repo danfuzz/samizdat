@@ -16,7 +16,7 @@
 
 // Documented in header.
 zvalue listFrom1(zvalue e1) {
-    return (e1 == NULL) ? EMPTY_LIST : listFromZarray((zarray) {1, &e1});
+    return (e1 == NULL) ? EMPTY_LIST : listFromValue(e1);
 }
 
 // Documented in header.

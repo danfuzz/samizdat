@@ -67,7 +67,7 @@ METH_IMPL_0_1(Box, collect, function) {
         value = FUN_CALL(function, value);
     }
 
-    return (value == NULL) ? EMPTY_LIST : listFromZarray((zarray) {1, &value});
+    return (value == NULL) ? EMPTY_LIST : listFromValue(value);
 }
 
 // Documented in spec.
