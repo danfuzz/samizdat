@@ -1,0 +1,85 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## Format demo
+##
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+## Checks an expected result.
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
+        {
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
+
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+
+##
+## Main demos
+##
+
+note("Formatting.");
+
+expectEq("int 1", "1000111", $Format::int(71, 2));
+expectEq("int 2", "71",      $Format::int(71, 10));
+expectEq("int 3", "47",      $Format::int(71, 16));
+expectEq("int 4", "1z",      $Format::int(71, 36));
+
+expectEq("source 1",  "\"\"",            $Format::source(""));
+expectEq("source 2",  "[]",              $Format::source([]));
+expectEq("source 3",  "{}",              $Format::source({}));
+expectEq("source 4",  "@{}",             $Format::source(@{}));
+expectEq("source 5",  "@blort",          $Format::source(@blort));
+expectEq("source 6",  "\"x\"",           $Format::source("x"));
+expectEq("source 7",  "\"fizmo\\n\"",    $Format::source("fizmo\n"));
+expectEq("source 8",  "123",             $Format::source(123));
+expectEq("source 9",  "@<Builtin ifIs>", $Format::source(ifIs));
+expectEq("source 10", "@<Closure xyz>",  $Format::source({ xyz() -> 1 }));
+expectEq("source 11", "String",          $Format::source(String));
+
+note("All good.");
