@@ -199,7 +199,7 @@
           }
         },
         {
-          "match" : "(fn\\b|\\.|class\\.) *(\\*?\\.?@*[_$a-zA-Z][._$a-zA-Z0-9]*)? *\\(([^\\)\"]*)\\)",
+          "match" : "(?x)\n\t\t\t\t\t\t(?:(?<=\\ )|^)   (?# lookbehind is spc or bol )\n\t\t\t\t\t\t(fn\\b|\\.|class\\.)\n\t\t\t\t\t\t\\ *\n\t\t\t\t\t\t(\\*?\\.?@*[_$a-zA-Z][._$a-zA-Z0-9]*)?\n\t\t\t\t\t\t\\ *\n\t\t\t\t\t\t\\(([^\\(\\)\"]*)\\)\n\t\t\t\t\t",
           "captures" : {
             "3" : {
               "name" : "variable.parameter.samizdat"
