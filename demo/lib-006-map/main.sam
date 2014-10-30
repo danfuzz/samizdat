@@ -87,6 +87,16 @@ expectEq("del 9",  {b: 2},       {a: 1, b: 2, c: 3}.del(@a, @c));
 expectEq("del 10", {b: 2, d: 4}, {a: 1, b: 2, c: 3, d: 4}.del(@a, @c));
 expectEq("del 11", {b: 2},       {a: 1, b: 2, c: 3, d: 4}.del(@a, @c, @d));
 
+expectEq("keyList 1", [],       {}.keyList());
+expectEq("keyList 2", [@a],     {a: 10}.keyList());
+expectEq("keyList 3", [@a, @b], {a: 10, b: 20}.keyList());
+expectEq("keyList 4", [@a, @b], {b: 20, a: 10}.keyList());
+
+expectEq("valueList 1", [],       {}.valueList());
+expectEq("valueList 2", [10],     {a: 10}.valueList());
+expectEq("valueList 3", [10, 20], {a: 10, b: 20}.valueList());
+expectEq("valueList 4", [10, 20], {b: 20, a: 10}.valueList());
+
 ## The first map's keys are strings in the following.
 expectNe("ne 2", {null: 1}, {(null): 1});
 expectNe("ne 3", {true: 1}, {(true): 1});

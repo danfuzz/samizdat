@@ -63,8 +63,7 @@ fn expectNe(name, v1, v2) {
 ## Main demos
 ##
 
-note("Strings");
-
+note("Hello, Самиздат!\n");
 note($Format::source("This is a string.\n"));
 
 expectEq("eq 1", "", "");
@@ -103,9 +102,14 @@ expectEq("del 11", "",        "xy".del(0, 1));
 expectEq("del 12", "23",      "01234".del(0, 1, 4));
 expectEq("del 13", "muffins", "mufxfins".del(3));
 
-expect("keyList", [0, 1, 2, 3, 4], { "blort".keyList() });
 
-expect("valueList", ["b", "l", "o", "r", "t"], { "blort".valueList() });
+expectEq("keyList 1", [],              "".keyList());
+expectEq("keyList 2", [0],             "x".keyList());
+expectEq("keyList 3", [0, 1, 2, 3, 4], "blort".keyList());
+
+expectEq("valueList 1", [],                        "".valueList());
+expectEq("valueList 2", ["x"],                     "x".valueList());
+expectEq("valueList 3", ["b", "l", "o", "r", "t"], "blort".valueList());
 
 expectEq("repeat 1", "",                 "".repeat(0));
 expectEq("repeat 2", "",                 "".repeat(1));

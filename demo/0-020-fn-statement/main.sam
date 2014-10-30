@@ -36,17 +36,24 @@ fn func2(x*) { /out ->
 
 note(func2(20, "twenty"));
 
+## Quoted name.
+fn func3(\"= yowza =") {
+    print("func3", \"= yowza =");
+};
+
+func3("hello");
+
 ## Self-recursion.
-fn func3(x) {
+fn func4(x) {
     print("func3", x);
     ifIs { lt(x, 5) }
         {
-            func3(x.add(1));
-            return "func3"
+            func4(x.add(1));
+            return "func4"
         }
 };
 
-note(func3(1));
+note(func4(1));
 
 ## Mutual recursion.
 fn recFunc1(x) {

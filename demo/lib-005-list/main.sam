@@ -91,6 +91,14 @@ expectEq("del 10", ["y"],  ["x", "y"].del(0, 0));
 expectEq("del 11", [],     ["x", "y"].del(0, 1));
 expectEq("del 12", [2, 3], [0, 1, 2, 3, 4].del(0, 1, 4));
 
+expectEq("keyList 1", [],        [].keyList());
+expectEq("keyList 2", [0],       ["x"].keyList());
+expectEq("keyList 3", [0, 1, 2], [@a, @b, @c].keyList());
+
+expectEq("valueList 1", [],           [].valueList());
+expectEq("valueList 2", ["x"],        ["x"].valueList());
+expectEq("valueList 3", [@a, @b, @c], [@a, @b, @c].valueList());
+
 expectEq("repeat 1", [],                   [].repeat(0));
 expectEq("repeat 2", [],                   [].repeat(1));
 expectEq("repeat 3", [],                   [].repeat(1000));
