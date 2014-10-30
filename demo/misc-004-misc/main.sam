@@ -13,16 +13,6 @@
 ## Private Definitions
 ##
 
-## Demo of `+` argument repeat modifier.
-fn stuff(items+) {
-    note("stuff: ", $Format::source(items))
-};
-
-## Demo of formal argument repeat modifiers. Also of quoted identifiers.
-fn blort(foo, bar?, \"weird name"?, more*) {
-    stuff(foo, bar, \"weird name", more)
-};
-
 ## Emits the stringified version of the given value to the console.
 fn process(value) {
     note($Format::source(value));
@@ -38,14 +28,10 @@ fn process(value) {
 
 export fn main(selfPath, name?, rest*) {
     ## Be welcoming.
-
-    ifIs { eq(name, ["danfuzz"]) }
-        { note("Hello, Danfuzz!\n") }
-        { note("Hello, Самиздат!\n") };
+    note("Hello, Самиздат!\n");
 
     process(selfPath);
     process(rest);
-    process(blort);
     process(ifIs);
     process(ne);
     process(String);
@@ -53,12 +39,4 @@ export fn main(selfPath, name?, rest*) {
     process($Format::int(71, 10));
     process($Format::int(71, 16));
     process($Format::int(71, 36));
-
-    blort(1);
-    blort(1, 2);
-    blort(1, 2, 3);
-    blort(1, 2, 3, 4);
-    blort(1, 2, 3, 4, 5);
-    stuff(1);
-    stuff(1, 2);
 }

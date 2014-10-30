@@ -104,6 +104,10 @@ def _x = 1;
 def $x = 1;
 def x_ = 1;
 def x$ = 1;
+def x1 = 1;
+def _1 = 1;
+def $1 = 1;
+def \"weird name" = 1;
 
 frotz("fizmo");
 zorch("blort");
