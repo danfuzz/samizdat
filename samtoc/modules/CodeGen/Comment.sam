@@ -22,6 +22,14 @@ def NEW = @NEW.toUnlisted();
 export class Comment
         access: ACCESS,
         new: NEW {
+    class.new(text, optPayload?) {
+        return if (def payload = optPayload*) {
+            Wrapper.new(this.(NEW)(@{payload: CodeString.fix(payload), text}))
+        } else {
+            Wrapper.new(this.(NEW)(@{text}))
+        }
+    };
+
     .flatten() {
         def data = this.(ACCESS)();
         def text = data::text;
@@ -53,16 +61,4 @@ export class Comment
                 | true?)*)
             & this
     };
-};
-
-##
-## Exported Definitions
-##
-
-export fn genComment(text, optPayload?) {
-    return if (def payload = optPayload*) {
-        Wrapper.new(Comment.(NEW)(@{payload: CodeString.fix(payload), text}))
-    } else {
-        Wrapper.new(Comment.(NEW)(@{text}))
-    }
 };
