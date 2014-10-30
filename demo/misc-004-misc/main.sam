@@ -45,11 +45,6 @@ export fn main(selfPath, name?, rest*) {
 
     process(selfPath);
     process(rest);
-    process([@a, @b, @c].keyList());
-    process("abcde".keyList());
-    process({a: "apple", b: "butter"}.keyList());
-    process({a: "apple", b: "butter"}.valueList());
-    process(["blort", "fizmo", "igram"].valueList());
     process(blort);
     process(ifIs);
     process(ne);
