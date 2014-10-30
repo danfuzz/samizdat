@@ -206,12 +206,8 @@ METH_IMPL_rest(List, del, ns) {
         }
     }
 
-    if (at == 0) {
-        // All of the elements were removed.
-        return EMPTY_LIST;
-    }
-
-    // Construct a new instance with the remaining elements.
+    // Construct a new instance with the remaining elements. This call
+    // handles returning `EMPTY_LIST` when appropriate.
     return listFromUnchecked(at, elems);
 }
 
@@ -303,6 +299,12 @@ METH_IMPL_1(List, repeat, count) {
 METH_IMPL_0(List, reverse) {
     ListInfo *info = getInfo(ths);
     zint size = info->size;
+
+    if (size < 2) {
+        // Easy cases.
+        return ths;
+    }
+
     zvalue *elems = info->elems;
     zvalue arr[size];
 
