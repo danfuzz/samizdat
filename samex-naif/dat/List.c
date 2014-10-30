@@ -45,7 +45,7 @@ static zvalue allocList(zint size) {
 }
 
 /**
- * Performs the main action of `listFromArray`, except without checking
+ * Performs the main action of `listFromZarray`, except without checking
  * the validity of elements.
  */
 static zvalue listFromUnchecked(zarray arr) {
@@ -118,7 +118,7 @@ zarray zarrayFromList(zvalue list) {
 
 // Documented in spec.
 CMETH_IMPL_rest(List, new, values) {
-    return listFromArray(values.size, values.elems);
+    return listFromZarray(values);
 }
 
 // Documented in spec.
@@ -172,7 +172,7 @@ METH_IMPL_0_1(List, collect, function) {
         }
     }
 
-    return listFromArray(at, result);
+    return listFromUnchecked((zarray) {at, result});
 }
 
 // Documented in spec.
