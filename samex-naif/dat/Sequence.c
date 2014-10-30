@@ -100,7 +100,7 @@ METH_IMPL_0(Sequence, keyList) {
         elems[i] = intFromZint(i);
     }
 
-    return listFromArray(size, elems);
+    return listFromZarray((zarray) {size, elems});
 }
 
 // Documented in spec.

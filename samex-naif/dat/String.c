@@ -394,7 +394,7 @@ METH_IMPL_0_1(String, collect, function) {
         }
     }
 
-    return listFromArray(at, result);
+    return listFromZarray((zarray) {at, result});
 }
 
 // Documented in spec.
@@ -604,7 +604,7 @@ METH_IMPL_0(String, valueList) {
         result[i] = stringFromZchar(chars[i]);
     }
 
-    return listFromArray(size, result);
+    return listFromZarray((zarray) {size, result});
 }
 
 /** Initializes the module. */

@@ -402,7 +402,7 @@ METH_IMPL_0_1(Map, collect, function) {
         }
     }
 
-    return listFromArray(at, result);
+    return listFromZarray((zarray) {at, result});
 }
 
 // Documented in spec.
@@ -533,7 +533,7 @@ METH_IMPL_0(Map, keyList) {
         arr[i] = elems[i].key;
     }
 
-    return listFromArray(size, arr);
+    return listFromZarray((zarray) {size, arr});
 }
 
 // Documented in spec.
@@ -647,7 +647,7 @@ METH_IMPL_0(Map, valueList) {
         arr[i] = elems[i].value;
     }
 
-    return listFromArray(size, arr);
+    return listFromZarray((zarray) {size, arr});
 }
 
 /** Initializes the module. */
