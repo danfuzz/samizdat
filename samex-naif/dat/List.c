@@ -45,16 +45,10 @@ static zvalue allocList(zint size) {
 }
 
 /**
- * Combines up to two element arrays and an additional element into a
- * single new list. This can also be used for a single array by
- * passing `size2` as `0`. If `insert` is non-`NULL`, that element is
- * placed in between the two lists of array contents in the result.
+ * Performs the main action of `listFromArray`, except without checking
+ * the validity of elements.
  */
-static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
-                       zint size2, const zvalue *elems2) {
-    zint insertCount = (insert == NULL) ? 0 : 1;
-    zint size = size1 + size2 + insertCount;
-
+static zvalue listFromUnchecked(zint size, const zvalue *elems) {
     if (size == 0) {
         return EMPTY_LIST;
     }
@@ -62,24 +56,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
     zvalue result = allocList(size);
     zvalue *resultElems = getInfo(result)->elems;
 
-    if (size1 != 0) {
-        utilCpy(zvalue, resultElems, elems1, size1);
-    }
-
-    if (insert != NULL) {
-        resultElems[size1] = insert;
-    }
-
-    if (size2 != 0) {
-        utilCpy(zvalue, resultElems + size1 + insertCount, elems2, size2);
-    }
-
-    if (DAT_CONSTRUCTION_PARANOIA) {
-        for (zint i = 0; i < size; i++) {
-            assertValid(resultElems[i]);
-        }
-    }
-
+    utilCpy(zvalue, resultElems, elems, size);
     return result;
 }
 
@@ -97,7 +74,7 @@ static zvalue doSlice(zvalue ths, bool inclusive,
     if (start == -1) {
         return NULL;
     } else {
-        return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
+        return listFromUnchecked(end - start, &info->elems[start]);
     }
 }
 
@@ -108,11 +85,13 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 
 // Documented in header.
 zvalue listFromArray(zint size, const zvalue *values) {
-    for (zint i = 0; i < size; i++) {
-        assertValid(values[i]);
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        for (zint i = 0; i < size; i++) {
+            assertValid(values[i]);
+        }
     }
 
-    return listFrom(size, values, NULL, 0, NULL);
+    return listFromUnchecked(size, values);
 }
 
 // Documented in header.
@@ -158,7 +137,7 @@ METH_IMPL_rest(List, cat, args) {
         at += info->size;
     }
 
-    return listFrom(size, elems, NULL, 0, NULL);
+    return listFromUnchecked(size, elems);
 }
 
 // Documented in spec.
@@ -233,7 +212,7 @@ METH_IMPL_rest(List, del, ns) {
     }
 
     // Construct a new instance with the remaining elements.
-    return listFrom(at, elems, NULL, 0, NULL);
+    return listFromUnchecked(at, elems);
 }
 
 // Documented in spec.
@@ -282,10 +261,11 @@ METH_IMPL_1(List, nextValue, box) {
     }
 
     // Yield the first element via the box, and return a list of the
-    // remainder. `listFrom` handles returning `EMPTY_LIST` when appropriate.
+    // remainder. `listFromUnchecked` handles returning `EMPTY_LIST` when
+    // appropriate.
 
     cm_store(box, info->elems[0]);
-    return listFrom(size - 1, &info->elems[1], NULL, 0, NULL);
+    return listFromUnchecked(size - 1, &info->elems[1]);
 }
 
 // Documented in spec.
@@ -330,7 +310,7 @@ METH_IMPL_0(List, reverse) {
         arr[i] = elems[j];
     }
 
-    return listFrom(size, arr, NULL, 0, NULL);
+    return listFromUnchecked(size, arr);
 }
 
 
