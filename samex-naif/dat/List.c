@@ -146,7 +146,8 @@ METH_IMPL_rest(List, cat, args) {
         return ths;
     }
 
-    zint thsSize = getInfo(ths)->size;
+    ListInfo *thsInfo = getInfo(ths);
+    zint thsSize = thsInfo->size;
 
     zint size = thsSize;
     for (zint i = 0; i < args.size; i++) {
@@ -157,10 +158,12 @@ METH_IMPL_rest(List, cat, args) {
 
     zvalue elems[size];
     zint at = thsSize;
-    arrayFromList(elems, ths);
+    utilCpy(zvalue, elems, thsInfo->elems, thsSize);
+
     for (zint i = 0; i < args.size; i++) {
-        arrayFromList(&elems[at], args.elems[i]);
-        at += getInfo(args.elems[i])->size;
+        ListInfo *info = getInfo(args.elems[i]);
+        utilCpy(zvalue, &elems[at], info->elems, info->size);
+        at += info->size;
     }
 
     return listFrom(size, elems, NULL, 0, NULL);
