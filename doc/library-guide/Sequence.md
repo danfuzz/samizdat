@@ -58,7 +58,8 @@ must both be ints. `end` defaults to `#this - 1` if omitted.
 As special cases (in order):
 * It is an error (terminating the runtime) if either `start` or `end` is
   not an int.
-* If either `end < 0` or `start > #this`, then this returns void.
+* If any of `end < 0`, `start > #this`, or `end < start`, then this returns
+  void.
 * If `start < 0`, then it is treated as if it were passed as `0`.
 * If `end > #this`, then it is treated as if it were passed as `#this`.
 * If `start == end` (after modification per previous two items), then this
