@@ -381,7 +381,7 @@ METH_IMPL_0_1(String, collect, function) {
     StringInfo *info = getInfo(ths);
     const zchar *chars = info->s.chars;
     zint size = info->s.size;
-    zvalue result[size];
+    zvalue *elems = utilAlloc(size * sizeof(zvalue));
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
@@ -389,12 +389,14 @@ METH_IMPL_0_1(String, collect, function) {
         zvalue one = (function == NULL) ? elem : FUN_CALL(function, elem);
 
         if (one != NULL) {
-            result[at] = one;
+            elems[at] = one;
             at++;
         }
     }
 
-    return listFromZarray((zarray) {at, result});
+    zvalue result = listFromZarray((zarray) {at, elems});
+    utilFree(elems);
+    return result;
 }
 
 // Documented in spec.
