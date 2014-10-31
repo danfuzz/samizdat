@@ -184,7 +184,7 @@ void arrayFromSymtab(zmapping *result, zvalue symbolTable) {
 }
 
 // Documented in header.
-zvalue symbolTableFromArray(zint size, zmapping *mappings) {
+zvalue symtabFromArray(zint size, zmapping *mappings) {
     if (size == 0) {
         return EMPTY_SYMBOL_TABLE;
     }
@@ -200,8 +200,8 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
 }
 
 // Documented in header.
-zvalue symbolTableFromMapping(zmapping mapping) {
-    return symbolTableFromArray(1, &mapping);
+zvalue symtabFromMapping(zmapping mapping) {
+    return symtabFromArray(1, &mapping);
 }
 
 // Documented in header.
@@ -357,7 +357,7 @@ METH_IMPL_rest(SymbolTable, del, keys) {
     }
 
     // Construct a new instance with the remaining elements.
-    return symbolTableFromArray(at, array);
+    return symtabFromArray(at, array);
 }
 
 // Documented in header.

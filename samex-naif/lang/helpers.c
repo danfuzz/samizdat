@@ -122,5 +122,5 @@ zvalue tableFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
     if (v3 != NULL) { elems[at].key = k3; elems[at].value = v3; at++; }
     if (v4 != NULL) { elems[at].key = k4; elems[at].value = v4; at++; }
 
-    return (at == 0) ? EMPTY_SYMBOL_TABLE : symbolTableFromArray(at, elems);
+    return (at == 0) ? EMPTY_SYMBOL_TABLE : symtabFromArray(at, elems);
 }

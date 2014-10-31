@@ -86,7 +86,7 @@ zvalue cm_new_SymbolTable0(zvalue first, ...) {
     }
     va_end(rest);
 
-    return symbolTableFromArray(size, elems);
+    return symtabFromArray(size, elems);
 }
 
 // Documented in header.

@@ -29,12 +29,12 @@ void arrayFromSymtab(zmapping *result, zvalue symbolTable);
  * Makes a symbol table from an array of mappings. The keys must all be
  * symbols (of course).
  */
-zvalue symbolTableFromArray(zint size, zmapping *mappings);
+zvalue symtabFromArray(zint size, zmapping *mappings);
 
 /**
  * Gets a single-mapping symbol table of the given mapping.
  */
-zvalue symbolTableFromMapping(zmapping mapping);
+zvalue symtabFromMapping(zmapping mapping);
 
 /**
  * Gets the size of a symbol table.
