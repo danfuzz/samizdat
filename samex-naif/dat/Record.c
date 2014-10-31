@@ -43,6 +43,30 @@ static RecordInfo *getInfo(zvalue value) {
 //
 
 // Documented in header.
+bool recGet2(zvalue record,
+        zvalue key1, zvalue *got1,
+        zvalue key2, zvalue *got2) {
+    assertHasClass(record, CLS_Record);
+    zvalue data = getInfo(record)->data;
+
+    return ((*got1 = symtabGetUnchecked(data, key1)) != NULL)
+        && ((*got2 = symtabGetUnchecked(data, key2)) != NULL);
+};
+
+// Documented in header.
+bool recGet3(zvalue record,
+        zvalue key1, zvalue *got1,
+        zvalue key2, zvalue *got2,
+        zvalue key3, zvalue *got3) {
+    assertHasClass(record, CLS_Record);
+    zvalue data = getInfo(record)->data;
+
+    return ((*got1 = symtabGetUnchecked(data, key1)) != NULL)
+        && ((*got2 = symtabGetUnchecked(data, key2)) != NULL)
+        && ((*got3 = symtabGetUnchecked(data, key3)) != NULL);
+};
+
+// Documented in header.
 bool recHasName(zvalue record, zvalue name) {
     assertHasClass(record, CLS_Record);
     return symbolEq(getInfo(record)->name, name);
