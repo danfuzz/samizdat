@@ -168,7 +168,7 @@ static int compareMappings(const void *m1, const void *m2) {
 //
 
 // Documented in header.
-void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
+void arrayFromSymtab(zmapping *result, zvalue symbolTable) {
     assertHasClass(symbolTable, CLS_SymbolTable);
     SymbolTableInfo *info = getInfo(symbolTable);
     zint arraySize = info->arraySize;

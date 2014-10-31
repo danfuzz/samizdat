@@ -23,7 +23,7 @@ extern zvalue EMPTY_SYMBOL_TABLE;
  * array, which must be sized large enough to hold all of them. The result
  * has no particular ordering.
  */
-void arrayFromSymbolTable(zmapping *result, zvalue symbolTable);
+void arrayFromSymtab(zmapping *result, zvalue symbolTable);
 
 /**
  * Makes a symbol table from an array of mappings. The keys must all be

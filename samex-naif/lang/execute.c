@@ -229,7 +229,7 @@ zvalue langEval0(zvalue env, zvalue node) {
     zint size = get_size(env);
     zmapping mappings[size];
 
-    arrayFromSymbolTable(mappings, env);
+    arrayFromSymtab(mappings, env);
     for (zint i = 0; i < size; i++) {
         mappings[i].value = cm_new(Result, mappings[i].value);
     }

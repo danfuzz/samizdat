@@ -212,7 +212,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 
     if (cmethSize != 0) {
         zmapping methods[cmethSize];
-        arrayFromSymbolTable(methods, classMethods);
+        arrayFromSymtab(methods, classMethods);
         for (zint i = 0; i < cmethSize; i++) {
             zvalue sym = methods[i].key;
             zint index = symbolIndex(methods[i].key);
@@ -222,7 +222,7 @@ void classBindMethods(zvalue cls, zvalue classMethods,
 
     if (imethSize != 0) {
         zmapping methods[imethSize];
-        arrayFromSymbolTable(methods, instanceMethods);
+        arrayFromSymtab(methods, instanceMethods);
         for (zint i = 0; i < imethSize; i++) {
             zvalue sym = methods[i].key;
             zint index = symbolIndex(methods[i].key);
