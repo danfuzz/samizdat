@@ -48,7 +48,7 @@ export class PegRepeat
                 {
                     ifIs { count.totalEq(maxSize) }
                         {
-                            ## Hit the max size. Return it.
+                            ## We parsed the max repeat size. Return it.
                             box* := results;
                             return remainingInput
                         }
