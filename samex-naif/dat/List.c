@@ -45,41 +45,18 @@ static zvalue allocList(zint size) {
 }
 
 /**
- * Combines up to two element arrays and an additional element into a
- * single new list. This can also be used for a single array by
- * passing `size2` as `0`. If `insert` is non-`NULL`, that element is
- * placed in between the two lists of array contents in the result.
+ * Performs the main action of `listFromZarray`, except without checking
+ * the validity of elements.
  */
-static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
-                       zint size2, const zvalue *elems2) {
-    zint insertCount = (insert == NULL) ? 0 : 1;
-    zint size = size1 + size2 + insertCount;
-
-    if (size == 0) {
+static zvalue listFromUnchecked(zarray arr) {
+    if (arr.size == 0) {
         return EMPTY_LIST;
     }
 
-    zvalue result = allocList(size);
+    zvalue result = allocList(arr.size);
     zvalue *resultElems = getInfo(result)->elems;
 
-    if (size1 != 0) {
-        utilCpy(zvalue, resultElems, elems1, size1);
-    }
-
-    if (insert != NULL) {
-        resultElems[size1] = insert;
-    }
-
-    if (size2 != 0) {
-        utilCpy(zvalue, resultElems + size1 + insertCount, elems2, size2);
-    }
-
-    if (DAT_CONSTRUCTION_PARANOIA) {
-        for (zint i = 0; i < size; i++) {
-            assertValid(resultElems[i]);
-        }
-    }
-
+    utilCpy(zvalue, resultElems, arr.elems, arr.size);
     return result;
 }
 
@@ -97,7 +74,7 @@ static zvalue doSlice(zvalue ths, bool inclusive,
     if (start == -1) {
         return NULL;
     } else {
-        return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
+        return listFromUnchecked((zarray) {end - start, &info->elems[start]});
     }
 }
 
@@ -107,20 +84,19 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 //
 
 // Documented in header.
-void arrayFromList(zvalue *result, zvalue list) {
-    assertHasClass(list, CLS_List);
-    ListInfo *info = getInfo(list);
-
-    utilCpy(zvalue, result, info->elems, info->size);
+zvalue listFromValue(zvalue value) {
+    return listFromZarray((zarray) {1, &value});
 }
 
 // Documented in header.
-zvalue listFromArray(zint size, const zvalue *values) {
-    for (zint i = 0; i < size; i++) {
-        assertValid(values[i]);
+zvalue listFromZarray(zarray arr) {
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        for (zint i = 0; i < arr.size; i++) {
+            assertValid(arr.elems[i]);
+        }
     }
 
-    return listFrom(size, values, NULL, 0, NULL);
+    return listFromUnchecked(arr);
 }
 
 // Documented in header.
@@ -137,7 +113,7 @@ zarray zarrayFromList(zvalue list) {
 
 // Documented in spec.
 CMETH_IMPL_rest(List, new, values) {
-    return listFromArray(values.size, values.elems);
+    return listFromZarray(values);
 }
 
 // Documented in spec.
@@ -146,7 +122,8 @@ METH_IMPL_rest(List, cat, args) {
         return ths;
     }
 
-    zint thsSize = getInfo(ths)->size;
+    ListInfo *thsInfo = getInfo(ths);
+    zint thsSize = thsInfo->size;
 
     zint size = thsSize;
     for (zint i = 0; i < args.size; i++) {
@@ -157,13 +134,15 @@ METH_IMPL_rest(List, cat, args) {
 
     zvalue elems[size];
     zint at = thsSize;
-    arrayFromList(elems, ths);
+    utilCpy(zvalue, elems, thsInfo->elems, thsSize);
+
     for (zint i = 0; i < args.size; i++) {
-        arrayFromList(&elems[at], args.elems[i]);
-        at += getInfo(args.elems[i])->size;
+        ListInfo *info = getInfo(args.elems[i]);
+        utilCpy(zvalue, &elems[at], info->elems, info->size);
+        at += info->size;
     }
 
-    return listFrom(size, elems, NULL, 0, NULL);
+    return listFromUnchecked((zarray) {size, elems});
 }
 
 // Documented in spec.
@@ -188,7 +167,7 @@ METH_IMPL_0_1(List, collect, function) {
         }
     }
 
-    return listFromArray(at, result);
+    return listFromUnchecked((zarray) {at, result});
 }
 
 // Documented in spec.
@@ -232,13 +211,9 @@ METH_IMPL_rest(List, del, ns) {
         }
     }
 
-    if (at == 0) {
-        // All of the elements were removed.
-        return EMPTY_LIST;
-    }
-
-    // Construct a new instance with the remaining elements.
-    return listFrom(at, elems, NULL, 0, NULL);
+    // Construct a new instance with the remaining elements. This call
+    // handles returning `EMPTY_LIST` when appropriate.
+    return listFromUnchecked((zarray) {at, elems});
 }
 
 // Documented in spec.
@@ -287,10 +262,11 @@ METH_IMPL_1(List, nextValue, box) {
     }
 
     // Yield the first element via the box, and return a list of the
-    // remainder. `listFrom` handles returning `EMPTY_LIST` when appropriate.
+    // remainder. `listFromUnchecked` handles returning `EMPTY_LIST` when
+    // appropriate.
 
     cm_store(box, info->elems[0]);
-    return listFrom(size - 1, &info->elems[1], NULL, 0, NULL);
+    return listFromUnchecked((zarray) {size - 1, &info->elems[1]});
 }
 
 // Documented in spec.
@@ -328,6 +304,12 @@ METH_IMPL_1(List, repeat, count) {
 METH_IMPL_0(List, reverse) {
     ListInfo *info = getInfo(ths);
     zint size = info->size;
+
+    if (size < 2) {
+        // Easy cases.
+        return ths;
+    }
+
     zvalue *elems = info->elems;
     zvalue arr[size];
 
@@ -335,7 +317,7 @@ METH_IMPL_0(List, reverse) {
         arr[i] = elems[j];
     }
 
-    return listFrom(size, arr, NULL, 0, NULL);
+    return listFromUnchecked((zarray) {size, arr});
 }
 
 

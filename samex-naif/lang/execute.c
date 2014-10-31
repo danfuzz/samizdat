@@ -212,12 +212,10 @@ zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
 
 // Documented in header.
 void execStatements(Frame *frame, zvalue statements) {
-    zint size = get_size(statements);
-    zvalue arr[size];
-    arrayFromList(arr, statements);
+    zarray arr = zarrayFromList(statements);
 
-    for (zint i = 0; i < size; i++) {
-        execStatement(frame, arr[i]);
+    for (zint i = 0; i < arr.size; i++) {
+        execStatement(frame, arr.elems[i]);
     }
 }
 

@@ -40,13 +40,13 @@ fn closureDeclaration(cloIdx, clo, literals) {
     def decl = Call.new(
         "static zvalue makeClosure_\(cloIdx)",
         ( idx in (0..), name in varRefs ->
-            genComment(
+            Comment.new(
                 "\%q(name)",
                 $vars::freeVarDecl(name, idx))
         )*);
 
     return if (def ref = clo::name) {
-        genComment("\%q(literals[ref::id])", decl)
+        Comment.new("\%q(literals[ref::id])", decl)
     } else {
         decl
     }
@@ -154,7 +154,7 @@ fn mainClosureMaker(node, interner) {
         Return.new(
             Call.new("makeClosure_\(node::id)",
                 ( name in varRefs, id in ids ->
-                    genComment("\%q(name)",
+                    Comment.new("\%q(name)",
                         MethCall.new("CLS_Result", "SYM(new)",
                             Call.new("cm_get", "GLOBALS", "LIT_\(id)")))
                 )*)));

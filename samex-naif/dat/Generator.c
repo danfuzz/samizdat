@@ -62,7 +62,7 @@ FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
         at++;
     }
 
-    zvalue result = listFromArray(at, arr);
+    zvalue result = listFromZarray((zarray) {at, arr});
     datFrameReturn(save, result);
 
     if (arr != stackArr) {

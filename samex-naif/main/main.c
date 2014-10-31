@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         args[i - 1] = stringFromUtf8(-1, argv[i]);
     }
-    zvalue argsList = listFromArray(argc - 1, args);
+    zvalue argsList = listFromZarray((zarray) {argc - 1, args});
 
     zvalue runFunc = cm_get(env, SYM(runCommandLine));
     if (runFunc == NULL) {

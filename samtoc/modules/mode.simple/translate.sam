@@ -31,7 +31,7 @@ fn varDefCommon(name, value, varsBox) {
     def binding = {name: localVarName(name, index), kind: "local"};
 
     varsBox* := {vars*, (name): binding};
-    return genComment("\%q(name)", Assign.new(decl, value));
+    return Comment.new("\%q(name)", Assign.new(decl, value));
 };
 
 ## Wrap the given expression in a "non-void" guarantee call.

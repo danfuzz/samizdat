@@ -27,17 +27,19 @@ def FORMAL_PARSERS = {
         parse:  "(argAt >= args.size) ? EMPTY_LIST : args.elems[argAt]",
         update: "if (argAt < args.size) { argAt++; }"
     },
+
     ## Zero-or-one.
     @"?": {
         parse:
             "(argAt >= args.size) \
-            ? EMPTY_LIST : listFromArray(1, &args.elems[argAt])",
+            ? EMPTY_LIST : listFromValue(args.elems[argAt])",
         update: "if (argAt < args.size) { argAt++; }"
     },
+
     ## Zero-or-more and one-or-more.
     @"*":
     @"+": {
-        parse:  "listFromArray(args.size - argAt, &args.elems[argAt])",
+        parse:  "listFromZarray((zarray) {args.size - argAt, &args.elems[argAt]})",
         update: "argAt = args.size"
     }
 };
@@ -46,7 +48,7 @@ def FORMAL_PARSERS = {
 ## unnamed formals.
 fn unnamedFormals(clo) {
     return [ idx in (0..), f in clo::formals ->
-        (!f::name) & genComment("Unnamed formal \(idx)")
+        (!f::name) & Comment.new("Unnamed formal \(idx)")
     ];
 };
 
@@ -206,7 +208,7 @@ export fn processVars(clo) {
     ## Make C local variable defintions for all the variables.
     def varStats = ( name in names ->
         def binding = vars[name];
-        genComment(
+        Comment.new(
             "\%q(cast(String, binding::origName))",
             Assign.new("zvalue \(binding::name)", binding::init));
     );

@@ -16,7 +16,7 @@
 
 // Documented in header.
 zvalue listFrom1(zvalue e1) {
-    return (e1 == NULL) ? EMPTY_LIST : listFromArray(1, &e1);
+    return (e1 == NULL) ? EMPTY_LIST : listFromValue(e1);
 }
 
 // Documented in header.
@@ -45,7 +45,7 @@ zvalue listFrom5(zvalue e1, zvalue e2, zvalue e3, zvalue e4, zvalue e5) {
     if (e4 != NULL) { elems[at] = e4; at++; }
     if (e5 != NULL) { elems[at] = e5; at++; }
 
-    return (at == 0) ? EMPTY_LIST : listFromArray(at, elems);
+    return (at == 0) ? EMPTY_LIST : listFromZarray((zarray) {at, elems});
 }
 
 // Documented in header.
