@@ -168,14 +168,14 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (recordEvalType(e)) {
-        case EVAL_apply:    { return execApply(frame, e);   }
-        case EVAL_call:     { return execCall(frame, e);    }
-        case EVAL_closure:  { return execClosure(frame, e); }
-        case EVAL_fetch:    { return execFetch(frame, e);   }
-        case EVAL_literal:  { return cm_get(e, SYM(value)); }
-        case EVAL_noYield:  { execNoYield(frame, e);        }
-        case EVAL_store:    { return execStore(frame, e);   }
-        case EVAL_varRef:   { return execVarRef(frame, e);  }
+        case EVAL_apply:   { return execApply(frame, e);   }
+        case EVAL_call:    { return execCall(frame, e);    }
+        case EVAL_closure: { return execClosure(frame, e); }
+        case EVAL_fetch:   { return execFetch(frame, e);   }
+        case EVAL_literal: { return cm_get(e, SYM(value)); }
+        case EVAL_noYield: { execNoYield(frame, e);        }
+        case EVAL_store:   { return execStore(frame, e);   }
+        case EVAL_varRef:  { return execVarRef(frame, e);  }
         default: {
             die("Invalid expression type: %s", cm_debugString(classOf(e)));
         }
@@ -185,14 +185,14 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /**
  * Executes a single `statement` form. Works for `expression` forms too.
  */
-static void execStatement(Frame *frame, zvalue statement) {
-    switch (recordEvalType(statement)) {
-        case EVAL_importModule:          { execImport(frame, statement);           break; }
-        case EVAL_importModuleSelection: { execImport(frame, statement);           break; }
-        case EVAL_importResource:        { execImport(frame, statement);           break; }
-        case EVAL_varDef:                { execVarDef(frame, statement);           break; }
-        case EVAL_varDefMutable:         { execVarDefMutable(frame, statement);    break; }
-        default:                         { execExpressionVoidOk(frame, statement); break; }
+static void execStatement(Frame *frame, zvalue s) {
+    switch (recordEvalType(s)) {
+        case EVAL_importModule:
+        case EVAL_importModuleSelection:
+        case EVAL_importResource: { execImport(frame, s);           break; }
+        case EVAL_varDef:         { execVarDef(frame, s);           break; }
+        case EVAL_varDefMutable:  { execVarDefMutable(frame, s);    break; }
+        default:                  { execExpressionVoidOk(frame, s); break; }
     }
 }
 
