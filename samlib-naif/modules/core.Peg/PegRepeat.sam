@@ -24,7 +24,13 @@ export class PegRepeat
     ## Documented in spec.
     class.new(rule, optMinSize?, optMaxSize?) {
         def minSize = ifValueOr { optMinSize* } { 0 };
-        def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
+        def maxMap = ifValue { optMaxSize* }
+            { sz ->
+                ifIs { lt(sz, minSize) }
+                    { die("Invalid repeat spec: maxSize < minSize") };
+                @{maxSize: sz}
+            }
+            { @{} };
         return this.(NEW)(@{maxMap*, minSize, rule})
     };
 
