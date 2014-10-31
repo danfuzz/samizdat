@@ -164,6 +164,18 @@ static int compareMappings(const void *m1, const void *m2) {
 
 
 //
+// Module Definitions
+//
+
+zvalue symtabGetUnchecked(zvalue symtab, zvalue key) {
+    SymbolTableInfo *info = getInfo(symtab);
+    zint index = infoFind(info, key);
+
+    return (index < 0) ? NULL : info->array[index].value;
+}
+
+
+//
 // Exported Definitions
 //
 
@@ -375,10 +387,7 @@ METH_IMPL_0(SymbolTable, gcMark) {
 
 // Documented in spec.
 METH_IMPL_1(SymbolTable, get, key) {
-    SymbolTableInfo *info = getInfo(ths);
-    zint index = infoFind(info, key);
-
-    return (index < 0) ? NULL : info->array[index].value;
+    return symtabGetUnchecked(ths, key);
 }
 
 // Documented in spec.

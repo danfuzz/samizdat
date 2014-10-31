@@ -146,7 +146,7 @@ METH_IMPL_0(Record, gcMark) {
 
 // Documented in spec.
 METH_IMPL_1(Record, get, key) {
-    return cm_get(getInfo(ths)->data, key);
+    return symtabGetUnchecked(getInfo(ths)->data, key);
 }
 
 // Documented in spec.
