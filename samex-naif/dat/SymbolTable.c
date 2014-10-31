@@ -205,12 +205,12 @@ zvalue symtabFromMapping(zmapping mapping) {
 }
 
 // Documented in header.
-zint symbolTableSize(zvalue symbolTable) {
+zint symtabSize(zvalue symbolTable) {
     assertHasClass(symbolTable, CLS_SymbolTable);
     return getInfo(symbolTable)->size;
 }
 
-zvalue symbolTableWithNewMapping(zvalue symbolTable, zmapping mapping) {
+zvalue symtabWithNewMapping(zvalue symbolTable, zmapping mapping) {
     assertHasClass(symbolTable, CLS_SymbolTable);
 
     zvalue result = allocClone(symbolTable);

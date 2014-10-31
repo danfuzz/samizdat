@@ -39,13 +39,13 @@ zvalue symtabFromMapping(zmapping mapping);
 /**
  * Gets the size of a symbol table.
  */
-zint symbolTableSize(zvalue symbolTable);
+zint symtabSize(zvalue symbolTable);
 
 /**
  * Returns a new symbol table with the given additional mapping. This fails
  * and returns `NULL` if the original table already has a mapping for the
  * indicated symbol.
  */
-zvalue symbolTableWithNewMapping(zvalue symbolTable, zmapping mapping);
+zvalue symtabWithNewMapping(zvalue symbolTable, zmapping mapping);
 
 #endif

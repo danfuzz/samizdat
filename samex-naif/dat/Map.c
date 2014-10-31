@@ -268,7 +268,7 @@ CMETH_IMPL_1(Map, castFrom, value) {
     }
 
     // We were given either a `Record` or a `SymbolTable`.
-    zint size = symbolTableSize(value);
+    zint size = symtabSize(value);
     zmapping mappings[size];
     arrayFromSymtab(mappings, value);
     return mapFromArray(size, mappings);

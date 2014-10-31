@@ -198,9 +198,9 @@ void classBindMethods(zvalue cls, zvalue classMethods,
     ClassInfo *clsInfo = getInfo(cls);
     ClassInfo *metaInfo = getInfo(cls->cls);
     zint cmethSize =
-        (classMethods == NULL) ? 0 : symbolTableSize(classMethods);
+        (classMethods == NULL) ? 0 : symtabSize(classMethods);
     zint imethSize =
-        (instanceMethods == NULL) ? 0 : symbolTableSize(instanceMethods);
+        (instanceMethods == NULL) ? 0 : symtabSize(instanceMethods);
 
     if (clsInfo->parent != NULL) {
         // Initialize the method tables with whatever the parent defined.
