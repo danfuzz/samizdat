@@ -23,7 +23,7 @@ extern zvalue EMPTY_SYMBOL_TABLE;
  * array, which must be sized large enough to hold all of them. The result
  * has no particular ordering.
  */
-void arrayFromSymtab(zmapping *result, zvalue symbolTable);
+void arrayFromSymtab(zmapping *result, zvalue symtab);
 
 /**
  * Makes a symbol table from an array of mappings. The keys must all be
@@ -39,13 +39,13 @@ zvalue symtabFromMapping(zmapping mapping);
 /**
  * Gets the size of a symbol table.
  */
-zint symtabSize(zvalue symbolTable);
+zint symtabSize(zvalue symtab);
 
 /**
  * Returns a new symbol table with the given additional mapping. This fails
  * and returns `NULL` if the original table already has a mapping for the
  * indicated symbol.
  */
-zvalue symtabWithNewMapping(zvalue symbolTable, zmapping mapping);
+zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping);
 
 #endif

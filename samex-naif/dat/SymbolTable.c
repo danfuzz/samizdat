@@ -34,8 +34,8 @@ typedef struct {
 /**
  * Gets a pointer to the value's info.
  */
-static SymbolTableInfo *getInfo(zvalue symbolTable) {
-    return datPayload(symbolTable);
+static SymbolTableInfo *getInfo(zvalue symtab) {
+    return datPayload(symtab);
 }
 
 /**
@@ -168,9 +168,9 @@ static int compareMappings(const void *m1, const void *m2) {
 //
 
 // Documented in header.
-void arrayFromSymtab(zmapping *result, zvalue symbolTable) {
-    assertHasClass(symbolTable, CLS_SymbolTable);
-    SymbolTableInfo *info = getInfo(symbolTable);
+void arrayFromSymtab(zmapping *result, zvalue symtab) {
+    assertHasClass(symtab, CLS_SymbolTable);
+    SymbolTableInfo *info = getInfo(symtab);
     zint arraySize = info->arraySize;
     zmapping *array = info->array;
 
@@ -205,15 +205,15 @@ zvalue symtabFromMapping(zmapping mapping) {
 }
 
 // Documented in header.
-zint symtabSize(zvalue symbolTable) {
-    assertHasClass(symbolTable, CLS_SymbolTable);
-    return getInfo(symbolTable)->size;
+zint symtabSize(zvalue symtab) {
+    assertHasClass(symtab, CLS_SymbolTable);
+    return getInfo(symtab)->size;
 }
 
-zvalue symtabWithNewMapping(zvalue symbolTable, zmapping mapping) {
-    assertHasClass(symbolTable, CLS_SymbolTable);
+zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping) {
+    assertHasClass(symtab, CLS_SymbolTable);
 
-    zvalue result = allocClone(symbolTable);
+    zvalue result = allocClone(symtab);
     SymbolTableInfo *info = getInfo(result);
     zint expectSize = info->size + 1;
 
