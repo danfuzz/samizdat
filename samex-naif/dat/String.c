@@ -59,8 +59,9 @@ static zvalue allocString(zint size) {
         datAllocValue(CLS_String, sizeof(StringInfo) + size * sizeof(zchar));
     StringInfo *info = getInfo(result);
 
-    info->s.size = size;
-    info->s.chars = info->content;
+    info->s = (zstring) {size, info->content};
+    info->contentString = NULL;
+
     return result;
 }
 
