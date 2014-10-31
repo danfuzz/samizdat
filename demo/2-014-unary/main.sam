@@ -105,12 +105,13 @@ msg([1, 2, 3, -7, -6, -5][..2]);
 msg([1, 2, 3, -7, -6, -5][..!2]);
 msg([1, 2, 3, 4, 5, 6][..]);
 msg([1, 2, 3, 4, 5, 6][..!]);
-msg([1, 2, 3][5..!5]);
-msg([1, 2, 3][4..3]);
+msg([1, 2, 3][2..1]);
 msg([1, 2, 3][-10..20]);
-msg(([1, 2, 3][3..1])?);  ## `?` since this should be a void return.
-msg(([][1..])?);          ## Ditto.
-msg(([][..!])?);          ## Ditto.
+msg(([1, 2, 3][4..3])?);   ## `?` since this should be a void return.
+msg(([1, 2, 3][3..1])?);   ## Ditto.
+msg(([1, 2, 3][5..!5])?);  ## Ditto.
+msg(([][1..])?);           ## Ditto.
+msg(([][..!])?);           ## Ditto.
 
 note("\nSequences -- single value index from end");
 msg([1, 2, 3][^-1]?);
