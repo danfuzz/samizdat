@@ -80,8 +80,7 @@ static zvalue makeIndirectString(zvalue string, zint offset, zint size) {
     zvalue result = datAllocValue(CLS_String, sizeof(StringInfo));
     StringInfo *resultInfo = getInfo(result);
 
-    resultInfo->s.size = size;
-    resultInfo->s.chars = &info->s.chars[offset];
+    resultInfo->s = (zstring) {size, &info->s.chars[offset]};
     resultInfo->contentString = string;
 
     return result;

@@ -55,6 +55,31 @@ static zvalue allocList(zint size) {
 }
 
 /**
+ * Makes a list that refers to a content list. Does not do any type or
+ * bounds checking. It *does* shunt from an already-indirect list to the
+ * ultimate bearer of content.
+ */
+static zvalue makeIndirectList(zvalue list, zint offset, zint size) {
+    if (size == 0) {
+        return EMPTY_LIST;
+    }
+
+    ListInfo *info = getInfo(list);
+
+    if (info->contentList != NULL) {
+        list = info->contentList;
+    }
+
+    zvalue result = datAllocValue(CLS_List, sizeof(ListInfo));
+    ListInfo *resultInfo = getInfo(result);
+
+    resultInfo->a = (zarray) {size, &info->a.elems[offset]};
+    resultInfo->contentList = list;
+
+    return result;
+}
+
+/**
  * Performs the main action of `listFromZarray`, except without checking
  * the validity of elements.
  */
@@ -248,6 +273,8 @@ METH_IMPL_0(List, gcMark) {
     ListInfo *info = getInfo(ths);
     zarray arr = info->a;
 
+    datMark(info->contentList);
+
     for (zint i = 0; i < arr.size; i++) {
         datMark(arr.elems[i]);
     }
@@ -271,11 +298,11 @@ METH_IMPL_1(List, nextValue, box) {
     }
 
     // Yield the first element via the box, and return a list of the
-    // remainder. `listFromUnchecked` handles returning `EMPTY_LIST` when
+    // remainder. `makeIndirectList` handles returning `EMPTY_LIST` when
     // appropriate.
 
     cm_store(box, arr.elems[0]);
-    return listFromUnchecked((zarray) {arr.size - 1, &arr.elems[1]});
+    return makeIndirectList(ths, 1, arr.size - 1);
 }
 
 // Documented in spec.
