@@ -55,14 +55,20 @@ index-based "slice" of elements taken from `this`, from the `start`
 index (inclusive) through the `end` index (exclusive). `start` and `end`
 must both be ints. `end` defaults to `#this - 1` if omitted.
 
+As special cases (in order):
+* It is an error (terminating the runtime) if either `start` or `end` is
+  not an int.
+* If any of `end < 0`, `start > #this`, or `end < start`, then this returns
+  void.
+* If `start < 0`, then it is treated as if it were passed as `0`.
+* If `end > #this`, then it is treated as if it were passed as `#this`.
+* If `start == end` (after modification per previous two items), then this
+  returns an empty sequence.
+
 In the usual case, `start < end`, `start < #this`, and `end > start`.
-In this case, the result is the expected slice. If `start < 0`, then it is
-treated as if it were passed as `0`. If `end > #this`, then it is
-treated as if it were passed as `#this`.
-
-If `start == end`, this returns an empty sequence.
-
-In all other cases (as long as the type restrictions hold), this returns void.
+In this case, the result is a sequence consisting of elements of `this`
+starting at index `start` and continuing through, but not including, index
+`end`.
 
 #### `.sliceInclusive(start, end?) -> sequence | void`
 
