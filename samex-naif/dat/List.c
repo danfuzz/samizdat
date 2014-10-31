@@ -109,6 +109,13 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 
     if (start == -1) {
         return NULL;
+    }
+
+    zint size = end - start;
+
+    if (size > 16) {
+        // Share storage for large results.
+        return makeIndirectList(ths, start, size);
     } else {
         return listFromUnchecked((zarray) {end - start, &arr.elems[start]});
     }
