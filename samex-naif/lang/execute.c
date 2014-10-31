@@ -33,9 +33,13 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e);
  * Executes an `apply` form.
  */
 static zvalue execApply(Frame *frame, zvalue apply) {
-    zvalue targetExpr = cm_get(apply, SYM(target));
-    zvalue nameExpr = cm_get(apply, SYM(name));
-    zvalue valuesExpr = cm_get(apply, SYM(values));
+    zvalue targetExpr, nameExpr, valuesExpr;
+    if (!recGet3(apply,
+            SYM(target), &targetExpr,
+            SYM(name),   &nameExpr,
+            SYM(values), &valuesExpr)) {
+        die("Invalid `apply` node.");
+    }
 
     zvalue target = execExpression(frame, targetExpr);
     zvalue name = execExpression(frame, nameExpr);
@@ -48,18 +52,23 @@ static zvalue execApply(Frame *frame, zvalue apply) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    zvalue targetExpr = cm_get(call, SYM(target));
-    zvalue nameExpr = cm_get(call, SYM(name));
-    zarray valuesExprs = zarrayFromList(cm_get(call, SYM(values)));
+    zvalue targetExpr, nameExpr, valuesList;
+    if (!recGet3(call,
+            SYM(target), &targetExpr,
+            SYM(name),   &nameExpr,
+            SYM(values), &valuesList)) {
+        die("Invalid `call` node.");
+    }
 
+    zarray valuesArr = zarrayFromList(valuesList);
     zvalue target = execExpression(frame, targetExpr);
     zvalue name = execExpression(frame, nameExpr);
 
     // Evaluate each argument expression.
-    zint argCount = valuesExprs.size;
+    zint argCount = valuesArr.size;
     zvalue args[argCount];
     for (zint i = 0; i < argCount; i++) {
-        args[i] = execExpression(frame, valuesExprs.elems[i]);
+        args[i] = execExpression(frame, valuesArr.elems[i]);
     }
 
     return methCall(target, name, (zarray) {argCount, args});
@@ -104,8 +113,13 @@ static void execNoYield(Frame *frame, zvalue noYield) {
  * Executes a `store` form.
  */
 static zvalue execStore(Frame *frame, zvalue store) {
-    zvalue targetExpr = cm_get(store, SYM(target));
-    zvalue valueExpr = cm_get(store, SYM(value));
+    zvalue targetExpr, valueExpr;
+    if (!recGet2(store,
+            SYM(target), &targetExpr,
+            SYM(value),  &valueExpr)) {
+        die("Invalid `store` node.");
+    }
+
     zvalue target = execExpression(frame, targetExpr);
     zvalue value = execExpressionOrMaybe(frame, valueExpr);
 
@@ -117,12 +131,12 @@ static zvalue execStore(Frame *frame, zvalue store) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue name = cm_get(varDef, SYM(name));
-    zvalue valueExpression = cm_get(varDef, SYM(value));
-    zvalue box = valueExpression
-        ? cm_new(Result, execExpression(frame, valueExpression))
-        : cm_new(Promise);
+    zvalue name, valueExpr;
+    recGet2(varDef, SYM(name), &name, SYM(value), &valueExpr);
 
+    zvalue box = valueExpr
+        ? cm_new(Result, execExpression(frame, valueExpr))
+        : cm_new(Promise);
     frameDef(frame, name, box);
 }
 
@@ -131,12 +145,10 @@ static void execVarDef(Frame *frame, zvalue varDef) {
  * as appropriate.
  */
 static void execVarDefMutable(Frame *frame, zvalue varDef) {
-    zvalue name = cm_get(varDef, SYM(name));
-    zvalue valueExpression = cm_get(varDef, SYM(value));
-    zvalue value = valueExpression
-        ? execExpression(frame, valueExpression)
-        : NULL;
+    zvalue name, valueExpr;
+    recGet2(varDef, SYM(name), &name, SYM(value), &valueExpr);
 
+    zvalue value = valueExpr ? execExpression(frame, valueExpr) : NULL;
     frameDef(frame, name, cm_new(Cell, value));
 }
 
@@ -168,14 +180,14 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     switch (recordEvalType(e)) {
-        case EVAL_apply:    { return execApply(frame, e);   }
-        case EVAL_call:     { return execCall(frame, e);    }
-        case EVAL_closure:  { return execClosure(frame, e); }
-        case EVAL_fetch:    { return execFetch(frame, e);   }
-        case EVAL_literal:  { return cm_get(e, SYM(value)); }
-        case EVAL_noYield:  { execNoYield(frame, e);        }
-        case EVAL_store:    { return execStore(frame, e);   }
-        case EVAL_varRef:   { return execVarRef(frame, e);  }
+        case EVAL_apply:   { return execApply(frame, e);   }
+        case EVAL_call:    { return execCall(frame, e);    }
+        case EVAL_closure: { return execClosure(frame, e); }
+        case EVAL_fetch:   { return execFetch(frame, e);   }
+        case EVAL_literal: { return cm_get(e, SYM(value)); }
+        case EVAL_noYield: { execNoYield(frame, e);        }
+        case EVAL_store:   { return execStore(frame, e);   }
+        case EVAL_varRef:  { return execVarRef(frame, e);  }
         default: {
             die("Invalid expression type: %s", cm_debugString(classOf(e)));
         }
@@ -185,14 +197,14 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /**
  * Executes a single `statement` form. Works for `expression` forms too.
  */
-static void execStatement(Frame *frame, zvalue statement) {
-    switch (recordEvalType(statement)) {
-        case EVAL_importModule:          { execImport(frame, statement);           break; }
-        case EVAL_importModuleSelection: { execImport(frame, statement);           break; }
-        case EVAL_importResource:        { execImport(frame, statement);           break; }
-        case EVAL_varDef:                { execVarDef(frame, statement);           break; }
-        case EVAL_varDefMutable:         { execVarDefMutable(frame, statement);    break; }
-        default:                         { execExpressionVoidOk(frame, statement); break; }
+static void execStatement(Frame *frame, zvalue s) {
+    switch (recordEvalType(s)) {
+        case EVAL_importModule:
+        case EVAL_importModuleSelection:
+        case EVAL_importResource: { execImport(frame, s);           break; }
+        case EVAL_varDef:         { execVarDef(frame, s);           break; }
+        case EVAL_varDefMutable:  { execVarDefMutable(frame, s);    break; }
+        default:                  { execExpressionVoidOk(frame, s); break; }
     }
 }
 
@@ -229,11 +241,11 @@ zvalue langEval0(zvalue env, zvalue node) {
     zint size = get_size(env);
     zmapping mappings[size];
 
-    arrayFromSymbolTable(mappings, env);
+    arrayFromSymtab(mappings, env);
     for (zint i = 0; i < size; i++) {
         mappings[i].value = cm_new(Result, mappings[i].value);
     }
-    env = symbolTableFromArray(size, mappings);
+    env = symtabFromArray(size, mappings);
 
     Frame frame;
     frameInit(&frame, NULL, NULL, env);

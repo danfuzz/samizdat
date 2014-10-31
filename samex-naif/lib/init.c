@@ -73,7 +73,7 @@ static void makePrimitiveEnvironment(void) {
     #include "prim-def.h"
 
     // Set the final value, and make it immortal.
-    PRIMITIVE_ENVIRONMENT = datImmortalize(symbolTableFromArray(size, defs));
+    PRIMITIVE_ENVIRONMENT = datImmortalize(symtabFromArray(size, defs));
 }
 
 /**

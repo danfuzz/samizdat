@@ -173,6 +173,12 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
  */
 zint markFrameStack(void);
 
+/**
+ * Gets the value for the given symbol key in the given symbol table.
+ * Does not check to see if `symtab` is in fact a symbol table.
+ */
+zvalue symtabGetUnchecked(zvalue symtab, zvalue key);
+
 
 //
 // Object model initialization. These functions are needed in order to

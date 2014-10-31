@@ -34,8 +34,8 @@ typedef struct {
 /**
  * Gets a pointer to the value's info.
  */
-static SymbolTableInfo *getInfo(zvalue symbolTable) {
-    return datPayload(symbolTable);
+static SymbolTableInfo *getInfo(zvalue symtab) {
+    return datPayload(symtab);
 }
 
 /**
@@ -164,13 +164,25 @@ static int compareMappings(const void *m1, const void *m2) {
 
 
 //
+// Module Definitions
+//
+
+zvalue symtabGetUnchecked(zvalue symtab, zvalue key) {
+    SymbolTableInfo *info = getInfo(symtab);
+    zint index = infoFind(info, key);
+
+    return (index < 0) ? NULL : info->array[index].value;
+}
+
+
+//
 // Exported Definitions
 //
 
 // Documented in header.
-void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
-    assertHasClass(symbolTable, CLS_SymbolTable);
-    SymbolTableInfo *info = getInfo(symbolTable);
+void arrayFromSymtab(zmapping *result, zvalue symtab) {
+    assertHasClass(symtab, CLS_SymbolTable);
+    SymbolTableInfo *info = getInfo(symtab);
     zint arraySize = info->arraySize;
     zmapping *array = info->array;
 
@@ -184,7 +196,7 @@ void arrayFromSymbolTable(zmapping *result, zvalue symbolTable) {
 }
 
 // Documented in header.
-zvalue symbolTableFromArray(zint size, zmapping *mappings) {
+zvalue symtabFromArray(zint size, zmapping *mappings) {
     if (size == 0) {
         return EMPTY_SYMBOL_TABLE;
     }
@@ -200,20 +212,20 @@ zvalue symbolTableFromArray(zint size, zmapping *mappings) {
 }
 
 // Documented in header.
-zvalue symbolTableFromMapping(zmapping mapping) {
-    return symbolTableFromArray(1, &mapping);
+zvalue symtabFromMapping(zmapping mapping) {
+    return symtabFromArray(1, &mapping);
 }
 
 // Documented in header.
-zint symbolTableSize(zvalue symbolTable) {
-    assertHasClass(symbolTable, CLS_SymbolTable);
-    return getInfo(symbolTable)->size;
+zint symtabSize(zvalue symtab) {
+    assertHasClass(symtab, CLS_SymbolTable);
+    return getInfo(symtab)->size;
 }
 
-zvalue symbolTableWithNewMapping(zvalue symbolTable, zmapping mapping) {
-    assertHasClass(symbolTable, CLS_SymbolTable);
+zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping) {
+    assertHasClass(symtab, CLS_SymbolTable);
 
-    zvalue result = allocClone(symbolTable);
+    zvalue result = allocClone(symtab);
     SymbolTableInfo *info = getInfo(result);
     zint expectSize = info->size + 1;
 
@@ -357,7 +369,7 @@ METH_IMPL_rest(SymbolTable, del, keys) {
     }
 
     // Construct a new instance with the remaining elements.
-    return symbolTableFromArray(at, array);
+    return symtabFromArray(at, array);
 }
 
 // Documented in header.
@@ -375,10 +387,7 @@ METH_IMPL_0(SymbolTable, gcMark) {
 
 // Documented in spec.
 METH_IMPL_1(SymbolTable, get, key) {
-    SymbolTableInfo *info = getInfo(ths);
-    zint index = infoFind(info, key);
-
-    return (index < 0) ? NULL : info->array[index].value;
+    return symtabGetUnchecked(ths, key);
 }
 
 // Documented in spec.

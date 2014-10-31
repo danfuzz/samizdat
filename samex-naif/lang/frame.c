@@ -44,7 +44,7 @@ void frameMark(Frame *frame) {
 // Documented in header.
 void frameDef(Frame *frame, zvalue name, zvalue box) {
     zvalue vars = frame->vars;
-    zvalue newVars = symbolTableWithNewMapping(vars, (zmapping) {name, box});
+    zvalue newVars = symtabWithNewMapping(vars, (zmapping) {name, box});
 
     if (newVars == NULL) {
         zvalue nameStr = cm_castFrom(CLS_String, name);

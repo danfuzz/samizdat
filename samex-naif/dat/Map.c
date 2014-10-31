@@ -268,9 +268,9 @@ CMETH_IMPL_1(Map, castFrom, value) {
     }
 
     // We were given either a `Record` or a `SymbolTable`.
-    zint size = symbolTableSize(value);
+    zint size = symtabSize(value);
     zmapping mappings[size];
-    arrayFromSymbolTable(mappings, value);
+    arrayFromSymtab(mappings, value);
     return mapFromArray(size, mappings);
 }
 
@@ -316,7 +316,7 @@ METH_IMPL_1(Map, castToward, cls) {
 
     if (valEq(cls, CLS_SymbolTable)) {
         zint size = info->size;
-        return symbolTableFromArray(info->size, info->elems);
+        return symtabFromArray(info->size, info->elems);
     } else if (classAccepts(cls, ths)) {
         return ths;
     }

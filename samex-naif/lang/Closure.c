@@ -274,7 +274,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction, zarray args) {
         elemAt++;
     }
 
-    return symbolTableFromArray(elemAt, elems);
+    return symtabFromArray(elemAt, elems);
 }
 
 /**
