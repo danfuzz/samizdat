@@ -40,7 +40,7 @@ export class PegRepeat
 
             def maxCheck = ifValue { data::maxSize }
                 { maxSize ->
-                    { ->
+                    {
                         ifIs { eq(results.get_size(), maxSize) }
                             { yield /out }
                     }
