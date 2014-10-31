@@ -31,7 +31,7 @@ void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
         end++;
     }
 
-    if (end < start) {
+    if ((end < 0) || (start > size) || (end < start)) {
         *startPtr = -1;
         *endPtr = -1;
         return;
