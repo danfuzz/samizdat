@@ -17,16 +17,16 @@ import core.Generator :: FilterGenerator;
 
 ## Documented in spec.
 export fn apply(rule, input) {
-    def generator = ifIs { String.accepts(input) }
+    def tokens = ifIs { String.accepts(input) }
         {
             ## This converts generated characters into tokens with the
             ## characters as the record name.
-            FilterGenerator.new(input) { ch -> @(cast(Symbol, ch)){} }
+            input.collect { ch -> @(cast(Symbol, ch)){} }
         }
         { input };
 
     def result;
-    return? ifIs { rule.parse(result?, generator) }
+    return? ifIs { rule.parse(result?, tokens) }
         { result }
 };
 

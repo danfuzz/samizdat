@@ -59,8 +59,9 @@ static zvalue allocString(zint size) {
         datAllocValue(CLS_String, sizeof(StringInfo) + size * sizeof(zchar));
     StringInfo *info = getInfo(result);
 
-    info->s.size = size;
-    info->s.chars = info->content;
+    info->s = (zstring) {size, info->content};
+    info->contentString = NULL;
+
     return result;
 }
 
@@ -79,8 +80,7 @@ static zvalue makeIndirectString(zvalue string, zint offset, zint size) {
     zvalue result = datAllocValue(CLS_String, sizeof(StringInfo));
     StringInfo *resultInfo = getInfo(result);
 
-    resultInfo->s.size = size;
-    resultInfo->s.chars = &info->s.chars[offset];
+    resultInfo->s = (zstring) {size, &info->s.chars[offset]};
     resultInfo->contentString = string;
 
     return result;
@@ -381,7 +381,7 @@ METH_IMPL_0_1(String, collect, function) {
     StringInfo *info = getInfo(ths);
     const zchar *chars = info->s.chars;
     zint size = info->s.size;
-    zvalue result[size];
+    zvalue *elems = utilAlloc(size * sizeof(zvalue));
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
@@ -389,12 +389,14 @@ METH_IMPL_0_1(String, collect, function) {
         zvalue one = (function == NULL) ? elem : FUN_CALL(function, elem);
 
         if (one != NULL) {
-            result[at] = one;
+            elems[at] = one;
             at++;
         }
     }
 
-    return listFromZarray((zarray) {at, result});
+    zvalue result = listFromZarray((zarray) {at, elems});
+    utilFree(elems);
+    return result;
 }
 
 // Documented in spec.

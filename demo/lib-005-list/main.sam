@@ -107,6 +107,22 @@ expectEq("repeat 5", [1, 2, 3],            [1, 2, 3].repeat(1));
 expectEq("repeat 6", [1, 2, 3, 1, 2, 3],   [1, 2, 3].repeat(2));
 expectEq("repeat 7", ["x", "x", "x", "x"], ["x"].repeat(4));
 
-expectEq("sliceInclusive", [], [1].sliceInclusive(1));
+expectVoid("sliceExclusive 1",       { [].sliceExclusive(0) });
+expectVoid("sliceExclusive 2",       { [].sliceExclusive(1) });
+expectEq("sliceExclusive 3", [],     [].sliceExclusive(0, 2));
+expectEq("sliceExclusive 4", [],     [1].sliceExclusive(0));
+expectEq("sliceExclusive 5", [],     [].sliceExclusive(0, 0));
+expectEq("sliceExclusive 6", [1],    [1].sliceExclusive(0, 1));
+expectEq("sliceExclusive 7", [2, 3], [1, 2, 3, 4].sliceExclusive(1, 3));
+expectEq("sliceExclusive 8", [3],    [1, 2, 3, 4].sliceExclusive(2));
+
+expectEq("sliceInclusive 1", [],     [].sliceInclusive(0));
+expectVoid("sliceInclusive 2",       { [].sliceInclusive(1) });
+expectEq("sliceInclusive 3", [],     [].sliceInclusive(0, 2));
+expectEq("sliceInclusive 4", [1],    [1].sliceInclusive(0));
+expectEq("sliceInclusive 5", [1],    [1].sliceInclusive(0, 0));
+expectEq("sliceInclusive 6", [1],    [1].sliceInclusive(0, 1));
+expectEq("sliceInclusive 7", [2, 3], [1, 2, 3, 4].sliceInclusive(1, 2));
+expectEq("sliceInclusive 8", [3, 4], [1, 2, 3, 4].sliceInclusive(2));
 
 note("All good.");
