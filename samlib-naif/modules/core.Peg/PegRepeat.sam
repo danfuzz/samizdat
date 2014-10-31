@@ -24,52 +24,56 @@ export class PegRepeat
     ## Documented in spec.
     class.new(rule, optMinSize?, optMaxSize?) {
         def minSize = ifValueOr { optMinSize* } { 0 };
-        def maxMap = ifValue { optMaxSize* } { sz -> @{maxSize: sz} } { @{} };
+        def maxMap = ifValue { optMaxSize* }
+            { sz ->
+                ifIs { lt(sz, minSize) }
+                    { die("Invalid repeat spec: maxSize < minSize") };
+                @{maxSize: sz}
+            }
+            { @{} };
         return this.(NEW)(@{maxMap*, minSize, rule})
     };
 
     ## Documented in spec.
-    .parse(box, input, items*) {
+    .parse(box, input, items*) { ->
         def data = this.(ACCESS)();
+        def rule = data::rule;
         var remainingInput = input;
         var results = [];  ## Values that have been parsed by the inner rule.
+        var count = 0;
+        var result;
 
-        fn doLoop() { /out ->
-            def rule = data::rule;
-            var result;
-
-            def maxCheck = ifValue { data::maxSize }
-                { maxSize ->
-                    { ->
-                        ifIs { eq(results.get_size(), maxSize) }
-                            { yield /out }
-                    }
+        def maxCheck = ifValue { data::maxSize }
+            { maxSize ->
+                {
+                    ifIs { count.totalEq(maxSize) }
+                        {
+                            ## We parsed the max repeat size. Return it.
+                            box* := results;
+                            return remainingInput
+                        }
                 }
-                { {->} };
-
-            loop {
-                ifValue { rule.parse(result?, remainingInput, items*) }
-                    { newInput ->
-                        ## Successfully parsed the inner rule.
-                        remainingInput := newInput;
-                        results := [results*, result];
-                        maxCheck()
-                    }
-                    {
-                        ## Failed to parse the inner rule.
-                        yield /out
-                    }
             }
-        };
+            { {->} };
 
-        doLoop();
-
-        ## Check for minimum match count. Store result and return success if
-        ## appropriate.
-        return? ifIs { ge(results.get_size(), data::minSize) }
-            {
-                box* := results;
-                remainingInput
-            }
+        loop {
+            ifValue { rule.parse(result?, remainingInput, items*) }
+                { newInput ->
+                    ## Successfully parsed the inner rule.
+                    remainingInput := newInput;
+                    results := [results*, result];
+                    count := count.add(1);
+                    maxCheck()
+                }
+                {
+                    ## Failed to parse the inner rule. Check for minimum match
+                    ## count. Store result and return success if appropriate.
+                    return? ifIs { totalGe(count, data::minSize) }
+                        {
+                            box* := results;
+                            remainingInput
+                        }
+                }
+        }
     };
 };
