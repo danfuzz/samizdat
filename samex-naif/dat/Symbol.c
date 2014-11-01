@@ -262,11 +262,13 @@ METH_IMPL_rest(Symbol, cat, args) {
 
     zint thsSize = getInfo(ths)->s.size;
     zint size = thsSize;
+    zstring strings[args.size];
 
     for (zint i = 0; i < args.size; i++) {
         zvalue one = args.elems[i];
         assertHasClass(one, CLS_Symbol);
-        size += getInfo(one)->s.size;
+        strings[i] = getInfo(one)->s;
+        size += strings[i].size;
     }
 
     if (size > DAT_MAX_SYMBOL_SIZE) {
@@ -277,9 +279,8 @@ METH_IMPL_rest(Symbol, cat, args) {
     zint at = thsSize;
     arrayFromZstring(chars, getInfo(ths)->s);
     for (zint i = 0; i < args.size; i++) {
-        zstring one = zstringFromSymbol(args.elems[i]);
-        arrayFromZstring(&chars[at], one);
-        at += one.size;
+        arrayFromZstring(&chars[at], strings[i]);
+        at += strings[i].size;
     }
 
     return symbolFromZstring((zstring) {size, chars});
