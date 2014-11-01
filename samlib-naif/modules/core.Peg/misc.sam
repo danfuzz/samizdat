@@ -37,5 +37,5 @@ export fn stringFromTokenList(tokens) {
 
 ## Documented in spec.
 export fn symbolFromTokenList(tokens) {
-    return cast(Symbol, stringFromTokenList(tokens))
+    return @"".cat((tokens.collect { t -> t.get_name() })*)
 };
