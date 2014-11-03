@@ -417,16 +417,17 @@ export fn makeInfoTable(node) {
         ifIs { s.hasName(@importModuleSelection) }
             {
                 def names = ifValueOr { s::select }
-                    { die("Cannot call `makeInfoTable` on unresolved import.") };
+                    {
+                        die("Cannot call `makeInfoTable` on ",
+                            "unresolved import.")
+                    };
                 addToImports(s::source, names)
             };
         ifIs { s.hasName(@importResource) }
             { addToResources(s::source, s::format) };
     };
 
-    ## The filter is just being used as a for-each loop. The direct
-    ## result is ignored.
-    filterAll(statements) { s ->
+    filterPump(statements) { s ->
         ifIs { s.hasName(@exportSelection) }
             { addToExports(s::select) };
         ifIs { s.hasName(@export) }

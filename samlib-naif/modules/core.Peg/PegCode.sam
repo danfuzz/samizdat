@@ -27,7 +27,7 @@ export class PegCode
     };
 
     ## Documented in spec.
-    .parse(box, input, items*) {
+    .parse(box, input, items) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
             { result ->

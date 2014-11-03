@@ -21,7 +21,7 @@ export class PegEof
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    .parse(box, input, .*) {
+    .parse(box, input, .) {
         return? ifNot { input.nextValue(nullBox) }
             {
                 box* := null;

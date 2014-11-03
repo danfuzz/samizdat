@@ -24,10 +24,8 @@ When building tree parsers, the input elements are expected to be
 tokens per se, that is, records whose name tag is taken to indicate a
 token type.
 
-The output of the functions named `$Peg::make*` are all parsing rules. These
-are all objects with a class that binds the `parse` method. A `parse` method
-accepts at least two arguments, and will also accept additional arguments
-depending on context:
+Almost all of the classes in this module are for parser rules. A parser rule
+is an object that binds the `.parse()` method, taking three arguments:
 
 * `box` &mdash; The first argument is a `box` into which a successful
   result of parsing is to be `store`d.
@@ -35,13 +33,13 @@ depending on context:
 * `input` &mdash; The second argument is a generator of input tokens to
   be parsed (usually *partially* parsed).
 
-* `items*` &mdash; Any further arguments are taken to be the context of
-  items that have been parsed already, in order, in the context of a
-  "sequence" being parsed. These can be used, in particular, in the
+* `items` &mdash; A sequence (typically a list) consisting of the trailing
+  context of items that have been parsed already, in order, in the context of
+  a "sequence" being parsed. These can be used, in particular, in the
   implementation of "code" rules in order to produce a filtered sequence
   result.
 
-A parsing function, upon success when called, must do two things: It must
+A `.parse()` method, upon success when called, must do two things: It must
 call `store` on its yield `box` to indicate the non-void result of parsing.
 Then, it must return a replacement `input` for use as the input to subsequent
 parsers, that reflects the removal of whatever elements were consumed
@@ -52,8 +50,8 @@ yields and returns void when called).
 A parsing function, upon failure when called, must do one thing, namely
 return void. It must *not*, upon failure, call `store` on its given `box`.
 
-In the following descriptions, code shorthands use the Samizdat parsing
-syntax for explanatory purposes.
+In the descriptions of the various parsers in this module, code shorthands
+use the Samizdat parsing syntax (`{: ... :}`) for explanatory purposes.
 
 
 <br><br>

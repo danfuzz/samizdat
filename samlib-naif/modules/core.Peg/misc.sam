@@ -26,7 +26,7 @@ export fn apply(rule, input) {
         { input };
 
     def result;
-    return? ifIs { rule.parse(result?, tokens) }
+    return? ifIs { rule.parse(result?, tokens, []) }
         { result }
 };
 
