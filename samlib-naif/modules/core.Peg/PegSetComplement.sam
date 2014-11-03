@@ -46,7 +46,7 @@ export class PegSetComplement
     };
 
     ## Documented in spec.
-    .parse(box, input, items*) {
+    .parse(box, input, .*) {
         def data = this.(ACCESS)();
         def result;
 
