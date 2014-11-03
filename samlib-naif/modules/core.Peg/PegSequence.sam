@@ -44,7 +44,8 @@ export class PegSequence
     class.newString(string) {
         def resultType = cast(Symbol, string);
 
-        ## Trivial case: Empty string. Return an always-successful yield of `@""`.
+        ## Trivial case: Empty string. Return an always-successful yield of
+        ## `@""`.
         ifIs { eq(string, "") }
             { return PegResult.new(@""{}) };
 
