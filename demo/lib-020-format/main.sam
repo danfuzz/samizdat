@@ -89,4 +89,17 @@ ifValueOr
     { eq(funcStr, "@<Closure xyz>") }
     { die("Unexpected function string: ", funcStr) };
 
+expectEq("usual 1",  "",      $Format::usual(""));
+expectEq("usual 2",  "",      $Format::usual([]));
+expectEq("usual 3",  "",      $Format::usual([""]));
+expectEq("usual 4",  "",      $Format::usual([[[[[]]]]]));
+expectEq("usual 5",  "blort", $Format::usual("blort"));
+expectEq("usual 6",  "blort", $Format::usual(["blort"]));
+expectEq("usual 7",  "blort", $Format::usual([["blort"]]));
+expectEq("usual 8",  "blort", $Format::usual(["b", "lor", "t"]));
+expectEq("usual 9",  "blort", $Format::usual(["b", ["lor"], "t"]));
+expectEq("usual 10", "blort", $Format::usual(["b", ["l", "or"], ["t"]]));
+expectEq("usual 11", "blort", $Format::usual([["b"], ["l", ["or"]], ["t"]]));
+expectEq("usual 12", "1{}@x", $Format::usual([[1], [[{}]], [[[@x]]]]));
+
 note("All good.");
