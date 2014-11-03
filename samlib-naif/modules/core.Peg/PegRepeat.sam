@@ -35,7 +35,7 @@ export class PegRepeat
     };
 
     ## Documented in spec.
-    .parse(box, input, items*) { ->
+    .parse(box, input, items) { ->
         def data = this.(ACCESS)();
         def rule = data::rule;
         var remainingInput = input;
@@ -57,7 +57,7 @@ export class PegRepeat
             { {->} };
 
         loop {
-            ifValue { rule.parse(result?, remainingInput, items*) }
+            ifValue { rule.parse(result?, remainingInput, items) }
                 { newInput ->
                     ## Successfully parsed the inner rule.
                     remainingInput := newInput;

@@ -41,9 +41,9 @@ export class PegLookaheadFailure
     };
 
     ## Documented in spec.
-    .parse(box, input, items*) {
+    .parse(box, input, items) {
         def data = this.(ACCESS)();
-        return? ifNot { data::rule.parse(nullBox, input, items*) }
+        return? ifNot { data::rule.parse(nullBox, input, items) }
             {
                 box* := null;
                 input

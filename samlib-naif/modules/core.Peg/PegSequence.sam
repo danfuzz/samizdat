@@ -63,7 +63,7 @@ export class PegSequence
     };
 
     ## Documented in spec.
-    .parse(box, input, items*) {
+    .parse(box, input, items) {
         ## Each rule after the first gets passed as additional arguments
         ## the matched results of all the previous rules, in order.
 
@@ -74,7 +74,7 @@ export class PegSequence
 
         ## This is akin to `for (rule in data::rules) { ... }`.
         filterPump(data::rules) { rule ->
-            ifValue { rule.parse(result?, remainingInput, results*) }
+            ifValue { rule.parse(result?, remainingInput, results) }
                 { newInput ->
                     remainingInput := newInput;
                     results := [results*, result]

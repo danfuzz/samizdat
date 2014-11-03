@@ -40,10 +40,10 @@ export class PegChoice
     };
 
     ## Documented in spec.
-    .parse(box, input, items*) {
+    .parse(box, input, items) {
         def data = this.(ACCESS)();
         filterPump(data::rules) { rule ->
-            ifValue { rule.parse(box, input, items*) }
+            ifValue { rule.parse(box, input, items) }
                 { newInput -> return newInput }
         };
 
