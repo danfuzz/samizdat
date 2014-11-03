@@ -5,8 +5,9 @@ core.Peg :: PegMain
 -------------------
 
 An instance of this class is a rule which provides a fresh (empty)
-parsed item scope for another rule. The direct evaluation result of a parser
-expression (`{: ... :}`) is always an instance of this class.
+parsed item context for another rule. That is, the sub-rule, when called,
+always gets `[]` for the `items` argument. The direct evaluation result of a
+parser expression (`{: ... :}`) is always an instance of this class.
 
 
 <br><br>
