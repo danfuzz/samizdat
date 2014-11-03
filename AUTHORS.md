@@ -9,6 +9,10 @@ Samizdat Authors
 Acknowledgements
 ----------------
 
+This work would not be possible without the direct and generous support of
+[Nextbit Systems](http://nextbit.com/). Many thanks to founders Mike Chan and
+Tom Moss for seeing the idea through to a concrete implementation.
+
 Thanks to the following folks for advice, suggestions, pointed questions,
 support, encouragement, and general kibitzing:
 
@@ -18,9 +22,7 @@ support, encouragement, and general kibitzing:
 * Iliyan Malchev
 * Jaikumar Ganesh
 * Jeremy Bornstein
-* Mike Chan
 * Mike Fleming
 * R&ouml;bey Pointer
 * Steve Jenson
-* Tom Moss
 * Tyler Neylon
