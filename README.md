@@ -4,8 +4,10 @@ NOTICE!
 This project is an incomplete work-in-progress.
 
 * Much of the documentation is more aspirational than factual.
-* There are tons of rough edges and *many* things missing from the
-  implementation.
+* There are tons of rough edges and *many* things missing from both the
+  design and implementation.
+* The code is aimed *way* more at ease-of-understanding and
+  ease-of-modification than efficiency.
 * Nearly everything is subject to change.
 
 - - - - - - - - - -
