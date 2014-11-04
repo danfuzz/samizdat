@@ -7,7 +7,6 @@
 import core.Format;
 
 import ./constructors1 :: makeExport;
-import ./getters :: *;
 
 
 ##

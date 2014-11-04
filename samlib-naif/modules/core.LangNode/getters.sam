@@ -6,10 +6,6 @@
 
 import core.Sequence :: reverseNth;
 
-import ./misc ::
-    formalsMaxArgs,
-    formalsMinArgs;
-
 
 ##
 ## Private Definitions
