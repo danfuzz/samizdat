@@ -4,9 +4,8 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll;
-
 import ./literals :: SYMS, makeLiteral;
+
 
 ##
 ## Exported Definitions
@@ -34,7 +33,7 @@ export fn makeCall(target, name, values*) {
 
 ## Documented in spec.
 export fn makeCallLiterals(target, name, values*) {
-    def literals = values.collect { one -> makeLiteral(one) };
+    def literals = values.collect(makeLiteral);
     return makeCall(target, name, literals*)
 };
 

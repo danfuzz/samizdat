@@ -1299,7 +1299,7 @@ def parInterpolatedString = {:
         ## Convert each of the payload items into the proper form.
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
-        def elems = filterAll(token::value) { elem ->
+        def elems = token::value.collect { elem ->
             ifIs { String.accepts(elem) }
                 { makeLiteral(elem) }
                 {
@@ -1366,8 +1366,8 @@ def parGeneratorList = {:
 
     {
         def gens = [one, rest*];
-        def formals = filterAll(gens) { gen -> gen::formal };
-        def inits = filterAll(gens) { gen -> gen::init };
+        def formals = gens.collect { gen -> gen::formal };
+        def inits = gens.collect { gen -> gen::init };
 
         {formals, inits}
     }
@@ -1802,7 +1802,7 @@ def parLogicAndExpression = {:
         {
             ## Make a version of the test clauses, as thunks with formals
             ## lists.
-            def formals = filterAll(most) { clause -> clause::formal };
+            def formals = most.collect { clause -> clause::formal };
             def testThunks =
                 filterAll(most, OpenRange.new(0))
                     { clause, index ->
@@ -1910,7 +1910,7 @@ def parMultiTest = {:
         {
             ## Make a version of the test clauses, as thunks with formals
             ## lists.
-            def formals = filterAll(clauses) { clause -> clause::formal };
+            def formals = clauses.collect { clause -> clause::formal };
             def testThunks =
                 filterAll(clauses, OpenRange.new(0))
                     { clause, index ->
@@ -2119,7 +2119,7 @@ def parSwitchExpression = {:
             return makeFullClosure(fullCode)
         };
 
-        def optDefault = filterAll(cases) { case ->
+        def optDefault = cases.collect { case ->
             ifIs { case::default } { finishCode(case) }
         };
 
@@ -2130,7 +2130,7 @@ def parSwitchExpression = {:
         ## preserve the left-to-right evaluation order of the apparent text,
         ## even though the key/case override semantics is the opposite of
         ## what `{}.cat(map*)` defines.
-        def caseClauses = filterAll(cases) { case ->
+        def caseClauses = cases.collect { case ->
             def keys = case::keys;
             def code = finishCode(case);
             ifIs { List.accepts(keys) }

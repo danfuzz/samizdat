@@ -26,6 +26,13 @@ intended that the language be an attractive target for use in
 text processing, free-form data structure manipulation, and general
 higher-level systems programming.
 
+As a fundamental part of its philosophy, Samizdat eschews hidden state and
+randomness, aiming for it to be the case that a given piece of code will run
+completely identically on multiple different runs. It also aims for the use
+of immutable data as an attractive first recourse. This all makes it a
+"functional" language of sorts, in the "Scheme camp" moreso than the
+"Haskell camp."
+
 Find lots of documentation in [the doc/ directory](doc), including
 a handful of [shout-outs](doc/notes/shout-outs.md) that may help understand
 where the system is coming from (both literally and figuratively).

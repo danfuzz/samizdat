@@ -333,7 +333,7 @@ export fn makeFunCallGeneral(function, values*) {
 
 ## Documented in spec.
 export fn makeFunCallThunks(function, values*) {
-    def thunks = filterAll(values) { one -> makeThunk(one) };
+    def thunks = values.collect(makeThunk);
     return makeFunCall(function, thunks*)
 };
 
@@ -486,7 +486,7 @@ export fn withDynamicImports(node) {
             return node
         };
 
-    def converted = filterAll(rawStatements) { s /out ->
+    def converted = rawStatements.collect { s /out ->
         ifValueOr
             { s.hasName(@importModule) }
             { s.hasName(@importModuleSelection) }
@@ -518,7 +518,7 @@ export fn withModuleDefs(node) {
 
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
-    def statements = filterAll(rawStatements) { s /out ->
+    def statements = rawStatements.collect { s /out ->
         ifIs { s.hasName(@exportSelection) }
             { yield /out };
 
@@ -529,7 +529,7 @@ export fn withModuleDefs(node) {
 
     ## This is a list of mapping argument pairs, to be combined with
     ## `SymbolTable.new()` to become the exports table.
-    def exportValues = filterAll(info::exports) { mapping ->
+    def exportValues = info::exports.collect { mapping ->
         def name = mapping.get_key();
         [makeLiteral(name), makeVarFetch(name)]
     };
@@ -561,7 +561,7 @@ export fn withoutTops(node) {
     def rawStatements = node::statements;
 
     ## This is a collation of all the forward declarations.
-    def tops = filterAll(rawStatements) { s ->
+    def tops = rawStatements.collect { s ->
         def defNode = ifIs { s.hasName(@export) }
             { s::value }
             { s };
@@ -571,7 +571,7 @@ export fn withoutTops(node) {
     };
 
     ## These are the one-for-one replacements for the original `statements`.
-    def mains = filterAll(rawStatements) { s ->
+    def mains = rawStatements.collect { s ->
         def defNode = ifIs { s.hasName(@export) }
             { s::value }
             { s };
@@ -582,7 +582,7 @@ export fn withoutTops(node) {
     };
 
     ## This lists all the exported variables that were transformed above.
-    def exports = filterAll(rawStatements) { s /out ->
+    def exports = rawStatements.collect { s /out ->
         ifNot { s.hasName(@export) }
             { yield /out };
 

@@ -5,10 +5,8 @@
 #= language core.Lang0
 
 import core.Format;
-import core.Generator :: filterAll;
 
 import ./constructors1 :: makeExport;
-import ./getters :: *;
 
 
 ##
@@ -70,7 +68,7 @@ export fn resolveImport(node, resolveFn) {
                         ## Explicit selection, so no need to return a modified
                         ## result. Just validate that all selected names are
                         ## available for import.
-                        filterAll(select) { one ->
+                        select.collect { one ->
                             ifNot { exports.get(one) }
                                 {
                                     die("Could not resolve import: ",
@@ -97,7 +95,7 @@ export fn resolveImport(node, resolveFn) {
 
 ## Documented in spec.
 export fn withResolvedImports(node, resolveFn) {
-    def converted = filterAll(node::statements) { s /out ->
+    def converted = node::statements.collect { s /out ->
         var exported = false;
         var defNode = s;
         ifIs { s.hasName(@export) }

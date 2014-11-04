@@ -24,7 +24,7 @@ import core.Range :: OpenRange;
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
-    return filterAll(nodes) { node -> convertPexIn(node) }
+    return nodes.collect { node -> convertPexIn(node) }
 };
 
 ## Converts a pex to a method call on its converted inner pex.
@@ -53,7 +53,7 @@ fn convertPex(node, formals) {
             },
 
             @choice: { . ->
-                def convertedPexes = filterAll(node::pexes)
+                def convertedPexes = node::pexes.collect
                     { pex -> convertPex(pex, formals) };
                 makeCall(REFS::Peg_PegChoice, SYMS::new, convertedPexes*)
             },
@@ -104,7 +104,7 @@ fn convertPex(node, formals) {
 
             @sequence: { . ->
                 ## Extract the formals out of any `varDef` nodes.
-                def newFormals = filterAll(node::pexes) { pex ->
+                def newFormals = node::pexes.collect { pex ->
                     ifIs { pex.hasName(@varDef) }
                         { {name: pex::name} }
                         { {} }

@@ -4,8 +4,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll;
-
 
 ##
 ## Private Definitions
@@ -95,14 +93,10 @@ export fn makeSymbolLiteral(name) {
 
 ## Documented in spec.
 export def LITS = @{}.cat(
-    (filterAll(VALUES) { one ->
-        @{one.get_key(): makeLiteral(one.get_value())}
-    })*
+    (VALUES.collect { one -> @{one.get_key(): makeLiteral(one.get_value())} })*
 );
 
 ## Documented in spec.
 export def SYMS = @{}.cat(
-    (filterAll(SYMBOLS) { name ->
-        @{(name): makeLiteral(name)}
-    })*
+    (SYMBOLS.collect { name -> @{(name): makeLiteral(name)} })*
 );

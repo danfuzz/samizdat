@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: FilterGenerator, filterAll;
-
 import ./identifier :: isIdentifier;
 import ./int :: intWithBase;
 import ./string :: stringChar;
@@ -99,7 +97,7 @@ fn Int_source(value, adorn) {
 
 ## Stringifies a list.
 fn List_source(value, adorn) {
-    def listElems = filterAll(value)
+    def listElems = value.collect
         { elem -> ", ".cat(sourceGeneral(elem, true)) };
 
     return adornIf(adorn, "[", collectionBody(listElems), "]")
@@ -107,7 +105,7 @@ fn List_source(value, adorn) {
 
 ## Stringifies a map.
 fn Map_source(value, adorn) {
-    def mapElems = filterAll(value)
+    def mapElems = value.collect
         { mapping ->
             def k = keyString(mapping.get_key());
             def v = sourceGeneral(mapping.get_value(), true);
