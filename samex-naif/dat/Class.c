@@ -329,6 +329,7 @@ METH_IMPL_0(Class, debugSymbol) {
 METH_IMPL_0(Class, gcMark) {
     ClassInfo *info = getInfo(ths);
 
+    datMark(info->parent);
     datMark(info->name);
 
     for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
