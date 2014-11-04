@@ -106,7 +106,7 @@ static void sanityCheck(bool force) {
 }
 
 /**
- * Links the given value into the given list, removing it from its
+ * Links the given value onto the end of the given list, removing it from its
  * previous list (if any).
  */
 static void enlist(DatHeader *head, zvalue value) {
@@ -117,12 +117,12 @@ static void enlist(DatHeader *head, zvalue value) {
         prev->next = next;
     }
 
-    zvalue headNext = head->next;
+    zvalue headPrev = head->prev;
 
-    value->prev = head;
-    value->next = headNext;
-    headNext->prev = value;
-    head->next = value;
+    value->prev = headPrev;
+    value->next = head;
+    headPrev->next = value;
+    head->prev = value;
 }
 
 /**
