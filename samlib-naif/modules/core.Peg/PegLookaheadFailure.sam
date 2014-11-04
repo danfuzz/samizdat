@@ -41,12 +41,12 @@ export class PegLookaheadFailure
     };
 
     ## Documented in spec.
-    .parse(box, input, items) {
+    .parse(box, state, items) {
         def data = this.(ACCESS)();
-        return? ifNot { input.applyRule(data::rule, nullBox, items) }
+        return? ifNot { state.applyRule(data::rule, nullBox, items) }
             {
                 box* := null;
-                input
+                state
             }
     };
 };

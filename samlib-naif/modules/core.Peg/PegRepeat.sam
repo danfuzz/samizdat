@@ -35,10 +35,10 @@ export class PegRepeat
     };
 
     ## Documented in spec.
-    .parse(box, input, items) { ->
+    .parse(box, state, items) { ->
         def data = this.(ACCESS)();
         def rule = data::rule;
-        var remainingInput = input;
+        var remainingState = state;
         var results = [];  ## Values that have been parsed by the inner rule.
         var count = 0;
         var result;
@@ -50,17 +50,17 @@ export class PegRepeat
                         {
                             ## We parsed the max repeat size. Return it.
                             box* := results;
-                            return remainingInput
+                            return remainingState
                         }
                 }
             }
             { {->} };
 
         loop {
-            ifValue { remainingInput.applyRule(rule, result?, items) }
-                { newInput ->
+            ifValue { remainingState.applyRule(rule, result?, items) }
+                { newState ->
                     ## Successfully parsed the inner rule.
-                    remainingInput := newInput;
+                    remainingState := newState;
                     results := [results*, result];
                     count := count.add(1);
                     maxCheck()
@@ -71,7 +71,7 @@ export class PegRepeat
                     return? ifIs { totalGe(count, data::minSize) }
                         {
                             box* := results;
-                            remainingInput
+                            remainingState
                         }
                 }
         }

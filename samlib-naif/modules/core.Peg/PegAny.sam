@@ -21,8 +21,8 @@ export class PegAny
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    .parse(box, input, .) {
-        return? input.nextValue(box)
+    .parse(box, state, .) {
+        return? state.nextValue(box)
     };
 };
 
