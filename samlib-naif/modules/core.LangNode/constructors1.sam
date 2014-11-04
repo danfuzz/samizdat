@@ -4,8 +4,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll;
-
 import ./literals :: SYMS, makeLiteral;
 
 ##

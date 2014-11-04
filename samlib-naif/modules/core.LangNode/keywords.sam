@@ -4,8 +4,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll;
-
 import ./literals :: makeLiteral;
 
 
@@ -31,7 +29,5 @@ def KEYWORD_NAMES = [
 
 ## Documented in spec.
 export def KEYWORDS = @{}.cat(
-    (filterAll(KEYWORD_NAMES) { name ->
-        @{(name): @(name){}}
-    })*
+    (KEYWORD_NAMES.collect { name -> @{(name): @(name){}} })*
 );
