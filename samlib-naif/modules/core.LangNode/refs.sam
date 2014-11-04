@@ -81,8 +81,8 @@ export def REFS = {}.cat(
     (MOD_NAMES.collect { modName ->
         def mod = modName::mod;
         def name = modName::name;
-        def modVar = makeVarFetch(cast(Symbol, "$".cat(mod)));
-        def refKey = cast(Symbol, "".cat(mod, "_", name));
+        def modVar = makeVarFetch(@"$".cat(mod));
+        def refKey = mod.cat(@"_", name);
         {(refKey): makeGet(modVar, makeLiteral(name))}
     })*
 );
