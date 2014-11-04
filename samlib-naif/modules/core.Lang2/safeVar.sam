@@ -5,7 +5,7 @@
 #= language core.Lang1
 
 import core.Format;
-import core.Generator :: filterPump, filterAll;
+import core.Generator :: filterPump;
 import core.LangNode :: *;
 
 
@@ -49,7 +49,7 @@ fn maxOf(values*) {
 fn safeIndexForNames(baseStr, names*) {
     def baseSz = baseStr.get_size();
 
-    def indexes = filterAll(names) { name /next ->
+    def indexes = names.collect { name /next ->
         def nameStr = cast(String, name);
         ifIs { perLt(nameStr.get_size(), baseSz) }
             {
@@ -68,8 +68,7 @@ fn safeIndexForNames(baseStr, names*) {
 
 ## Maps / reduces `safeIndex` over the given nodes.
 fn safeIndexForNodes(baseStr, nodes*) {
-    def indexes = filterAll(nodes)
-        { node -> safeIndex(node, baseStr) };
+    def indexes = nodes.collect { node -> safeIndex(node, baseStr) };
     return maxOf(indexes*)
 };
 
