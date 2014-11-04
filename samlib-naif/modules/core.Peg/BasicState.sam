@@ -11,7 +11,7 @@
 ##
 ## Class Definition
 ##
-## Payload: {tokens: generator}
+## Payload: {tokens: generator, next: box(@{token, state})}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -30,7 +30,8 @@ export class BasicState
             }
             { input };
 
-        return this.(NEW)(@{tokens})
+        def next;
+        return this.(NEW)(@{tokens, next: next?})
     };
 
     ## Documented in spec.
@@ -53,7 +54,23 @@ export class BasicState
     ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
-        return? ifValue { data::tokens.nextValue(box) }
-            { tokens -> BasicState.(NEW)(@{tokens}) }
+        return? ifValue { data::next* }
+            { next ->
+                ## The next value was previously computed.
+                box.store(next::token);
+                next::state
+            }
+            {
+                ## First time that this method is being called on this object
+                ## (typical), or any time this method is being called when
+                ## `tokens` is voided.
+                ifValue { data::tokens.nextValue(box) }
+                    { tokens ->
+                        def next;
+                        def state = BasicState.(NEW)(@{tokens, next: next?});
+                        data::next* := @{token: box*, state};
+                        state
+                    }
+            }
     };
 };
