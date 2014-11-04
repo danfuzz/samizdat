@@ -86,7 +86,6 @@ export fn formalsMinArgs(formals) {
 };
 
 ## Documented in spec.
-## Converts a list of digit character tokens into an int, given the base.
 export fn intFromDigits(base, digits) {
     var result = 0;
 
