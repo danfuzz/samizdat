@@ -57,7 +57,7 @@ export class PegRepeat
             { {->} };
 
         loop {
-            ifValue { rule.parse(result?, remainingInput, items) }
+            ifValue { remainingInput.applyRule(rule, result?, items) }
                 { newInput ->
                     ## Successfully parsed the inner rule.
                     remainingInput := newInput;

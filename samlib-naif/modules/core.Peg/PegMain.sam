@@ -43,6 +43,6 @@ export class PegMain
     .parse(box, input, .) {
         ## The point of this implementation is to drop the `items` context.
         def data = this.(ACCESS)();
-        return? data::rule.parse(box, input, [])
+        return? input.applyRule(data::rule, box, [])
     };
 };

@@ -30,6 +30,6 @@ export class PegThunk
     .parse(box, input, items) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
-            { thunkResult -> thunkResult.parse(box, input, items) }
+            { thunkResult -> input.applyRule(thunkResult, box, items) }
     };
 };

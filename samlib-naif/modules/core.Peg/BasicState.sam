@@ -1,0 +1,59 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `BasicInput` class
+##
+
+#= language core.Lang0
+
+##
+## Class Definition
+##
+## Payload: {tokens: generator}
+
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
+
+export class BasicState
+        access: ACCESS,
+        new: NEW {
+    ## Documented in spec.
+    class.new(input) {
+        def tokens = ifIs { String.accepts(input) }
+            {
+                ## This converts generated characters into tokens with the
+                ## characters as the record name.
+                input.collect { ch -> @(cast(Symbol, ch)){} }
+            }
+            { input };
+
+        return this.(NEW)(@{tokens})
+    };
+
+    ## Documented in spec.
+    .applyRule(rule, box, items) {
+        return? rule.parse(box, this, items)
+    };
+
+    ## Documented in spec.
+    .collect(optFilterFunction?) {
+        def data = this.(ACCESS)();
+        return data::tokens.collect(optFilterFunction*)
+    };
+
+    ## Documented in spec.
+    .fetch() {
+        def data = this.(ACCESS)();
+        return data::tokens.fetch()
+    };
+
+    ## Documented in spec.
+    .nextValue(box) {
+        def data = this.(ACCESS)();
+        return? ifValue { data::tokens.nextValue(box) }
+            { tokens -> BasicState.(NEW)(@{tokens}) }
+    };
+};

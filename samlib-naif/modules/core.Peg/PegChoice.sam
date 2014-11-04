@@ -43,7 +43,7 @@ export class PegChoice
     .parse(box, input, items) {
         def data = this.(ACCESS)();
         filterPump(data::rules) { rule ->
-            ifValue { rule.parse(box, input, items) }
+            ifValue { input.applyRule(rule, box, items) }
                 { newInput -> return newInput }
         };
 

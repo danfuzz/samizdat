@@ -8,6 +8,8 @@
 
 #= language core.Lang0
 
+import ./BasicState :: *;
+
 
 ##
 ## Exported Definitions
@@ -15,16 +17,10 @@
 
 ## Documented in spec.
 export fn apply(rule, input) {
-    def tokens = ifIs { String.accepts(input) }
-        {
-            ## This converts generated characters into tokens with the
-            ## characters as the record name.
-            input.collect { ch -> @(cast(Symbol, ch)){} }
-        }
-        { input };
-
+    def in = BasicState.new(input);
     def result;
-    return? ifIs { rule.parse(result?, tokens, []) }
+
+    return? ifIs { in.applyRule(rule, result?, []) }
         { result }
 };
 

@@ -74,7 +74,7 @@ export class PegSequence
 
         ## This is akin to `for (rule in data::rules) { ... }`.
         filterPump(data::rules) { rule ->
-            ifValue { rule.parse(result?, remainingInput, results) }
+            ifValue { remainingInput.applyRule(rule, result?, results) }
                 { newInput ->
                     remainingInput := newInput;
                     results := [results*, result]
