@@ -106,7 +106,7 @@ static void sanityCheck(bool force) {
 }
 
 /**
- * Links the given value into the given list, removing it from its
+ * Links the given value onto the end of the given list, removing it from its
  * previous list (if any).
  */
 static void enlist(DatHeader *head, zvalue value) {
@@ -117,12 +117,12 @@ static void enlist(DatHeader *head, zvalue value) {
         prev->next = next;
     }
 
-    zvalue headNext = head->next;
+    zvalue headPrev = head->prev;
 
-    value->prev = head;
-    value->next = headNext;
-    headNext->prev = value;
-    head->next = value;
+    value->prev = headPrev;
+    value->next = head;
+    headPrev->next = value;
+    head->prev = value;
 }
 
 /**
@@ -164,17 +164,30 @@ static void doGc(void) {
         note("GC: Marked %lld immortals.", immortalsSize);
     }
 
-    zint count = markFrameStack();
+    counter = markFrameStack();
 
     if (DAT_CHATTY_GC) {
-        note("GC: Marked %lld stack values.", count);
+        note("GC: Marked %lld stack values.", counter);
+    }
+
+    // The calls to `datMark()` just placed items on the live list but did not
+    // call through to mark their innards. This loop walks down the live
+    // list doing that marking, which can cause yet more items to be enlisted.
+    // Since new items are added to the end, there's nothing special to do to
+    // handle such new entries.
+
+    for (zvalue item = liveHead.next; item != &liveHead; item = item->next) {
+        METH_CALL(item, gcMark);
     }
 
     // Free everything left on the doomed list.
 
     sanityCheck(false);
 
-    counter = 0;
+    if (DAT_CHATTY_GC) {
+        counter = 0;
+    }
+
     for (zvalue item = doomedHead.next; item != &doomedHead; /*next*/) {
         if (item->marked) {
             die("Marked item on doomed list!");
@@ -191,7 +204,10 @@ static void doGc(void) {
 
         utilFree(item);
         item = next;
-        counter++;
+
+        if (DAT_CHATTY_GC) {
+            counter++;
+        }
     }
 
     doomedHead.next = &doomedHead;
@@ -205,11 +221,17 @@ static void doGc(void) {
 
     sanityCheck(false);
 
-    counter = 0;
+    if (DAT_CHATTY_GC) {
+        counter = 0;
+    }
+
     for (zvalue item = liveHead.next; item != &liveHead; /*next*/) {
         item->marked = false;
         item = item->next;
-        counter++;
+
+        if (DAT_CHATTY_GC) {
+            counter++;
+        }
     }
 
     if (DAT_CHATTY_GC) {
@@ -310,8 +332,6 @@ void datMark(zvalue value) {
 
     value->marked = true;
     enlist(&liveHead, value);
-
-    METH_CALL(value, gcMark);
 
     // As of this writing, classes are all immortal, but that may change. This
     // `datMark` call has negligible cost and safeguards against that possible

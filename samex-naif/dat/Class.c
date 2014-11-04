@@ -187,6 +187,30 @@ static bool acceptsUnchecked(zvalue cls, zvalue value) {
     return false;
 }
 
+/**
+ * Helper for `classBindMethods`, which binds just one method table (class
+ * or instance).
+ */
+static void bindOne(zvalue cls, zvalue methods) {
+    ClassInfo *info = getInfo(cls);
+    zint size = (methods == NULL) ? 0 : symtabSize(methods);
+
+    if (info->parent != NULL) {
+        // Initialize the method table with whatever the parent binds.
+        utilCpy(zvalue, info->methods, getInfo(info->parent)->methods,
+            DAT_MAX_SYMBOLS);
+    }
+
+    if (size != 0) {
+        zmapping arr[size];
+        arrayFromSymtab(arr, methods);
+        for (zint i = 0; i < size; i++) {
+            zint index = symbolIndex(arr[i].key);
+            info->methods[index] = arr[i].value;
+        }
+    }
+}
+
 
 //
 // Module Definitions
@@ -195,40 +219,8 @@ static bool acceptsUnchecked(zvalue cls, zvalue value) {
 // Documented in header.
 void classBindMethods(zvalue cls, zvalue classMethods,
         zvalue instanceMethods) {
-    ClassInfo *clsInfo = getInfo(cls);
-    ClassInfo *metaInfo = getInfo(cls->cls);
-    zint cmethSize =
-        (classMethods == NULL) ? 0 : symtabSize(classMethods);
-    zint imethSize =
-        (instanceMethods == NULL) ? 0 : symtabSize(instanceMethods);
-
-    if (clsInfo->parent != NULL) {
-        // Initialize the method tables with whatever the parent defined.
-        utilCpy(zvalue, clsInfo->methods, getInfo(clsInfo->parent)->methods,
-            DAT_MAX_SYMBOLS);
-        utilCpy(zvalue, metaInfo->methods, getInfo(metaInfo->parent)->methods,
-            DAT_MAX_SYMBOLS);
-    }
-
-    if (cmethSize != 0) {
-        zmapping methods[cmethSize];
-        arrayFromSymtab(methods, classMethods);
-        for (zint i = 0; i < cmethSize; i++) {
-            zvalue sym = methods[i].key;
-            zint index = symbolIndex(methods[i].key);
-            metaInfo->methods[index] = methods[i].value;
-        }
-    }
-
-    if (imethSize != 0) {
-        zmapping methods[imethSize];
-        arrayFromSymtab(methods, instanceMethods);
-        for (zint i = 0; i < imethSize; i++) {
-            zvalue sym = methods[i].key;
-            zint index = symbolIndex(methods[i].key);
-            clsInfo->methods[index] = methods[i].value;
-        }
-    }
+    bindOne(cls->cls, classMethods);
+    bindOne(cls, instanceMethods);
 }
 
 // Documented in header.
@@ -329,6 +321,7 @@ METH_IMPL_0(Class, debugSymbol) {
 METH_IMPL_0(Class, gcMark) {
     ClassInfo *info = getInfo(ths);
 
+    datMark(info->parent);
     datMark(info->name);
 
     for (zint i = 0; i < DAT_MAX_SYMBOLS; i++) {
