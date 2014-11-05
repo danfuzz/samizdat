@@ -99,10 +99,6 @@ Defined as per the `Sequence` protocol.
 
 Gets the nth character of the string, as a single-element string.
 
-#### `.nthMapping(n) -> map | void`
-
-Gets the nth mapping of the string.
-
 #### `.repeat(count) -> string`
 
 Returns a string consisting of `count` repetitions of the contents of `this`.

@@ -79,10 +79,6 @@ Defined as per the `Sequence` protocol.
 
 Gets the nth element of the string.
 
-#### `.nthMapping(n) -> map | void`
-
-Gets the nth mapping of the list.
-
 #### `.repeat(count) -> list`
 
 Returns a list consisting of `count` repetitions of the contents of `this`.

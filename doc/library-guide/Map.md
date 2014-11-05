@@ -149,10 +149,6 @@ Returns the number of mappings in the map.
 
 Returns a list of all the keys mapped by the given `map`, in sorted order.
 
-#### `.nthMapping(n) -> map | void`
-
-Gets the nth mapping of the given map.
-
 #### `.valueList() -> list`
 
 Returns a list of all the values mapped by the given `map`, in order of the
