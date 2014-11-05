@@ -8,6 +8,8 @@
 
 #= language core.Lang0
 
+import ./BasicState :: *;
+
 
 ##
 ## Exported Definitions
@@ -23,8 +25,11 @@ export fn apply(rule, input) {
         }
         { input };
 
+
+    def state = BasicState.new(tokens);
     def result;
-    return? ifIs { rule.parse(result?, tokens, []) }
+
+    return? ifIs { state.applyRule(rule, result?, []) }
         { result }
 };
 

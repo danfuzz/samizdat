@@ -27,9 +27,9 @@ export class PegThunk
     };
 
     ## Documented in spec.
-    .parse(box, input, items) {
+    .parse(box, state, items) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(items*) }
-            { thunkResult -> thunkResult.parse(box, input, items) }
+            { thunkResult -> state.applyRule(thunkResult, box, items) }
     };
 };

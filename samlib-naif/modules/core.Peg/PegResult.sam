@@ -27,10 +27,10 @@ export class PegResult
     };
 
     ## Documented in spec.
-    .parse(box, input, .) {
+    .parse(box, state, .) {
         def data = this.(ACCESS)();
         box* := data::value;
-        return input
+        return state
     };
 };
 

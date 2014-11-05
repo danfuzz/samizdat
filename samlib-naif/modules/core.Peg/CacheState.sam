@@ -1,0 +1,62 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `CacheState` class
+##
+
+#= language core.Lang0
+
+import core.Generator :: stdCollect, stdFetch;
+
+import ./VoidState :: voidState;
+
+
+##
+## Class Definition
+##
+## Payload: {item: ., nextState: lazy}
+
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
+
+export class CacheState
+        access: ACCESS,
+        new: NEW {
+    ## Documented in spec.
+    class.new(tokens) {
+        def item;
+        def rest = ifValueOr { tokens.nextValue(item?) }
+            { return voidState };
+        def nextState = Lazy.new { this.new(rest) };
+
+        return this.(NEW)(@{item, nextState})
+    };
+
+    ## Documented in spec.
+    .applyRule(rule, box, items) {
+        return? rule.parse(box, this, items)
+    };
+
+    ## Documented in spec.
+    .collect(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return stdCollect(this, optFilterFunction*)
+    };
+
+    ## Documented in spec.
+    .fetch() {
+        ## Just use the standard implementation.
+        return stdFetch(this)
+    };
+
+    ## Documented in spec.
+    .nextValue(box) {
+        def data = this.(ACCESS)();
+
+        box.store(data::item);
+        return data::nextState*
+    };
+};

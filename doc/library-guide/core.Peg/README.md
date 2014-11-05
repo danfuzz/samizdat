@@ -14,15 +14,14 @@ strings / sequences of characters) and tree parsers (that is, parsers of
 higher-level tokens with either simply a tree-like rule invocation or
 to produce tree structures per se).
 
-When building tokenizers, the input elements are taken to be in the form
-of character-as-token items. Each element is a token whose name (tag) is
-a single-string character (and whose value if any is irrelevant for the
+When building tokenizers, the input elements are taken to be in the form of
+character-as-token items. Each element is a token whose name (tag) is a
+single-string character (and whose payload value if any is irrelevant for the
 parsing mechanism). There are helper functions which take strings and
 automatically convert them into this form.
 
-When building tree parsers, the input elements are expected to be
-tokens per se, that is, records whose name tag is taken to indicate a
-token type.
+When building tree parsers, the input elements are expected to be tokens per
+se, that is, records whose name (tag) is taken to indicate a token type.
 
 Almost all of the classes in this module are for parser rules. A parser rule
 is an object that binds the `.parse()` method, taking three arguments:
@@ -30,8 +29,9 @@ is an object that binds the `.parse()` method, taking three arguments:
 * `box` &mdash; The first argument is a `box` into which a successful
   result of parsing is to be `store`d.
 
-* `input` &mdash; The second argument is a generator of input tokens to
-  be parsed (usually *partially* parsed).
+* `state` &mdash; The second argument is a generator of input tokens to
+  be parsed (usually *partially* parsed). It implements the `ParserState`
+  protocol, which is a superset of `Generator`.
 
 * `items` &mdash; A sequence (typically a list) consisting of the trailing
   context of items that have been parsed already, in order, in the context of
@@ -41,11 +41,11 @@ is an object that binds the `.parse()` method, taking three arguments:
 
 A `.parse()` method, upon success when called, must do two things: It must
 call `store` on its yield `box` to indicate the non-void result of parsing.
-Then, it must return a replacement `input` for use as the input to subsequent
+Then, it must return a replacement `state` for use as the state for subsequent
 parsers, that reflects the removal of whatever elements were consumed
 by the parsing (including none). If the parsing function consumed all of
-its given input, then it must return a voided generator (that is, one which
-yields and returns void when called).
+its given input, then it must return a voided state (that is, one which
+yields and returns void when asked for `.nextValue()`).
 
 A parsing function, upon failure when called, must do one thing, namely
 return void. It must *not*, upon failure, call `store` on its given `box`.
@@ -118,17 +118,34 @@ to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{: [] :}` (that is,
 the empty set of tokens or characters).
 
+#### ParserState: `voidState`
+
+The sole instance of the class `VoidState`.
+
 
 <br><br>
 ### Method Definitions: `Parser` protocol
 
-#### `.parse(box, input, items*) -> newInput`
+#### `.parse(box, state, items) -> newState`
 
-Performs a parse of `input` (a generator) with the trailing sequence
-context of `[items*]`. If parsing is successful, stores into `box` the
-parsed result and returns a replacement for `input` that reflects the
-consumption of tokens that were used. If parsing fails, does not
+Performs a parse of `state` (a parser state object) with the trailing sequence
+context of `items` (which must be a sequence). If parsing is successful,
+stores into `box` the parsed result and returns a replacement for `state` that
+reflects the consumption of tokens that were used. If parsing fails, does not
 store anything into `box` and returns void.
+
+
+<br><br>
+### Method Definitions: `ParserState` protocol
+
+`ParserState` includes all of the methods of `Generator`, and in addition:
+
+#### `.applyRule(rule, box, items) -> newState`
+
+Applies the given `rule`, either by invoking its `.parse()` method, passing
+`this` as the state argument, or by doing (in some way) the equivalent
+thereof. Returns whatever `rule.parse()` returns (or equivalently would
+have returned).
 
 
 <br><br>
@@ -142,6 +159,9 @@ rule yields on the input.
 `input` must be a generator (including possibly a collection).
 If it is a string, this function automatically treats it as a generator of
 character-as-token values.
+
+This function creates a `BasicState` parser state object to wrap `input`, and
+then in turn uses that to apply the `rule`.
 
 #### `stringFromTokenList(tokens) -> string`
 
