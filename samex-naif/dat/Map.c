@@ -193,14 +193,6 @@ static zvalue putMapping(zvalue map, zmapping mapping) {
 //
 
 // Documented in header.
-void arrayFromMap(zmapping *result, zvalue map) {
-    assertHasClass(map, CLS_Map);
-
-    MapInfo *info = getInfo(map);
-    utilCpy(zmapping, result, info->elems, info->size);
-}
-
-// Documented in header.
 zvalue mapFromArray(zint size, zmapping *mappings) {
     if (DAT_CONSTRUCTION_PARANOIA) {
         for (zint i = 0; i < size; i++) {
@@ -247,6 +239,15 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 zvalue mapFromMapping(zmapping mapping) {
     return mapFromArrayUnchecked(1, &mapping);
 }
+
+// Documented in header.
+zassoc zassocFromMap(zvalue map) {
+    assertHasClass(map, CLS_Map);
+
+    MapInfo *info = getInfo(map);
+    return (zassoc) {info->size, info->elems};
+}
+
 
 
 //
@@ -331,10 +332,13 @@ METH_IMPL_rest(Map, cat, args) {
         return ths;
     }
 
-    zint thsSize = getInfo(ths)->size;
-    zvalue maps[args.size];
+    MapInfo *thsInfo = getInfo(ths);
+    zint thsSize = thsInfo->size;
 
+    zvalue maps[args.size];
+    MapInfo *infos[args.size];
     zint size = thsSize;
+
     for (zint i = 0; i < args.size; i++) {
         zvalue one = args.elems[i];
         if (classAccepts(CLS_Map, one)) {
@@ -347,7 +351,8 @@ METH_IMPL_rest(Map, cat, args) {
                 die("Invalid argument to `cat()`: %s", cm_debugString(one));
             }
         }
-        size += getInfo(maps[i])->size;
+        infos[i] = getInfo(maps[i]);
+        size += infos[i]->size;
     }
 
     // Special cases for efficiency.
@@ -363,7 +368,7 @@ METH_IMPL_rest(Map, cat, args) {
             return maps[0];
         }
 
-        MapInfo *info = getInfo(maps[0]);
+        MapInfo *info = infos[0];
         if (info->size == 1) {
             // This is `map.cat(arg)`, where `arg` is a single mapping.
             return putMapping(ths, info->elems[0]);
@@ -374,10 +379,11 @@ METH_IMPL_rest(Map, cat, args) {
 
     zmapping elems[size];
     zint at = thsSize;
-    arrayFromMap(elems, ths);
+    utilCpy(zmapping, elems, thsInfo->elems, thsSize);
     for (zint i = 0; i < args.size; i++) {
-        arrayFromMap(&elems[at], maps[i]);
-        at += getInfo(maps[i])->size;
+        zint oneSize = infos[i]->size;
+        utilCpy(zmapping, &elems[at], infos[i]->elems, oneSize);
+        at += oneSize;
     }
 
     return mapFromArray(size, elems);

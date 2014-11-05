@@ -935,17 +935,14 @@ zvalue withModuleDefs(zvalue node) {
     }
 
     zvalue exportValues = EMPTY_LIST;
-    zvalue exportInfo = cm_get(info, SYM(exports));
-    zint exSize = get_size(exportInfo);
-    zmapping mappings[exSize];
-    arrayFromMap(mappings, exportInfo);
-    for (zint i = 0; i < exSize; i++) {
-        zvalue name = mappings[i].key;
+    zassoc exports = zassocFromMap(cm_get(info, SYM(exports)));
+    for (zint i = 0; i < exports.size; i++) {
+        zvalue name = exports.elems[i].key;
         exportValues = cm_cat(exportValues,
             listFrom2(makeLiteral(name), makeVarFetch(name)));
     }
 
-    zvalue yieldExports = (exSize == 0)
+    zvalue yieldExports = (exports.size == 0)
         ? LITS(EMPTY_SYMBOL_TABLE)
         : makeCall(LITS(SymbolTable), SYMS(new), exportValues);
     zvalue yieldInfo = makeLiteral(info);

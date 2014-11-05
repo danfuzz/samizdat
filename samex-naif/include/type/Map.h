@@ -19,12 +19,6 @@ extern zvalue CLS_Map;
 extern zvalue EMPTY_MAP;
 
 /**
- * Copies all the mappings of the given map into the given result
- * array, which must be sized large enough to hold all of them.
- */
-void arrayFromMap(zmapping *result, zvalue map);
-
-/**
  * Gets the map resulting from adding all the given mappings
  * to an empty map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
@@ -41,5 +35,12 @@ zvalue mapFromArray(zint size, zmapping *mappings);
  * Gets a single-mapping map of the given mapping.
  */
 zvalue mapFromMapping(zmapping mapping);
+
+/**
+ * Gets a `zassoc` of the given map. The result `elems` shares storage
+ * with `map`. As such, it is important to *not* modify the contents.
+ */
+zassoc zassocFromMap(zvalue map);
+
 
 #endif
