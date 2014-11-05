@@ -51,4 +51,5 @@ export
     maybeValue,
     note,
     nullBox,
-    order;
+    order,
+    voidResult;

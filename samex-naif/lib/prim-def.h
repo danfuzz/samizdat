@@ -36,6 +36,7 @@ PRIM_DEF(Value,                   CLS_Value);
 
 // Constants
 PRIM_DEF(nullBox,                 THE_NULL_BOX);
+PRIM_DEF(voidResult,              THE_VOID_RESULT);
 
 // Primitive functions: directly exported.
 PRIM_FUNC(cast,                   2, 2);
