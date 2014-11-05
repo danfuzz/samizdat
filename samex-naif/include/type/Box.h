@@ -18,6 +18,9 @@ extern zvalue CLS_Box;
 /** Class value for in-model class `Cell`. */
 extern zvalue CLS_Cell;
 
+/** Class value for in-model class `Lazy`. */
+extern zvalue CLS_Lazy;
+
 /** Class value for in-model class `NullBox`. */
 extern zvalue CLS_NullBox;
 
