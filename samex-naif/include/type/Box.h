@@ -33,4 +33,7 @@ extern zvalue CLS_Result;
 /** The sole instance of class `NullBox`. */
 extern zvalue THE_NULL_BOX;
 
+/** The sole void instance of class `Result`. */
+extern zvalue THE_VOID_RESULT;
+
 #endif

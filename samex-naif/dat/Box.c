@@ -256,7 +256,9 @@ zvalue CLS_Promise = NULL;
 
 // Documented in spec.
 CMETH_IMPL_0_1(Result, new, value) {
-    return newBox(CLS_Result, (BoxInfo) {value, false});
+    return (value == NULL)
+        ? THE_VOID_RESULT
+        : newBox(CLS_Result, (BoxInfo) {value, false});
 }
 
 // Documented in spec.
@@ -273,7 +275,13 @@ MOD_INIT(Result) {
             CMETH_BIND(Result, new)),
         METH_TABLE(
             METH_BIND(Result, store)));
+
+    THE_VOID_RESULT =
+        datImmortalize(newBox(CLS_Result, (BoxInfo) {NULL, false}));
 }
 
 // Documented in header.
 zvalue CLS_Result = NULL;
+
+// Documented in header.
+zvalue THE_VOID_RESULT = NULL;

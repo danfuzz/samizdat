@@ -93,6 +93,10 @@ msg(nullBox);
 nullBox.store("stuff");
 msg(nullBox);
 
+note("\nvoidResult");
+
+msg(voidResult);
+
 note("\nInterpolation");
 
 msgInterp(nullBox);

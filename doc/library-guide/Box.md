@@ -30,6 +30,24 @@ or void if it has no stored value.
 
 
 <br><br>
+### Constants
+
+#### `nullBox`
+
+A value that represents a permanently void (un-set, un-stored) box, that
+still allows `.store()`. `nullBox.store(value)` is effectively a no-op. This
+arrangement is done in order to make it easy to pass a box into functions that
+require one, but where the box value is never needed.
+
+This is an instance of `NullBox`.
+
+#### `voidResult`
+
+A permanently void `Result` box, which *cannot* be `.store()`d to. This
+is an instance of `Result`.
+
+
+<br><br>
 ### Method Definitions: `Value` protocol
 
 #### `.perEq(other) -> box | void`
@@ -163,9 +181,12 @@ it is invalid to call this method twice on the same promise.
 
 #### `class.new(value?) -> cell`
 
-Constructs a new result. If `value` is specified, that is the value stored
-in the result. If `value` is not specified, the result stores void. Once
+Constructs a new result. If `value` is supplied, that is the value stored
+in the result. If `value` is not supplied, the result stores void. Once
 constructed, a `Result` is immutable and rejects attempts to `.store()` to it.
+
+**Note:** If `value` is not supplied, then this method returns the instance
+`voidResult`.
 
 
 <br><br>
@@ -176,16 +197,3 @@ constructed, a `Result` is immutable and rejects attempts to `.store()` to it.
 #### `.store(value?) -> . | void`
 
 Calling this method always results in the runtime terminating with an error.
-
-
-<br><br>
-### Constants
-
-#### `nullBox`
-
-A value that represents a permanently empty (un-set, un-stored) box.
-`nullBox.store(value)` is effectively a no-op. This arrangement is done in
-order to make it easy to pass a box into functions that require one, but where
-the box value is never needed.
-
-This is an instance of `NullBox`.
