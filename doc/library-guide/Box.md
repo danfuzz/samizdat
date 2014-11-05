@@ -10,11 +10,13 @@ and not by "happenstance content." That is, two boxes should only be
 considered "equal" if they are indistinguishable, even in the face of
 calling mutating operations.
 
-The system provides a `Box` abstract class as well as four concrete
+The system provides a `Box` abstract class as well as several concrete
 classes that implement the `Box` protocol:
 
 * `Cell` &mdash; A box whose value can be changed an arbitrary number
   of times.
+* `Lazy` &mdash; A box whose value is computed from a function the first time
+  it is fetched, with the computed value cached for subsequent fetches.
 * `NullBox` &mdash; A box which always indicates it holds void, and which can
   be stored to any number of times without effect. The global value `nullBox`
   is an instance of this class.
@@ -97,6 +99,32 @@ in the cell. If `value` is not specified, the cell initially stores void.
 #### `.store(value?) -> . | void`
 
 `Cell` implements the behavior as specified by `Box`, with no additions.
+
+
+<br><br>
+### Class Method Definitions: `Lazy` class
+
+#### `class.new(function) -> lazy`
+
+Constructs a new lazy box. `function` must be a function which accepts
+no arguments.
+
+
+<br><br>
+### Method Definitions: `Lazy` class
+
+`Lazy` inherits all its behavior from `Box`, except:
+
+#### `.fetch() -> . | void`
+
+If this is the first time this method calls, this calls the `function`
+passed upon construction, caching the return value (or lack thereof).
+
+On all invocations, this returns the cached value (or lack thereof).
+
+#### `.store(value?) -> . | void`
+
+Calling this method always results in the runtime terminating with an error.
 
 
 <br><br>
