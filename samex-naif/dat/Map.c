@@ -13,6 +13,7 @@
 #include "type/SymbolTable.h"
 #include "type/define.h"
 
+#include "LookupCache.h"
 #include "impl.h"
 
 

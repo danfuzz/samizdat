@@ -122,21 +122,6 @@ typedef struct DatHeader {
     uint8_t payload[/*flexible*/];
 } DatHeader;
 
-/**
- * Entry in the map cache. The cache is used to speed up calls to `mapFind`
- * (see which for details).
- */
-typedef struct {
-    /** Map to look up a key in. */
-    zvalue map;
-
-    /** Key to look up. */
-    zvalue key;
-
-    /** Result from `mapFind`. */
-    zint index;
-} MapCacheEntry;
-
 
 /**
  * Implementation of method `Builtin.call()`. This is used in the code
@@ -161,11 +146,6 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
  * and does not check if `index` is in the valid range for a symbol index.
  */
 zvalue classFindMethodUnchecked(zvalue cls, zint index);
-
-/**
- * Gets the `CacheEntry` for the given map/key pair.
- */
-MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
 /**
  * Marks all the references on the frame stack. Returns the number of
