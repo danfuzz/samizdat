@@ -27,4 +27,3 @@ following refinements:
 #### `.applyRule(rule, box, items) -> newState`
 
 Always calls `rule.parse(box, this, items)`.
-
