@@ -564,20 +564,6 @@ METH_IMPL_1(Map, nextValue, box) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Map, nthMapping, n) {
-    MapInfo *info = getInfo(ths);
-    zint index = seqNthIndexStrict(info->size, n);
-
-    if (index < 0) {
-        return NULL;
-    } else if (info->size == 1) {
-        return ths;
-    } else {
-        return mapFromMapping(info->elems[index]);
-    }
-}
-
-// Documented in spec.
 METH_IMPL_1(Map, totalEq, other) {
     assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
     MapInfo *info1 = getInfo(ths);
@@ -675,7 +661,6 @@ MOD_INIT(Map) {
             METH_BIND(Map, get_value),
             METH_BIND(Map, keyList),
             METH_BIND(Map, nextValue),
-            METH_BIND(Map, nthMapping),
             METH_BIND(Map, totalEq),
             METH_BIND(Map, totalOrder),
             METH_BIND(Map, valueList)));

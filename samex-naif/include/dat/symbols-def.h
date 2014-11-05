@@ -73,7 +73,6 @@ DEF_SYMBOL(new);
 DEF_SYMBOL(nextValue);
 DEF_SYMBOL(not);
 DEF_SYMBOL(nth);
-DEF_SYMBOL(nthMapping);
 DEF_SYMBOL(or);
 DEF_SYMBOL(perEq);
 DEF_SYMBOL(perOrder);
