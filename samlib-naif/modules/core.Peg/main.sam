@@ -8,6 +8,7 @@
 
 #= language core.Lang0
 
+export import ./BasicState :: *;
 export import ./PegAny :: *;
 export import ./PegChoice :: *;
 export import ./PegCode :: *;
@@ -22,4 +23,5 @@ export import ./PegSet :: *;
 export import ./PegSetComplement :: *;
 export import ./PegSequence :: *;
 export import ./PegThunk :: *;
+export import ./VoidState :: *;
 export import ./misc :: *;

@@ -1,0 +1,43 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+##
+## `VoidState` class
+##
+
+#= language core.Lang0
+
+##
+## Class Definition
+##
+
+## Secrets used to control access to this class.
+def ACCESS = @ACCESS.toUnlisted();
+def NEW = @NEW.toUnlisted();
+
+export class VoidState
+        access: ACCESS,
+        new: NEW {
+    ## Documented in spec.
+    .applyRule(rule, box, items) {
+        return? rule.parse(box, this, items)
+    };
+
+    ## Documented in spec.
+    .collect(optFilterFunction?) {
+        return []
+    };
+
+    ## Documented in spec.
+    .fetch() {
+        ## Return void, always.
+    };
+
+    ## Documented in spec.
+    .nextValue(box) {
+        ## Return void, always.
+    };
+};
+
+export def voidState = VoidState.(NEW)();
