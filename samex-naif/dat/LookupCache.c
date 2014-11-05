@@ -23,7 +23,7 @@ static LookupCacheEntry theCache[DAT_LOOKUP_CACHE_SIZE];
 //
 
 // Documented in header.
-LookupCacheEntry *mapGetCacheEntry(zvalue container, zvalue key) {
+LookupCacheEntry *lookupCacheFind(zvalue container, zvalue key) {
     uintptr_t hash =
         ((uintptr_t) container >> 4) + (((uintptr_t) key) >> 4) * 31;
     hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);

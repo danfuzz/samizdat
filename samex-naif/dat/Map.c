@@ -103,7 +103,7 @@ static zint mapFind(zvalue map, MapInfo *info, zvalue key) {
         }
     }
 
-    LookupCacheEntry *entry = mapGetCacheEntry(map, key);
+    LookupCacheEntry *entry = lookupCacheFind(map, key);
 
     if ((entry->container == map) && (entry->key == key)) {
         return entry->index;

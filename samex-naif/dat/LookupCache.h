@@ -33,6 +33,6 @@ typedef struct {
 /**
  * Gets the `LookupCacheEntry` for the given container/key pair.
  */
-LookupCacheEntry *mapGetCacheEntry(zvalue container, zvalue key);
+LookupCacheEntry *lookupCacheFind(zvalue container, zvalue key);
 
 #endif
