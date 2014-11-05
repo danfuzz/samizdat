@@ -103,7 +103,7 @@ static zint mapFind(zvalue map, MapInfo *info, zvalue key) {
         }
     }
 
-    MapCacheEntry *entry = mapGetCacheEntry(map, key);
+    LookupCacheEntry *entry = mapGetCacheEntry(map, key);
 
     if ((entry->map == map) && (entry->key == key)) {
         return entry->index;
@@ -655,7 +655,7 @@ METH_IMPL_0(Map, valueList) {
 MOD_INIT(Map) {
     MOD_USE(Generator);
     MOD_USE(List);
-    MOD_USE(MapCache);
+    MOD_USE(LookupCache);
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
         METH_TABLE(

@@ -28,11 +28,11 @@ typedef struct {
      * (if negative) ones-complement of the insertion point.
      */
     zint index;
-} MapCacheEntry;
+} LookupCacheEntry;
 
 /**
- * Gets the `MapCacheEntry` for the given map/key pair.
+ * Gets the `LookupCacheEntry` for the given map/key pair.
  */
-MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
+LookupCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
 #endif
