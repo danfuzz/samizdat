@@ -38,13 +38,6 @@ static BoxInfo *getInfo(zvalue box) {
 }
 
 /**
- * Does the main action of fetching, without checking the argument class.
- */
-static zvalue doFetch(zvalue box) {
-    return getInfo(box)->value;
-}
-
-/**
  * Makes a box of the given class, with the given instance state.
  */
 static zvalue newBox(zvalue cls, BoxInfo info) {
@@ -61,7 +54,7 @@ static zvalue newBox(zvalue cls, BoxInfo info) {
 
 // Documented in spec.
 METH_IMPL_0_1(Box, collect, function) {
-    zvalue value = doFetch(ths);
+    zvalue value = METH_CALL(ths, fetch);
 
     if ((value != NULL) && (function != NULL)) {
         value = FUN_CALL(function, value);
@@ -72,7 +65,7 @@ METH_IMPL_0_1(Box, collect, function) {
 
 // Documented in spec.
 METH_IMPL_0(Box, fetch) {
-    return doFetch(ths);
+    return getInfo(ths)->value;
 }
 
 // Documented in spec.
@@ -85,7 +78,7 @@ METH_IMPL_0(Box, gcMark) {
 
 // Documented in spec.
 METH_IMPL_1(Box, nextValue, out) {
-    zvalue value = doFetch(ths);
+    zvalue value = METH_CALL(ths, fetch);
 
     if (value != NULL) {
         cm_store(out, value);
@@ -99,6 +92,7 @@ METH_IMPL_1(Box, nextValue, out) {
 MOD_INIT(Box) {
     MOD_USE(Core);
     MOD_USE_NEXT(Cell);
+    MOD_USE_NEXT(Lazy);
     MOD_USE_NEXT(NullBox);
     MOD_USE_NEXT(Promise);
     MOD_USE_NEXT(Result);
@@ -144,6 +138,50 @@ MOD_INIT(Cell) {
 
 // Documented in header.
 zvalue CLS_Cell = NULL;
+
+
+//
+// Class Definition: `Lazy`
+//
+// On this class, `true` for `canStore` indicates that the thunk has
+// not yet been evaluated.
+
+// Documented in spec.
+CMETH_IMPL_1(Lazy, new, function) {
+    return newBox(CLS_Lazy, (BoxInfo) {function, true});
+}
+
+// Documented in spec.
+METH_IMPL_0(Lazy, fetch) {
+    BoxInfo *info = getInfo(ths);
+
+    if (info->canStore) {
+        info->value = FUN_CALL(info->value);
+        info->canStore = false;
+    }
+
+    return info->value;
+}
+
+// Documented in spec.
+METH_IMPL_0_1(Lazy, store, value) {
+    die("Cannot `store()` to `Lazy`.");
+}
+
+/** Initializes the module. */
+MOD_INIT(Lazy) {
+    MOD_USE(Box);
+
+    CLS_Lazy = makeCoreClass(SYM(Lazy), CLS_Box,
+        METH_TABLE(
+            CMETH_BIND(Lazy, new)),
+        METH_TABLE(
+            METH_BIND(Lazy, fetch),
+            METH_BIND(Lazy, store)));
+}
+
+// Documented in header.
+zvalue CLS_Lazy = NULL;
 
 
 //

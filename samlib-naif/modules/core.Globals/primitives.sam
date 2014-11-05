@@ -21,6 +21,7 @@ export
     Class,
     Core,
     Int,
+    Lazy,
     List,
     Map,
     Metaclass,

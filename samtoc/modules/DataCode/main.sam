@@ -24,6 +24,7 @@ def SPECIAL_VALUES = {
     (Class):       CodeString.new("CLS_Class"),
     (Core):        CodeString.new("CLS_Core"),
     (Int):         CodeString.new("CLS_Int"),
+    (Lazy):        CodeString.new("CLS_Lazy"),
     (List):        CodeString.new("CLS_List"),
     (Map):         CodeString.new("CLS_Map"),
     (Metaclass):   CodeString.new("CLS_Metaclass"),

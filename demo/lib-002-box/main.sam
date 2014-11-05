@@ -75,6 +75,18 @@ note("\nResult, value");
 def box5 = Result.new("blort");
 msg(box5);
 
+note("\nLazy, void");
+
+def box6 = Lazy.new { note("Lazy called!") };
+msg(box6);
+msg(box6);
+
+note("\nLazy, value");
+
+def box7 = Lazy.new { note("Lazy called!"); "frotz" };
+msg(box7);
+msg(box7);
+
 note("\nnullBox");
 
 msg(nullBox);
