@@ -16,7 +16,7 @@ import ./VoidState :: voidState;
 ##
 ## Class Definition
 ##
-## Payload: {tokens: generator, next: box(@{token, state})}
+## Payload: {item: ., nextState: lazy}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -27,12 +27,12 @@ export class BasicState
         new: NEW {
     ## Documented in spec.
     class.new(tokens) {
-        def first;
-        def rest = ifValueOr { tokens.nextValue(first?) }
+        def item;
+        def rest = ifValueOr { tokens.nextValue(item?) }
             { return voidState };
         def nextState = Lazy.new { this.new(rest) };
 
-        return this.(NEW)(@{first, nextState})
+        return this.(NEW)(@{item, nextState})
     };
 
     ## Documented in spec.
@@ -56,7 +56,7 @@ export class BasicState
     .nextValue(box) {
         def data = this.(ACCESS)();
 
-        box.store(data::first);
+        box.store(data::item);
         return data::nextState*
     };
 };
