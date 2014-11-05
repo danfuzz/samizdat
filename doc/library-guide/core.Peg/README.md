@@ -118,17 +118,34 @@ to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{: [] :}` (that is,
 the empty set of tokens or characters).
 
+#### ParserState: `voidState`
+
+The sole instance of the class `VoidState`.
+
 
 <br><br>
 ### Method Definitions: `Parser` protocol
 
-#### `.parse(box, state, items*) -> newState`
+#### `.parse(box, state, items) -> newState`
 
 Performs a parse of `state` (a parser state object) with the trailing sequence
-context of `[items*]`. If parsing is successful, stores into `box` the
-parsed result and returns a replacement for `state` that reflects the
-consumption of tokens that were used. If parsing fails, does not
+context of `items` (which must be a sequence). If parsing is successful,
+stores into `box` the parsed result and returns a replacement for `state` that
+reflects the consumption of tokens that were used. If parsing fails, does not
 store anything into `box` and returns void.
+
+
+<br><br>
+### Method Definitions: `ParserState` protocol
+
+`ParserState` includes all of the methods of `Generator`, and in addition:
+
+#### `.applyRule(rule, box, items) -> newState`
+
+Applies the given `rule`, either by invoking its `.parse()` method, passing
+`this` as the state argument, or by doing (in some way) the equivalent
+thereof. Returns whatever `rule.parse()` returns (or equivalently would
+have returned).
 
 
 <br><br>
@@ -143,8 +160,8 @@ rule yields on the input.
 If it is a string, this function automatically treats it as a generator of
 character-as-token values.
 
-This function creates a parser state object to wrap `input`, and then in
-turn uses that to apply the `rule`.
+This function creates a `BasicState` parser state object to wrap `input`, and
+then in turn uses that to apply the `rule`.
 
 #### `stringFromTokenList(tokens) -> string`
 
