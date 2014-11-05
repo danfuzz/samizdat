@@ -19,6 +19,7 @@ PRIM_DEF(Cell,                    CLS_Cell);
 PRIM_DEF(Class,                   CLS_Class);
 PRIM_DEF(Core,                    CLS_Core);
 PRIM_DEF(Int,                     CLS_Int);
+PRIM_DEF(Lazy,                    CLS_Lazy);
 PRIM_DEF(List,                    CLS_List);
 PRIM_DEF(Map,                     CLS_Map);
 PRIM_DEF(Metaclass,               CLS_Metaclass);
