@@ -147,8 +147,8 @@ zvalue CLS_Cell = NULL;
 // not yet been evaluated.
 
 // Documented in spec.
-CMETH_IMPL_0(Lazy, new) {
-    return newBox(CLS_Lazy, (BoxInfo) {NULL, true});
+CMETH_IMPL_1(Lazy, new, function) {
+    return newBox(CLS_Lazy, (BoxInfo) {function, true});
 }
 
 // Documented in spec.
