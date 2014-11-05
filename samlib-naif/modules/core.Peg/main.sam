@@ -9,6 +9,7 @@
 #= language core.Lang0
 
 export import ./BasicState :: *;
+export import ./CacheState :: *;
 export import ./PegAny :: *;
 export import ./PegChoice :: *;
 export import ./PegCode :: *;
