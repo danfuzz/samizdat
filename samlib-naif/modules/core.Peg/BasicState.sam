@@ -30,9 +30,9 @@ export class BasicState
         def first;
         def rest = ifValueOr { tokens.nextValue(first?) }
             { return voidState };
+        def nextState = Lazy.new { this.new(rest) };
 
-        def nextState;
-        return this.(NEW)(@{first, rest, nextState: nextState?})
+        return this.(NEW)(@{first, nextState})
     };
 
     ## Documented in spec.
@@ -57,17 +57,6 @@ export class BasicState
         def data = this.(ACCESS)();
 
         box.store(data::first);
-
-        return ifValueOr { data::nextState* }
-            {
-                ## First time that this method is being called on this object.
-                def first;
-                def rest = ifValueOr { data::rest.nextValue(first?) }
-                    { return voidState };
-                def nextState;
-
-                data::nextState* :=
-                    BasicState.(NEW)(@{first, rest, nextState: nextState?});
-            }
+        return data::nextState*
     };
 };
