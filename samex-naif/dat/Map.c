@@ -398,7 +398,7 @@ METH_IMPL_0_1(Map, collect, function) {
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = mapFromArray(1, &info->elems[i]);
+        zvalue elem = mapFromMapping(info->elems[i]);
         zvalue one = (function == NULL)
             ? elem
             : FUN_CALL(function, elem);
