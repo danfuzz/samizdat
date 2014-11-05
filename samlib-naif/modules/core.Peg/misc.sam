@@ -17,10 +17,19 @@ import ./BasicState :: *;
 
 ## Documented in spec.
 export fn apply(rule, input) {
-    def in = BasicState.new(input);
+    def tokens = ifIs { String.accepts(input) }
+        {
+            ## This converts generated characters into tokens with the
+            ## characters as the record name.
+            input.collect { ch -> @(cast(Symbol, ch)){} }
+        }
+        { input };
+
+
+    def state = BasicState.new(tokens);
     def result;
 
-    return? ifIs { in.applyRule(rule, result?, []) }
+    return? ifIs { state.applyRule(rule, result?, []) }
         { result }
 };
 

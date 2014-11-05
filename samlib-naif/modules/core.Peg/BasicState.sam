@@ -8,6 +8,11 @@
 
 #= language core.Lang0
 
+import core.Generator :: stdCollect, stdFetch;
+
+import ./VoidState :: voidState;
+
+
 ##
 ## Class Definition
 ##
@@ -21,17 +26,13 @@ export class BasicState
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    class.new(input) {
-        def tokens = ifIs { String.accepts(input) }
-            {
-                ## This converts generated characters into tokens with the
-                ## characters as the record name.
-                input.collect { ch -> @(cast(Symbol, ch)){} }
-            }
-            { input };
+    class.new(tokens) {
+        def first;
+        def rest = ifValueOr { tokens.nextValue(first?) }
+            { return voidState };
 
-        def next;
-        return this.(NEW)(@{tokens, next: next?})
+        def nextState;
+        return this.(NEW)(@{first, rest, nextState: nextState?})
     };
 
     ## Documented in spec.
@@ -41,36 +42,32 @@ export class BasicState
 
     ## Documented in spec.
     .collect(optFilterFunction?) {
-        def data = this.(ACCESS)();
-        return data::tokens.collect(optFilterFunction*)
+        ## Just use the standard implementation.
+        return stdCollect(this, optFilterFunction*)
     };
 
     ## Documented in spec.
     .fetch() {
-        def data = this.(ACCESS)();
-        return data::tokens.fetch()
+        ## Just use the standard implementation.
+        return stdFetch(this)
     };
 
     ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
-        return? ifValue { data::next* }
-            { next ->
-                ## The next value was previously computed.
-                box.store(next::token);
-                next::state
-            }
+
+        box.store(data::first);
+
+        return ifValueOr { data::nextState* }
             {
-                ## First time that this method is being called on this object
-                ## (typical), or any time this method is being called when
-                ## `tokens` is voided.
-                ifValue { data::tokens.nextValue(box) }
-                    { tokens ->
-                        def next;
-                        def state = BasicState.(NEW)(@{tokens, next: next?});
-                        data::next* := @{token: box*, state};
-                        state
-                    }
+                ## First time that this method is being called on this object.
+                def first;
+                def rest = ifValueOr { data::rest.nextValue(first?) }
+                    { return voidState };
+                def nextState;
+
+                data::nextState* :=
+                    BasicState.(NEW)(@{first, rest, nextState: nextState?});
             }
     };
 };
