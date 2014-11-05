@@ -705,7 +705,7 @@
 					<string>constant.language.samizdat</string>
 					<key>match</key>
 					<string>(?x)
-						\b(true|false|null|nullBox|nullGenerator)\b
+						\b(true|false|null|nullBox|nullGenerator|voidResult)\b
 					</string>
 				</dict>
 				<dict>
