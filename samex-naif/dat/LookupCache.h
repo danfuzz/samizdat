@@ -14,25 +14,25 @@
 
 /**
  * Entry in the cache. The cache is used to speed up key lookups in
- * maps/tables. See `mapFind` for details.
+ * containers (maps, tables, etc.). See `mapFind` for details.
  */
 typedef struct {
-    /** Map to look up a key in. */
-    zvalue map;
+    /** Map/table to look up a key in. */
+    zvalue container;
 
     /** Key to look up. */
     zvalue key;
 
     /**
-     * Index into the elements of the map/table where `key` is found, or
+     * Index into the elements of the container where `key` is found, or
      * (if negative) ones-complement of the insertion point.
      */
     zint index;
 } LookupCacheEntry;
 
 /**
- * Gets the `LookupCacheEntry` for the given map/key pair.
+ * Gets the `LookupCacheEntry` for the given container/key pair.
  */
-LookupCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
+LookupCacheEntry *mapGetCacheEntry(zvalue container, zvalue key);
 
 #endif

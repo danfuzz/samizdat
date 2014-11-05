@@ -14,7 +14,7 @@
 // Private Definitions
 //
 
-/** The cache of `mapFind` lookups. */
+/** The cache. */
 static LookupCacheEntry theCache[DAT_LOOKUP_CACHE_SIZE];
 
 
@@ -23,8 +23,9 @@ static LookupCacheEntry theCache[DAT_LOOKUP_CACHE_SIZE];
 //
 
 // Documented in header.
-LookupCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
-    uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
+LookupCacheEntry *mapGetCacheEntry(zvalue container, zvalue key) {
+    uintptr_t hash =
+        ((uintptr_t) container >> 4) + (((uintptr_t) key) >> 4) * 31;
     hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
 
     // Note: In practice there doesn't seem to be an observable performance
@@ -36,7 +37,7 @@ LookupCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     if (DAT_CHATTY_LOOKUP_CACHE) {
         static int hits = 0;
         static int total = 0;
-        if ((entry->map == map) && (entry->key == key)) {
+        if ((entry->container == container) && (entry->key == key)) {
             hits++;
         }
         total++;
@@ -66,7 +67,7 @@ MOD_INIT(LookupCache) {
 
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `gcMark` method gets called during gc,
-    // which we use as a trigger to clear the map cache.
+    // which we use as a trigger to clear the cache.
     zvalue CLS_LookupCache = makeCoreClass(SYM(LookupCache), CLS_Core,
         NULL,
         METH_TABLE(

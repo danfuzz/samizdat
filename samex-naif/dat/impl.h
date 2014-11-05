@@ -27,11 +27,11 @@ enum {
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /**
-     * Number of entries in the lookup cache. Probably best for this
-     * to be a prime number (to get better distribution of cache elements).
-     * In practice it looks like the theoretical best case is probably about
-     * 99.6% (that is, nearly every lookup is for a value/key pair that have
-     * been observed before). The size of the cache is chosen to hit the
+     * Number of entries in the lookup cache. Probably best for this to be a
+     * prime number (to get better distribution of cache elements). In
+     * practice, it looks like the theoretical best case is probably about
+     * 99.6% (that is, nearly every lookup is for a container/key pair that
+     * have been observed before). The size of the cache is chosen to hit the
      * point of diminishing returns.
      */
     DAT_LOOKUP_CACHE_SIZE = 6007,
