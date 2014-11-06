@@ -22,9 +22,7 @@ export class PegAny
         new: NEW {
     ## Documented in spec.
     .parse(state) {
-        def result;
-        return? ifValue { state.nextValue(result?) }
-            { newState -> newState.addContext(result) }
+        return? state.shiftInput()
     };
 };
 

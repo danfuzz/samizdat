@@ -49,12 +49,12 @@ export class PegSet
     ## Documented in spec.
     .parse(state) {
         def data = this.(ACCESS)();
-        def result;
 
-        return? ifValue { state.nextValue(result?) }
+        return? ifValue { state.shiftInput() }
             { newState ->
+                def result = newState.get_context().reverseNth(0);
                 ifIs { data::set.get(result.get_name()) }
-                    { newState.addContext(result) }
+                    { newState }
             }
     };
 };

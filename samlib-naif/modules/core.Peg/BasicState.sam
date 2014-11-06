@@ -62,6 +62,16 @@ export class BasicState
     };
 
     ## Documented in spec.
+    .shiftInput() {
+        def data = this.(ACCESS)();
+        def result;
+        return? ifValue { data::tokens.nextValue(result?) }
+            { tokens ->
+                this.(NEW)(@{tokens, context: [data::context*, result]})
+            }
+    };
+
+    ## Documented in spec.
     .withContext(context) {
         def data = this.(ACCESS)();
         return this.(NEW)(@{data*, context})

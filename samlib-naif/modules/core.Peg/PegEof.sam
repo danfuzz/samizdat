@@ -22,7 +22,7 @@ export class PegEof
         new: NEW {
     ## Documented in spec.
     .parse(state) {
-        return? ifNot { state.nextValue(nullBox) }
+        return? ifNot { state.shiftInput() }
             { state.addContext(null) }
     };
 };
