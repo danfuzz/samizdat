@@ -43,13 +43,12 @@ export class PegRepeat
         var origContext = state.get_context();
         var remainingState = state;  ## Collects parsed items.
         var results = [];
-        var count = 0;
         var result;
 
         def maxCheck = ifValue { data::maxSize }
             { maxSize ->
                 {
-                    ifIs { count.totalEq(maxSize) }
+                    ifIs { results.get_size().totalEq(maxSize) }
                         {
                             ## We parsed the max repeat size. Return it.
                             box* := results;
@@ -65,13 +64,12 @@ export class PegRepeat
                     ## Successfully parsed the inner rule.
                     results := [results*, reverseNth(newState.get_context(), 0)];
                     remainingState := newState.withContext(origContext);
-                    count := count.add(1);
                     maxCheck()
                 }
                 {
                     ## Failed to parse the inner rule. Check for minimum match
                     ## count. Store result and return success if appropriate.
-                    return? ifIs { totalGe(count, data::minSize) }
+                    return? ifIs { totalGe(results.get_size(), data::minSize) }
                         {
                             box* := results;
                             remainingState.addContext(results)
