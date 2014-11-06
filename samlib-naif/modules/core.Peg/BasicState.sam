@@ -12,7 +12,7 @@
 ##
 ## Class Definition
 ##
-## Payload: {tokens: generator}
+## Payload: {input: generator, context: [items*]}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -22,8 +22,8 @@ export class BasicState
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    class.new(tokens) {
-        return this.(NEW)(@{tokens, context: []})
+    class.new(input) {
+        return this.(NEW)(@{input, context: []})
     };
 
     ## Documented in spec.
@@ -46,9 +46,9 @@ export class BasicState
     .shiftInput() {
         def data = this.(ACCESS)();
         def result;
-        return? ifValue { data::tokens.nextValue(result?) }
-            { tokens ->
-                this.(NEW)(@{tokens, context: [data::context*, result]})
+        return? ifValue { data::input.nextValue(result?) }
+            { input ->
+                this.(NEW)(@{input, context: [data::context*, result]})
             }
     };
 

@@ -26,9 +26,9 @@ export class CacheState
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    class.new(tokens) {
+    class.new(input) {
         def item;
-        def rest = ifValueOr { tokens.nextValue(item?) }
+        def rest = ifValueOr { input.nextValue(item?) }
             { return voidState };
         def nextState = Lazy.new { this.new(rest) };
 
@@ -36,7 +36,7 @@ export class CacheState
     };
 
     ## Documented in spec.
-    .applyRule(rule, box, items) {
-        return? rule.parse(box, this, items)
+    .applyRule(rule) {
+        return? rule.parse(this)
     };
 };
