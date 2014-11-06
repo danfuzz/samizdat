@@ -8,15 +8,13 @@
 
 #= language core.Lang0
 
-import core.Generator :: stdCollect, stdFetch;
-
 import ./VoidState :: voidState;
 
 
 ##
 ## Class Definition
 ##
-## Payload: {item: ., nextState: lazy}
+## Payload: {input: generator, context: [item*], shifted: lazy}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -27,16 +25,44 @@ export class CacheState
         new: NEW {
     ## Documented in spec.
     class.new(input) {
-        def item;
-        def rest = ifValueOr { input.nextValue(item?) }
-            { return voidState };
-        def nextState = Lazy.new { this.new(rest) };
+        return this.fullNew(input, [])
+    };
 
-        return this.(NEW)(@{item, nextState})
+    ## Documented in spec.
+    class.fullNew(input, context) {
+        def shifted = Lazy.new {
+            def result;
+            ifValue { input.nextValue(result?) }
+                { newInput -> this.fullNew(newInput, [context*, result]) }
+        };
+
+        return this.(NEW)(@{input, context, shifted: shifted?})
+    };
+
+    ## Documented in spec.
+    .addContext(item) {
+        def data = this.(ACCESS)();
+        return CacheState.fullNew(data::input, [data::context*, item])
     };
 
     ## Documented in spec.
     .applyRule(rule) {
         return? rule.parse(this)
+    };
+
+    ## Documented in spec.
+    .get_context() {
+        return this.(ACCESS)()::context
+    };
+
+    ## Documented in spec.
+    .shiftInput() {
+        return? this.(ACCESS)()::shifted*
+    };
+
+    ## Documented in spec.
+    .withContext(context) {
+        def data = this.(ACCESS)();
+        return CacheState.fullNew(data::input, context)
     };
 };
