@@ -1618,9 +1618,7 @@ def parIndexPostfix = {:
         |
             ## It's a from-end index.
             {
-                { node ->
-                    makeFunCall(REFS::Sequence_reverseNth, node, index::value)
-                }
+                { node -> makeCall(node, SYMS::reverseNth, index::value) }
             }
         )
     )
