@@ -8,10 +8,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: stdCollect, stdFetch;
-
-import ./VoidState :: voidState;
-
 
 ##
 ## Class Definition
@@ -27,12 +23,18 @@ export class BasicState
         new: NEW {
     ## Documented in spec.
     class.new(tokens) {
-        return this.(NEW)(@{tokens})
+        return this.(NEW)(@{tokens, context: []})
     };
 
     ## Documented in spec.
-    .applyRule(rule, box, items) {
-        return? rule.parse(box, this, items)
+    .addContext(item) {
+        def data = this.(ACCESS)();
+        return this.(NEW)(@{data*, context: [data::context*, item]})
+    };
+
+    ## Documented in spec.
+    .applyRule(rule, box) {
+        return? rule.parse(box, this)
     };
 
     ## Documented in spec.
@@ -48,9 +50,20 @@ export class BasicState
     };
 
     ## Documented in spec.
+    .get_context() {
+        return this.(ACCESS)()::context
+    };
+
+    ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
         return? ifValue { data::tokens.nextValue(box) }
-            { tokens -> this.(NEW)(@{tokens}) }
+            { tokens -> this.(NEW)(@{data*, tokens}) }
+    };
+
+    ## Documented in spec.
+    .withContext(context) {
+        def data = this.(ACCESS)();
+        return this.(NEW)(@{data*, context})
     };
 };

@@ -63,22 +63,19 @@ export class PegSequence
     };
 
     ## Documented in spec.
-    .parse(box, state, items) {
-        ## Each rule after the first gets passed as additional arguments
+    .parse(box, state) {
+        ## Each rule after the first gets passed as additional context
         ## the matched results of all the previous rules, in order.
 
         def data = this.(ACCESS)();
+        def origContext = state.get_context();
         var remainingState = state;
-        var results = items;  ## Includes initial items and each parsed value.
         var result = null;
 
         ## This is akin to `for (rule in data::rules) { ... }`.
         filterPump(data::rules) { rule ->
-            ifValue { remainingState.applyRule(rule, result?, results) }
-                { newState ->
-                    remainingState := newState;
-                    results := [results*, result]
-                }
+            ifValue { remainingState.applyRule(rule, result?) }
+                { newState -> remainingState := newState }
                 {
                     ## Propagate the failure.
                     return
@@ -86,6 +83,6 @@ export class PegSequence
         };
 
         box* := result;
-        return remainingState
+        return remainingState.withContext([origContext*, result])
     };
 };

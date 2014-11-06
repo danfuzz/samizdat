@@ -29,7 +29,7 @@ export fn apply(rule, input) {
     def state = BasicState.new(tokens);
     def result;
 
-    return? ifIs { state.applyRule(rule, result?, []) }
+    return? ifIs { state.applyRule(rule, result?) }
         { result }
 };
 

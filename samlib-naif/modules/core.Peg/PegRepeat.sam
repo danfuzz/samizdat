@@ -8,6 +8,8 @@
 
 #= language core.Lang0
 
+import core.Sequence :: reverseNth;
+
 
 ##
 ## Class Definition
@@ -35,11 +37,12 @@ export class PegRepeat
     };
 
     ## Documented in spec.
-    .parse(box, state, items) { ->
+    .parse(box, state) { ->
         def data = this.(ACCESS)();
         def rule = data::rule;
-        var remainingState = state;
-        var results = [];  ## Values that have been parsed by the inner rule.
+        var origContext = state.get_context();
+        var remainingState = state;  ## Collects parsed items.
+        var results = [];
         var count = 0;
         var result;
 
@@ -50,18 +53,18 @@ export class PegRepeat
                         {
                             ## We parsed the max repeat size. Return it.
                             box* := results;
-                            return remainingState
+                            return remainingState.addContext(results)
                         }
                 }
             }
             { {->} };
 
         loop {
-            ifValue { remainingState.applyRule(rule, result?, items) }
+            ifValue { remainingState.applyRule(rule, result?) }
                 { newState ->
                     ## Successfully parsed the inner rule.
-                    remainingState := newState;
-                    results := [results*, result];
+                    results := [results*, reverseNth(newState.get_context(), 0)];
+                    remainingState := newState.withContext(origContext);
                     count := count.add(1);
                     maxCheck()
                 }
@@ -71,7 +74,7 @@ export class PegRepeat
                     return? ifIs { totalGe(count, data::minSize) }
                         {
                             box* := results;
-                            remainingState
+                            remainingState.addContext(results)
                         }
                 }
         }

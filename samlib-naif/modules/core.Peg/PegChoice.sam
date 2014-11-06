@@ -40,10 +40,10 @@ export class PegChoice
     };
 
     ## Documented in spec.
-    .parse(box, state, items) {
+    .parse(box, state) {
         def data = this.(ACCESS)();
         filterPump(data::rules) { rule ->
-            ifValue { state.applyRule(rule, box, items) }
+            ifValue { state.applyRule(rule, box) }
                 { newState -> return newState }
         };
 
