@@ -73,6 +73,6 @@ export class ParaGenerator
         def nexts = generatorCalls.collect({ one -> one.nth(1) });
 
         box* := yields;
-        return ParaGenerator.(NEW)(@{generators: nexts})
+        return this.(NEW)(@{generators: nexts})
     };
 };

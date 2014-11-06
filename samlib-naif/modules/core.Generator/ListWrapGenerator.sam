@@ -46,7 +46,7 @@ export class ListWrapGenerator
         return? ifValue { data::generator.nextValue(result?) }
             { nextGenerator ->
                 box* := [result];
-                ListWrapGenerator.new(nextGenerator)
+                this.(NEW)(@{generator: nextGenerator})
             }
     };
 };

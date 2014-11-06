@@ -61,7 +61,7 @@ export class FilterGenerator
                     ifValue { filterFunction(result*) }
                         { value ->
                             box* := value;
-                            return FilterGenerator.(NEW)(
+                            return this.(NEW)(
                                 @{filterFunction, generator: nextGen})
                         }
                         {
