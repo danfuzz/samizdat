@@ -119,6 +119,18 @@ expectEq("repeat 5", "muffin",           "muffin".repeat(1));
 expectEq("repeat 6", "muffinmuffin",     "muffin".repeat(2));
 expectEq("repeat 7", "xxxxxxxxxxxxxxxx", "x".repeat(16));
 
+expectVoid("reverseNth 1",      { "".reverseNth(0) });
+expectVoid("reverseNth 2",      { "".reverseNth(1) });
+expectVoid("reverseNth 3",      { "".reverseNth(-1) });
+expectEq("reverseNth 4",   "a", "a".reverseNth(0));
+expectVoid("reverseNth 5",      { "a".reverseNth(1) });
+expectVoid("reverseNth 6",      { "a".reverseNth(-1) });
+expectEq("reverseNth 7",   "x", "zyx".reverseNth(0));
+expectEq("reverseNth 8",   "y", "zyx".reverseNth(1));
+expectEq("reverseNth 9",   "z", "zyx".reverseNth(2));
+expectVoid("reverseNth 10",     { "zyx".reverseNth(3) });
+expectVoid("reverseNth 11",     { "zyx".reverseNth(-1) });
+
 expect("castFrom 1", "fizmo", { String.castFrom("fizmo") });
 expect("castFrom 2", "fizmo", { Core.castFrom("fizmo") });
 expect("castFrom 3", "fizmo", { Value.castFrom("fizmo") });
