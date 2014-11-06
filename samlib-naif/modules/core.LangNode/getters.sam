@@ -4,8 +4,6 @@
 
 #= language core.Lang0
 
-import core.Sequence :: reverseNth;
-
 
 ##
 ## Private Definitions
@@ -45,12 +43,12 @@ export fn get_baseName(source) {
         @{
             @external: { . ->
                 def components = splitAtChar(source::name, ".");
-                reverseNth(components, 0)
+                components.reverseNth(0)
             },
 
             @internal: { . ->
                 def components = splitAtChar(source::name, "/");
-                def last = reverseNth(components, 0);
+                def last = components.reverseNth(0);
                 def parts = splitAtChar(last, ".");
                 parts.nth(0)
             }

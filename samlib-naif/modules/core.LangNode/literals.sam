@@ -39,6 +39,7 @@ def SYMBOLS = [
     @or,
     @perEq,
     @reverse,
+    @reverseNth,
     @set,
     @shl,
     @singleValue,
