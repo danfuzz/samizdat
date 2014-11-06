@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import core.Sequence :: reverseNth;
-
 
 ##
 ## Class Definition
@@ -40,8 +38,8 @@ export class PegRepeat
     .parse(box, state) { ->
         def data = this.(ACCESS)();
         def rule = data::rule;
-        var origContext = state.get_context();
-        var remainingState = state;  ## Collects parsed items.
+        def origContext = state.get_context();
+        var remainingState = state;
         var results = [];
         var result;
 
@@ -61,8 +59,9 @@ export class PegRepeat
         loop {
             ifValue { remainingState.applyRule(rule, result?) }
                 { newState ->
-                    ## Successfully parsed the inner rule.
-                    results := [results*, reverseNth(newState.get_context(), 0)];
+                    ## Successfully parsed the inner rule. Extract the result,
+                    ## and reset the context.
+                    results := [results*, newState.get_context().reverseNth(0)];
                     remainingState := newState.withContext(origContext);
                     maxCheck()
                 }
