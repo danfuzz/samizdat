@@ -26,7 +26,7 @@ se, that is, records whose name (tag) is taken to indicate a token type.
 Almost all of the classes in this module are for parser rules. A parser rule
 is an object that binds the `.parse()` method, taking as a single argument
 a `ParserState` value and returning either another `ParserState` or void.
-A `ParserState` encapsulates a generator of input tokens (e.g. but not
+A `ParserState` encapsulates a generator of input values (e.g. but not
 necessarily a list) and a list (per se) containing the "trailing context" of
 matched items.
 
@@ -112,14 +112,12 @@ Performs a parse of `state` (a parser state object). If successful, returns a
 new state that represents the successful parse. If unsuccessful, returns void.
 
 A successful call to this method is expected to "consume" zero or more
-elements from the input generator and add *exactly* one item to the trailing
+items from the input generator and add *exactly* one item to the trailing
 context.
 
 
 <br><br>
 ### Method Definitions: `ParserState` protocol
-
-`ParserState` includes all of the methods of `Generator`, and in addition:
 
 #### `.addContext(value) -> :ParserState`
 
@@ -136,6 +134,11 @@ have returned).
 #### `.get_context() -> list`
 
 Gets the trailing context of `this`.
+
+#### `.shiftInput() -> :ParserState | void`
+
+Returns an instance just like `this`, except with the first element of the
+input "consumed" and appended to the trailing context.
 
 #### `.withContext(list) -> :ParserState`
 
