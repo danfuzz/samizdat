@@ -14,12 +14,6 @@
 ##
 
 ## Documented in spec.
-export fn reverseNth(seq, n) {
-    def index = seq.get_size().sub(n).sub(1);
-    return? seq.nth(index)
-};
-
-## Documented in spec.
 export fn sliceGeneral(seq, style, start, optEnd?) {
     def limit = seq.get_size().sub(1);
     def method = ifIs { eq(style, @exclusive) }
