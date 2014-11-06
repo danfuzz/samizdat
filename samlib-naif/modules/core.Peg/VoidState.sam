@@ -23,21 +23,6 @@ export class VoidState
     .applyRule(rule, box, items) {
         return? rule.parse(box, this, items)
     };
-
-    ## Documented in spec.
-    .collect(optFilterFunction?) {
-        return []
-    };
-
-    ## Documented in spec.
-    .fetch() {
-        ## Return void, always.
-    };
-
-    ## Documented in spec.
-    .nextValue(box) {
-        ## Return void, always.
-    };
 };
 
 export def voidState = VoidState.(NEW)();

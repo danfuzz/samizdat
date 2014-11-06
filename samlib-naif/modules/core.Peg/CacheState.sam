@@ -39,24 +39,4 @@ export class CacheState
     .applyRule(rule, box, items) {
         return? rule.parse(box, this, items)
     };
-
-    ## Documented in spec.
-    .collect(optFilterFunction?) {
-        ## Just use the standard implementation.
-        return stdCollect(this, optFilterFunction*)
-    };
-
-    ## Documented in spec.
-    .fetch() {
-        ## Just use the standard implementation.
-        return stdFetch(this)
-    };
-
-    ## Documented in spec.
-    .nextValue(box) {
-        def data = this.(ACCESS)();
-
-        box.store(data::item);
-        return data::nextState*
-    };
 };

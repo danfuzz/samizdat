@@ -38,27 +38,8 @@ export class BasicState
     };
 
     ## Documented in spec.
-    .collect(optFilterFunction?) {
-        def data = this.(ACCESS)();
-        return data::tokens.collect(optFilterFunction*)
-    };
-
-    ## Documented in spec.
-    .fetch() {
-        def data = this.(ACCESS)();
-        return data::tokens.fetch()
-    };
-
-    ## Documented in spec.
     .get_context() {
         return this.(ACCESS)()::context
-    };
-
-    ## Documented in spec.
-    .nextValue(box) {
-        def data = this.(ACCESS)();
-        return? ifValue { data::tokens.nextValue(box) }
-            { tokens -> this.(NEW)(@{data*, tokens}) }
     };
 
     ## Documented in spec.
