@@ -114,6 +114,8 @@ will be returned, or one of:
     * [ExternalLoader](core.ModuleSystem/ExternalLoader.md)
     * [InternalLoader](core.ModuleSystem/InternalLoader.md)
   * [core.Peg (parsing)](core.Peg/README.md)
+    * [BasicState](core.Peg/BasicState.md)
+    * [CacheState](core.Peg/CacheState.md)
     * [PegAny](core.Peg/PegAny.md)
     * [PegChoice](core.Peg/PegChoice.md)
     * [PegCode](core.Peg/PegCode.md)

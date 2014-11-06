@@ -37,6 +37,8 @@ use the Samizdat parsing syntax (`{: ... :}`) for explanatory purposes.
 <br><br>
 ### Classes
 
+* [BasicState](BasicState.md)
+* [CacheState](CacheState.md)
 * [PegAny](PegAny.md)
 * [PegChoice](PegChoice.md)
 * [PegCode](PegCode.md)
