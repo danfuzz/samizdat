@@ -100,10 +100,6 @@ to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{: [] :}` (that is,
 the empty set of tokens or characters).
 
-#### ParserState: `voidState`
-
-The sole instance of the class `VoidState`.
-
 
 <br><br>
 ### Method Definitions: `Parser` protocol
