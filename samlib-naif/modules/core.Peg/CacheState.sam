@@ -36,7 +36,7 @@ export class CacheState
                 { newInput -> this.fullNew(newInput, [context*, result]) }
         };
 
-        return this.(NEW)(@{input, context, shifted: shifted?})
+        return this.(NEW)(@{input, context, shifted})
     };
 
     ## Documented in spec.
