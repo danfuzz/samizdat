@@ -21,20 +21,20 @@ enum {
     DAT_CHATTY_GC = false,
 
     /** Whether to spew to the console about map cache hits. */
-    DAT_CHATTY_MAP_CACHE = false,
+    DAT_CHATTY_LOOKUP_CACHE = false,
 
     /** Whether to be paranoid about values in collections / records. */
     DAT_CONSTRUCTION_PARANOIA = false,
 
     /**
-     * Number of entries in the map lookup cache. Probably best for this
-     * to be a prime number (to get better distribution of cache elements).
-     * In practice it looks like the theoretical best case is probably about
-     * 99.6% (that is, nearly every lookup is for a map/key pair that have
-     * been observed before). The size of the map cache is chosen to hit the
+     * Number of entries in the lookup cache. Probably best for this to be a
+     * prime number (to get better distribution of cache elements). In
+     * practice, it looks like the theoretical best case is probably about
+     * 99.6% (that is, nearly every lookup is for a container/key pair that
+     * have been observed before). The size of the cache is chosen to hit the
      * point of diminishing returns.
      */
-    DAT_MAP_CACHE_SIZE = 6007,
+    DAT_LOOKUP_CACHE_SIZE = 6007,
 
     /** Largest code point to keep a cached single-character string for. */
     DAT_MAX_CACHED_CHAR = 127,
@@ -122,21 +122,6 @@ typedef struct DatHeader {
     uint8_t payload[/*flexible*/];
 } DatHeader;
 
-/**
- * Entry in the map cache. The cache is used to speed up calls to `mapFind`
- * (see which for details).
- */
-typedef struct {
-    /** Map to look up a key in. */
-    zvalue map;
-
-    /** Key to look up. */
-    zvalue key;
-
-    /** Result from `mapFind`. */
-    zint index;
-} MapCacheEntry;
-
 
 /**
  * Implementation of method `Builtin.call()`. This is used in the code
@@ -161,11 +146,6 @@ void classBindMethods(zvalue cls, zvalue classMethods, zvalue instanceMethods);
  * and does not check if `index` is in the valid range for a symbol index.
  */
 zvalue classFindMethodUnchecked(zvalue cls, zint index);
-
-/**
- * Gets the `CacheEntry` for the given map/key pair.
- */
-MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
 /**
  * Marks all the references on the frame stack. Returns the number of

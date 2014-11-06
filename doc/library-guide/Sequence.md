@@ -24,13 +24,6 @@ reporting a terminal error).
 
 Returns the list `[0..!#this]`.
 
-#### `.nthMapping(n) -> . | void`
-
-(Refinement of `Collection` protocol.)
-
-When the return value is non-void, the key of the returned mapping is the
-given `n`.
-
 #### `.nth(n) -> . | void`
 
 Returns the nth (zero-based) element of the sequence.

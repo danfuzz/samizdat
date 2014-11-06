@@ -10,7 +10,6 @@
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"
-#include "type/Map.h"
 #include "type/Sequence.h"
 #include "type/define.h"
 
@@ -103,25 +102,12 @@ METH_IMPL_0(Sequence, keyList) {
     return listFromZarray((zarray) {size, elems});
 }
 
-// Documented in spec.
-METH_IMPL_1(Sequence, nthMapping, n) {
-    zvalue value = METH_CALL(ths, nth, n);
-
-    if (value == NULL) {
-        return NULL;
-    } else {
-        zmapping mapping = {n, value};
-        return mapFromArray(1, &mapping);
-    }
-}
-
 /** Initializes the module. */
 MOD_INIT(Sequence) {
     MOD_USE_NEXT(Generator);
 
     FUN_Sequence_get        = datImmortalize(FUNC_VALUE(Sequence_get));
     FUN_Sequence_keyList    = datImmortalize(FUNC_VALUE(Sequence_keyList));
-    FUN_Sequence_nthMapping = datImmortalize(FUNC_VALUE(Sequence_nthMapping));
 }
 
 // Documented in header.
@@ -129,6 +115,3 @@ zvalue FUN_Sequence_get = NULL;
 
 // Documented in header.
 zvalue FUN_Sequence_keyList = NULL;
-
-// Documented in header.
-zvalue FUN_Sequence_nthMapping = NULL;

@@ -6,6 +6,7 @@
 
 #include "type/define.h"
 
+#include "LookupCache.h"
 #include "impl.h"
 
 
@@ -13,8 +14,8 @@
 // Private Definitions
 //
 
-/** The cache of `mapFind` lookups. */
-static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
+/** The cache. */
+static LookupCacheEntry theCache[DAT_LOOKUP_CACHE_SIZE];
 
 
 //
@@ -22,20 +23,21 @@ static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
 //
 
 // Documented in header.
-MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
-    uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
+LookupCacheEntry *lookupCacheFind(zvalue container, zvalue key) {
+    uintptr_t hash =
+        ((uintptr_t) container >> 4) + (((uintptr_t) key) >> 4) * 31;
     hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
 
     // Note: In practice there doesn't seem to be an observable performance
     // difference between using `&` and `%` to calculate the cache index, so
     // we go for `%` and a prime number cache size to get probably-better
     // cache behavior.
-    MapCacheEntry *entry = &mapCache[hash % DAT_MAP_CACHE_SIZE];
+    LookupCacheEntry *entry = &theCache[hash % DAT_LOOKUP_CACHE_SIZE];
 
-    if (DAT_CHATTY_MAP_CACHE) {
+    if (DAT_CHATTY_LOOKUP_CACHE) {
         static int hits = 0;
         static int total = 0;
-        if ((entry->map == map) && (entry->key == key)) {
+        if ((entry->container == container) && (entry->key == key)) {
             hits++;
         }
         total++;
@@ -54,22 +56,22 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
 //
 
 // Documented in header.
-METH_IMPL_0(MapCache, gcMark) {
-    memset(mapCache, 0, sizeof(mapCache));
+METH_IMPL_0(LookupCache, gcMark) {
+    memset(theCache, 0, sizeof(theCache));
     return NULL;
 }
 
 /** Initializes the module. */
-MOD_INIT(MapCache) {
+MOD_INIT(LookupCache) {
     MOD_USE(Core);
 
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `gcMark` method gets called during gc,
-    // which we use as a trigger to clear the map cache.
-    zvalue CLS_MapCache = makeCoreClass(SYM(MapCache), CLS_Core,
+    // which we use as a trigger to clear the cache.
+    zvalue CLS_LookupCache = makeCoreClass(SYM(LookupCache), CLS_Core,
         NULL,
         METH_TABLE(
-            METH_BIND(MapCache, gcMark)));
+            METH_BIND(LookupCache, gcMark)));
 
-    datImmortalize(datAllocValue(CLS_MapCache, 0));
+    datImmortalize(datAllocValue(CLS_LookupCache, 0));
 }

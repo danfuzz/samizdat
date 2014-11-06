@@ -65,12 +65,9 @@ zvalue mapAppend(zvalue map, zvalue key, zvalue value) {
 
 // Documented in header.
 zvalue mapFrom1(zvalue k1, zvalue v1) {
-    if (v1 == NULL) {
-        return EMPTY_MAP;
-    }
-
-    zmapping elem = {k1, v1};
-    return mapFromArray(1, &elem);
+    return (v1 == NULL)
+        ? EMPTY_MAP
+        : mapFromMapping((zmapping) {k1, v1});
 }
 
 // Documented in header.

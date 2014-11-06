@@ -41,8 +41,19 @@ typedef struct {
 } zmapping;
 
 /**
+ * Low-level sized-array of `zmapping`s.
+ */
+typedef struct {
+    /** Number of elements. */
+    zint size;
+
+    /** Pointer to the elements. */
+    const zmapping *elems;
+} zassoc;
+
+/**
  * Prototype for an underlying C function corresponding to an in-model
- * function (value of type `Function`).
+ * function.
  */
 typedef zvalue (*zfunction)(zvalue thisFunction, zarray args);
 

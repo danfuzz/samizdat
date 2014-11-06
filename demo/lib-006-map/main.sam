@@ -104,8 +104,6 @@ expectNe("ne 4", {false: 1}, {(false): 1});
 
 expectEq("cat", {10: 1, 20: 2, 30: 3}, {10: 1}.cat({30: 3}, {20: 2}));
 
-expectEq("nthMapping", {a: 10}, {a: 10, b: 20}.nthMapping(0));
-
 ## Symbol table conversion.
 expectEq("symtab 1", {},             {}.cat(@{}));
 expectEq("symtab 2", {a: 10},        {}.cat(@{a: 10}));

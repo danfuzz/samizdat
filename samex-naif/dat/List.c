@@ -448,8 +448,7 @@ MOD_INIT(List) {
             METH_BIND(List, totalOrder),
             METH_BIND(List, valueList),
             SYM(get),        FUN_Sequence_get,
-            SYM(keyList),    FUN_Sequence_keyList,
-            SYM(nthMapping), FUN_Sequence_nthMapping));
+            SYM(keyList),    FUN_Sequence_keyList));
 
     EMPTY_LIST = datImmortalize(allocList(0));
 }

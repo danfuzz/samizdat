@@ -65,13 +65,6 @@ form (prefix `#` operator).
 
 Returns the list of keys mapped by the collection.
 
-#### `.nthMapping(n) -> map | void`
-
-Returns the nth (zero-based) mapping of the collection, in its predefined
-iteration order. The result is a one-element map of the key and corresponding
-value. Returns void if `n < 0` or `n >= #this`. It is an error
-(terminating the runtime) if `n` is not an `Int`.
-
 #### `.valueList() -> list`
 
 Returns the list of values mapped by the collection.

@@ -53,11 +53,10 @@ later-named modules depending only on earlier-named ones):
   primitive functions into execution contexts. This module does
   not implement any of the library itself. Depends on `util` and `dat`.
 
-* `lib` &mdash; Library bindings. This implements both primitive and
-  in-language bindings. The former are the parts of the core library
-  that need to be (or are most conveniently) implemented in C. The
-  latter are what can be implemented in Samizdat Layer 0. Depends on
-  everything above it.
+* `lib` &mdash; Library bindings. This pulls together primitive definitions
+  from `dat` and `lang`, additional primitive definitions defined in this
+  module, and in-language definitions which are loaded using the primitive
+  file evaluation mechanism. Depends on everything above it.
 
 * `main` &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
