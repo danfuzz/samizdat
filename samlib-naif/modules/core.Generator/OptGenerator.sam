@@ -49,7 +49,7 @@ export class OptGenerator
         return ifValue { data::generator.nextValue(result?) }
             { nextGenerator ->
                 box* := [result];
-                OptGenerator.new(nextGenerator)
+                this.(NEW)(@{generator: nextGenerator})
             }
             { ValueGenerator.new([]).nextValue(box) }
     };

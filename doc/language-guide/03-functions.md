@@ -346,3 +346,9 @@ def NEW = @NEW.toUnlisted();
 ```
 
 Neither of these two attributes is required.
+
+When provided, the `new` symbol is bound as both a class and instance method
+which constructs new instances, taking an optional data payload argument.
+
+When provided, the `access` symbol is bound as an instance method which
+takes no arguments and returns the data payload of the instance.

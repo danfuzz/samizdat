@@ -51,6 +51,6 @@ export class BasicState
     .nextValue(box) {
         def data = this.(ACCESS)();
         return? ifValue { data::tokens.nextValue(box) }
-            { tokens -> BasicState.(NEW)(@{tokens}) }
+            { tokens -> this.(NEW)(@{tokens}) }
     };
 };

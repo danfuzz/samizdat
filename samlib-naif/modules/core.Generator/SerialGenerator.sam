@@ -60,7 +60,7 @@ export class SerialGenerator
 
                 ifValue { firstGen.nextValue(box) }
                     { nextGenerator ->
-                        SerialGenerator.(NEW)(
+                        this.(NEW)(
                             @{generators: [nextGenerator, moreGens*]})
                     }
                     {

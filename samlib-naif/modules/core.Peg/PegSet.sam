@@ -34,7 +34,7 @@ export class PegSet
 
         def set = @{names*: true};  ## A set-like table of all the token names.
 
-        return PegSet.(NEW)(@{set})
+        return this.(NEW)(@{set})
     };
 
     ## Documented in spec.

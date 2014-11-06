@@ -57,7 +57,7 @@ export class RepeatGenerator
             {
                 def value = data::value;
                 box* := value;
-                RepeatGenerator.new(size.sub(1), value)
+                this.(NEW)(@{size: size.sub(1), value})
             }
     };
 };
