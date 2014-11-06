@@ -102,12 +102,21 @@ METH_IMPL_0(Sequence, keyList) {
     return listFromZarray((zarray) {size, elems});
 }
 
+// Documented in spec.
+METH_IMPL_1(Sequence, reverseNth, n) {
+    zint size = get_size(ths);
+    zint index = seqNthIndexStrict(size, n);
+
+    return cm_nth(ths, size - index - 1);
+}
+
 /** Initializes the module. */
 MOD_INIT(Sequence) {
     MOD_USE_NEXT(Generator);
 
     FUN_Sequence_get        = datImmortalize(FUNC_VALUE(Sequence_get));
     FUN_Sequence_keyList    = datImmortalize(FUNC_VALUE(Sequence_keyList));
+    FUN_Sequence_reverseNth = datImmortalize(FUNC_VALUE(Sequence_reverseNth));
 }
 
 // Documented in header.
@@ -115,3 +124,6 @@ zvalue FUN_Sequence_get = NULL;
 
 // Documented in header.
 zvalue FUN_Sequence_keyList = NULL;
+
+// Documented in header.
+zvalue FUN_Sequence_reverseNth = NULL;

@@ -17,7 +17,6 @@ import core.Generator :: filterPump;
 import core.LangNode :: KEYWORDS, intFromDigits;
 import core.Peg;  ## Used implicitly.
 import core.Peg :: apply, stringFromTokenList, symbolFromTokenList;
-import core.Sequence :: reverseNth;
 
 
 ##
@@ -251,7 +250,7 @@ fn processStringParts(parts) {
 
         ifIs { String.accepts(part) }
             {
-                def lastElem = reverseNth(elems, 0);
+                def lastElem = elems.reverseNth(0);
                 ifIs { String.accepts(lastElem) }
                     {
                         ## The last item in `elems` and the current `part`

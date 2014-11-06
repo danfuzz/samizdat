@@ -26,7 +26,9 @@ Returns the list `[0..!#this]`.
 
 #### `.nth(n) -> . | void`
 
-Returns the nth (zero-based) element of the sequence.
+Returns the nth (zero-based) element of the sequence. Returns void if `n < 0`
+or `n >= #this`. It is an error (terminating the runtime) if `n` is not an
+`Int`.
 
 #### `.repeat(count) -> sequence`
 
@@ -40,6 +42,14 @@ the opposite order.
 
 **Syntax Note:** This is the function that underlies the `^value`
 syntactic form (prefix `^` operator).
+
+#### `.reverseNth(n) -> . | void`
+
+Returns the nth (zero-based) element of the sequence, counting from the
+end of the sequence. This is equivalent to `this.reverse().nth(n)`.
+
+**Syntax Note:** This is the function that underlies the `seq[^value]`
+syntactic form.
 
 #### `.sliceExclusive(start, end?) -> sequence | void`
 
@@ -81,15 +91,6 @@ Returns the elements of `this`, always as a list per se.
 
 <br><br>
 ### Functions
-
-#### `reverseNth(sequence, n) -> . | void`
-
-Returns the nth (zero-based) element of the sequence, but counting backward
-from the end of the sequence. Returns void if `n < 0` or `n >= #sequence`.
-It is an error (terminating the runtime) if `n` is not an `Int`.
-
-In general, the result of this call should be the same as saying
-`sequence.reverse.nth(n)`.
 
 #### `sliceGeneral(sequence, style, start, end?) -> sequence | void`
 

@@ -635,7 +635,8 @@ MOD_INIT(String) {
             METH_BIND(String, totalOrder),
             METH_BIND(String, valueList),
             SYM(get),        FUN_Sequence_get,
-            SYM(keyList),    FUN_Sequence_keyList));
+            SYM(keyList),    FUN_Sequence_keyList,
+            SYM(reverseNth), FUN_Sequence_reverseNth));
 
     EMPTY_STRING = datImmortalize(allocString(0));
 }

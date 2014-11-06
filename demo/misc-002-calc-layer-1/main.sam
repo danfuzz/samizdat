@@ -50,7 +50,7 @@ fn applyShuntingYard(initialValue, opValues) {
     ## the result back at the top of the value stack.
     fn applyTop(ops, values) {
         def valuesSizeM2 = values.get_size().sub(2);
-        def function = $Sequence::reverseNth(ops, 0)::function;
+        def function = ops.reverseNth(0)::function;
         def newValue = function(values.sliceInclusive(valuesSizeM2)*);
         return {
             ops:    ops.sliceExclusive(0),
@@ -64,7 +64,7 @@ fn applyShuntingYard(initialValue, opValues) {
         var ops = origOps;
         var values = origValues;
         loop { /next ->
-            ifValue { $Sequence::reverseNth(ops, 0) }
+            ifValue { ops.reverseNth(0) }
                 { lastOp ->
                     ifIs { ge(lastOp::precedence, precedence) }
                         {

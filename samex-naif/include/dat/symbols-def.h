@@ -80,6 +80,7 @@ DEF_SYMBOL(readResource);
 DEF_SYMBOL(repeat);
 DEF_SYMBOL(resolve);
 DEF_SYMBOL(reverse);
+DEF_SYMBOL(reverseNth);
 DEF_SYMBOL(shl);
 DEF_SYMBOL(shr);
 DEF_SYMBOL(sign);

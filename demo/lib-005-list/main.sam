@@ -107,6 +107,18 @@ expectEq("repeat 5", [1, 2, 3],            [1, 2, 3].repeat(1));
 expectEq("repeat 6", [1, 2, 3, 1, 2, 3],   [1, 2, 3].repeat(2));
 expectEq("repeat 7", ["x", "x", "x", "x"], ["x"].repeat(4));
 
+expectVoid("reverseNth 1",     { [].reverseNth(0) });
+expectVoid("reverseNth 2",     { [].reverseNth(1) });
+expectVoid("reverseNth 3",     { [].reverseNth(-1) });
+expectEq("reverseNth 4",   10, [10].reverseNth(0));
+expectVoid("reverseNth 5",     { [10].reverseNth(1) });
+expectVoid("reverseNth 6",     { [10].reverseNth(-1) });
+expectEq("reverseNth 7",   @x, [@z, @y, @x].reverseNth(0));
+expectEq("reverseNth 8",   @y, [@z, @y, @x].reverseNth(1));
+expectEq("reverseNth 9",   @z, [@z, @y, @x].reverseNth(2));
+expectVoid("reverseNth 10",    { [@z, @y, @x].reverseNth(3) });
+expectVoid("reverseNth 11",    { [@z, @y, @x].reverseNth(-1) });
+
 expectVoid("sliceExclusive 1",        { [].sliceExclusive(0) });
 expectVoid("sliceExclusive 2",        { [].sliceExclusive(1) });
 expectVoid("sliceExclusive 3",        { [].sliceExclusive(-1) });
