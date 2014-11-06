@@ -71,8 +71,10 @@ def Blort = Object.subclass(@Blort, {access: ACCESS, new: NEW});
 
 def b1 = Blort.(NEW)();
 def b2 = Blort.(NEW)(@{x: 10});
+def b3 = b2.(NEW)(@{y: 20});
 
 expectEq("access 1", @{}, b1.(ACCESS)());
 expectEq("access 2", @{x: 10}, b2.(ACCESS)());
+expectEq("access 3", @{y: 20}, b3.(ACCESS)());
 
 note("All good.");
