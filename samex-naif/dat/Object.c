@@ -29,8 +29,8 @@ static ObjectInfo *getInfo(zvalue obj) {
 }
 
 /**
- * Method to construct an instance. This is the function that's bound as the
- * class method for the `secret` symbol.
+ * Class method to construct an instance. This is the function that's bound as
+ * the class method for the `new` symbol.
  */
 CMETH_IMPL_0_1(Object, new, data) {
     if (data == NULL) {
@@ -46,10 +46,27 @@ CMETH_IMPL_0_1(Object, new, data) {
 }
 
 /**
- * Method to get the given object's data payload. This is the function
- * that's bound as the instance method for the `secret` symbol.
+ * Instance method to construct an instance. This is the function that's bound
+ * as the instance method for the `new` symbol.
  */
-METH_IMPL_0(Object, privateDataOf) {
+METH_IMPL_0_1(Object, new, data) {
+    if (data == NULL) {
+        data = EMPTY_SYMBOL_TABLE;
+    } else {
+        assertHasClass(data, CLS_SymbolTable);
+    }
+
+    zvalue result = datAllocValue(classOf(ths), sizeof(ObjectInfo));
+
+    getInfo(result)->data = data;
+    return result;
+}
+
+/**
+ * Method to get the given object's data payload. This is the function
+ * that's bound as the instance method for the `access` symbol.
+ */
+METH_IMPL_0(Object, access) {
     return getInfo(ths)->data;
 }
 
@@ -65,23 +82,27 @@ CMETH_IMPL_2_4(Object, subclass, name, config,
         die("Invalid parent class: %s", cm_debugString(thsClass));
     }
 
+    if (classMethods == NULL) {
+        classMethods = EMPTY_SYMBOL_TABLE;
+    }
+
+    if (instanceMethods == NULL) {
+        instanceMethods = EMPTY_SYMBOL_TABLE;
+    }
+
     zvalue accessSecret = cm_get(config, SYM(access));
     zvalue newSecret = cm_get(config, SYM(new));
 
     if (accessSecret != NULL) {
-        zvalue extraMethods = METH_TABLE(
-            accessSecret, FUNC_VALUE(Object_privateDataOf));
-        instanceMethods = (instanceMethods == NULL)
-            ? extraMethods
-            : cm_cat(instanceMethods, extraMethods);
+        instanceMethods = cm_cat(instanceMethods,
+            METH_TABLE(accessSecret, FUNC_VALUE(Object_access)));
     }
 
     if (newSecret != NULL) {
-        zvalue extraMethods = METH_TABLE(
-            newSecret, FUNC_VALUE(class_Object_new));
-        classMethods = (classMethods == NULL)
-            ? extraMethods
-            : cm_cat(classMethods, extraMethods);
+        classMethods = cm_cat(classMethods,
+            METH_TABLE(newSecret, FUNC_VALUE(class_Object_new)));
+        instanceMethods = cm_cat(instanceMethods,
+            METH_TABLE(newSecret, FUNC_VALUE(Object_new)));
     }
 
     return makeClass(name, CLS_Object, classMethods, instanceMethods);
