@@ -5,7 +5,6 @@
 #= language core.Lang0
 
 import core.Generator :: filterAll, filterPump;
-import core.Sequence :: reverseNth;
 
 import ./constructors1 :: *;
 import ./getters :: *;
@@ -307,7 +306,7 @@ export fn makeFullClosure(baseData) {
         { ifIs { table::yieldDef } { @void{} } }
         { ifIs { eq(statSz, 0) } { @void{} } }
         {
-            def lastStat = reverseNth(statements, 0);
+            def lastStat = statements.reverseNth(0);
             ifIs { isExpression(lastStat) }
                 {
                     statements := statements.sliceExclusive(0);
