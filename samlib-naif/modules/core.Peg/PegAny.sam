@@ -21,9 +21,10 @@ export class PegAny
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    .parse(box, state) {
-        return? ifValue { state.nextValue(box) }
-            { newState -> newState.addContext(box*) }
+    .parse(state) {
+        def result;
+        return? ifValue { state.nextValue(result?) }
+            { newState -> newState.addContext(result) }
     };
 };
 

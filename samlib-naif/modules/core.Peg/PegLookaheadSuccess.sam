@@ -26,9 +26,9 @@ export class PegLookaheadSuccess
     };
 
     ## Documented in spec.
-    .parse(box, state) {
+    .parse(state) {
         def data = this.(ACCESS)();
-        return? ifIs { state.applyRule(data::rule, box) }
-            { state.addContext(box*) }
+        return? ifValue { state.applyRule(data::rule) }
+            { result -> state.withContext(result.get_context()) }
     };
 };

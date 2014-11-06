@@ -21,12 +21,9 @@ export class PegEof
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    .parse(box, state) {
+    .parse(state) {
         return? ifNot { state.nextValue(nullBox) }
-            {
-                box* := null;
-                state.addContext(null)
-            }
+            { state.addContext(null) }
     };
 };
 

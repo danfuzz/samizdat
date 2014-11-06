@@ -21,7 +21,7 @@ export class PegFail
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    .parse(box, state) {
+    .parse(state) {
         ## Do nothing, and return void.
     };
 };

@@ -29,12 +29,9 @@ export class PegCode
     };
 
     ## Documented in spec.
-    .parse(box, state) {
+    .parse(state) {
         def data = this.(ACCESS)();
         return? ifValue { data::function(state.get_context()*) }
-            { result ->
-                box* := result;
-                state.addContext(result)
-            }
+            { result -> state.addContext(result) }
     };
 };

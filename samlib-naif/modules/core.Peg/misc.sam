@@ -27,10 +27,9 @@ export fn apply(rule, input) {
 
 
     def state = BasicState.new(tokens);
-    def result;
 
-    return? ifIs { state.applyRule(rule, result?) }
-        { result }
+    return? ifValue { state.applyRule(rule) }
+        { result -> result.get_context()* }
 };
 
 ## Documented in spec.
