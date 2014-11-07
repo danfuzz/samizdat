@@ -110,13 +110,55 @@ METH_IMPL_1(Sequence, reverseNth, n) {
     return cm_nth(ths, size - index - 1);
 }
 
+// Documented in spec.
+METH_IMPL_2_3(Sequence, sliceGeneral, style, start, end) {
+    zint size = get_size(ths);
+    zint limit = size - 1;
+
+    zvalue methName;
+    if (symbolEq(style, SYM(exclusive))) {
+        methName = SYM(sliceExclusive);
+    } else if (symbolEq(style, SYM(inclusive))) {
+        methName = SYM(sliceInclusive);
+    } else {
+        die("Invalid `style` for `sliceGeneral`.");
+    }
+
+    zvalue startIndex;
+    if (recHasName(start, SYM(fromStart))) {
+        startIndex = cm_get(start, SYM(value));
+    } else if (recHasName(start, SYM(fromEnd))) {
+        startIndex = cm_get(start, SYM(value));
+        startIndex = intFromZint(limit - zintFromInt(startIndex));
+    } else {
+        die("Invalid `start` for `sliceGeneral`.");
+    }
+
+    if (end == NULL) {
+        return METH_CALL_SYM(ths, methName, startIndex);
+    }
+
+    zvalue endIndex;
+    if (recHasName(end, SYM(fromStart))) {
+        endIndex = cm_get(end, SYM(value));
+    } else if (recHasName(end, SYM(fromEnd))) {
+        endIndex = cm_get(end, SYM(value));
+        endIndex = intFromZint(limit - zintFromInt(endIndex));
+    } else {
+        die("Invalid `end` for `sliceGeneral`.");
+    }
+
+    return METH_CALL_SYM(ths, methName, startIndex, endIndex);
+}
+
 /** Initializes the module. */
 MOD_INIT(Sequence) {
     MOD_USE_NEXT(Generator);
 
-    FUN_Sequence_get        = datImmortalize(FUNC_VALUE(Sequence_get));
-    FUN_Sequence_keyList    = datImmortalize(FUNC_VALUE(Sequence_keyList));
-    FUN_Sequence_reverseNth = datImmortalize(FUNC_VALUE(Sequence_reverseNth));
+    FUN_Sequence_get          = datImmortalize(FUNC_VALUE(Sequence_get));
+    FUN_Sequence_keyList      = datImmortalize(FUNC_VALUE(Sequence_keyList));
+    FUN_Sequence_reverseNth   = datImmortalize(FUNC_VALUE(Sequence_reverseNth));
+    FUN_Sequence_sliceGeneral = datImmortalize(FUNC_VALUE(Sequence_sliceGeneral));
 }
 
 // Documented in header.
@@ -127,3 +169,6 @@ zvalue FUN_Sequence_keyList = NULL;
 
 // Documented in header.
 zvalue FUN_Sequence_reverseNth = NULL;
+
+// Documented in header.
+zvalue FUN_Sequence_sliceGeneral = NULL;
