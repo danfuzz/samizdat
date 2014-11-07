@@ -68,6 +68,7 @@ will be returned, or one of:
 
 * Global Classes
   * [Bool](Bool.md)
+  * [Box](Box.md) (also includes Cell, Lazy, NullBox, Promise, and Result)
   * [Builtin](Builtin.md)
   * [Class](Class.md)
   * [Core](Core.md)
