@@ -148,11 +148,11 @@ replaced with `list`, which must be a list.
 
 #### `apply(rule, input) -> . | void`
 
-Applies a parser rule to the given input, yielding whatever result the
-rule yields on the input.
+Applies a parser rule to the given input, yielding whatever result the rule
+yields on the input.
 
-`input` must be a generator (including possibly a collection).
-If it is a string, this function automatically treats it as a generator of
+`input` must be a generator (including possibly a collection). If it is a
+string, this function automatically treats it as a generator of
 character-as-token values.
 
 This function creates a `BasicState` parser state object to wrap `input`, and
