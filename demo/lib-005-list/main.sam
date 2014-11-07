@@ -144,4 +144,12 @@ expectEq("sliceInclusive 10", [3, 4], [1, 2, 3, 4].sliceInclusive(2));
 expectEq("sliceInclusive 11", [],     [1, 2, 3, 4].sliceInclusive(3, 2));
 expectVoid("sliceInclusive 12",       { [1, 2, 3, 4].sliceInclusive(3, 1) });
 
+expectEq("sliceGeneral 1", [4,5], [0,1,2,3,4,5].sliceGeneral(@inclusive, @fromStart{value: 4}));
+expectEq("sliceGeneral 2", [4],   [0,1,2,3,4,5].sliceGeneral(@exclusive, @fromStart{value: 4}));
+expectEq("sliceGeneral 3", [1,2], [0,1,2,3,4,5].sliceGeneral(@inclusive, @fromStart{value: 1}, @fromStart{value: 2}));
+expectEq("sliceGeneral 4", [1,2], [0,1,2,3,4,5].sliceGeneral(@exclusive, @fromStart{value: 1}, @fromStart{value: 3}));
+expectEq("sliceGeneral 5", [5],   [0,1,2,3,4,5].sliceGeneral(@inclusive, @fromEnd{value: 0}));
+expectEq("sliceGeneral 6", [4],   [0,1,2,3,4,5].sliceGeneral(@exclusive, @fromEnd{value: 1}));
+expectEq("sliceGeneral 7", [3,4], [0,1,2,3,4,5].sliceGeneral(@inclusive, @fromEnd{value: 2}, @fromEnd{value: 1}));
+
 note("All good.");
