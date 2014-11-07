@@ -41,12 +41,9 @@ export class PegLookaheadFailure
     };
 
     ## Documented in spec.
-    .parse(box, state, items) {
+    .parse(state) {
         def data = this.(ACCESS)();
-        return? ifNot { state.applyRule(data::rule, nullBox, items) }
-            {
-                box* := null;
-                state
-            }
+        return? ifNot { state.applyRule(data::rule) }
+            { state.addContext(null) }
     };
 };

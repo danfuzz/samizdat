@@ -8,6 +8,8 @@
 
 #= language core.Lang0
 
+import core.Format;
+
 
 ##
 ## Class Definition
@@ -27,12 +29,9 @@ export class PegCode
     };
 
     ## Documented in spec.
-    .parse(box, state, items) {
+    .parse(state) {
         def data = this.(ACCESS)();
-        return? ifValue { data::function(items*) }
-            { result ->
-                box* := result;
-                state
-            }
+        return? ifValue { data::function(state.get_context()*) }
+            { result -> state.addContext(result) }
     };
 };

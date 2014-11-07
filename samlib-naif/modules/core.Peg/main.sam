@@ -24,5 +24,4 @@ export import ./PegSet :: *;
 export import ./PegSetComplement :: *;
 export import ./PegSequence :: *;
 export import ./PegThunk :: *;
-export import ./VoidState :: *;
 export import ./misc :: *;

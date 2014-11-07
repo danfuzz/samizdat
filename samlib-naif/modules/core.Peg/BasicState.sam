@@ -8,15 +8,11 @@
 
 #= language core.Lang0
 
-import core.Generator :: stdCollect, stdFetch;
-
-import ./VoidState :: voidState;
-
 
 ##
 ## Class Definition
 ##
-## Payload: {tokens: generator}
+## Payload: {input: generator, context: [items*]}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -26,31 +22,39 @@ export class BasicState
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    class.new(tokens) {
-        return this.(NEW)(@{tokens})
+    class.new(input) {
+        return this.(NEW)(@{input, context: []})
     };
 
     ## Documented in spec.
-    .applyRule(rule, box, items) {
-        return? rule.parse(box, this, items)
-    };
-
-    ## Documented in spec.
-    .collect(optFilterFunction?) {
+    .addContext(item) {
         def data = this.(ACCESS)();
-        return data::tokens.collect(optFilterFunction*)
+        return this.(NEW)(@{data*, context: [data::context*, item]})
     };
 
     ## Documented in spec.
-    .fetch() {
-        def data = this.(ACCESS)();
-        return data::tokens.fetch()
+    .applyRule(rule) {
+        return? rule.parse(this)
     };
 
     ## Documented in spec.
-    .nextValue(box) {
+    .get_context() {
+        return this.(ACCESS)()::context
+    };
+
+    ## Documented in spec.
+    .shiftInput() {
         def data = this.(ACCESS)();
-        return? ifValue { data::tokens.nextValue(box) }
-            { tokens -> this.(NEW)(@{tokens}) }
+        def result;
+        return? ifValue { data::input.nextValue(result?) }
+            { input ->
+                this.(NEW)(@{input, context: [data::context*, result]})
+            }
+    };
+
+    ## Documented in spec.
+    .withContext(context) {
+        def data = this.(ACCESS)();
+        return this.(NEW)(@{data*, context})
     };
 };

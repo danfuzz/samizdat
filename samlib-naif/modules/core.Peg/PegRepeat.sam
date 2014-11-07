@@ -35,44 +35,39 @@ export class PegRepeat
     };
 
     ## Documented in spec.
-    .parse(box, state, items) { ->
+    .parse(state) { ->
         def data = this.(ACCESS)();
         def rule = data::rule;
+        def origContext = state.get_context();
         var remainingState = state;
-        var results = [];  ## Values that have been parsed by the inner rule.
-        var count = 0;
-        var result;
+        var results = [];
 
         def maxCheck = ifValue { data::maxSize }
             { maxSize ->
                 {
-                    ifIs { count.totalEq(maxSize) }
+                    ifIs { results.get_size().totalEq(maxSize) }
                         {
                             ## We parsed the max repeat size. Return it.
-                            box* := results;
-                            return remainingState
+                            return remainingState.addContext(results)
                         }
                 }
             }
             { {->} };
 
         loop {
-            ifValue { remainingState.applyRule(rule, result?, items) }
+            ifValue { remainingState.applyRule(rule) }
                 { newState ->
-                    ## Successfully parsed the inner rule.
-                    remainingState := newState;
-                    results := [results*, result];
-                    count := count.add(1);
+                    ## Successfully parsed the inner rule. Extract the result,
+                    ## and reset the context.
+                    results := [results*, newState.get_context().reverseNth(0)];
+                    remainingState := newState.withContext(origContext);
                     maxCheck()
                 }
                 {
                     ## Failed to parse the inner rule. Check for minimum match
                     ## count. Store result and return success if appropriate.
-                    return? ifIs { totalGe(count, data::minSize) }
-                        {
-                            box* := results;
-                            remainingState
-                        }
+                    return? ifIs { totalGe(results.get_size(), data::minSize) }
+                        { remainingState.addContext(results) }
                 }
         }
     };

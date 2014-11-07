@@ -27,10 +27,9 @@ export class PegResult
     };
 
     ## Documented in spec.
-    .parse(box, state, .) {
+    .parse(state) {
         def data = this.(ACCESS)();
-        box* := data::value;
-        return state
+        return state.addContext(data::value)
     };
 };
 

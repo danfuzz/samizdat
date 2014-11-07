@@ -40,9 +40,13 @@ export class PegMain
     };
 
     ## Documented in spec.
-    .parse(box, state, .) {
-        ## The point of this implementation is to drop the `items` context.
+    .parse(state) {
+        ## The point of this class is to drop the context.
         def data = this.(ACCESS)();
-        return? state.applyRule(data::rule, box, [])
+        def origContext = state.get_context();
+        return? ifValue { state.withContext([]).applyRule(data::rule) }
+            { newState ->
+                newState.withContext([origContext*, newState.get_context()*])
+            }
     };
 };

@@ -46,17 +46,14 @@ export class PegSetComplement
     };
 
     ## Documented in spec.
-    .parse(box, state, .) {
+    .parse(state) {
         def data = this.(ACCESS)();
-        def result;
 
-        return? ifValue { state.nextValue(result?) }
+        return? ifValue { state.shiftInput() }
             { newState ->
+                def result = newState.get_context().reverseNth(0);
                 ifNot { data::set.get(result.get_name()) }
-                    {
-                        box* := result;
-                        newState
-                    }
+                    { newState }
             }
     };
 };

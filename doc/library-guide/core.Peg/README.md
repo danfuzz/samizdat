@@ -24,31 +24,11 @@ When building tree parsers, the input elements are expected to be tokens per
 se, that is, records whose name (tag) is taken to indicate a token type.
 
 Almost all of the classes in this module are for parser rules. A parser rule
-is an object that binds the `.parse()` method, taking three arguments:
-
-* `box` &mdash; The first argument is a `box` into which a successful
-  result of parsing is to be `store`d.
-
-* `state` &mdash; The second argument is a generator of input tokens to
-  be parsed (usually *partially* parsed). It implements the `ParserState`
-  protocol, which is a superset of `Generator`.
-
-* `items` &mdash; A sequence (typically a list) consisting of the trailing
-  context of items that have been parsed already, in order, in the context of
-  a "sequence" being parsed. These can be used, in particular, in the
-  implementation of "code" rules in order to produce a filtered sequence
-  result.
-
-A `.parse()` method, upon success when called, must do two things: It must
-call `store` on its yield `box` to indicate the non-void result of parsing.
-Then, it must return a replacement `state` for use as the state for subsequent
-parsers, that reflects the removal of whatever elements were consumed
-by the parsing (including none). If the parsing function consumed all of
-its given input, then it must return a voided state (that is, one which
-yields and returns void when asked for `.nextValue()`).
-
-A parsing function, upon failure when called, must do one thing, namely
-return void. It must *not*, upon failure, call `store` on its given `box`.
+is an object that binds the `.parse()` method, taking as a single argument
+a `ParserState` value and returning either another `ParserState` or void.
+A `ParserState` encapsulates a generator of input values (e.g. but not
+necessarily a list) and a list (per se) containing the "trailing context" of
+matched items.
 
 In the descriptions of the various parsers in this module, code shorthands
 use the Samizdat parsing syntax (`{: ... :}`) for explanatory purposes.
@@ -57,6 +37,8 @@ use the Samizdat parsing syntax (`{: ... :}`) for explanatory purposes.
 <br><br>
 ### Classes
 
+* [BasicState](BasicState.md)
+* [CacheState](CacheState.md)
 * [PegAny](PegAny.md)
 * [PegChoice](PegChoice.md)
 * [PegCode](PegCode.md)
@@ -118,35 +100,48 @@ to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{: [] :}` (that is,
 the empty set of tokens or characters).
 
-#### ParserState: `voidState`
-
-The sole instance of the class `VoidState`.
-
 
 <br><br>
 ### Method Definitions: `Parser` protocol
 
-#### `.parse(box, state, items) -> newState`
+#### `.parse(state) -> :ParserState | void`
 
-Performs a parse of `state` (a parser state object) with the trailing sequence
-context of `items` (which must be a sequence). If parsing is successful,
-stores into `box` the parsed result and returns a replacement for `state` that
-reflects the consumption of tokens that were used. If parsing fails, does not
-store anything into `box` and returns void.
+Performs a parse of `state` (a parser state object). If successful, returns a
+new state that represents the successful parse. If unsuccessful, returns void.
+
+A successful call to this method is expected to "consume" zero or more
+items from the input generator and add *exactly* one item to the trailing
+context.
 
 
 <br><br>
 ### Method Definitions: `ParserState` protocol
 
-`ParserState` includes all of the methods of `Generator`, and in addition:
+#### `.addContext(value) -> :ParserState`
 
-#### `.applyRule(rule, box, items) -> newState`
+Returns an instance just like `this`, except with `value` appended to the
+end of its trailing context.
+
+#### `.applyRule(rule) -> :ParserState | void`
 
 Applies the given `rule`, either by invoking its `.parse()` method, passing
 `this` as the state argument, or by doing (in some way) the equivalent
 thereof. Returns whatever `rule.parse()` returns (or equivalently would
 have returned).
 
+#### `.get_context() -> list`
+
+Gets the trailing context of `this`.
+
+#### `.shiftInput() -> :ParserState | void`
+
+Returns an instance just like `this`, except with the first element of the
+input "consumed" and appended to the trailing context.
+
+#### `.withContext(list) -> :ParserState`
+
+Returns an instance just like `this`, except with its trailing context
+replaced with `list`, which must be a list.
 
 <br><br>
 ### Functions

@@ -11,11 +11,10 @@ providing the `ParserState` protocol.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(generator) -> :BasicState`
+#### `class.new(input) -> :BasicState`
 
-Creates an instance of this class. As a generator, it generates items from
-the given `generator`, with `.nextValue()` always returning another instance
-of this class, until voided.
+Creates an instance of this class, with an empty trailing context and the
+given `input` as its input generator.
 
 
 <br><br>
@@ -24,6 +23,6 @@ of this class, until voided.
 Works as documented per the specification for the protocol, with the
 following refinements:
 
-#### `.applyRule(rule, box, items) -> newState`
+#### `.applyRule(rule) -> newState`
 
-Always calls `rule.parse(box, this, items)`.
+Always calls `rule.parse(this)`.

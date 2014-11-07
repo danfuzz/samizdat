@@ -8,15 +8,11 @@
 
 #= language core.Lang0
 
-import core.Generator :: stdCollect, stdFetch;
-
-import ./VoidState :: voidState;
-
 
 ##
 ## Class Definition
 ##
-## Payload: {item: ., nextState: lazy}
+## Payload: {input: generator, context: [item*], shifted: lazy}
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -26,37 +22,45 @@ export class CacheState
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    class.new(tokens) {
-        def item;
-        def rest = ifValueOr { tokens.nextValue(item?) }
-            { return voidState };
-        def nextState = Lazy.new { this.new(rest) };
-
-        return this.(NEW)(@{item, nextState})
+    class.new(input) {
+        return this.fullNew(input, [])
     };
 
     ## Documented in spec.
-    .applyRule(rule, box, items) {
-        return? rule.parse(box, this, items)
+    class.fullNew(input, context) {
+        def shifted = Lazy.new {
+            def result;
+            ifValue { input.nextValue(result?) }
+                { newInput -> this.fullNew(newInput, [context*, result]) }
+        };
+
+        return this.(NEW)(@{input, context, shifted})
     };
 
     ## Documented in spec.
-    .collect(optFilterFunction?) {
-        ## Just use the standard implementation.
-        return stdCollect(this, optFilterFunction*)
-    };
-
-    ## Documented in spec.
-    .fetch() {
-        ## Just use the standard implementation.
-        return stdFetch(this)
-    };
-
-    ## Documented in spec.
-    .nextValue(box) {
+    .addContext(item) {
         def data = this.(ACCESS)();
+        return CacheState.fullNew(data::input, [data::context*, item])
+    };
 
-        box.store(data::item);
-        return data::nextState*
+    ## Documented in spec.
+    .applyRule(rule) {
+        return? rule.parse(this)
+    };
+
+    ## Documented in spec.
+    .get_context() {
+        return this.(ACCESS)()::context
+    };
+
+    ## Documented in spec.
+    .shiftInput() {
+        return? this.(ACCESS)()::shifted*
+    };
+
+    ## Documented in spec.
+    .withContext(context) {
+        def data = this.(ACCESS)();
+        return CacheState.fullNew(data::input, context)
     };
 };
