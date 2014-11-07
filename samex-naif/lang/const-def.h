@@ -86,7 +86,6 @@ DEF_SYMBOL(string,                "string");
 DEF_SYMBOL(target,                "target");
 DEF_SYMBOL(this,                  "this");
 DEF_SYMBOL(top,                   "top");
-DEF_SYMBOL(value,                 "value");
 DEF_SYMBOL(values,                "values");
 DEF_SYMBOL(var,                   "var");
 DEF_SYMBOL(varDef,                "varDef");
@@ -102,6 +101,7 @@ DEF_TOKEN(call);
 DEF_TOKEN(fetch);
 DEF_TOKEN(repeat);
 DEF_TOKEN(store);
+DEF_TOKEN(value);
 
 // Literals have to be defined after everything else, in particular after the
 // constants used during calls to `makeLiteral()`.

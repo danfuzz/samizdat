@@ -1560,7 +1560,7 @@ def parIndexPostfix = {:
             }
         |
             ## At least one of start or end is `fromEnd`, so we have to
-            ## use `sliceGeneral`.
+            ## use a `.sliceGeneral()` method call.
             {
                 def style = ifIs { op.hasName(@"..") }
                     { SYMS::inclusive }
@@ -1583,11 +1583,8 @@ def parIndexPostfix = {:
                 )?;
 
                 { node ->
-                    makeFunCall(REFS::Sequence_sliceGeneral,
-                        node,
-                        style,
-                        startNode,
-                        optEndNode*)
+                    makeCall(node, SYMS::sliceGeneral,
+                        style, startNode, optEndNode*)
                 }
             }
         )

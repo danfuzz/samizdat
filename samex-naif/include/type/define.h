@@ -127,6 +127,17 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zarray aRest)
 
+#define FUNC_IMPL_3_4(name, a0, a1, a2, a3) \
+    static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 3, 4) { \
+        return IMPL_##name( \
+            _args.elems[0], \
+            _args.elems[1], \
+            _args.elems[2], \
+            (_args.size > 3) ? _args.elems[3] : NULL); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2, zvalue a3)
+
 #define FUNC_IMPL_3_5(name, a0, a1, a2, a3, a4) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 3, 5) { \
@@ -174,6 +185,8 @@
 #define METH_IMPL_0_1(cls, name, a0)   FUNC_IMPL_1_2(cls##_##name, ths, a0)
 #define METH_IMPL_1_2(cls, name, a0, a1) \
     FUNC_IMPL_2_3(cls##_##name, ths, a0, a1)
+#define METH_IMPL_2_3(cls, name, a0, a1, a2) \
+    FUNC_IMPL_3_4(cls##_##name, ths, a0, a1, a2)
 
 // Class method implementation macros. Structure is identical to the instance
 // method macros, above.

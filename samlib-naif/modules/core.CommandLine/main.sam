@@ -13,7 +13,6 @@ import core.Io0;
 import core.ModuleSystem :: run, runFile;
 import core.Peg;        ## Implicitly used.
 import core.Range;      ## Implicitly used.
-import core.Sequence;   ## Implicitly used.
 
 
 ##

@@ -86,6 +86,7 @@ DEF_SYMBOL(shr);
 DEF_SYMBOL(sign);
 DEF_SYMBOL(singleValue);
 DEF_SYMBOL(sliceExclusive);
+DEF_SYMBOL(sliceGeneral);
 DEF_SYMBOL(sliceInclusive);
 DEF_SYMBOL(store);
 DEF_SYMBOL(sub);
@@ -101,8 +102,17 @@ DEF_SYMBOL(xor);
 /** Used as a key for class configuration in `.subclass()`. */
 DEF_SYMBOL(access);
 
+/** Used as an argument to `.sliceGeneral()`. */
+DEF_SYMBOL(exclusive);
+
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(exports);
+
+/** Used as a record tag in arguments to `.sliceGeneral()`. */
+DEF_SYMBOL(fromEnd);
+
+/** Used as a record tag in arguments to `.sliceGeneral()`. */
+DEF_SYMBOL(fromStart);
 
 /**
  * Method `.gcMark()`: Does GC marking for the given value.
@@ -114,6 +124,9 @@ DEF_SYMBOL(gcMark);
 
 /** Used as a key when accessing modules. */
 DEF_SYMBOL(imports);
+
+/** Used as an argument to `.sliceGeneral()`. */
+DEF_SYMBOL(inclusive);
 
 /** Used as an `*order()` result. */
 DEF_SYMBOL(less);
@@ -132,3 +145,6 @@ DEF_SYMBOL(resources);
 
 /** Used as an `*order()` result. */
 DEF_SYMBOL(same);
+
+/** Used as a key in records. */
+DEF_SYMBOL(value);

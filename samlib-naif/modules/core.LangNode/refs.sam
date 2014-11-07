@@ -64,8 +64,7 @@ def MOD_NAMES = [
     {mod: @Peg,       name: @PegSet},
     {mod: @Peg,       name: @PegSetComplement},
     {mod: @Range,     name: @ClosedRange},
-    {mod: @Range,     name: @OpenRange},
-    {mod: @Sequence,  name: @sliceGeneral}
+    {mod: @Range,     name: @OpenRange}
 ];
 
 

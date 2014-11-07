@@ -28,6 +28,9 @@ extern zvalue FUN_Sequence_keyList;
 /** Standard implementation for `Sequence.reverseNth`. */
 extern zvalue FUN_Sequence_reverseNth;
 
+/** Standard implementation for `Sequence.sliceGeneral`. */
+extern zvalue FUN_Sequence_sliceGeneral;
+
 /**
  * Validates and converts the `start` and optional `end` arguments to
  * a `slice{Ex,In}clusive` call, based on having a collection of the given
