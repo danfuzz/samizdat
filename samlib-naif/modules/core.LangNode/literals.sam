@@ -44,6 +44,7 @@ def SYMBOLS = [
     @shl,
     @singleValue,
     @sliceExclusive,
+    @sliceGeneral,
     @sliceInclusive,
     @shr,
     @sub,
