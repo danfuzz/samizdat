@@ -73,6 +73,22 @@ In this case, the result is a sequence consisting of elements of `this`
 starting at index `start` and continuing through, but not including, index
 `end`.
 
+#### `.sliceGeneral(style, start, end?) -> sequence | void`
+
+Returns a sequence of the same class as `this`, consisting of an index-based
+"slice" of elements taken from `sequence`, from the `start` index through the
+`end` index.
+
+The `start` is always an inclusive index. `style` indicates whether the
+end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
+
+Each of `start` and `end` must be a `@fromStart` or `@fromEnd` record, with
+`{value: int}` as the payload. The class indicates which end of the sequence
+is to be counted from.
+
+This method in turn calls one of `.sliceExclusive()` or `.sliceInclusive()` to
+perform the actual slicing.
+
 #### `.sliceInclusive(start, end?) -> sequence | void`
 
 Returns a sequence of the same class as `this`, consisting of an
@@ -87,23 +103,3 @@ This is equivalent to calling `this.sliceExclusive(start, end + 1)`.
 (Refinement of `Collection` protocol.)
 
 Returns the elements of `this`, always as a list per se.
-
-
-<br><br>
-### Functions
-
-#### `sliceGeneral(sequence, style, start, end?) -> sequence | void`
-
-Returns a sequence of the same class as `sequence`, consisting of an
-index-based "slice" of elements taken from `sequence`, from the `start`
-index through the `end` index.
-
-The `start` is always an inclusive index. `style` indicates whether the
-end is inclusive (`@inclusive`) or exclusive (`@exclusive`).
-
-Each of `start` and `end` must be a `@fromStart` or `@fromEnd` record, with
-a `{value: int}` as the payload. The class indicates which end of the
-sequence is to be counted from.
-
-This function in turn calls one of `sliceExclusive` or `sliceInclusive` to
-perform the actual slicing.
