@@ -20,7 +20,6 @@ import core.Lang0;
 import core.LangNode :: *;
 import core.Peg;
 import core.Range :: ClosedRange;
-import core.Sequence :: reverse;
 
 
 ##
