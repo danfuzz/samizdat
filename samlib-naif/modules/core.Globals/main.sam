@@ -44,7 +44,6 @@ export fn fullEnvironment() {
     def $Generator   = loadModule(@external{name: "core.Generator"});
     def $Peg         = loadModule(@external{name: "core.Peg"});
     def $Range       = loadModule(@external{name: "core.Range"});
-    def $Sequence    = loadModule(@external{name: "core.Sequence"});
 
     ## Selected bindings exported.
     def $CommandLine = loadModule(@external{name: "core.CommandLine"});
@@ -57,7 +56,6 @@ export fn fullEnvironment() {
         $Generator,
         $Peg,
         $Range,
-        $Sequence,
 
         ## The one higher-layer function that gets exported to the environment.
         runCommandLine: $CommandLine::runCommandLine
