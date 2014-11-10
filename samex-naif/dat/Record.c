@@ -49,8 +49,10 @@ bool recGet2(zvalue record,
     assertHasClass(record, CLS_Record);
     zvalue data = getInfo(record)->data;
 
-    return ((*got1 = symtabGetUnchecked(data, key1)) != NULL)
-        && ((*got2 = symtabGetUnchecked(data, key2)) != NULL);
+    *got1 = symtabGetUnchecked(data, key1);
+    *got2 = symtabGetUnchecked(data, key2);
+
+    return (*got1 != NULL) && (*got2 != NULL);
 };
 
 // Documented in header.
@@ -61,9 +63,11 @@ bool recGet3(zvalue record,
     assertHasClass(record, CLS_Record);
     zvalue data = getInfo(record)->data;
 
-    return ((*got1 = symtabGetUnchecked(data, key1)) != NULL)
-        && ((*got2 = symtabGetUnchecked(data, key2)) != NULL)
-        && ((*got3 = symtabGetUnchecked(data, key3)) != NULL);
+    *got1 = symtabGetUnchecked(data, key1);
+    *got2 = symtabGetUnchecked(data, key2);
+    *got3 = symtabGetUnchecked(data, key3);
+
+    return (*got1 != NULL) && (*got2 != NULL) && (*got3 != NULL);
 };
 
 // Documented in header.
