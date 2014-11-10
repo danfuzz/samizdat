@@ -131,13 +131,37 @@ static zvalue execStore(Frame *frame, zvalue store) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue name, valueExpr;
-    recGet2(varDef, SYM(name), &name, SYM(value), &valueExpr);
+    zvalue box, name, valueExpr;
+    recGet3(varDef,
+        SYM(box),   &box,
+        SYM(name),  &name,
+        SYM(value), &valueExpr);
 
-    zvalue box = valueExpr
-        ? cm_new(Result, execExpression(frame, valueExpr))
-        : cm_new(Promise);
-    frameDef(frame, name, box);
+    zvalue cls;
+
+    if (box == NULL) {
+        // TODO: Remove the above `if` and this scaffolding when `box` is
+        // guaranteed to be non-null.
+        cls = (valueExpr == NULL) ? CLS_Promise : CLS_Result;
+    } else {
+        switch(symbolEvalType(box)) {
+            case EVAL_cell:    { cls = CLS_Cell;    break; }
+            case EVAL_promise: { cls = CLS_Promise; break; }
+            case EVAL_result:  { cls = CLS_Result;  break; }
+            default: {
+                die("Bogus `box` value: %s", cm_debugString(box));
+            }
+        }
+    }
+
+    zvalue value = (valueExpr == NULL)
+        ? NULL
+        : execExpression(frame, valueExpr);
+    zvalue boxInstance = (value == NULL)
+            ? METH_CALL(cls, new)
+            : METH_CALL(cls, new, value);
+
+    frameDef(frame, name, boxInstance);
 }
 
 /**
