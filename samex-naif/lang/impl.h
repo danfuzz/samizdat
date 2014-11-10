@@ -40,6 +40,7 @@ enum {
 typedef enum {
     EVAL_apply = 1,  // 1, so that it won't be a "sneaky default."
     EVAL_call,
+    EVAL_cell,
     EVAL_closure,
     EVAL_directive,
     EVAL_export,
@@ -56,6 +57,8 @@ typedef enum {
     EVAL_module,
     EVAL_noYield,
     EVAL_nonlocalExit,
+    EVAL_promise,
+    EVAL_result,
     EVAL_store,
     EVAL_varRef,
     EVAL_varDef,
