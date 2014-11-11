@@ -26,22 +26,6 @@ def BOX_CLASSES = @{
     result:  CodeString.new("Result")
 };
 
-## Common translation code for variable definition.
-fn varDefCommon(name, value, varsBox) {
-    def vars = varsBox*;
-
-    if ((def found = vars[name]) & (found::kind != "free")) {
-        die("Cannot redefine local variable: \%q(name).")
-    };
-
-    def index = #vars;
-    def decl = localVarDecl(name, index);
-    def binding = {name: localVarName(name, index), kind: "local"};
-
-    varsBox* := {vars*, (name): binding};
-    return Comment.new("\%q(name)", Assign.new(decl, value));
-};
-
 ## Wrap the given expression in a "non-void" guarantee call.
 fn nonVoid(value) {
     return Call.new("datNonVoid", value)
@@ -128,9 +112,15 @@ export fn translate(node, varsBox) {
 
         @varDef: {
             def cls = BOX_CLASSES[node::box];
+            def name = node::name;
             def value = node::value;
+            def vars = varsBox*;
 
-            def boxInstance = if (value.hasName(@maybe)) {
+            if ((def found = vars[name]) & (found::kind != "free")) {
+                die("Cannot redefine local variable: \%q(name).")
+            };
+
+            def boxValue = if (value.hasName(@maybe)) {
                 def vTrans = translate(value::value, varsBox);
                 Call.new("cm_newBox", cls, vTrans)
             } else if (value.hasName(@void)) {
@@ -142,7 +132,12 @@ export fn translate(node, varsBox) {
                 Call.new("cm_newBox", cls, vTrans)
             };
 
-            varDefCommon(node::name, boxInstance, varsBox)
+            def index = #vars;
+            def decl = localVarDecl(name, index);
+            def binding = @{name: localVarName(name, index), kind: "local"};
+
+            varsBox* := @{vars*, (name): binding};
+            return Comment.new("\%q(name)", Assign.new(decl, boxValue));
         };
 
         @varRef: {
