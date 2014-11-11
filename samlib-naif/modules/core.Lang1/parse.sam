@@ -406,6 +406,9 @@ def parVarDef = PegMain.newSequence(
             PegCode.new { ., name, ., expr ->
                 makeVarDef(name, @result, expr)
             }),
+        PegSequence.new(
+            parNullaryClosure,
+            PegCode.new { ., name, c -> makeVarDef(name, @lazy, c) }),
         PegCode.new { ., name -> makeVarDef(name, @promise) }));
 
 ## Documented in spec.
