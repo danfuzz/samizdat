@@ -124,10 +124,12 @@ static zvalue execStore(Frame *frame, zvalue store) {
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue box, name, valueExpr;
-    recGet3(varDef,
-        SYM(box),   &box,
-        SYM(name),  &name,
-        SYM(value), &valueExpr);
+    if (!recGet3(varDef,
+            SYM(box),   &box,
+            SYM(name),  &name,
+            SYM(value), &valueExpr)) {
+        die("Invalid `varDef` node.");
+    }
 
     zvalue cls;
     switch(symbolEvalType(box)) {
@@ -140,12 +142,10 @@ static void execVarDef(Frame *frame, zvalue varDef) {
         }
     }
 
-    zvalue value = (valueExpr == NULL)
-        ? NULL
-        : execExpressionOrMaybe(frame, valueExpr);
+    zvalue value = execExpressionOrMaybe(frame, valueExpr);
     zvalue boxInstance = (value == NULL)
-            ? METH_CALL(cls, new)
-            : METH_CALL(cls, new, value);
+        ? METH_CALL(cls, new)
+        : METH_CALL(cls, new, value);
 
     frameDef(frame, name, boxInstance);
 }
