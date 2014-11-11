@@ -165,18 +165,6 @@ static void execVarDef(Frame *frame, zvalue varDef) {
 }
 
 /**
- * Executes a `varDefMutable` form, by updating the given execution frame
- * as appropriate.
- */
-static void execVarDefMutable(Frame *frame, zvalue varDef) {
-    zvalue name, valueExpr;
-    recGet2(varDef, SYM(name), &name, SYM(value), &valueExpr);
-
-    zvalue value = valueExpr ? execExpression(frame, valueExpr) : NULL;
-    frameDef(frame, name, cm_new(Cell, value));
-}
-
-/**
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
@@ -227,7 +215,6 @@ static void execStatement(Frame *frame, zvalue s) {
         case EVAL_importModuleSelection:
         case EVAL_importResource: { execImport(frame, s);           break; }
         case EVAL_varDef:         { execVarDef(frame, s);           break; }
-        case EVAL_varDefMutable:  { execVarDefMutable(frame, s);    break; }
         default:                  { execExpressionVoidOk(frame, s); break; }
     }
 }
