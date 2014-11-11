@@ -18,6 +18,14 @@ import ./vars :: localVarDecl, localVarName;
 ## Private Definitions
 ##
 
+## Map from `box` symbols to class references.
+def BOX_CLASSES = @{
+    cell:    CodeString.new("CLS_Cell"),
+    lazy:    CodeString.new("CLS_Lazy"),
+    promise: CodeString.new("CLS_Promise"),
+    result:  CodeString.new("CLS_Result")
+};
+
 ## Common translation code for variable definition.
 fn varDefCommon(name, value, varsBox) {
     def vars = varsBox*;
@@ -119,19 +127,12 @@ export fn translate(node, varsBox) {
         };
 
         @varDef: {
+            def cls = BOX_CLASSES[node::box];
             def value = (def v = node::value)
-                & MethCall.new("CLS_Result", "SYM(new)",
-                    nonVoid(translate(v, varsBox)))
-                | MethCall.new("CLS_Promise", "SYM(new)");
+                & MethCall.new(cls, "SYM(new)", nonVoid(translate(v, varsBox)))
+                | MethCall.new(cls, "SYM(new)");
 
             varDefCommon(node::name, value, varsBox)
-        };
-
-        @varDefMutable: {
-            def optValue = ((def v = node::value) & translate(v, varsBox))?;
-            varDefCommon(node::name,
-                nonVoid(MethCall.new("CLS_Cell", "SYM(new)", optValue*)),
-                varsBox)
         };
 
         @varRef: {

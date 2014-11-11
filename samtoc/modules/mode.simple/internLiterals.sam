@@ -77,12 +77,11 @@ fn lits(node, interner) {
             @(nodeName){node*, source}
         };
 
-        @varDef:
-        @varDefMutable: {
+        @varDef: {
             def value = ifValue { node::value }
                 { value -> @{value: lits(value, interner)} }
                 { @{} };
-            @(nodeName){name: node::name, value*}
+            @(nodeName){node*, value*}
         };
 
         @export:
