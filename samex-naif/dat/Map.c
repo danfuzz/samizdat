@@ -318,7 +318,7 @@ METH_IMPL_1(Map, castToward, cls) {
 
     if (valEq(cls, CLS_SymbolTable)) {
         zint size = info->size;
-        return symtabFromArray(info->size, info->elems);
+        return symtabFromZassoc((zassoc) {info->size, info->elems});
     } else if (classAccepts(cls, ths)) {
         return ths;
     }

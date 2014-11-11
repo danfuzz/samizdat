@@ -94,12 +94,9 @@ export fn get_varRefs(node) {
         };
 
         @maybe:
-        @noYield: {
-            get_varRefs(node::value)
-        };
-
+        @noYield:
         @varDef: {
-            (def v = node::value) & get_varRefs(v) | []
+            get_varRefs(node::value)
         };
 
         @importModule:

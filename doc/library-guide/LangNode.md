@@ -341,7 +341,7 @@ Makes a `noYield` node.
 Makes a node representing a nonlocal exit, for calling the given `function`
 with optional expression argument `optValue*`. `optValue*` is allowed
 to be a `maybe` or `void` node. If `optValue` is not passed, it is
-treated as if it were specified as `@void`.
+treated as if it were specified as `@void{}`.
 
 This produces a `nonlocalExit` node per se, which must eventually be
 processed via `makeFullClosure()` or similar.
@@ -371,9 +371,13 @@ result contains the given `node` as the `yield`, directly.
 
 #### `makeVarDef(name, box, optValue?) -> node`
 
-Makes a `varDef` statement node. `name` and `box` must both be symbols. See
-the documentation on `varDef` nodes for information about the allowed values
-for `box` and how it relates to `optValue`.
+Makes a `varDef` statement node. `name` and `box` must both be symbols.
+`optValue` if passed must be an expression node, including the option of using
+a `maybe` or `void` node. If `optValue` is not passed, it is treated as if it
+were specified as `@void{}`.
+
+See the documentation on `varDef` nodes for information about the allowed
+values for `box` and how it relates to `optValue`.
 
 #### `makeVarFetch(name) -> node`
 

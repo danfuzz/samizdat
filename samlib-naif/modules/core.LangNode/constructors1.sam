@@ -82,9 +82,8 @@ export fn makeNonlocalExit(function, optValue?) {
 
 ## Documented in spec.
 export fn makeVarDef(name, box, optValue?) {
-    return ifValue { optValue* }
-        { value -> @varDef{name, box, value} }
-        { @varDef{name, box} }
+    def value = ifValueOr { optValue* } { @void{} };
+    return @varDef{name, box, value}
 };
 
 ## Documented in spec.

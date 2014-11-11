@@ -26,15 +26,21 @@ extern zvalue EMPTY_SYMBOL_TABLE;
 void arrayFromSymtab(zmapping *result, zvalue symtab);
 
 /**
- * Makes a symbol table from an array of mappings. The keys must all be
- * symbols (of course).
- */
-zvalue symtabFromArray(zint size, zmapping *mappings);
-
-/**
  * Gets a single-mapping symbol table of the given mapping.
  */
 zvalue symtabFromMapping(zmapping mapping);
+
+/**
+ * Makes a symbol table from a `zarray` where the contents are a list of
+ * "splayed" key-then-value pairs. The keys must all be symbols (of course).
+ */
+zvalue symtabFromZarray(zarray arr);
+
+/**
+ * Makes a symbol table from a `zassoc`. The keys must all be symbols (of
+ * course).
+ */
+zvalue symtabFromZassoc(zassoc ass);
 
 /**
  * Gets the size of a symbol table.

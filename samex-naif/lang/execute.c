@@ -92,14 +92,6 @@ static void execImport(Frame *frame, zvalue import) {
 }
 
 /**
- * Executes a `maybe` form.
- */
-static zvalue execMaybe(Frame *frame, zvalue maybe) {
-    zvalue valueExpression = cm_get(maybe, SYM(value));
-    return execExpressionVoidOk(frame, valueExpression);
-}
-
-/**
  * Executes a `noYield` form.
  */
 static void execNoYield(Frame *frame, zvalue noYield)
@@ -132,10 +124,12 @@ static zvalue execStore(Frame *frame, zvalue store) {
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue box, name, valueExpr;
-    recGet3(varDef,
-        SYM(box),   &box,
-        SYM(name),  &name,
-        SYM(value), &valueExpr);
+    if (!recGet3(varDef,
+            SYM(box),   &box,
+            SYM(name),  &name,
+            SYM(value), &valueExpr)) {
+        die("Invalid `varDef` node.");
+    }
 
     zvalue cls;
     switch(symbolEvalType(box)) {
@@ -148,12 +142,10 @@ static void execVarDef(Frame *frame, zvalue varDef) {
         }
     }
 
-    zvalue value = (valueExpr == NULL)
-        ? NULL
-        : execExpression(frame, valueExpr);
+    zvalue value = execExpressionOrMaybe(frame, valueExpr);
     zvalue boxInstance = (value == NULL)
-            ? METH_CALL(cls, new)
-            : METH_CALL(cls, new, value);
+        ? METH_CALL(cls, new)
+        : METH_CALL(cls, new, value);
 
     frameDef(frame, name, boxInstance);
 }
@@ -167,13 +159,26 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 }
 
 /**
- * Executes an `expression` form, with the result never allowed to be
- * `void`.
+ * Helper for `execExpression*` which does the dispatch given a known
+ * `zevalType`.
  */
-static zvalue execExpression(Frame *frame, zvalue expression) {
-    zvalue result = execExpressionVoidOk(frame, expression);
+static zvalue execExpr0(Frame *frame, zvalue e, zevalType type, bool voidOk) {
+    zvalue result;
+    switch (type) {
+        case EVAL_apply:   { result = execApply(frame, e);   break; }
+        case EVAL_call:    { result = execCall(frame, e);    break; }
+        case EVAL_closure: { result = execClosure(frame, e); break; }
+        case EVAL_fetch:   { result = execFetch(frame, e);   break; }
+        case EVAL_literal: { result = cm_get(e, SYM(value)); break; }
+        case EVAL_noYield: { execNoYield(frame, e);                 }
+        case EVAL_store:   { result = execStore(frame, e);   break; }
+        case EVAL_varRef:  { result = execVarRef(frame, e);  break; }
+        default: {
+            die("Invalid expression type: %s", cm_debugString(classOf(e)));
+        }
+    }
 
-    if (result == NULL) {
+    if (!voidOk && (result == NULL)) {
         die("Invalid use of void expression result.");
     }
 
@@ -181,35 +186,32 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
 }
 
 /**
+ * Executes an `expression` form, with the result never allowed to be
+ * `void`.
+ */
+static zvalue execExpression(Frame *frame, zvalue expression) {
+    return execExpr0(frame, expression, recordEvalType(expression), false);
+}
+
+/**
  * Executes an `expression` form, with the result possibly being
  * `void` (represented as `NULL`).
  */
-static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    switch (recordEvalType(e)) {
-        case EVAL_apply:   { return execApply(frame, e);   }
-        case EVAL_call:    { return execCall(frame, e);    }
-        case EVAL_closure: { return execClosure(frame, e); }
-        case EVAL_fetch:   { return execFetch(frame, e);   }
-        case EVAL_literal: { return cm_get(e, SYM(value)); }
-        case EVAL_noYield: { execNoYield(frame, e);        }
-        case EVAL_store:   { return execStore(frame, e);   }
-        case EVAL_varRef:  { return execVarRef(frame, e);  }
-        default: {
-            die("Invalid expression type: %s", cm_debugString(classOf(e)));
-        }
-    }
+static zvalue execExpressionVoidOk(Frame *frame, zvalue expression) {
+    return execExpr0(frame, expression, recordEvalType(expression), true);
 }
 
 /**
  * Executes a single `statement` form. Works for `expression` forms too.
  */
 static void execStatement(Frame *frame, zvalue s) {
-    switch (recordEvalType(s)) {
+    zevalType type = recordEvalType(s);
+    switch (type) {
         case EVAL_importModule:
         case EVAL_importModuleSelection:
-        case EVAL_importResource: { execImport(frame, s);           break; }
-        case EVAL_varDef:         { execVarDef(frame, s);           break; }
-        default:                  { execExpressionVoidOk(frame, s); break; }
+        case EVAL_importResource: { execImport(frame, s);            break; }
+        case EVAL_varDef:         { execVarDef(frame, s);            break; }
+        default:                  { execExpr0(frame, s, type, true); break; }
     }
 }
 
@@ -220,10 +222,17 @@ static void execStatement(Frame *frame, zvalue s) {
 
 // Documented in header.
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
-    switch (recordEvalType(e)) {
-        case EVAL_maybe: { return execMaybe(frame, e);      }
-        case EVAL_void:  { return NULL;                     }
-        default:         { return execExpression(frame, e); }
+    zevalType type = recordEvalType(e);
+    switch (type) {
+        case EVAL_maybe: {
+            return execExpressionVoidOk(frame, cm_get(e, SYM(value)));
+        }
+        case EVAL_void:  {
+            return NULL;
+        }
+        default: {
+            return execExpr0(frame, e, type, false);
+        }
     }
 }
 
@@ -250,7 +259,7 @@ zvalue langEval0(zvalue env, zvalue node) {
     for (zint i = 0; i < size; i++) {
         mappings[i].value = cm_new(Result, mappings[i].value);
     }
-    env = symtabFromArray(size, mappings);
+    env = symtabFromZassoc((zassoc) {size, mappings});
 
     Frame frame;
     frameInit(&frame, NULL, NULL, env);

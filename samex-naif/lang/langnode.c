@@ -804,7 +804,8 @@ zvalue makeVarRef(zvalue name) {
 }
 
 // Documented in spec.
-zvalue makeVarDef(zvalue name, zvalue box, zvalue value) {
+zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue) {
+    zvalue value = (optValue == NULL) ? TOK_void : optValue;
     return recordFrom3(SYM(varDef),
         SYM(name),  name,
         SYM(box),   box,

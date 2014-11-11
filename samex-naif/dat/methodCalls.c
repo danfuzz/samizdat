@@ -53,40 +53,10 @@ zvalue cm_nth(zvalue x, zint index) {
 }
 
 // Documented in header.
-zvalue cm_new_SymbolTable0(zvalue first, ...) {
-    if (first == NULL) {
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    zint argCount = 1;
-    va_list rest;
-
-    va_start(rest, first);
-    for (/*argCount*/; va_arg(rest, zvalue) != NULL; argCount++) /* empty */;
-    va_end(rest);
-
-    if ((argCount & 1) != 0) {
-        die("Odd argument count for symbol table construction.");
-    }
-
-    zint size = argCount >> 1;
-    zmapping elems[size];
-
-    elems[0].key = first;
-
-    va_start(rest, first);
-    for (zint i = 1; i < argCount; i++) {
-        zvalue one = va_arg(rest, zvalue);
-        zmapping *elem = &elems[i >> 1];
-        if ((i & 1) == 0) {
-            elem->key = one;
-        } else {
-            elem->value = one;
-        }
-    }
-    va_end(rest);
-
-    return symtabFromArray(size, elems);
+zvalue cm_newBox0(zvalue cls, zvalue value) {
+    return (value == NULL)
+        ? METH_CALL(cls, new)
+        : METH_CALL(cls, new, value);
 }
 
 // Documented in header.
@@ -104,6 +74,13 @@ zorder cm_order(zvalue x, zvalue other) {
     datFrameReturn(save, NULL);
 
     return order;
+}
+
+// Documented in header.
+zvalue cm_store(zvalue x, zvalue value) {
+    return (value == NULL)
+        ? METH_CALL(x, store)
+        : METH_CALL(x, store, value);
 }
 
 // Documented in header.

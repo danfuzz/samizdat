@@ -196,24 +196,42 @@ void arrayFromSymtab(zmapping *result, zvalue symtab) {
 }
 
 // Documented in header.
-zvalue symtabFromArray(zint size, zmapping *mappings) {
-    if (size == 0) {
+zvalue symtabFromMapping(zmapping mapping) {
+    return symtabFromZassoc((zassoc) {1, &mapping});
+}
+
+// Documented in header.
+zvalue symtabFromZarray(zarray arr) {
+    if (arr.size == 0) {
         return EMPTY_SYMBOL_TABLE;
+    } else if ((arr.size & 1) != 0) {
+        die("Odd argument count for symbol table construction.");
     }
 
-    zvalue result = allocInstance(size);
+    zvalue result = allocInstance(arr.size >> 1);
     SymbolTableInfo *info = getInfo(result);
 
-    for (zint i = 0; i < size; i++) {
-        putInto(&result, &info, mappings[i]);
+    for (zint i = 0; i < arr.size; i += 2) {
+        putInto(&result, &info, (zmapping) {arr.elems[i], arr.elems[i + 1]});
     }
 
     return result;
 }
 
 // Documented in header.
-zvalue symtabFromMapping(zmapping mapping) {
-    return symtabFromArray(1, &mapping);
+zvalue symtabFromZassoc(zassoc ass) {
+    if (ass.size == 0) {
+        return EMPTY_SYMBOL_TABLE;
+    }
+
+    zvalue result = allocInstance(ass.size);
+    SymbolTableInfo *info = getInfo(result);
+
+    for (zint i = 0; i < ass.size; i++) {
+        putInto(&result, &info, ass.elems[i]);
+    }
+
+    return result;
 }
 
 // Documented in header.
@@ -222,6 +240,7 @@ zint symtabSize(zvalue symtab) {
     return getInfo(symtab)->size;
 }
 
+// Documented in header.
 zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping) {
     assertHasClass(symtab, CLS_SymbolTable);
 
@@ -245,24 +264,7 @@ zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping) {
 
 // Documented in spec.
 CMETH_IMPL_rest(SymbolTable, new, args) {
-    if ((args.size & 1) != 0) {
-        die("Odd argument count for symbol table construction.");
-    }
-
-    if (args.size == 0) {
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    zint size = args.size >> 1;
-    zvalue result = allocInstance(size);
-    SymbolTableInfo *info = getInfo(result);
-
-    for (zint i = 0, at = 0; i < size; i++, at += 2) {
-        putInto(&result, &info,
-            (zmapping) {args.elems[at], args.elems[at + 1]});
-    }
-
-    return result;
+    return symtabFromZarray(args);
 }
 
 // Documented in spec.
@@ -363,13 +365,9 @@ METH_IMPL_rest(SymbolTable, del, keys) {
         }
     }
 
-    if (at == 0) {
-        // All of the elements were removed.
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    // Construct a new instance with the remaining elements.
-    return symtabFromArray(at, array);
+    // Construct a new instance with the remaining elements. This call also
+    // will also return `EMPTY_SYMBOL_TABLE` when appropriate.
+    return symtabFromZassoc((zassoc) {at, array});
 }
 
 // Documented in header.

@@ -59,7 +59,17 @@ char *cm_debugString(zvalue x);
  * Calls `ClassName.new(...)`. `ClassName` is fixed to be a proper C name
  * for a class. **Note:** This is a macro.
  */
-#define cm_new(clsName, ...) (METH_CALL((CLS_##clsName), new, __VA_ARGS__))
+#define cm_new(clsName, ...) (METH_CALL(CLS_##clsName, new, __VA_ARGS__))
+
+/**
+ * Calls `ClassName.new()` or `ClassName.new(value)`. `ClassName` is fixed to
+ * be a proper C name for a class, and `value` is allowed to be `NULL`, in
+ * which case the constructor is called with no arguments. This is meant to
+ * make it easy to call box or box-like constructors, hence the name.
+ * **Note:** This is a macro.
+ */
+#define cm_newBox(clsName, value) (cm_newBox0(CLS_##clsName, (value)))
+zvalue cm_newBox0(zvalue cls, zvalue value);
 
 /**
  * Does the equivalent of calling `SymbolTable.new(...)`, except that this
@@ -68,8 +78,8 @@ char *cm_debugString(zvalue x);
  * and due to limitations on C macros, this must be passed at least one
  * argument.
  */
-#define cm_new_SymbolTable(...) (cm_new_SymbolTable0(__VA_ARGS__, NULL))
-zvalue cm_new_SymbolTable0(zvalue first, ...);
+#define cm_new_SymbolTable(...) (symtabFromZarray( \
+    (zarray) {CALL_ARG_COUNT(__VA_ARGS__), CALL_ARG_ARRAY(__VA_ARGS__)}))
 
 /**
  * Calls `x.nth(index)`, converting the given `zint` index to an `Int`.
@@ -86,9 +96,12 @@ zvalue cm_nth(zvalue x, zint index);
 zorder cm_order(zvalue x, zvalue other);
 
 /**
- * Calls `x.store(...)`. **Note:** This is a macro.
+ * Calls `x.store()` or `x.store(value)`. This function always takes an
+ * argument, which is allowed to be `NULL`. If `NULL`, this calls the `store`
+ * method with no arguments. If non-`NULL`, it calls the method with one
+ * argument.
  */
-#define cm_store(x, ...) (METH_CALL((x), store, __VA_ARGS__))
+zvalue cm_store(zvalue x, zvalue value);
 
 /**
  * Calls `x.get_data()`. **Note:** This is a macro.

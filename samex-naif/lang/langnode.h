@@ -114,7 +114,7 @@ zvalue makeSymbolTableExpression(zvalue mappings);
 zvalue makeThunk(zvalue expression);
 
 // Documented in spec.
-zvalue makeVarDef(zvalue name, zvalue box, zvalue value);
+zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue);
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name);
