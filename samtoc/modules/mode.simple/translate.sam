@@ -128,11 +128,21 @@ export fn translate(node, varsBox) {
 
         @varDef: {
             def cls = BOX_CLASSES[node::box];
-            def value = (def v = node::value)
-                & MethCall.new(cls, "SYM(new)", nonVoid(translate(v, varsBox)))
-                | MethCall.new(cls, "SYM(new)");
+            def value = node::value;
 
-            varDefCommon(node::name, value, varsBox)
+            def boxInstance = if (value.hasName(@maybe)) {
+                def vTrans = translate(value::value, varsBox);
+                MethCall.new(cls, "SYM(new)", vTrans)
+            } else if (value.hasName(@void)) {
+                MethCall.new(cls, "SYM(new)");
+            } else {
+                ## If it's not wrapped in a `@maybe`, we need to guarantee
+                ## non-void.
+                def vTrans = nonVoid(translate(value, varsBox));
+                MethCall.new(cls, "SYM(new)", vTrans)
+            };
+
+            varDefCommon(node::name, boxInstance, varsBox)
         };
 
         @varRef: {

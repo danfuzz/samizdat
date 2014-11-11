@@ -78,10 +78,7 @@ fn lits(node, interner) {
         };
 
         @varDef: {
-            def value = ifValue { node::value }
-                { value -> @{value: lits(value, interner)} }
-                { @{} };
-            @(nodeName){node*, value*}
+            @varDef{node*, value: lits(node::value, interner)}
         };
 
         @export:
