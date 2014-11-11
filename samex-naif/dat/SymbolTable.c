@@ -196,13 +196,8 @@ void arrayFromSymtab(zmapping *result, zvalue symtab) {
 }
 
 // Documented in header.
-zvalue symtabFromArray(zint size, zmapping *mappings) {
-    return symtabFromZassoc((zassoc) {size, mappings});
-}
-
-// Documented in header.
 zvalue symtabFromMapping(zmapping mapping) {
-    return symtabFromArray(1, &mapping);
+    return symtabFromZassoc((zassoc) {1, &mapping});
 }
 
 // Documented in header.
@@ -369,13 +364,9 @@ METH_IMPL_rest(SymbolTable, del, keys) {
         }
     }
 
-    if (at == 0) {
-        // All of the elements were removed.
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    // Construct a new instance with the remaining elements.
-    return symtabFromArray(at, array);
+    // Construct a new instance with the remaining elements. This call also
+    // will also return `EMPTY_SYMBOL_TABLE` when appropriate.
+    return symtabFromZassoc((zassoc) {at, array});
 }
 
 // Documented in header.
