@@ -107,6 +107,13 @@ zorder cm_order(zvalue x, zvalue other) {
 }
 
 // Documented in header.
+zvalue cm_store(zvalue x, zvalue value) {
+    return (value == NULL)
+        ? METH_CALL(x, store)
+        : METH_CALL(x, store, value);
+}
+
+// Documented in header.
 zint get_size(zvalue x) {
     return zintFromInt(METH_CALL(x, get_size));
 }

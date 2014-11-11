@@ -86,9 +86,12 @@ zvalue cm_nth(zvalue x, zint index);
 zorder cm_order(zvalue x, zvalue other);
 
 /**
- * Calls `x.store(...)`. **Note:** This is a macro.
+ * Calls `x.store()` or `x.store(value)`. This function always takes an
+ * argument, which is allowed to be `NULL`. If `NULL`, this calls the `store`
+ * method with no arguments. If non-`NULL`, it calls the method with one
+ * argument.
  */
-#define cm_store(x, ...) (METH_CALL((x), store, __VA_ARGS__))
+zvalue cm_store(zvalue x, zvalue value);
 
 /**
  * Calls `x.get_data()`. **Note:** This is a macro.
