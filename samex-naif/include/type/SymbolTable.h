@@ -31,6 +31,12 @@ void arrayFromSymtab(zmapping *result, zvalue symtab);
 zvalue symtabFromMapping(zmapping mapping);
 
 /**
+ * Makes a symbol table from a `zarray` where the contents are a list of
+ * "splayed" key-then-value pairs. The keys must all be symbols (of course).
+ */
+zvalue symtabFromZarray(zarray arr);
+
+/**
  * Makes a symbol table from a `zassoc`. The keys must all be symbols (of
  * course).
  */

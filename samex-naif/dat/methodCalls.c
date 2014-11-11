@@ -60,43 +60,6 @@ zvalue cm_newBox0(zvalue cls, zvalue value) {
 }
 
 // Documented in header.
-zvalue cm_new_SymbolTable0(zvalue first, ...) {
-    if (first == NULL) {
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    zint argCount = 1;
-    va_list rest;
-
-    va_start(rest, first);
-    for (/*argCount*/; va_arg(rest, zvalue) != NULL; argCount++) /* empty */;
-    va_end(rest);
-
-    if ((argCount & 1) != 0) {
-        die("Odd argument count for symbol table construction.");
-    }
-
-    zint size = argCount >> 1;
-    zmapping elems[size];
-
-    elems[0].key = first;
-
-    va_start(rest, first);
-    for (zint i = 1; i < argCount; i++) {
-        zvalue one = va_arg(rest, zvalue);
-        zmapping *elem = &elems[i >> 1];
-        if ((i & 1) == 0) {
-            elem->key = one;
-        } else {
-            elem->value = one;
-        }
-    }
-    va_end(rest);
-
-    return symtabFromZassoc((zassoc) {size, elems});
-}
-
-// Documented in header.
 zorder cm_order(zvalue x, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack.

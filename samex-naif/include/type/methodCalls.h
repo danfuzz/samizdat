@@ -78,8 +78,8 @@ zvalue cm_newBox0(zvalue cls, zvalue value);
  * and due to limitations on C macros, this must be passed at least one
  * argument.
  */
-#define cm_new_SymbolTable(...) (cm_new_SymbolTable0(__VA_ARGS__, NULL))
-zvalue cm_new_SymbolTable0(zvalue first, ...);
+#define cm_new_SymbolTable(...) (symtabFromZarray( \
+    (zarray) {CALL_ARG_COUNT(__VA_ARGS__), CALL_ARG_ARRAY(__VA_ARGS__)}))
 
 /**
  * Calls `x.nth(index)`, converting the given `zint` index to an `Int`.

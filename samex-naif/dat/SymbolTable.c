@@ -201,6 +201,24 @@ zvalue symtabFromMapping(zmapping mapping) {
 }
 
 // Documented in header.
+zvalue symtabFromZarray(zarray arr) {
+    if (arr.size == 0) {
+        return EMPTY_SYMBOL_TABLE;
+    } else if ((arr.size & 1) != 0) {
+        die("Odd argument count for symbol table construction.");
+    }
+
+    zvalue result = allocInstance(arr.size >> 1);
+    SymbolTableInfo *info = getInfo(result);
+
+    for (zint i = 0; i < arr.size; i += 2) {
+        putInto(&result, &info, (zmapping) {arr.elems[i], arr.elems[i + 1]});
+    }
+
+    return result;
+}
+
+// Documented in header.
 zvalue symtabFromZassoc(zassoc ass) {
     if (ass.size == 0) {
         return EMPTY_SYMBOL_TABLE;
