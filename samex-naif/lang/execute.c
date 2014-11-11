@@ -259,7 +259,7 @@ zvalue langEval0(zvalue env, zvalue node) {
     for (zint i = 0; i < size; i++) {
         mappings[i].value = cm_new(Result, mappings[i].value);
     }
-    env = symtabFromArray(size, mappings);
+    env = symtabFromZassoc((zassoc) {size, mappings});
 
     Frame frame;
     frameInit(&frame, NULL, NULL, env);

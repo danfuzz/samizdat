@@ -274,7 +274,7 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction, zarray args) {
         elemAt++;
     }
 
-    return symtabFromArray(elemAt, elems);
+    return symtabFromZassoc((zassoc) {elemAt, elems});
 }
 
 /**
