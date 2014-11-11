@@ -93,7 +93,6 @@ DEF_SYMBOL(top,                   "top");
 DEF_SYMBOL(values,                "values");
 DEF_SYMBOL(var,                   "var");
 DEF_SYMBOL(varDef,                "varDef");
-DEF_SYMBOL(varDefMutable,         "varDefMutable");
 DEF_SYMBOL(varRef,                "varRef");
 DEF_SYMBOL(void,                  "void");
 DEF_SYMBOL(yield,                 "yield");

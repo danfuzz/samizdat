@@ -63,7 +63,6 @@ typedef enum {
     EVAL_store,
     EVAL_varRef,
     EVAL_varDef,
-    EVAL_varDefMutable,
     EVAL_void,
     EVAL_yield,
     EVAL_CH_PLUS,   // For formal argument repetition.

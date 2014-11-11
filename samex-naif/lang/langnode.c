@@ -294,8 +294,7 @@ zvalue get_definedNames(zvalue node) {
         }
         case EVAL_importModule:
         case EVAL_importResource:
-        case EVAL_varDef:
-        case EVAL_varDefMutable: {
+        case EVAL_varDef: {
             return listFrom1(cm_get(node, SYM(name)));
         }
         case EVAL_importModuleSelection: {

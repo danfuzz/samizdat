@@ -68,7 +68,6 @@ MOD_INIT(lang) {
     SYM_MAP(store);
     SYM_MAP(varRef);
     SYM_MAP(varDef);
-    SYM_MAP(varDefMutable);
     SYM_MAP(void);
     SYM_MAP(yield);
 }
