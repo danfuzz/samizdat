@@ -65,7 +65,7 @@ export fn translate(node, varsBox) {
                 Call.new("methApply", target, name, vTrans)
             } else if (values.hasName(@void)) {
                 ## A void `values` binding just devolves into a no-argument
-                ## (but otherwise regular) function call.
+                ## (but otherwise regular) method call.
                 MethCall.new(target, name)
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
@@ -117,12 +117,12 @@ export fn translate(node, varsBox) {
                 def vTrans = translate(value::value, varsBox);
                 Call.new("cm_store", target, vTrans)
             } else if (value.hasName(@void)) {
-                MethCall.new(target, "SYM(store)")
+                Call.new("cm_store", target, "NULL")
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
                 ## non-void.
                 def vTrans = nonVoid(translate(value, varsBox));
-                MethCall.new(target, "SYM(store)", vTrans)
+                Call.new("cm_store", target, vTrans)
             }
         };
 
