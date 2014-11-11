@@ -37,6 +37,12 @@ zvalue symtabFromArray(zint size, zmapping *mappings);
 zvalue symtabFromMapping(zmapping mapping);
 
 /**
+ * Makes a symbol table from a `zassoc`. The keys must all be symbols (of
+ * course).
+ */
+zvalue symtabFromZassoc(zassoc ass);
+
+/**
  * Gets the size of a symbol table.
  */
 zint symtabSize(zvalue symtab);

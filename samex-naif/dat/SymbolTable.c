@@ -197,18 +197,7 @@ void arrayFromSymtab(zmapping *result, zvalue symtab) {
 
 // Documented in header.
 zvalue symtabFromArray(zint size, zmapping *mappings) {
-    if (size == 0) {
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    zvalue result = allocInstance(size);
-    SymbolTableInfo *info = getInfo(result);
-
-    for (zint i = 0; i < size; i++) {
-        putInto(&result, &info, mappings[i]);
-    }
-
-    return result;
+    return symtabFromZassoc((zassoc) {size, mappings});
 }
 
 // Documented in header.
@@ -217,11 +206,28 @@ zvalue symtabFromMapping(zmapping mapping) {
 }
 
 // Documented in header.
+zvalue symtabFromZassoc(zassoc ass) {
+    if (ass.size == 0) {
+        return EMPTY_SYMBOL_TABLE;
+    }
+
+    zvalue result = allocInstance(ass.size);
+    SymbolTableInfo *info = getInfo(result);
+
+    for (zint i = 0; i < ass.size; i++) {
+        putInto(&result, &info, ass.elems[i]);
+    }
+
+    return result;
+}
+
+// Documented in header.
 zint symtabSize(zvalue symtab) {
     assertHasClass(symtab, CLS_SymbolTable);
     return getInfo(symtab)->size;
 }
 
+// Documented in header.
 zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping) {
     assertHasClass(symtab, CLS_SymbolTable);
 
