@@ -125,7 +125,7 @@ fn safeIndex(node, baseStr) {
 
             @varDef: { . ->
                 def nameIndex = safeIndexForNames(baseStr, node::name);
-                def valueIndex = safeIndexForNodes(baseStr, node::value?*);
+                def valueIndex = safeIndexForNodes(baseStr, node::value);
                 maxOf(nameIndex, valueIndex)
             },
 

@@ -215,18 +215,13 @@ fn convertPexIn(node) {
             },
 
             @varDef: { . ->
-                ifValue { node::value }
-                    { value ->
-                        withBindings(node, @{value: convertPexIn(value)})
-                    }
-                    { node }
+                withBindings(node, @{value: convertPexIn(node::value)})
             },
 
             @export:
             @maybe:
             @noYield: { . ->
-                def value = convertPexIn(node::value);
-                withBindings(node, @{value})
+                withBindings(node, @{value: convertPexIn(node::value)})
             },
 
             @exportSelection:
