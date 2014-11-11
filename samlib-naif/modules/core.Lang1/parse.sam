@@ -399,10 +399,14 @@ def parYieldOrNonlocal = PegMain.newSequence(
 def parVarDef = PegMain.newSequence(
     PegSet.new(@def),
     parNameSymbol,
-    PegRepeat.new(PegSequence.new(PegSet.new(@"="), parExpression), 0, 1),
-    PegCode.new { ., name, optExpr ->
-        makeVarDef(name, optExpr*)
-    });
+    PegChoice.new(
+        PegSequence.new(
+            PegSet.new(@"="),
+            parExpression,
+            PegCode.new { ., name, ., expr ->
+                makeVarDef(name, @result, expr)
+            }),
+        PegCode.new { ., name -> makeVarDef(name, @promise) }));
 
 ## Documented in spec.
 def parVarDefMutable = PegMain.newSequence(
@@ -493,7 +497,7 @@ def parFunctionDef = PegMain.newSequence(
     PegSet.new(@fn),
     parFunctionCommon,
     PegCode.new { ., closure ->
-        withTop(makeVarDef(closure::name, closure))
+        withTop(makeVarDef(closure::name, @result, closure))
     });
 
 ## Documented in spec.

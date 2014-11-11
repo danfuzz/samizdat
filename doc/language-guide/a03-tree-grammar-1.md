@@ -528,9 +528,14 @@ def parYieldOrNonlocal = {:
 def parVarDef = {:
     @def
     name = parNameSymbol
-    optExpr = (@"=" parExpression)?
 
-    { makeVarDef(name, optExpr*) }
+    (
+        @"="
+        expr = parExpression
+        { makeVarDef(name, @result, expr) }
+    |
+        { makeVarDef(name, @promise) }
+    )
 :};
 
 ## Parses a mutable variable definition, or forward declaration of same.
@@ -653,7 +658,7 @@ def parFunctionDef = {:
     @fn
     closure = parFunctionCommon
 
-    { withTop(makeVarDef(closure::name, closure)) }
+    { withTop(makeVarDef(closure::name, @result, closure)) }
 :};
 
 ## Parses a single class definition attribute.

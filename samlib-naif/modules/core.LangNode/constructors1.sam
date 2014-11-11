@@ -81,10 +81,10 @@ export fn makeNonlocalExit(function, optValue?) {
 };
 
 ## Documented in spec.
-export fn makeVarDef(name, optValue?) {
+export fn makeVarDef(name, box, optValue?) {
     return ifValue { optValue* }
-        { value -> @varDef{name, value} }
-        { @varDef{name} }
+        { value -> @varDef{name, box, value} }
+        { @varDef{name, box} }
 };
 
 ## Documented in spec.
@@ -135,7 +135,7 @@ export fn withYieldDef(node, name) {
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
-            @{statements: [makeVarDef(name, makeVarFetch(origName))]}
+            @{statements: [makeVarDef(name, @result, makeVarFetch(origName))]}
         }
         { @{yieldDef: name} };
 

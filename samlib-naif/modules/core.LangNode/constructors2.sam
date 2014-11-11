@@ -251,7 +251,7 @@ export fn makeClassDef(name, attributes, methods) {
         extractMethods(methods, @classMethod),
         extractMethods(methods, @instanceMethod));
 
-    return withTop(makeVarDef(name, call))
+    return withTop(makeVarDef(name, @result, call))
 };
 
 ## Documented in spec.
@@ -262,7 +262,7 @@ export fn makeDynamicImport(node) {
             @importModule: { . ->
                 ## The translation is approximately
                 ## `def name = loadModule(source)`.
-                [makeVarDef(node::name,
+                [makeVarDef(node::name, @result,
                     makeFunCall(REFS::loadModule, makeLiteral(node::source)))]
             },
 
@@ -278,7 +278,7 @@ export fn makeDynamicImport(node) {
                 def loadCall = makeFunCall(REFS::loadModule, makeLiteral(source));
 
                 filterAll(names, node::select) { name, sel ->
-                    makeVarDef(name,
+                    makeVarDef(name, @result,
                         makeCall(loadCall, SYMS::get, makeLiteral(sel)))
                 }
             },
@@ -286,7 +286,7 @@ export fn makeDynamicImport(node) {
             @importResource: { . ->
                 ## The translation is approximately
                 ## `def name = loadResource(source, format)`.
-                [makeVarDef(node::name,
+                [makeVarDef(node::name, @result,
                     makeFunCall(REFS::loadResource,
                         makeLiteral(node::source), makeLiteral(node::format)))]
             }
@@ -566,7 +566,13 @@ export fn withoutTops(node) {
             { s };
 
         ifIs { defNode::top }
-            { makeVarDef(defNode::name) }
+            {
+                def origBox = defNode::box;
+                ifIs { eq(origBox, @lazy) }
+                    { die("Bad `box` for `top` variable.") };
+                def box = ifValueOr { ne(origBox, @result) } { @promise };
+                makeVarDef(defNode::name, box)
+            }
     };
 
     ## These are the one-for-one replacements for the original `statements`.

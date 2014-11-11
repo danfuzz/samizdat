@@ -843,7 +843,7 @@ DEF_PARSE(varDef) {
         expr = NULL;
     }
 
-    return makeVarDef(name, expr);
+    return makeVarDef(name, (expr == NULL) ? SYM(promise) : SYM(result), expr);
 }
 
 // Documented in spec.
@@ -996,7 +996,8 @@ DEF_PARSE(functionDef) {
     MATCH_OR_REJECT(fn);
     zvalue closure = PARSE_OR_REJECT(functionCommon);
 
-    return withTop(makeVarDef(cm_get(closure, SYM(name)), closure));
+    return withTop(
+        makeVarDef(cm_get(closure, SYM(name)), SYM(result), closure));
 }
 
 // Documented in spec.
