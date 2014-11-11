@@ -142,7 +142,7 @@ static void execVarDef(Frame *frame, zvalue varDef) {
 
     zvalue value = (valueExpr == NULL)
         ? NULL
-        : execExpression(frame, valueExpr);
+        : execExpressionOrMaybe(frame, valueExpr);
     zvalue boxInstance = (value == NULL)
             ? METH_CALL(cls, new)
             : METH_CALL(cls, new, value);
