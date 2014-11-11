@@ -264,24 +264,7 @@ zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping) {
 
 // Documented in spec.
 CMETH_IMPL_rest(SymbolTable, new, args) {
-    if ((args.size & 1) != 0) {
-        die("Odd argument count for symbol table construction.");
-    }
-
-    if (args.size == 0) {
-        return EMPTY_SYMBOL_TABLE;
-    }
-
-    zint size = args.size >> 1;
-    zvalue result = allocInstance(size);
-    SymbolTableInfo *info = getInfo(result);
-
-    for (zint i = 0, at = 0; i < size; i++, at += 2) {
-        putInto(&result, &info,
-            (zmapping) {args.elems[at], args.elems[at + 1]});
-    }
-
-    return result;
+    return symtabFromZarray(args);
 }
 
 // Documented in spec.
