@@ -59,7 +59,17 @@ char *cm_debugString(zvalue x);
  * Calls `ClassName.new(...)`. `ClassName` is fixed to be a proper C name
  * for a class. **Note:** This is a macro.
  */
-#define cm_new(clsName, ...) (METH_CALL((CLS_##clsName), new, __VA_ARGS__))
+#define cm_new(clsName, ...) (METH_CALL(CLS_##clsName, new, __VA_ARGS__))
+
+/**
+ * Calls `ClassName.new()` or `ClassName.new(value)`. `ClassName` is fixed to
+ * be a proper C name for a class, and `value` is allowed to be `NULL`, in
+ * which case the constructor is called with no arguments. This is meant to
+ * make it easy to call box or box-like constructors, hence the name.
+ * **Note:** This is a macro.
+ */
+#define cm_newBox(clsName, value) (cm_newBox0(CLS_##clsName, (value)))
+zvalue cm_newBox0(zvalue cls, zvalue value);
 
 /**
  * Does the equivalent of calling `SymbolTable.new(...)`, except that this

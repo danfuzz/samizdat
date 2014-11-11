@@ -20,10 +20,10 @@ import ./vars :: localVarDecl, localVarName;
 
 ## Map from `box` symbols to class references.
 def BOX_CLASSES = @{
-    cell:    CodeString.new("CLS_Cell"),
-    lazy:    CodeString.new("CLS_Lazy"),
-    promise: CodeString.new("CLS_Promise"),
-    result:  CodeString.new("CLS_Result")
+    cell:    CodeString.new("Cell"),
+    lazy:    CodeString.new("Lazy"),
+    promise: CodeString.new("Promise"),
+    result:  CodeString.new("Result")
 };
 
 ## Common translation code for variable definition.
@@ -132,14 +132,14 @@ export fn translate(node, varsBox) {
 
             def boxInstance = if (value.hasName(@maybe)) {
                 def vTrans = translate(value::value, varsBox);
-                MethCall.new(cls, "SYM(new)", vTrans)
+                Call.new("cm_newBox", cls, vTrans)
             } else if (value.hasName(@void)) {
-                MethCall.new(cls, "SYM(new)");
+                Call.new("cm_newBox", cls, "NULL");
             } else {
                 ## If it's not wrapped in a `@maybe`, we need to guarantee
                 ## non-void.
                 def vTrans = nonVoid(translate(value, varsBox));
-                MethCall.new(cls, "SYM(new)", vTrans)
+                Call.new("cm_newBox", cls, vTrans)
             };
 
             varDefCommon(node::name, boxInstance, varsBox)

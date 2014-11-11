@@ -53,6 +53,13 @@ zvalue cm_nth(zvalue x, zint index) {
 }
 
 // Documented in header.
+zvalue cm_newBox0(zvalue cls, zvalue value) {
+    return (value == NULL)
+        ? METH_CALL(cls, new)
+        : METH_CALL(cls, new, value);
+}
+
+// Documented in header.
 zvalue cm_new_SymbolTable0(zvalue first, ...) {
     if (first == NULL) {
         return EMPTY_SYMBOL_TABLE;
