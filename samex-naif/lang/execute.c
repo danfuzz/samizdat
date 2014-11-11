@@ -146,6 +146,7 @@ static void execVarDef(Frame *frame, zvalue varDef) {
     } else {
         switch(symbolEvalType(box)) {
             case EVAL_cell:    { cls = CLS_Cell;    break; }
+            case EVAL_lazy:    { cls = CLS_Lazy;    break; }
             case EVAL_promise: { cls = CLS_Promise; break; }
             case EVAL_result:  { cls = CLS_Result;  break; }
             default: {
