@@ -131,25 +131,31 @@ static zvalue execStore(Frame *frame, zvalue store) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue name, valueExpr;
-    recGet2(varDef, SYM(name), &name, SYM(value), &valueExpr);
+    zvalue box, name, valueExpr;
+    recGet3(varDef,
+        SYM(box),   &box,
+        SYM(name),  &name,
+        SYM(value), &valueExpr);
 
-    zvalue box = valueExpr
-        ? cm_new(Result, execExpression(frame, valueExpr))
-        : cm_new(Promise);
-    frameDef(frame, name, box);
-}
+    zvalue cls;
+    switch(symbolEvalType(box)) {
+        case EVAL_cell:    { cls = CLS_Cell;    break; }
+        case EVAL_lazy:    { cls = CLS_Lazy;    break; }
+        case EVAL_promise: { cls = CLS_Promise; break; }
+        case EVAL_result:  { cls = CLS_Result;  break; }
+        default: {
+            die("Bogus `box` value: %s", cm_debugString(box));
+        }
+    }
 
-/**
- * Executes a `varDefMutable` form, by updating the given execution frame
- * as appropriate.
- */
-static void execVarDefMutable(Frame *frame, zvalue varDef) {
-    zvalue name, valueExpr;
-    recGet2(varDef, SYM(name), &name, SYM(value), &valueExpr);
+    zvalue value = (valueExpr == NULL)
+        ? NULL
+        : execExpression(frame, valueExpr);
+    zvalue boxInstance = (value == NULL)
+            ? METH_CALL(cls, new)
+            : METH_CALL(cls, new, value);
 
-    zvalue value = valueExpr ? execExpression(frame, valueExpr) : NULL;
-    frameDef(frame, name, cm_new(Cell, value));
+    frameDef(frame, name, boxInstance);
 }
 
 /**
@@ -203,7 +209,6 @@ static void execStatement(Frame *frame, zvalue s) {
         case EVAL_importModuleSelection:
         case EVAL_importResource: { execImport(frame, s);           break; }
         case EVAL_varDef:         { execVarDef(frame, s);           break; }
-        case EVAL_varDefMutable:  { execVarDefMutable(frame, s);    break; }
         default:                  { execExpressionVoidOk(frame, s); break; }
     }
 }

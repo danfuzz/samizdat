@@ -98,8 +98,7 @@ export fn get_varRefs(node) {
             get_varRefs(node::value)
         };
 
-        @varDef:
-        @varDefMutable: {
+        @varDef: {
             (def v = node::value) & get_varRefs(v) | []
         };
 

@@ -65,12 +65,11 @@ fn bodies(node, bodiesBox) {
             @store{target, value}
         };
 
-        @varDef:
-        @varDefMutable: {
+        @varDef: {
             def value = ifValue { node::value }
                 { value -> @{value: bodies(value, bodiesBox)} }
                 { @{} };
-            @(nodeName){name: node::name, value*}
+            @(nodeName){node*, value*}
         };
 
         @export:

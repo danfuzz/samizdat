@@ -369,13 +369,11 @@ any regular expression node, the result has a `maybe` node for the `yield`.
 For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
 result contains the given `node` as the `yield`, directly.
 
-#### `makeVarDef(name, optValue?) -> node`
+#### `makeVarDef(name, box, optValue?) -> node`
 
-Makes a `varDef` statement node. `name` must be a symbol.
-
-#### `makeVarDefMutable(name, optValue?) -> node`
-
-Makes a `varDefMutable` statement node. `name` must be a symbol.
+Makes a `varDef` statement node. `name` and `box` must both be symbols. See
+the documentation on `varDef` nodes for information about the allowed values
+for `box` and how it relates to `optValue`.
 
 #### `makeVarFetch(name) -> node`
 
@@ -519,3 +517,6 @@ More specifically, for each variable defined to be `top`, a forward-declaring
 is replaced with an equivalent `store(varRef(...), ...)` node. If any
 so-transformed variables were `export`ed, then an `exportSelection` node is
 added to the end of the `statements` list referencing all such variables.
+
+It is *not* valid for a `varDef` with `box` type `@lazy` to be marked as a
+`top`.

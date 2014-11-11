@@ -294,8 +294,7 @@ zvalue get_definedNames(zvalue node) {
         }
         case EVAL_importModule:
         case EVAL_importResource:
-        case EVAL_varDef:
-        case EVAL_varDefMutable: {
+        case EVAL_varDef: {
             return listFrom1(cm_get(node, SYM(name)));
         }
         case EVAL_importModuleSelection: {
@@ -493,7 +492,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
             extractMethods(methods, SYM(classMethod)),
             extractMethods(methods, SYM(instanceMethod))));
 
-    return withTop(makeVarDef(name, call));
+    return withTop(makeVarDef(name, SYM(result), call));
 }
 
 // Documented in spec.
@@ -505,7 +504,7 @@ zvalue makeDynamicImport(zvalue node) {
 
     switch (recordEvalType(node)) {
         case EVAL_importModule: {
-            zvalue stat = makeVarDef(name,
+            zvalue stat = makeVarDef(name, SYM(result),
                 makeFunCall(REFS(loadModule), listFrom1(makeLiteral(source))));
             return listFrom1(stat);
         }
@@ -519,7 +518,7 @@ zvalue makeDynamicImport(zvalue node) {
             for (zint i = 0; i < size; i++) {
                 zvalue name = cm_nth(names, i);
                 zvalue sel = cm_nth(select, i);
-                stats[i] = makeVarDef(name,
+                stats[i] = makeVarDef(name, SYM(result),
                     makeCall(loadCall, SYMS(get),
                         listFrom1(makeLiteral(sel))));
             }
@@ -527,8 +526,7 @@ zvalue makeDynamicImport(zvalue node) {
             return listFromZarray((zarray) {size, stats});
         }
         case EVAL_importResource: {
-            zvalue stat = makeVarDef(
-                name,
+            zvalue stat = makeVarDef(name, SYM(result),
                 makeFunCall(REFS(loadResource),
                     listFrom2(makeLiteral(source), makeLiteral(format))));
             return listFrom1(stat);
@@ -806,13 +804,11 @@ zvalue makeVarRef(zvalue name) {
 }
 
 // Documented in spec.
-zvalue makeVarDef(zvalue name, zvalue value) {
-    return recordFrom2(SYM(varDef), SYM(name), name, SYM(value), value);
-}
-
-// Documented in spec.
-zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return recordFrom2(SYM(varDefMutable), SYM(name), name, SYM(value), value);
+zvalue makeVarDef(zvalue name, zvalue box, zvalue value) {
+    return recordFrom3(SYM(varDef),
+        SYM(name),  name,
+        SYM(box),   box,
+        SYM(value), value);
 }
 
 // Documented in spec.
@@ -1014,7 +1010,7 @@ zvalue withYieldDef(zvalue node, zvalue name) {
     zvalue newBindings;
 
     if (yieldDef != NULL) {
-        zvalue defStat = makeVarDef(name, makeVarFetch(yieldDef));
+        zvalue defStat = makeVarDef(name, SYM(result), makeVarFetch(yieldDef));
         newBindings = tableFrom1(
             SYM(statements),
             listPrepend(defStat, cm_get(node, SYM(statements))));
@@ -1043,8 +1039,24 @@ zvalue withoutTops(zvalue node) {
             : s;
 
         if (cm_get(defNode, SYM(top)) != NULL) {
+            zvalue box = cm_get(defNode, SYM(box));
+            switch (symbolEvalType(box)) {
+                case EVAL_cell:
+                case EVAL_promise: {
+                    // Nothing to do.
+                    break;
+                }
+                case EVAL_result: {
+                    box = SYM(promise);
+                    break;
+                }
+                default: {
+                    die("Bad `box` for `top` variable.");
+                    break;
+                }
+            }
             tops = listAppend(tops,
-                makeVarDef(cm_get(defNode, SYM(name)), NULL));
+                makeVarDef(cm_get(defNode, SYM(name)), box, NULL));
         }
     }
 

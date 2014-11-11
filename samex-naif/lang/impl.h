@@ -40,6 +40,7 @@ enum {
 typedef enum {
     EVAL_apply = 1,  // 1, so that it won't be a "sneaky default."
     EVAL_call,
+    EVAL_cell,
     EVAL_closure,
     EVAL_directive,
     EVAL_export,
@@ -50,16 +51,18 @@ typedef enum {
     EVAL_importModuleSelection,
     EVAL_importResource,
     EVAL_internal,
+    EVAL_lazy,
     EVAL_literal,
     EVAL_mapping,
     EVAL_maybe,
     EVAL_module,
     EVAL_noYield,
     EVAL_nonlocalExit,
+    EVAL_promise,
+    EVAL_result,
     EVAL_store,
     EVAL_varRef,
     EVAL_varDef,
-    EVAL_varDefMutable,
     EVAL_void,
     EVAL_yield,
     EVAL_CH_PLUS,   // For formal argument repetition.

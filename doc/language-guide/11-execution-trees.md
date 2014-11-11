@@ -290,57 +290,42 @@ node.
 
 * `name: name` &mdash; Variable name to define (must be a symbol).
 
+* `box: symbol` &mdash; Indicates what kind of box to produce. Must be one
+  of `@cell`, `@lazy`, `@promise`, or `@result`.
+
 * `value: expression` (optional) &mdash; Expression node representing the
-  value that the variable should take on when defined.
+  value that the variable should take on when defined. This is *optional*
+  when `box` is `@cell` or `@result`. This *must not be present* when `box`
+  is `@promise`.
 
 * `top: true` (optional) &mdash; If present, indicates that this definition
   should be promoted to the top of the closure in which it appears.
 
-This represents an immutable variable definition statement as part of a
-closure body.
+This represents a variable definition statement as part of a closure body.
 
 When run successfully, nodes of this type cause `name` to be bound in the
-current (topmost) execution environment, to an immutable variable. That is,
-once the variable is bound to a value, it can never be re-bound. The
-behavior varies depending on if `value` is supplied in this node:
+current (topmost) execution environment. The `box` binding determines the
+nature of the variable:
 
-* Without a supplied `value`, this serves as a forward declaration. The
-  variable is defined, but it is unbound (i.e. bound to void). It is then
-  valid to store into the variable a value *exactly once* by use of a
-  `store(varRef(...), ...)` node. Before such storage, it is valid to refer
-  to the variable in an expression node though it will evaluate to void.
+  * `@cell` &mdash; The variable is a mutable cell, which can be initially
+    void or set, and which can be stored to multiple times.
+  * `@lazy` &mdash; The variable is bound to a lazily-evaluated result. In
+    this case `value` is expected to evaluate to a function. That function
+    is called only the first time the variable is fetched; subsequently that
+    function's result is cached.
+  * `@promise` &mdash; The variable is bound to a promise, which starts out
+    holding void and which can be stored to exactly once. This can be used,
+    for example, for forward declarations.
+  * `@result` &mdash; The variable is bound upon construction and is
+    thereafter immutable. It *can* be bound to void.
 
-* With `value` supplied, said `value` is evaluated. If it evaluates to void,
-  then evaluation fails (terminating the runtime). Otherwise, the evaluated
-  value becomes the permanently-bound value of the variable.
+In cases where `value` is supplied, `value` is always evaluated at the time
+of evaluation of this node. And if so, it must not evaluate to void.
+(TODO: this may change to allow `void` or `maybe` nodes.)
 
 The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
 `LangNode::withoutTops` for more details.
-
-#### `varDefMutable` &mdash; `@varDef{name: name, value?: expression}`
-
-* `name: name` &mdash; Variable name to define (must be a symbol).
-
-* `value: expression` (optional) &mdash; Expression node representing the
-  value that the variable should take on when defined.
-
-This represents a mutable variable definition statement as part of a closure
-body.
-
-When run successfully, nodes of this type cause `name` to be bound in the
-current (topmost) execution environment, to a mutable variable. That is, the
-variable can be stored to multiple times, by using `store` nodes.
-The behavior varies depending on if `value` is supplied in this node:
-
-* Without a supplied `value`, this serves as a forward declaration. The
-  variable is defined, but it is unbound (i.e. bound to void). After
-  definition and before storage (via `store`), it is valid to refer to the
-  variable in an expression node though it will evaluate to void.
-
-* With `value` supplied, said `value` is evaluated. If it evaluates to void,
-  then evaluation fails (terminating the runtime). Otherwise, the evaluated
-  value becomes the initially-bound value of the variable.
 
 
 <br><br>

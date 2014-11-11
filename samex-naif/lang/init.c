@@ -45,6 +45,7 @@ MOD_INIT(lang) {
     SYM_MAP(CH_STAR);
     SYM_MAP(apply);
     SYM_MAP(call);
+    SYM_MAP(cell);
     SYM_MAP(closure);
     SYM_MAP(directive);
     SYM_MAP(export);
@@ -55,16 +56,18 @@ MOD_INIT(lang) {
     SYM_MAP(importModuleSelection);
     SYM_MAP(importResource);
     SYM_MAP(internal);
+    SYM_MAP(lazy);
     SYM_MAP(literal);
     SYM_MAP(mapping);
     SYM_MAP(maybe);
     SYM_MAP(module);
     SYM_MAP(noYield);
     SYM_MAP(nonlocalExit);
+    SYM_MAP(promise);
+    SYM_MAP(result);
     SYM_MAP(store);
     SYM_MAP(varRef);
     SYM_MAP(varDef);
-    SYM_MAP(varDefMutable);
     SYM_MAP(void);
     SYM_MAP(yield);
 }
