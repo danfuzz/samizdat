@@ -56,6 +56,30 @@ fn igram(foo) {
     note("    ", fizmo);
 };
 
+## Demo of lazy variables.
+fn glorf() {
+    note("glorf:");
+
+    var x = 0;
+    def foo { x := x.add(1) };
+
+    ifNot { eq(x, 0) }
+        { die("Bad lazy 1.") };
+
+    def y = foo;
+
+    ifNot { eq(x, 1) }
+        { die("Bad lazy 2.") };
+    ifNot { eq(y, 1) }
+        { die("Bad lazy 3.") };
+    ifNot { eq(foo, 1) }
+        { die("Bad lazy 4.") };
+    ifNot { eq(x, 1) }
+        { die("Bad lazy 5.") };
+
+    note("    Yes!");
+};
+
 ## Demo of box-of-variable access.
 fn fizmo() {
     var x = "blort";
@@ -112,4 +136,5 @@ def \"weird name" = 1;
 frotz("fizmo");
 zorch("blort");
 igram("fizmo");
+glorf();
 fizmo();
