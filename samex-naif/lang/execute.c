@@ -138,20 +138,13 @@ static void execVarDef(Frame *frame, zvalue varDef) {
         SYM(value), &valueExpr);
 
     zvalue cls;
-
-    if (box == NULL) {
-        // TODO: Remove the above `if` and this scaffolding when `box` is
-        // guaranteed to be non-null.
-        cls = (valueExpr == NULL) ? CLS_Promise : CLS_Result;
-    } else {
-        switch(symbolEvalType(box)) {
-            case EVAL_cell:    { cls = CLS_Cell;    break; }
-            case EVAL_lazy:    { cls = CLS_Lazy;    break; }
-            case EVAL_promise: { cls = CLS_Promise; break; }
-            case EVAL_result:  { cls = CLS_Result;  break; }
-            default: {
-                die("Bogus `box` value: %s", cm_debugString(box));
-            }
+    switch(symbolEvalType(box)) {
+        case EVAL_cell:    { cls = CLS_Cell;    break; }
+        case EVAL_lazy:    { cls = CLS_Lazy;    break; }
+        case EVAL_promise: { cls = CLS_Promise; break; }
+        case EVAL_result:  { cls = CLS_Result;  break; }
+        default: {
+            die("Bogus `box` value: %s", cm_debugString(box));
         }
     }
 
