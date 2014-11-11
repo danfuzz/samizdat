@@ -29,8 +29,8 @@ is called for.
 
 * `name: expression` &mdash; An expression node that must evaluate to a symbol.
 
-* `values: expression` &mdash; An expression node that must
-  evaluate to a list.
+* `values: expression` &mdash; An expression or `maybe` node that must
+  evaluate to a list, or a `void` node.
 
 This represents a method call.
 
@@ -38,7 +38,7 @@ When run, `target`, `name`, and `values` are evaluated, in that order.
 If `target` evaluates to void, or if `name` evaluates to something other than
 a symbol, the call fails (terminating the runtime). If `values` evaluates to
 anything but void or a list, the call fails (terminating the runtime).
-`values` is allowed to evaluate to void *only* if it is a `@maybe` or `@void`
+`values` is allowed to evaluate to void *only* if it is a `maybe` or `void`
 node; any other void evaluation is a fatal error.
 
 If there are too few actual arguments for the function (e.g., the
@@ -63,8 +63,8 @@ takes its `values` as a list in the node itself.
 
 * `name: expression` &mdash; An expression node that must evaluate to a symbol.
 
-* `values: [expression*]` &mdash; A list of arbitrary
-  expression nodes, each of which must evaluate to a non-void value.
+* `values: [expression*]` &mdash; A list of arbitrary expression nodes, each
+  of which must evaluate to a non-void value.
 
 * `interpolate: expression` (optional) &mdash; Expression to use when treating
   this as a function call argument interpolation. (See below.)
@@ -107,9 +107,9 @@ produced by the function `$LangNode::makeInterpolate`.
   various variable definition nodes (as defined below). This defines the bulk
   of the code to execute.
 
-* `yield: expression` &mdash; An expression node representing
-  the (local) result value for a call. Allowed to be a `maybe` or `void`
-  node. In intermediate forms, also allowed to be a `nonlocalExit` node.
+* `yield: expression` &mdash; An expression node representing the (local)
+  result value for a call. Allowed to be a `maybe` or `void` node. In
+  intermediate forms, also allowed to be a `nonlocalExit` node.
 
 * `yieldDef: name` (optional) &mdash; A name (must be a symbol) to
   bind as the nonlocal-exit function.
@@ -137,7 +137,7 @@ there are too few actual arguments, the call fails (terminating the
 runtime). After that, the `statements` are evaluated in
 order. Finally, if there is a `yield`, then that is evaluated. The
 result of the call is the same as the result of the `yield` evaluation
-(including possibly void if the node is a `@maybe` or `@void`) if a `yield`
+(including possibly void if the node is a `maybe` or `void`) if a `yield`
 was present, or void if there was no `yield` to evaluate.
 
 **Note:** As a possible clarification about nonlocal-exit functions: Defining
@@ -202,9 +202,8 @@ the runtime).
 * `target: expression` &mdash; Target to store to; must evaluate to something
   the implements the `Box` protocol.
 
-* `value: expression` &mdash; Expression node representing the
-  value that the target should take on. Allowed to be a `maybe` or `void`
-  node.
+* `value: expression` &mdash; Expression node representing the value that the
+  target should take on. Allowed to be a `maybe` or `void` node.
 
 This represents a box store (assignment).
 
@@ -293,10 +292,9 @@ node.
 * `box: symbol` &mdash; Indicates what kind of box to produce. Must be one
   of `@cell`, `@lazy`, `@promise`, or `@result`.
 
-* `value: expression` (optional) &mdash; Expression node representing the
-  value that the variable should take on when defined. This is *optional*
-  when `box` is `@cell` or `@result`. This *must not be present* when `box`
-  is `@promise`.
+* `value: expression` &mdash; Expression node representing the
+  value that the variable should take on when defined. Allowed to be a `maybe`
+  or `void` node, but see below for restrictions based on the `box` binding.
 
 * `top: true` (optional) &mdash; If present, indicates that this definition
   should be promoted to the top of the closure in which it appears.
@@ -310,18 +308,18 @@ nature of the variable:
   * `@cell` &mdash; The variable is a mutable cell, which can be initially
     void or set, and which can be stored to multiple times.
   * `@lazy` &mdash; The variable is bound to a lazily-evaluated result. In
-    this case `value` is expected to evaluate to a function. That function
-    is called only the first time the variable is fetched; subsequently that
-    function's result is cached.
+    this case `value` is expected to evaluate to a function (never void). That
+    function is called only the first time the variable is fetched;
+    subsequently that function's result is cached.
   * `@promise` &mdash; The variable is bound to a promise, which starts out
     holding void and which can be stored to exactly once. This can be used,
-    for example, for forward declarations.
+    for example, for forward declarations. In this case `value` is expected to
+    always evaluate to void.
   * `@result` &mdash; The variable is bound upon construction and is
     thereafter immutable. It *can* be bound to void.
 
 In cases where `value` is supplied, `value` is always evaluated at the time
-of evaluation of this node. And if so, it must not evaluate to void.
-(TODO: this may change to allow `void` or `maybe` nodes.)
+of evaluation of this node.
 
 The `top` binding, if present, has no effect at runtime. Instead, this is
 expected to be used during definition simplification. See
