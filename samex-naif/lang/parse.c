@@ -836,14 +836,15 @@ DEF_PARSE(varDef) {
     MATCH_OR_REJECT(def);
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    zvalue expr;
     if (MATCH(CH_EQUAL)) {
-        expr = PARSE_OR_REJECT(expression);
+        zvalue expr = PARSE_OR_REJECT(expression);
+        return makeVarDef(name, SYM(result), expr);
+    } else if (PEEK(CH_OCURLY)) {
+        zvalue c = PARSE_OR_REJECT(nullaryClosure);
+        return makeVarDef(name, SYM(lazy), c);
     } else {
-        expr = NULL;
+        return makeVarDef(name, SYM(promise), NULL);
     }
-
-    return makeVarDef(name, (expr == NULL) ? SYM(promise) : SYM(result), expr);
 }
 
 // Documented in spec.

@@ -28,13 +28,13 @@ export class CacheState
 
     ## Documented in spec.
     class.fullNew(input, context) {
-        def shifted = Lazy.new {
+        def shifted {
             def result;
             ifValue { input.nextValue(result?) }
                 { newInput -> this.fullNew(newInput, [context*, result]) }
         };
 
-        return this.(NEW)(@{input, context, shifted})
+        return this.(NEW)(@{input, context, shifted: shifted?})
     };
 
     ## Documented in spec.

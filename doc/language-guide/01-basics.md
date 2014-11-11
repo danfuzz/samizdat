@@ -125,11 +125,13 @@ Within a program body, local variables are defined using the syntax:
 ```
 def name = value
 var name = value
+def name { value }
 ```
 
 where `name` is a variable name (per above), and `value` is an arbitrary
-expression. `def` introduces an immutable variable binding, and
-`var` introduces a mutable variable binding.
+expression. `def name =` introduces an immutable variable binding, `var`
+introduces a mutable variable binding, and `def name {` introduces a *lazy*
+immutable variable binding.
 
 It is valid to declare a variable (either mutable or immutable) but leave
 it unbound, by omitting the `= value` part.
@@ -146,6 +148,12 @@ that is, a `:=` assignment without prefacing it with either `def` or `var`.
 Variable definitions (but *not* `:=` assignments) as described in
 this section are some of the few statement forms in Samizdat. That is, these
 are not combining expressions.
+
+Lazy variables have their `value` body evaluated at most once, which occurs
+at the first point when the variable's value is fetched. The body can have
+any number of statements, and has the usual semantics of a nullary closure
+(in particular, no explicit `yield` needed unless it contains a yield
+declaration).
 
 As part of a module definition, an immutable variable can be exported from
 the module, by prefixing its definition with `export`:

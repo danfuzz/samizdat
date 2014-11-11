@@ -25,7 +25,6 @@ export fn apply(rule, input) {
         }
         { input };
 
-
     def state = BasicState.new(tokens);
 
     return? ifValue { state.applyRule(rule) }

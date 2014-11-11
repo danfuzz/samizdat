@@ -525,6 +525,7 @@ def parYieldOrNonlocal = {:
 :};
 
 ## Parses an immutable variable definition, or forward declaration of same.
+## This includes lazy-evaluated variable definitions.
 def parVarDef = {:
     @def
     name = parNameSymbol
@@ -533,6 +534,9 @@ def parVarDef = {:
         @"="
         expr = parExpression
         { makeVarDef(name, @result, expr) }
+    |
+        c = parNullaryClosure
+        { makeVarDef(name, @lazy, c) }
     |
         { makeVarDef(name, @promise) }
     )
