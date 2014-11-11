@@ -117,9 +117,6 @@ zvalue makeThunk(zvalue expression);
 zvalue makeVarDef(zvalue name, zvalue box, zvalue value);
 
 // Documented in spec.
-zvalue makeVarDefMutable(zvalue name, zvalue value);
-
-// Documented in spec.
 zvalue makeVarFetch(zvalue name);
 
 // Documented in spec.

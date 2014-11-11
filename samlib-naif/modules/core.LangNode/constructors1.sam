@@ -88,13 +88,6 @@ export fn makeVarDef(name, box, optValue?) {
 };
 
 ## Documented in spec.
-export fn makeVarDefMutable(name, optValue?) {
-    return ifValue { optValue* }
-        { value -> @varDefMutable{name, value} }
-        { -> @varDefMutable{name} }
-};
-
-## Documented in spec.
 export fn makeVarFetch(name) {
     return @fetch{target: makeVarRef(name)}
 };

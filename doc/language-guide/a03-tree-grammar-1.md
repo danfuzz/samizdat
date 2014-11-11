@@ -544,7 +544,7 @@ def parVarDefMutable = {:
     name = parNameSymbol
     optExpr = (@"=" parExpression)?
 
-    { makeVarDefMutable(name, optExpr*) }
+    { makeVarDef(name, @cell, optExpr*) }
 :};
 
 ## Parses a yield / nonlocal exit definition, yielding the def name.

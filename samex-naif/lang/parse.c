@@ -860,7 +860,7 @@ DEF_PARSE(varDefMutable) {
         expr = NULL;
     }
 
-    return makeVarDefMutable(name, expr);
+    return makeVarDef(name, SYM(cell), expr);
 }
 
 // Documented in spec.

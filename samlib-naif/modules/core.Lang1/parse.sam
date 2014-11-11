@@ -413,9 +413,7 @@ def parVarDefMutable = PegMain.newSequence(
     PegSet.new(@var),
     parNameSymbol,
     PegRepeat.new(PegSequence.new(PegSet.new(@"="), parExpression), 0, 1),
-    PegCode.new { ., name, optExpr ->
-        makeVarDefMutable(name, optExpr*)
-    });
+    PegCode.new { ., name, optExpr -> makeVarDef(name, @cell, optExpr*) });
 
 ## Documented in spec.
 def parYieldDef = PegMain.newSequence(

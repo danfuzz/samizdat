@@ -813,11 +813,6 @@ zvalue makeVarDef(zvalue name, zvalue box, zvalue value) {
 }
 
 // Documented in spec.
-zvalue makeVarDefMutable(zvalue name, zvalue value) {
-    return recordFrom2(SYM(varDefMutable), SYM(name), name, SYM(value), value);
-}
-
-// Documented in spec.
 zvalue makeVarFetch(zvalue name) {
     return recordFrom1(SYM(fetch), SYM(target), makeVarRef(name));
 }
@@ -1056,7 +1051,7 @@ zvalue withoutTops(zvalue node) {
                     box = SYM(promise);
                     break;
                 }
-                case EVAL_lazy: {
+                default: {
                     die("Bad `box` for `top` variable.");
                     break;
                 }
