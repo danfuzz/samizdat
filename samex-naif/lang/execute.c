@@ -92,14 +92,6 @@ static void execImport(Frame *frame, zvalue import) {
 }
 
 /**
- * Executes a `maybe` form.
- */
-static zvalue execMaybe(Frame *frame, zvalue maybe) {
-    zvalue valueExpression = cm_get(maybe, SYM(value));
-    return execExpressionVoidOk(frame, valueExpression);
-}
-
-/**
  * Executes a `noYield` form.
  */
 static void execNoYield(Frame *frame, zvalue noYield)
@@ -221,9 +213,9 @@ static void execStatement(Frame *frame, zvalue s) {
 // Documented in header.
 zvalue execExpressionOrMaybe(Frame *frame, zvalue e) {
     switch (recordEvalType(e)) {
-        case EVAL_maybe: { return execMaybe(frame, e);      }
-        case EVAL_void:  { return NULL;                     }
-        default:         { return execExpression(frame, e); }
+        case EVAL_maybe: { return execExpressionVoidOk(frame, cm_get(e, SYM(value))); }
+        case EVAL_void:  { return NULL;                                               }
+        default:         { return execExpression(frame, e);                           }
     }
 }
 
