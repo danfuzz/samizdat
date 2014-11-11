@@ -51,6 +51,7 @@ typedef enum {
     EVAL_importModuleSelection,
     EVAL_importResource,
     EVAL_internal,
+    EVAL_lazy,
     EVAL_literal,
     EVAL_mapping,
     EVAL_maybe,

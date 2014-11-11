@@ -56,6 +56,7 @@ MOD_INIT(lang) {
     SYM_MAP(importModuleSelection);
     SYM_MAP(importResource);
     SYM_MAP(internal);
+    SYM_MAP(lazy);
     SYM_MAP(literal);
     SYM_MAP(mapping);
     SYM_MAP(maybe);
