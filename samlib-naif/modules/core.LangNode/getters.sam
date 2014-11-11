@@ -78,8 +78,7 @@ export fn get_definedNames(node) {
 
             @importModule:
             @importResource:
-            @varDef:
-            @varDefMutable: { . ->
+            @varDef: { . ->
                 [node::name]
             }
         },

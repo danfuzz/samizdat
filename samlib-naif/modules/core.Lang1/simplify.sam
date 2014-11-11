@@ -214,8 +214,7 @@ fn convertPexIn(node) {
                 withFinalBindings(node, @{target, value})
             },
 
-            @varDef:
-            @varDefMutable: { . ->
+            @varDef: { . ->
                 ifValue { node::value }
                     { value ->
                         withBindings(node, @{value: convertPexIn(value)})

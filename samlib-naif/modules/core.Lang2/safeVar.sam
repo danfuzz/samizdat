@@ -123,8 +123,7 @@ fn safeIndex(node, baseStr) {
                 -1
             },
 
-            @varDef:
-            @varDefMutable: { . ->
+            @varDef: { . ->
                 def nameIndex = safeIndexForNames(baseStr, node::name);
                 def valueIndex = safeIndexForNodes(baseStr, node::value?*);
                 maxOf(nameIndex, valueIndex)
