@@ -50,7 +50,7 @@ This class knows how to cast as follows:
 
 Default implementation.
 
-#### `.perOrder(other) -> int`
+#### `.perOrder(other) -> symbol`
 
 Default implementation.
 
@@ -59,7 +59,7 @@ Default implementation.
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
 
-#### `.totalOrder(other) -> int`
+#### `.totalOrder(other) -> symbol`
 
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering

@@ -49,7 +49,7 @@ Returns `"true"` or `"false'`, in the reasonably expected cases.
 
 Default implementation.
 
-#### `.perOrder(other) -> int`
+#### `.perOrder(other) -> symbol`
 
 Default implementation.
 
@@ -58,7 +58,7 @@ Default implementation.
 Compares two boolean values. This is only logical-true if the two given
 values are the same.
 
-#### `.totalOrder(other) -> int`
+#### `.totalOrder(other) -> symbol`
 
 Compares the given boolean values, ordering `false` before `true`.
 

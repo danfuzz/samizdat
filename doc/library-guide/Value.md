@@ -67,7 +67,7 @@ of all per-class equality comparison functions.
 
 **Syntax Note:** Used in the translation of `expression == expression` forms.
 
-#### `.perOrder(other) -> int | void`
+#### `.perOrder(other) -> symbol | void`
 
 Performs an order comparison of the two given values, using the per-class
 order. Return values are the same as with `totalOrder` (see which). As
@@ -101,13 +101,13 @@ values.
 **Note:** In order for the system to operate consistently, `totalEq` must
 always behave consistently with `totalOrder`, in that for a given pair of
 values, `totalEq` must indicate equality if and only if `totalOrder` would
-return `0`. `totalEq` exists at all because it is often possible to determine
-equality much quicker than determining order.
+return `@same`. `totalEq` exists at all because it is often possible to
+determine equality much quicker than determining order.
 
 **Note:** This is the method which underlies the implementation
 of all cross-class equality comparison functions.
 
-#### `.totalOrder(other) -> int | void`
+#### `.totalOrder(other) -> symbol | void`
 
 Returns the class-specific order of the two given values, using the "total
 value ordering" order. When called by the system, the two values are
