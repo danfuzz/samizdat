@@ -49,7 +49,7 @@ of `this`), or void if not.
 
 Default implementation.
 
-#### `.perOrder(other) -> int`
+#### `.perOrder(other) -> symbol`
 
 Compares two classes for order, as follows:
 
@@ -77,7 +77,7 @@ or would cause trouble if not ignored.
 
 Compares two classes. Two different classes are never equal.
 
-#### `.totalOrder(other) -> int | void`
+#### `.totalOrder(other) -> symbol | void`
 
 This is identical to `.perEq()`, except it first asserts that `other` has the
 same direct class as `this` (which in practice is only true of metaclasses).

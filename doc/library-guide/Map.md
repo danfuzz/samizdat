@@ -85,7 +85,7 @@ This class knows how to cast as follows:
 
 Default implementation.
 
-#### `.perOrder(other) -> int`
+#### `.perOrder(other) -> symbol`
 
 Default implementation.
 
@@ -93,7 +93,7 @@ Default implementation.
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
-#### `.totalOrder(other) -> int`
+#### `.totalOrder(other) -> symbol`
 
 Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal

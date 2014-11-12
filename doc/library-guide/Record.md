@@ -86,7 +86,7 @@ This class knows how to cast as follows:
 
 Default implementation.
 
-#### `.perOrder(other) -> int`
+#### `.perOrder(other) -> symbol`
 
 Default implementation.
 
@@ -95,7 +95,7 @@ Default implementation.
 Compares two records. Two records are equal if they have equal names and
 equal data payloads.
 
-#### `.totalOrder(other) -> int`
+#### `.totalOrder(other) -> symbol`
 
 Compares two records for order. Records order by name as the major order
 and data payload as minor order.

@@ -45,7 +45,7 @@ Returns `this`.
 
 Default implementation.
 
-#### `.perOrder(other) -> int | void`
+#### `.perOrder(other) -> symbol | void`
 
 Default implementation.
 
@@ -54,7 +54,7 @@ Default implementation.
 Returns `this` if `other` is a reference to the same symbol, or void if
 not.
 
-#### `.totalOrder(other) -> int | void`
+#### `.totalOrder(other) -> symbol | void`
 
 Orders symbols by internedness (primary) and name (secondary), with
 interned symbols getting ordered *before* unlisted symbols. Two

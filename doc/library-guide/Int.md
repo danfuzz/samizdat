@@ -11,7 +11,7 @@ Int
 
 Default implementation.
 
-#### `.perOrder(other) -> int`
+#### `.perOrder(other) -> symbol`
 
 Default implementation.
 
@@ -19,7 +19,7 @@ Default implementation.
 
 Compares the integer values of two ints.
 
-#### `.totalOrder(other) -> int`
+#### `.totalOrder(other) -> symbol`
 
 Compares the integer values of two ints, ordering by value in the usual
 manner.

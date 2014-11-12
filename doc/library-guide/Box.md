@@ -54,7 +54,7 @@ is an instance of `Result`.
 
 Default implementation.
 
-#### `.perOrder(other) -> int | void`
+#### `.perOrder(other) -> symbol | void`
 
 Default implementation.
 
@@ -63,7 +63,7 @@ Default implementation.
 Performs an identity comparison. No two different boxes are ever considered
 equal.
 
-#### `.totalOrder(other) -> int | void`
+#### `.totalOrder(other) -> symbol | void`
 
 Performs an identity comparison. No two different boxes are ever considered
 equal, and two different boxes have no defined order.

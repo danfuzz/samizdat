@@ -41,7 +41,7 @@ representable in real Samizdat syntax.
 
 Default implementation.
 
-#### `.perOrder(other) -> int`
+#### `.perOrder(other) -> symbol`
 
 Default implementation.
 
@@ -50,7 +50,7 @@ Default implementation.
 Compares two symbol tables. Two symbol tables are equal if they have
 equal sets of mappings.
 
-#### `.totalOrder(other) -> int`
+#### `.totalOrder(other) -> symbol`
 
 Compares two symbol tables for order. The size of the table is the major
 order (smaller is earlier). After that, the keys are compared as sorted
