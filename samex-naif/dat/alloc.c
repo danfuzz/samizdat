@@ -43,6 +43,9 @@ static DatHeader doomedHead = {
 /** Number of allocations since the last garbage collection. */
 static zint allocationCount = 0;
 
+/** Total number live objects. Only used when being chatty. */
+static zint liveCount = 0;
+
 /**
  * Returns whether the given pointer is properly aligned to be a
  * value.
@@ -207,6 +210,7 @@ static void doGc(void) {
 
         if (DAT_CHATTY_GC) {
             counter++;
+            liveCount--;
         }
     }
 
@@ -215,27 +219,16 @@ static void doGc(void) {
 
     if (DAT_CHATTY_GC) {
         note("GC: Freed %lld dead values.", counter);
+        note("GC: %lld live values remain.", liveCount);
     }
 
     // Unmark the live list.
 
     sanityCheck(false);
 
-    if (DAT_CHATTY_GC) {
-        counter = 0;
-    }
-
     for (zvalue item = liveHead.next; item != &liveHead; /*next*/) {
         item->marked = false;
         item = item->next;
-
-        if (DAT_CHATTY_GC) {
-            counter++;
-        }
-    }
-
-    if (DAT_CHATTY_GC) {
-        note("GC: %lld live values remain.", counter);
     }
 
     sanityCheck(true);
@@ -268,6 +261,10 @@ zvalue datAllocValue(zvalue cls, zint extraBytes) {
     enlist(&liveHead, result);
     datFrameAdd(result);
     sanityCheck(false);
+
+    if (DAT_CHATTY_GC) {
+        liveCount++;
+    }
 
     return result;
 }
