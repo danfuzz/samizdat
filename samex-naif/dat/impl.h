@@ -95,6 +95,16 @@ enum {
 };
 
 /**
+ * "Colors" used for gc marking. This is used instead of a boolean so that
+ * we can flip the sense of marked-vs-not without actually having to flip a
+ * bunch of bits in live objects.
+ */
+typedef enum {
+    MARK_AZURE,
+    MARK_MAUVE
+} zmarkColor;
+
+/**
  * Common fields across all values. Used as a header for other types.
  *
  * **Note:** This must match the definition of `DatPartialHeader` in `dat.h`.
@@ -113,7 +123,7 @@ typedef struct DatHeader {
     uint32_t magic;
 
     /** Mark bit (used during GC). */
-    bool marked : 1;
+    zmarkColor mark : 1;
 
     /** Class of the value. This is always a `Class` instance. */
     zvalue cls;
