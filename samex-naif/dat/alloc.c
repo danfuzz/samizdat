@@ -177,7 +177,7 @@ static void doGc(void) {
     // handle such new entries.
 
     for (zvalue item = liveHead.next; item != &liveHead; item = item->next) {
-        METH_CALL(item, gcMark);
+        callGcMark(item);
     }
 
     // Free everything left on the doomed list.
