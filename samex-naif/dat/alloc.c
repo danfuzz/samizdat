@@ -43,6 +43,9 @@ static DatHeader doomedHead = {
 /** Number of allocations since the last garbage collection. */
 static zint allocationCount = 0;
 
+/** Number of gcs performed. */
+static zint gcCount = 0;
+
 /** Total number live objects. Only used when being chatty. */
 static zint liveCount = 0;
 
@@ -231,7 +234,12 @@ static void doGc(void) {
         item = item->next;
     }
 
-    sanityCheck(true);
+    // Occasional sanity check.
+
+    gcCount++;
+    if ((gcCount & 0x3f) == 0) {
+        sanityCheck(true);
+    }
 }
 
 
@@ -298,7 +306,10 @@ void datGc(void) {
     if (DAT_CHATTY_GC) {
         static double totalSec = 0;
         clock_t startTime = clock();
+
+        note("GC: Cycle #%lld.", gcCount);
         doGc();
+
         double elapsedSec = (double) (clock() - startTime) / CLOCKS_PER_SEC;
         totalSec += elapsedSec;
         note("GC: %g msec this cycle. %g sec overall.",
