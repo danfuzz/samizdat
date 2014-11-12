@@ -228,6 +228,16 @@ zvalue classFindMethodUnchecked(zvalue cls, zint index) {
     return getInfo(cls)->methods[index];
 }
 
+// Documented in header.
+void callGcMark(zvalue value) {
+    ClassInfo *info = getInfo(value->cls);
+    zvalue func = info->methods[SYMIDX(gcMark)];
+
+    if (func != NULL) {
+        builtinCall(func, (zarray) {1, &value});
+    }
+}
+
 
 //
 // Exported Definitions

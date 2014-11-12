@@ -131,6 +131,12 @@ typedef struct DatHeader {
 zvalue builtinCall(zvalue function, zarray args);
 
 /**
+ * Short-circuit to call the `.gcMark()` method on `value`, if it has one.
+ * Does nothing if not.
+ */
+void callGcMark(zvalue value);
+
+/**
  * Binds all the methods of a class. Either `*Methods` argument can be
  * `NULL`, in which case it is treated as `@{}` (the empty symbol table).
  *
