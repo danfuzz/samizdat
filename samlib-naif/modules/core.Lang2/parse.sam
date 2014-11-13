@@ -1343,10 +1343,10 @@ def parInterpolatedString = {:
 def parGeneratorDef = {:
     formal = (
         name = parNameSymbol
-        { {name} }
+        { @{name} }
     |
         "."
-        { {} }
+        { @{} }
     )
 
     @in
@@ -1359,7 +1359,7 @@ def parGeneratorDef = {:
 
     {
         def init = makeCall(REFS::Generator_RepeatGenerator, SYMS::new, size);
-        {formal: {}, init}
+        {formal: @{}, init}
     }
 :};
 
@@ -1703,9 +1703,9 @@ def parTestClause = {:
         @def
         name = parNameSymbol
         @"="
-        { {name} }
+        { @{name} }
     |
-        { {} }
+        { @{} }
     )
 
     test = parExpression
@@ -1739,7 +1739,7 @@ def parLogicAndClause = {:
     parParenTestClause
 |
     test = parCompareExpression
-    { {formal: {}, testThunk: makeThunk(test)} }
+    { {formal: @{}, testThunk: makeThunk(test)} }
 :};
 
 ## Parses a short-circuit logical-and expression. The translation is along
