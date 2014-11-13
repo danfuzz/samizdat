@@ -67,6 +67,11 @@ zvalue symbolFromZstring(zstring name);
 zint symbolIndex(zvalue symbol);
 
 /**
+ * Sorts an array of symbols by index, in place.
+ */
+void symbolSort(zint count, zvalue *symbols);
+
+/**
  * Gets the `zorder` value corresponding to the given interned symbol.
  */
 zorder zorderFromSymbol(zvalue symbol);
