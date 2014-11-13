@@ -71,6 +71,24 @@ bool recGet3(zvalue record,
 };
 
 // Documented in header.
+bool recGet4(zvalue record,
+        zvalue key1, zvalue *got1,
+        zvalue key2, zvalue *got2,
+        zvalue key3, zvalue *got3,
+        zvalue key4, zvalue *got4) {
+    assertHasClass(record, CLS_Record);
+    zvalue data = getInfo(record)->data;
+
+    *got1 = symtabGetUnchecked(data, key1);
+    *got2 = symtabGetUnchecked(data, key2);
+    *got3 = symtabGetUnchecked(data, key3);
+    *got4 = symtabGetUnchecked(data, key4);
+
+    return (*got1 != NULL) && (*got2 != NULL) && (*got3 != NULL)
+        && (*got4 != NULL);
+};
+
+// Documented in header.
 bool recHasName(zvalue record, zvalue name) {
     assertHasClass(record, CLS_Record);
     return symbolEq(getInfo(record)->name, name);

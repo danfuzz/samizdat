@@ -33,6 +33,16 @@ bool recGet3(zvalue record,
         zvalue key3, zvalue *got3);
 
 /**
+ * Gets the values of four keys out of a record, storing them via the given
+ * pointers. Returns `true` iff all keys were bound.
+ */
+bool recGet4(zvalue record,
+        zvalue key1, zvalue *got1,
+        zvalue key2, zvalue *got2,
+        zvalue key3, zvalue *got3,
+        zvalue key4, zvalue *got4);
+
+/**
  * Returns whether the given `record` has the given `name`.
  */
 bool recHasName(zvalue record, zvalue name);
