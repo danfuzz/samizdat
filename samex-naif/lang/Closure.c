@@ -131,8 +131,13 @@ static zvalue buildCachedClosure(zvalue node) {
         die("Too many formals: %lld", formals.size);
     }
 
-    zmapping names[formals.size];  // For detecting duplicates.
-    zint namesAt = 0;
+    zvalue names[formals.size + 1];  // For detecting duplicates.
+    zint nameCount = 0;
+
+    if (info->yieldDef) {
+        names[0] = info->yieldDef;
+        nameCount = 1;
+    }
 
     for (zint i = 0; i < formals.size; i++) {
         zvalue formal = formals.elems[i];
@@ -142,8 +147,8 @@ static zvalue buildCachedClosure(zvalue node) {
         symtabGet2(formal, SYM(name), &name, SYM(repeat), &repeat);
 
         if (name != NULL) {
-            names[namesAt] = (zmapping) {name, name};
-            namesAt++;
+            names[nameCount] = name;
+            nameCount++;
         }
 
         if (repeat == NULL) {
@@ -162,18 +167,20 @@ static zvalue buildCachedClosure(zvalue node) {
         info->formals[i] = (zformal) {.name = name, .repeat = rep};
     }
 
-    // Detect duplicates by making a map of `names[]` and verifying the size.
+    // Detect duplicate formal argument names.
 
-    if (namesAt != 0) {
-        zvalue namesMap = mapFromArray(namesAt, names);
-        if (get_size(namesMap) != namesAt) {
-            die("Duplicate formal name.");
+    if (nameCount > 1) {
+        symbolSort(nameCount, names);
+        for (zint i = 1; i < nameCount; i++) {
+            if (names[i - 1] == names[i]) {
+                die("Duplicate formal name: %s", cm_debugString(names[i]));
+            }
         }
     }
 
     // All's well. Finish up.
 
-    info->formalNameCount = namesAt + (info->yieldDef ? 1 : 0);
+    info->formalNameCount = nameCount;
     return result;
 }
 
