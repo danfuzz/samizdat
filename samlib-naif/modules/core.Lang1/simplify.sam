@@ -106,8 +106,8 @@ fn convertPex(node, formals) {
                 ## Extract the formals out of any `varDef` nodes.
                 def newFormals = node::pexes.collect { pex ->
                     ifIs { pex.hasName(@varDef) }
-                        { {name: pex::name} }
-                        { {} }
+                        { @{name: pex::name} }
+                        { @{} }
                 };
 
                 ## Convert all the pexes, passing in appropriately-extended
