@@ -6,8 +6,6 @@
 // Initialization
 //
 
-#include <stddef.h>
-
 #include "const.h"
 #include "type/Class.h"
 
