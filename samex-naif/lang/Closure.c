@@ -62,7 +62,7 @@ typedef struct {
 } zformal;
 
 /**
- * Cached info about a `defMap`.
+ * Cached info about a `closure`.
  */
 typedef struct {
     /**
@@ -72,12 +72,12 @@ typedef struct {
     Frame frame;
 
     /**
-     * Closure payload map that represents the fixed definition of the
+     * Original closure node, which represents the fixed definition of the
      * closure.
      */
-    zvalue defMap;
+    zvalue node;
 
-    /** The `"formals"` mapping of `defMap`, converted for easier use. */
+    /** The `"formals"` mapping of `node`, converted for easier use. */
     zformal formals[LANG_MAX_FORMALS];
 
     /** The result of `get_size(formals)`. */
@@ -86,13 +86,13 @@ typedef struct {
     /** The number of actual names in `formals`, plus one for a `yieldDef`. */
     zint formalNameCount;
 
-    /** The `"statements"` mapping inside `defMap`. */
+    /** The `"statements"` mapping inside `node`. */
     zvalue statements;
 
-    /** The `"yield"` mapping inside `defMap`. */
+    /** The `"yield"` mapping inside `node`. */
     zvalue yield;
 
-    /** The `"yieldDef"` mapping inside `defMap`. */
+    /** The `"yieldDef"` mapping inside `node`. */
     zvalue yieldDef;
 } ClosureInfo;
 
@@ -107,19 +107,23 @@ static ClosureInfo *getInfo(zvalue closure) {
  * Builds and returns a `Closure` from a `closure` payload, suitable for
  * storage in the cache.
  */
-static zvalue buildCachedClosure(zvalue defMap) {
-    zarray formals = zarrayFromList(cm_get(defMap, SYM(formals)));
-
+static zvalue buildCachedClosure(zvalue node) {
     // Build out most of the result.
 
     zvalue result = datAllocValue(CLS_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
 
-    info->defMap = defMap;
+    zvalue formalsList;
+    recGet4(node,
+        SYM(formals),    &formalsList,
+        SYM(statements), &info->statements,
+        SYM(yield),      &info->yield,
+        SYM(yieldDef),   &info->yieldDef);
+
+    zarray formals = zarrayFromList(formalsList);
+
+    info->node = node;
     info->formalsSize = formals.size;
-    info->statements = cm_get(defMap, SYM(statements));
-    info->yield = cm_get(defMap, SYM(yield));
-    info->yieldDef = cm_get(defMap, SYM(yieldDef));
 
     // Validate and transform all the formals.
 
@@ -192,7 +196,7 @@ static zvalue getCachedClosure(zvalue node) {
     }
 
     if (result == NULL) {
-        result = buildCachedClosure(get_data(node));
+        result = buildCachedClosure(node);
         nodeCache = cm_cat(nodeCache,
             mapFromMapping((zmapping) {node, result}));
         cm_store(nodeCacheBox, nodeCache);
@@ -346,7 +350,7 @@ METH_IMPL_rest(Closure, call, args) {
 
 // Documented in header.
 METH_IMPL_0(Closure, debugSymbol) {
-    return cm_get(getInfo(ths)->defMap, SYM(name));
+    return cm_get(getInfo(ths)->node, SYM(name));
 }
 
 // Documented in header.
@@ -354,7 +358,7 @@ METH_IMPL_0(Closure, gcMark) {
     ClosureInfo *info = getInfo(ths);
 
     frameMark(&info->frame);
-    datMark(info->defMap);  // All the other bits are derived from this.
+    datMark(info->node);  // All the other bits are derived from this.
     return NULL;
 }
 
