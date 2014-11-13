@@ -136,9 +136,10 @@ static zvalue buildCachedClosure(zvalue node) {
 
     for (zint i = 0; i < formals.size; i++) {
         zvalue formal = formals.elems[i];
-        zvalue name = cm_get(formal, SYM(name));
-        zvalue repeat = cm_get(formal, SYM(repeat));
+        zvalue name, repeat;
         zrepeat rep;
+
+        symtabGet2(formal, SYM(name), &name, SYM(repeat), &repeat);
 
         if (name != NULL) {
             names[namesAt] = (zmapping) {name, name};
