@@ -113,12 +113,6 @@ METH_IMPL_0(Value, debugSymbol) {
     return NULL;
 }
 
-// Documented in header.
-METH_IMPL_0(Value, gcMark) {
-    // Nothing to do.
-    return NULL;
-}
-
 // Documented in spec.
 METH_IMPL_1(Value, perEq, other) {
     return valEq(ths, other);
@@ -157,7 +151,6 @@ void bindMethodsForValue(void) {
             METH_BIND(Value, castToward),
             METH_BIND(Value, debugString),
             METH_BIND(Value, debugSymbol),
-            METH_BIND(Value, gcMark),
             METH_BIND(Value, perEq),
             METH_BIND(Value, perOrder),
             METH_BIND(Value, totalEq),

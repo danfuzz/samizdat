@@ -87,17 +87,24 @@ enum {
     /** Scaling factor when growing a symbol table backing array. */
     DAT_SYMTAB_SCALE_FACTOR = 2,
 
-    /** "Magic number" for value validation. */
-    DAT_VALUE_MAGIC = 0x600f1e57,
-
     /** Required byte alignment for values. */
     DAT_VALUE_ALIGNMENT = sizeof(zint)
 };
 
 /**
+ * "Colors" used for gc marking. This is used instead of a boolean so that
+ * we can flip the sense of marked-vs-not without actually having to flip a
+ * bunch of bits in live objects.
+ */
+typedef enum {
+    MARK_AZURE,
+    MARK_MAUVE
+} zmarkColor;
+
+/**
  * Common fields across all values. Used as a header for other types.
  *
- * **Note:** This must match the definition of `DatPartialHeader` in `dat.h`.
+ * **Note:** This must match the definition of `DatHeaderExposed` in `dat.h`.
  */
 typedef struct DatHeader {
     /**
@@ -109,17 +116,14 @@ typedef struct DatHeader {
     /** Backward circular link. */
     zvalue prev;
 
-    /** Magic number (for sanity / validation checks). */
-    uint32_t magic;
-
-    /** Mark bit (used during GC). */
-    bool marked : 1;
-
     /** Class of the value. This is always a `Class` instance. */
     zvalue cls;
 
+    /** Mark bit (used during GC). */
+    zmarkColor mark : 1;
+
     /** Class-specific data goes here. */
-    uint8_t payload[/*flexible*/];
+    void *payload[/*flexible*/];
 } DatHeader;
 
 

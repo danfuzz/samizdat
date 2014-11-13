@@ -24,8 +24,7 @@ static zint immortalsSize = 0;
 static DatHeader liveHead = {
     .next = &liveHead,
     .prev = &liveHead,
-    .magic = 0,
-    .marked = false,
+    .mark = MARK_AZURE,
     .cls = NULL
 };
 
@@ -35,13 +34,21 @@ static DatHeader liveHead = {
 static DatHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,
-    .magic = 0,
-    .marked = false,
+    .mark = MARK_AZURE,
     .cls = NULL
 };
 
+/** Current color that represents live values. */
+static zmarkColor liveColor = MARK_MAUVE;
+
 /** Number of allocations since the last garbage collection. */
 static zint allocationCount = 0;
+
+/** Number of gcs performed. */
+static zint gcCount = 0;
+
+/** Total number live objects. Only used when being chatty. */
+static zint liveCount = 0;
 
 /**
  * Returns whether the given pointer is properly aligned to be a
@@ -55,38 +62,48 @@ static bool isAligned(void *maybeValue) {
 /**
  * Asserts that the value is valid, with thorough (and slow) checking.
  */
-static void thoroughlyValidate(zvalue maybeValue) {
+static bool thoroughlyValidate(zvalue maybeValue, zmarkColor expectedColor) {
     if (maybeValue == NULL) {
         die("Invalid value: NULL");
     }
 
     if (!isAligned(maybeValue)) {
-        die("Invalid value (mis-aligned): %p", maybeValue);
+        note("Invalid value (mis-aligned): %p", maybeValue);
+        return false;
     }
 
     if (!utilIsHeapAllocated(maybeValue)) {
-        die("Invalid value (not in heap): %p", maybeValue);
+        note("Invalid value (not in heap): %p", maybeValue);
+        return false;
     }
 
-    if (maybeValue->magic != DAT_VALUE_MAGIC) {
-        die("Invalid value (incorrect magic): %p", maybeValue);
+    if (maybeValue->mark != expectedColor) {
+        note("Invalid value (wrong color): %p", maybeValue);
+        return false;
     }
 
     if (!(isAligned(maybeValue->next) &&
           isAligned(maybeValue->prev) &&
           (maybeValue == maybeValue->next->prev) &&
           (maybeValue == maybeValue->prev->next))) {
-        die("Invalid value (invalid links): %p", maybeValue);
+        note("Invalid value (invalid links): %p", maybeValue);
+        return false;
     }
+
+    return true;
 }
 
 /**
  * Sanity check the circular list with the given head.
  */
-static void sanityCheckList(DatHeader *head) {
+static bool sanityCheckList(DatHeader *head, zmarkColor expectedColor) {
     for (zvalue item = head->next; item != head; item = item->next) {
-        thoroughlyValidate(item);
+        if (!thoroughlyValidate(item, expectedColor)) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 /**
@@ -98,11 +115,18 @@ static void sanityCheck(bool force) {
     }
 
     for (zint i = 0; i < immortalsSize; i++) {
-        thoroughlyValidate(immortals[i]);
+        if (!thoroughlyValidate(immortals[i], liveColor)) {
+            die("...at immortal #%lld", i);
+        }
     }
 
-    sanityCheckList(&liveHead);
-    sanityCheckList(&doomedHead);
+    if (!sanityCheckList(&liveHead, liveColor)) {
+        die("...on live list.");
+    }
+
+    if (!sanityCheckList(&doomedHead, liveColor ^ 1)) {
+        die("...on doomed list.");
+    }
 }
 
 /**
@@ -152,6 +176,8 @@ static void doGc(void) {
     liveHead.next = &liveHead;
     liveHead.prev = &liveHead;
 
+    liveColor = liveColor ^ 1;
+
     // The root set consists of immortals and the stack. Recursively mark
     // those, which causes anything found to be alive to be linked into
     // the live list.
@@ -170,14 +196,14 @@ static void doGc(void) {
         note("GC: Marked %lld stack values.", counter);
     }
 
-    // The calls to `datMark()` just placed items on the live list but did not
-    // call through to mark their innards. This loop walks down the live
+    // Calls to `datMark()` just place items on the live list but do not call
+    // through to mark their innards. The following loop walks down the live
     // list doing that marking, which can cause yet more items to be enlisted.
-    // Since new items are added to the end, there's nothing special to do to
-    // handle such new entries.
+    // Since new items are added to the end of the list, there's nothing
+    // special to do to handle such new entries.
 
     for (zvalue item = liveHead.next; item != &liveHead; item = item->next) {
-        METH_CALL(item, gcMark);
+        callGcMark(item);
     }
 
     // Free everything left on the doomed list.
@@ -189,8 +215,8 @@ static void doGc(void) {
     }
 
     for (zvalue item = doomedHead.next; item != &doomedHead; /*next*/) {
-        if (item->marked) {
-            die("Marked item on doomed list!");
+        if (item->mark == liveColor) {
+            die("Live item on doomed list!");
         }
 
         // Need to grab `item->next` before freeing the item.
@@ -198,8 +224,6 @@ static void doGc(void) {
 
         // Prevent this from being mistaken for a live value.
         item->next = item->prev = NULL;
-        item->marked = 999;
-        item->magic = 999;
         item->cls = NULL;
 
         utilFree(item);
@@ -207,6 +231,7 @@ static void doGc(void) {
 
         if (DAT_CHATTY_GC) {
             counter++;
+            liveCount--;
         }
     }
 
@@ -215,30 +240,15 @@ static void doGc(void) {
 
     if (DAT_CHATTY_GC) {
         note("GC: Freed %lld dead values.", counter);
+        note("GC: %lld live values remain.", liveCount);
     }
 
-    // Unmark the live list.
+    // Occasional sanity check.
 
-    sanityCheck(false);
-
-    if (DAT_CHATTY_GC) {
-        counter = 0;
+    gcCount++;
+    if (DAT_MEMORY_PARANOIA || ((gcCount & 0x3f) == 0)) {
+        sanityCheck(true);
     }
-
-    for (zvalue item = liveHead.next; item != &liveHead; /*next*/) {
-        item->marked = false;
-        item = item->next;
-
-        if (DAT_CHATTY_GC) {
-            counter++;
-        }
-    }
-
-    if (DAT_CHATTY_GC) {
-        note("GC: %lld live values remain.", counter);
-    }
-
-    sanityCheck(true);
 }
 
 
@@ -261,13 +271,17 @@ zvalue datAllocValue(zvalue cls, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->magic = DAT_VALUE_MAGIC;
-    result->cls = cls;
+    result->mark  = liveColor;
+    result->cls   = cls;
 
     allocationCount++;
     enlist(&liveHead, result);
     datFrameAdd(result);
     sanityCheck(false);
+
+    if (DAT_CHATTY_GC) {
+        liveCount++;
+    }
 
     return result;
 }
@@ -278,8 +292,8 @@ void assertValid(zvalue value) {
         die("Null value.");
     }
 
-    if (value->magic != DAT_VALUE_MAGIC) {
-        die("Invalid value (incorrect magic): %p", value);
+    if (value->mark != liveColor) {
+        die("Invalid value (wrong color): %p", value);
     }
 
     if (value->cls == NULL) {
@@ -301,7 +315,10 @@ void datGc(void) {
     if (DAT_CHATTY_GC) {
         static double totalSec = 0;
         clock_t startTime = clock();
+
+        note("GC: Cycle #%lld.", gcCount);
         doGc();
+
         double elapsedSec = (double) (clock() - startTime) / CLOCKS_PER_SEC;
         totalSec += elapsedSec;
         note("GC: %g msec this cycle. %g sec overall.",
@@ -326,15 +343,18 @@ zvalue datImmortalize(zvalue value) {
 
 // Documented in header.
 void datMark(zvalue value) {
-    if ((value == NULL) || value->marked) {
+    if ((value == NULL) || (value->mark == liveColor)) {
         return;
     }
 
-    value->marked = true;
+    value->mark = liveColor;
     enlist(&liveHead, value);
 
     // As of this writing, classes are all immortal, but that may change. This
-    // `datMark` call has negligible cost and safeguards against that possible
-    // change.
-    datMark(value->cls);
+    // check has negligible cost and safeguards against that possible change.
+    zvalue cls = value->cls;
+    if (cls->mark != liveColor) {
+        cls->mark = liveColor;
+        enlist(&liveHead, cls);
+    }
 }
