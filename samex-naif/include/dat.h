@@ -37,12 +37,9 @@ enum {
 typedef struct {
     zvalue private1;
     zvalue private2;
-    uint32_t private3;
-    bool private4 : 1;
-
-    // See `dat/impl.h`.
     zvalue cls;
-    uint8_t payload[/*flexible*/];
+    int private4 : 1;
+    void *payload[/*flexible*/];
 } DatHeaderExposed;
 
 

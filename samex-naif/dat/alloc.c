@@ -24,7 +24,6 @@ static zint immortalsSize = 0;
 static DatHeader liveHead = {
     .next = &liveHead,
     .prev = &liveHead,
-    .magic = 0,
     .mark = MARK_AZURE,
     .cls = NULL
 };
@@ -35,7 +34,6 @@ static DatHeader liveHead = {
 static DatHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,
-    .magic = 0,
     .mark = MARK_AZURE,
     .cls = NULL
 };
@@ -76,11 +74,6 @@ static bool thoroughlyValidate(zvalue maybeValue, zmarkColor expectedColor) {
 
     if (!utilIsHeapAllocated(maybeValue)) {
         note("Invalid value (not in heap): %p", maybeValue);
-        return false;
-    }
-
-    if (maybeValue->magic != DAT_VALUE_MAGIC) {
-        note("Invalid value (incorrect magic): %p", maybeValue);
         return false;
     }
 
@@ -231,7 +224,6 @@ static void doGc(void) {
 
         // Prevent this from being mistaken for a live value.
         item->next = item->prev = NULL;
-        item->magic = 999;
         item->cls = NULL;
 
         utilFree(item);
@@ -279,7 +271,6 @@ zvalue datAllocValue(zvalue cls, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->magic = DAT_VALUE_MAGIC;
     result->mark  = liveColor;
     result->cls   = cls;
 
@@ -301,8 +292,8 @@ void assertValid(zvalue value) {
         die("Null value.");
     }
 
-    if (value->magic != DAT_VALUE_MAGIC) {
-        die("Invalid value (incorrect magic): %p", value);
+    if (value->mark != liveColor) {
+        die("Invalid value (wrong color): %p", value);
     }
 
     if (value->cls == NULL) {
