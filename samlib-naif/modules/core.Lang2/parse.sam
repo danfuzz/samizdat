@@ -1703,9 +1703,9 @@ def parTestClause = {:
         @def
         name = parNameSymbol
         @"="
-        { {name} }
+        { @{name} }
     |
-        { {} }
+        { @{} }
     )
 
     test = parExpression
@@ -1739,7 +1739,7 @@ def parLogicAndClause = {:
     parParenTestClause
 |
     test = parCompareExpression
-    { {formal: {}, testThunk: makeThunk(test)} }
+    { {formal: @{}, testThunk: makeThunk(test)} }
 :};
 
 ## Parses a short-circuit logical-and expression. The translation is along
