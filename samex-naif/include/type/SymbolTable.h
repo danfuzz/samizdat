@@ -43,6 +43,14 @@ zvalue symtabFromZarray(zarray arr);
 zvalue symtabFromZassoc(zassoc ass);
 
 /**
+ * Gets the values of two keys out of a symbol table, storing them via the
+ * given pointers. Returns `true` iff all keys were bound.
+ */
+bool symtabGet2(zvalue symtab,
+        zvalue key1, zvalue *got1,
+        zvalue key2, zvalue *got2);
+
+/**
  * Gets the size of a symbol table.
  */
 zint symtabSize(zvalue symtab);
