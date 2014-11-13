@@ -2,8 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include <string.h>
-
 #include "type/define.h"
 
 #include "LookupCache.h"
@@ -57,7 +55,7 @@ LookupCacheEntry *lookupCacheFind(zvalue container, zvalue key) {
 
 // Documented in header.
 METH_IMPL_0(LookupCache, gcMark) {
-    memset(theCache, 0, sizeof(theCache));
+    utilZero(theCache);
     return NULL;
 }
 

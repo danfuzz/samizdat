@@ -7,7 +7,6 @@
 //
 
 #include <stddef.h>
-#include <string.h>
 
 #include "const.h"
 #include "type/Class.h"
@@ -36,7 +35,7 @@ MOD_INIT(lang) {
     MOD_USE(lang_const);
     MOD_USE(Closure);
 
-    memset(langSymbolMap, 0, sizeof(langSymbolMap));
+    utilZero(langSymbolMap);
 
     #define SYM_MAP(name) langSymbolMap[SYMIDX(name)] = EVAL_##name;
 
