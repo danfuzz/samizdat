@@ -59,6 +59,15 @@ static SymbolInfo *getInfo(zvalue symbol) {
 }
 
 /**
+ * Shared implementation of `eq`, given valid symbol values.
+ */
+static bool uncheckedEq(zvalue symbol1, zvalue symbol2) {
+    // It's safe to use `==`, since by definition two different symbol
+    // references must be different symbols.
+    return symbol1 == symbol2;
+}
+
+/**
  * Creates and returns a new symbol with the given name. Checks that the
  * size of the name is acceptable and that there aren't already too many
  * symbols. Does no other checking.
@@ -93,7 +102,24 @@ static zvalue makeSymbol0(zstring name, bool interned) {
 }
 
 /**
- * Compares two symbols. Used for sorting.
+ * Compares two symbols for index order. Used for sorting.
+ */
+static int indexOrder(const void *ptr1, const void *ptr2) {
+    zvalue sym1 = *(zvalue *) ptr1;
+    zvalue sym2 = *(zvalue *) ptr2;
+
+    if (uncheckedEq(sym1, sym2)) {
+        return 0;
+    }
+
+    zint idx1 = getInfo(sym1)->index;
+    zint idx2 = getInfo(sym2)->index;
+
+    return (idx1 < idx2) ? -1 : 1;
+}
+
+/**
+ * Compares two symbols for name order. Used for sorting.
  */
 static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v1 = *(zvalue *) vptr1;
@@ -145,15 +171,6 @@ static zvalue anySymbolFromUtf8(zint utfBytes, const char *utf,
     } else {
         return makeSymbol0(name, false);
     }
-}
-
-/**
- * Shared implementation of `eq`, given valid symbol values.
- */
-static bool uncheckedEq(zvalue symbol1, zvalue symbol2) {
-    // It's safe to use `==`, since by definition two different symbol
-    // references must be different symbols.
-    return symbol1 == symbol2;
 }
 
 
@@ -229,6 +246,15 @@ zvalue symbolFromZstring(zstring name) {
 zint symbolIndex(zvalue symbol) {
     assertHasClass(symbol, CLS_Symbol);
     return getInfo(symbol)->index;
+}
+
+// Documented in header.
+void symbolSort(zint count, zvalue *symbols) {
+    for (zint i = 0; i < count; i++) {
+        assertHasClass(symbols[i], CLS_Symbol);
+    }
+
+    qsort(symbols, count, sizeof(zvalue), indexOrder);
 }
 
 // Documented in header.

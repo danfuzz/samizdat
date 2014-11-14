@@ -178,4 +178,11 @@ char *utilCwd(void);
 #define utilCpy(type, dest, src, count) \
     memcpy((dest), (src), (count) * sizeof(type))
 
+/**
+ * Like `memset`, except that it's always setting to zeros, and it bases the
+ * amount to clear on the `sizeof` the given target.
+ */
+#define utilZero(dest) \
+    memset((dest), 0, sizeof(dest))
+
 #endif
