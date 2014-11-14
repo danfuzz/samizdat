@@ -116,24 +116,30 @@ generator never yielded a value, this function returns void.
 
 #### `stdCollect(generator, optFilterFunction?) -> list`
 
-"Standard" implementation of `collect`, in terms of `nextValue`. This
-function is provided as a convenient function to bind `collect` to, for
+"Standard" implementation of `.collect()`, in terms of `.nextValue()`. This
+function is provided as a convenient function to bind `.collect` to, for
 classes that don't have anything fancier to do.
 
 #### `stdFetch(generator) -> . | void`
 
-"Standard" implementation of `fetch`, in terms of `nextValue`. This
-function is provided as a convenient function to bind `fetch` to, for
+"Standard" implementation of `.fetch()`, in terms of `.nextValue()`. This
+function is provided as a convenient function to bind `.fetch` to, for
 classes that don't have anything fancier to do.
 
-#### `unboundedCollect(generator, optFilterFunction?) ->  n/a  ## Terminates the runtime.`
+#### `stdForEach(generator, optFilterFunction?) -> . | void`
+
+"Standard" implementation of `.forEach()`, in terms of `.nextValue()`. This
+function is provided as a convenient function to bind `.forEach` to, for
+classes that don't have anything fancier to do.
+
+#### `unboundedCollect(generator, optFilterFunction?) -> n/a  ## Terminates the runtime.`
 
 Handy implementation of `collect` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
 This function is provided as a convenient thing to bind `collect` to, for
 appropriate classes.
 
-#### `unboundedFetch(generator) ->  n/a  ## Terminates the runtime.`
+#### `unboundedFetch(generator) -> n/a  ## Terminates the runtime.`
 
 Handy implementation of `fetch` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
