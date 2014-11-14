@@ -54,6 +54,15 @@ a voided generator. It is a fatal error (terminating the runtime) if
 **Syntax Note:** Used in the translation of `expression*` forms when they
 are *not* collection constructor or function call arguments.
 
+#### `.forEach(optFilterFunction?) -> void`
+
+This iterates over the generator. It acts as if `.nextValue()` is called to
+yield all the elements of the generator. If `optFilterFunction*` is specified,
+it is called on each yielded value in order, as a single argument. The
+function's return value (if any) is ignored, and this method always returns
+void. As such, this method is only ever useful when called for the side
+effects of the generator and/or the filter function.
+
 #### `.nextValue(box) -> generator | void`
 
 Generates the next item in `this`, if any. If there is a generated

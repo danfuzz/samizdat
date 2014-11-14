@@ -10,10 +10,13 @@ sequence of other values. A similar concept is sometimes referred to as
 an "iterator" in other languages.
 
 At the lowest level, a generator is any value which implements the
-`Generator` protocol. This protocol specifies three methods, two
-of which have default implementations. The one method that must be provided
-is `.nextValue()`, which is called to both produce a value and gain access
+`Generator` protocol. This protocol specifies four methods, three of which
+have default implementations. The one method that must be provided is
+`.nextValue()`, which is called to both produce a value and gain access
 to the generator to use to get at the next value (and so on).
+
+TODO: The "default" implementations have to be hooked up in a fairly manual
+way right now. It should actually be via some kind of inheritance mechanism.
 
 Samizdat both provides a number of generator implementations in the core
 library and provides convenient syntax for creating them.
@@ -57,23 +60,23 @@ For example:
 
 ```
 ## Infinite generator of even whole numbers, by multiplying by 2.
-(x in (0..) -> x * 2)
+( x in (0..) -> x * 2 )
 ## => 0, 2, 4, 6, ...
 
 ## Infinite generator of even whole numbers, by filtering out odd ones.
-(x in (0..) -> ((x % 2) == 0) & x)
+( x in (0..) -> ((x % 2) == 0) & x )
 ## => 0, 2, 4, 6, ...
 
 ## List of just the strings.
-[v in ["b", 10, "l", @foo, "o", "r", ["wow"], "t"] -> String.accepts(v)]
+[ v in ["b", 10, "l", @foo, "o", "r", ["wow"], "t"] -> String.accepts(v) ]
 ## => ["b", "l", "o", "r", "t"]
 
 ## List of sum of corresponding pairs.
-[n1 in (1..9), n2 in (100.. by 100) -> n1 + n2]
+[ n1 in (1..9), n2 in (100.. by 100) -> n1 + n2 ]
 ## => [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
 ## Sum of three ranges.
-[a in (0..4), b in (50..90 by 10), c in (300..700 by 100) ->
+[ a in (0..4), b in (50..90 by 10), c in (300..700 by 100) ->
     def sum = a + b + c;
     sum
 ]
@@ -93,10 +96,10 @@ on the number of values yielded by a comprehension.
 For example:
 
 ```
-[for 5 -> "Yay!"]
+[ for 5 -> "Yay!" ]
 ## => ["Yay!", "Yay!", "Yay!", "Yay!", "Yay!"]
 
-[x in (0..), for 7]
+[ x in (0..), for 7 -> x ]
 ## => [0, 1, 2, 3, 4, 5, 6]
 ```
 
