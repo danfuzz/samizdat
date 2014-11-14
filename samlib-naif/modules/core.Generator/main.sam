@@ -29,6 +29,9 @@ export def stdCollect = Generator_stdCollect;
 ## Re-exported from builtins. Documented in spec.
 export def stdFetch = Generator_stdFetch;
 
+## Re-exported from builtins. Documented in spec.
+export def stdForEach = Generator_stdForEach;
+
 ## Documented in spec.
 export fn filterAll(filterFunction, generators*) {
     return ifIs { eq(generators.get_size(), 1) }

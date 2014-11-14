@@ -59,6 +59,7 @@ PRIM_FUNC(order,                  2, 2);
 // Primitive functions: intended for modularization
 PRIM_DEF(Generator_stdCollect,    FUN_Generator_stdCollect);
 PRIM_DEF(Generator_stdFetch,      FUN_Generator_stdFetch);
+PRIM_DEF(Generator_stdForEach,    FUN_Generator_stdForEach);
 PRIM_FUNC(Code_eval,              2, 2);
 PRIM_FUNC(Code_evalBinary,        2, 2);
 PRIM_FUNC(Io0_cwd,                0, 0);
