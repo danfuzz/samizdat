@@ -134,17 +134,24 @@ classes that don't have anything fancier to do.
 
 #### `unboundedCollect(generator, optFilterFunction?) -> n/a  ## Terminates the runtime.`
 
-Handy implementation of `collect` which simply dies with a message indicating
-that the given generator is unbounded (that is, has infinite elements).
-This function is provided as a convenient thing to bind `collect` to, for
-appropriate classes.
+Handy implementation of `.collect()` which simply dies with a message
+indicating that the given generator is unbounded (that is, has infinite
+elements). This function is provided as a convenient thing to bind `.collect`
+to, for appropriate classes.
 
 #### `unboundedFetch(generator) -> n/a  ## Terminates the runtime.`
 
-Handy implementation of `fetch` which simply dies with a message indicating
+Handy implementation of `.fetch()` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
-This function is provided as a convenient thing to bind `fetch` to, for
+This function is provided as a convenient thing to bind `.fetch` to, for
 appropriate classes.
+
+#### `unboundedForEach(generator) -> n/a  ## Terminates the runtime.`
+
+Handy implementation of `.forEach()` which simply dies with a message
+indicating that the given generator is unbounded (that is, has infinite
+elements). This function is provided as a convenient thing to bind `.forEach`
+to, for appropriate classes.
 
 
 <br><br>
