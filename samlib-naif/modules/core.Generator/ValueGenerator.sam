@@ -41,6 +41,12 @@ export class ValueGenerator
     };
 
     ## Documented in spec.
+    .forEach(optFilterFunction?) {
+        ## It is an "unbounded forEach" error to call this.
+        unboundedForEach(this)
+    };
+
+    ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
         box* := data::value;

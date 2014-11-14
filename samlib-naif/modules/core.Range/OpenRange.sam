@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: unboundedCollect, unboundedFetch;
+import core.Generator :: unboundedCollect, unboundedFetch, unboundedForEach;
 
 import ./rangeAdd :: *;
 
@@ -41,6 +41,12 @@ export class OpenRange
     .fetch() {
         ## It is an "unbounded fetch" error to call this.
         unboundedFetch(this)
+    };
+
+    ## Documented in spec.
+    .forEach(optFilterFunction?) {
+        ## It is an "unbounded forEach" error to call this.
+        unboundedForEach(this)
     };
 
     ## Documented in spec.

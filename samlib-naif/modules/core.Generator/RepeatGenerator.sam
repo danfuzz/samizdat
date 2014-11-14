@@ -49,6 +49,12 @@ export class RepeatGenerator
     };
 
     ## Documented in spec.
+    .forEach(optFilterFunction?) {
+        ## Just use the standard implementation.
+        return Generator_stdForEach(this, optFilterFunction*)
+    };
+
+    ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
         def size = data::size;
