@@ -454,8 +454,8 @@ def parUnaryExpression = {:
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
 
-        filterPump(postfixes) { op -> result := op(result) };
-        filterPump(prefixes) { op -> result := op(result) };
+        postfixes.forEach { op -> result := op(result) };
+        prefixes.forEach { op -> result := op(result) };
         result
     }
 :};
@@ -1174,7 +1174,7 @@ def BINARY_OPERATORS = {
 fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
-    filterPump(opExList) { opEx ->
+    opExList.forEach { opEx ->
         def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
         result := makeFunCall(resolvedOp, result, opEx::expr)
     };
@@ -2010,7 +2010,7 @@ def parIfExpression = {:
         ## `reduction*` (which also handles the case of a missing final
         ## `else`).
         var reduction = optElse;
-        filterPump(clauses) { clause ->
+        clauses.forEach { clause ->
             ## See above about `yieldDef`.
             def closure =
                 makeFullClosure(@{yieldDef*, clause::then*});

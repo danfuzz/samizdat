@@ -13,7 +13,6 @@
 #= language core.Lang1
 
 import core.EntityMap :: ENTITY_MAP;
-import core.Generator :: filterPump;
 import core.LangNode :: KEYWORDS, intFromDigits;
 import core.Peg;  ## Used implicitly.
 import core.Peg :: apply, stringFromTokenList, symbolFromTokenList;
@@ -231,7 +230,7 @@ fn processStringParts(parts) {
     ## `elems` list consisting of alternating multi-character strings and
     ## interpolation maps.
     var elems = [];
-    filterPump(parts) { part /next ->
+    parts.forEach { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
         ifIs { Record.accepts(part) }

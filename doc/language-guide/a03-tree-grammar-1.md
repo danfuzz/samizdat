@@ -458,8 +458,8 @@ def parUnaryExpression = {:
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
 
-        filterPump(postfixes) { op -> result := op(result) };
-        filterPump(prefixes) { op -> result := op(result) };
+        postfixes.forEach { op -> result := op(result) };
+        prefixes.forEach { op -> result := op(result) };
         result
     }
 :};
