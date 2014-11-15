@@ -61,11 +61,8 @@ export class ParaGenerator
         def data = this.(ACCESS)();
         def subGens = data::generators;
 
-        ifIs { eq(subGens, []) }
-            { return };
-
         var result;
-        def generatorCalls = subGens.collect(
+        def generatorCalls = subGens.collect
             { gen ->
                 ifValue { gen.nextValue(result?) }
                     { nextGenerator -> [result, nextGenerator] }
@@ -73,10 +70,10 @@ export class ParaGenerator
                         ## One of the sub-generators became voided.
                         return
                     }
-            });
+            };
 
-        def yields = generatorCalls.collect({ one -> one.nth(0) });
-        def nexts = generatorCalls.collect({ one -> one.nth(1) });
+        def yields = generatorCalls.collect { one -> one.nth(0) };
+        def nexts = generatorCalls.collect { one -> one.nth(1) };
 
         box* := yields;
         return this.(NEW)(@{generators: nexts})
