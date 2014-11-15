@@ -48,7 +48,7 @@ def MOD_NAMES = [
     {mod: @Format,    name: @usual},
     {mod: @Generator, name: @FilterGenerator},
     {mod: @Generator, name: @RepeatGenerator},
-    {mod: @Generator, name: @filterAll},
+    {mod: @Generator, name: @collectAll},
     {mod: @Generator, name: @filterPump},
     {mod: @Peg,       name: @any},
     {mod: @Peg,       name: @empty},

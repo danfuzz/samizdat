@@ -9,7 +9,7 @@
 #= language core.Lang1
 
 import core.Format;
-import core.Generator :: filterAll, filterPump;
+import core.Generator :: collectAll, filterPump;
 import core.LangNode :: *;
 import core.Peg;
 import core.Range :: ClosedRange, OpenRange;
@@ -1384,7 +1384,7 @@ def parGeneratorList = {:
 
 ## Helper for `parComprehensionExpression`, which parses the body of a
 ## comprehension, yielding appropriate arguments for a call to either
-## `FilterGenerator.new` or `filterAll`.
+## `FilterGenerator.new` or `collectAll`.
 def parComprehensionBody = {:
     genList = parGeneratorList
     @"->"
@@ -1417,7 +1417,7 @@ def parComprehensionBody = {:
 ## ```
 ## =>
 ## ```
-## $Generator::filterAll(expr1, expr2)
+## $Generator::collectAll(expr1, expr2)
 ##     { name1, name2 -> filterBody }
 ## ```
 def parComprehensionExpression = {:
@@ -1431,7 +1431,7 @@ def parComprehensionExpression = {:
     body = parComprehensionBody
     @"]"
 
-    { makeFunCall(REFS::Generator_filterAll, body*) }
+    { makeFunCall(REFS::Generator_collectAll, body*) }
 :};
 
 ## Helper for `parRangeExpression`, which parses the body of a
@@ -1808,7 +1808,7 @@ def parLogicAndExpression = {:
             ## lists.
             def formals = most.collect { clause -> clause::formal };
             def testThunks =
-                filterAll(most, OpenRange.new(0))
+                collectAll(most, OpenRange.new(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             formals.sliceExclusive(0, index))
@@ -1916,7 +1916,7 @@ def parMultiTest = {:
             ## lists.
             def formals = clauses.collect { clause -> clause::formal };
             def testThunks =
-                filterAll(clauses, OpenRange.new(0))
+                collectAll(clauses, OpenRange.new(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             formals.sliceExclusive(0, index))

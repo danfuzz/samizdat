@@ -33,7 +33,7 @@ export def stdFetch = Generator_stdFetch;
 export def stdForEach = Generator_stdForEach;
 
 ## Documented in spec.
-export fn filterAll(filterFunction, generators*) {
+export fn collectAll(filterFunction, generators*) {
     return ifIs { eq(generators.get_size(), 1) }
         {
             ## We are collecting a single generator, so just use `.collect()`

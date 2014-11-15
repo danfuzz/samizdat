@@ -23,7 +23,7 @@ fn msg(value) {
 ## Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
     note(header);
-    filterAll([gen*]) { elem -> msg(elem) };
+    collectAll([gen*]) { elem -> msg(elem) };
     note("  [fin]");
     note("  value: ", $Format::source(gen));
     note()

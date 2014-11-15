@@ -42,8 +42,8 @@ The default implementation of this method iterates over calls to
 `nextValue()` in the expected manner, collecting up all the yielded
 results.
 
-**Note:** The function `filterAll` is a multi-generator generalization
-of this function.
+**Note:** The function `collectAll` is a multi-generator generalization
+of this method.
 
 #### `.fetch() -> . | void`
 
@@ -65,6 +65,9 @@ from a call to `optFilterFunction*`, if the function is specified. If the
 function is not specified, the return value of this method is the same as the
 last yielded element of the generator before it became voided.
 
+**Note:** The function `filterPump` is a multi-generator generalization
+of this method.
+
 #### `.nextValue(box) -> generator | void`
 
 Generates the next item in `this`, if any. If there is a generated
@@ -77,7 +80,7 @@ returns void.
 <br><br>
 ### Functions
 
-#### `filterAll(filterFunction, generators*) -> list`
+#### `collectAll(filterFunction, generators*) -> list`
 
 Creates a filter generator over the indicated generators, and collects
 the results of running it into a list.

@@ -4,7 +4,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll;
+import core.Generator :: collectAll;
 
 import ./constructors1 :: *;
 import ./getters :: *;
@@ -277,7 +277,7 @@ export fn makeDynamicImport(node) {
                 def names = get_definedNames(node);
                 def loadCall = makeFunCall(REFS::loadModule, makeLiteral(source));
 
-                filterAll(names, node::select) { name, sel ->
+                collectAll(names, node::select) { name, sel ->
                     makeVarDef(name, @result,
                         makeCall(loadCall, SYMS::get, makeLiteral(sel)))
                 }
