@@ -96,20 +96,27 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
 
 // Documented in spec.
 FUNC_IMPL_1_2(Generator_stdForEach, generator, function) {
-    zvalue box = (function == NULL) ? THE_NULL_BOX : cm_new(Cell);
+    zvalue box = cm_new(Cell);
+    zvalue result = NULL;
 
-    while (generator != NULL) {
-        zstackPointer save = datFrameStart();
+    for (;;) {
         generator = METH_CALL(generator, nextValue, box);
 
-        if ((generator != NULL) && (function != NULL)) {
-            FUN_CALL(function, cm_fetch(box));
+        if (generator == NULL) {
+            break;
         }
 
-        datFrameReturn(save, generator);
+        if (function == NULL) {
+            result = cm_fetch(box);
+        } else {
+            zvalue v = FUN_CALL(function, cm_fetch(box));
+            if (v != NULL) {
+                result = v;
+            }
+        }
     }
 
-    return NULL;
+    return result;
 }
 
 /** Initializes the module. */
