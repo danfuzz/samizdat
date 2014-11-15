@@ -275,6 +275,23 @@ METH_IMPL_0(List, fetch) {
     }
 }
 
+// Documented in spec.
+METH_IMPL_0_1(List, forEach, function) {
+    if (function == NULL) {
+        // Without a function, this method doesn't possibly do anything.
+        return NULL;
+    }
+
+    ListInfo *info = getInfo(ths);
+    zarray arr = info->a;
+
+    for (zint i = 0; i < arr.size; i++) {
+        FUN_CALL(function, arr.elems[i]);
+    }
+
+    return NULL;
+}
+
 // Documented in header.
 METH_IMPL_0(List, gcMark) {
     ListInfo *info = getInfo(ths);
@@ -436,6 +453,7 @@ MOD_INIT(List) {
             METH_BIND(List, collect),
             METH_BIND(List, del),
             METH_BIND(List, fetch),
+            METH_BIND(List, forEach),
             METH_BIND(List, gcMark),
             METH_BIND(List, get_size),
             METH_BIND(List, nextValue),

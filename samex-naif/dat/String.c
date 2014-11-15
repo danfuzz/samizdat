@@ -483,6 +483,23 @@ METH_IMPL_0(String, fetch) {
     }
 }
 
+// Documented in spec.
+METH_IMPL_0_1(String, forEach, function) {
+    if (function == NULL) {
+        // Without a function, this method doesn't possibly do anything.
+        return NULL;
+    }
+
+    StringInfo *info = getInfo(ths);
+    zstring s = info->s;
+
+    for (zint i = 0; i < s.size; i++) {
+        FUN_CALL(function, stringFromZchar(s.chars[i]));
+    }
+
+    return NULL;
+}
+
 // Documented in header.
 METH_IMPL_0(String, gcMark) {
     StringInfo *info = getInfo(ths);
@@ -623,6 +640,7 @@ MOD_INIT(String) {
             METH_BIND(String, debugString),
             METH_BIND(String, del),
             METH_BIND(String, fetch),
+            METH_BIND(String, forEach),
             METH_BIND(String, gcMark),
             METH_BIND(String, get_size),
             METH_BIND(String, nextValue),

@@ -54,6 +54,7 @@ DEF_SYMBOL(del);
 DEF_SYMBOL(div);
 DEF_SYMBOL(divEu);
 DEF_SYMBOL(fetch);
+DEF_SYMBOL(forEach);
 DEF_SYMBOL(fromLogic);
 DEF_SYMBOL(get);
 DEF_SYMBOL(get_data);

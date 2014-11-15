@@ -69,6 +69,17 @@ METH_IMPL_0(Box, fetch) {
 }
 
 // Documented in spec.
+METH_IMPL_0_1(Box, forEach, function) {
+    zvalue value = METH_CALL(ths, fetch);
+
+    if ((value != NULL) && (function != NULL)) {
+        FUN_CALL(function, value);
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
 METH_IMPL_0(Box, gcMark) {
     BoxInfo *info = getInfo(ths);
 
@@ -102,6 +113,7 @@ MOD_INIT(Box) {
         METH_TABLE(
             METH_BIND(Box, collect),
             METH_BIND(Box, fetch),
+            METH_BIND(Box, forEach),
             METH_BIND(Box, gcMark),
             METH_BIND(Box, nextValue)));
 }
