@@ -84,8 +84,7 @@ fn fileNameSuffix(path) {
     var gotDot = 0;
     var result = "";
 
-    ## `collect` is used here as a "for-each," ignoring the collected result.
-    path.collect(
+    path.forEach
         { ch ->
             ifIs { eq(ch, "/") }
                 {
@@ -100,7 +99,7 @@ fn fileNameSuffix(path) {
                         }
                         { result := result.cat(ch) }
                 }
-        });
+        };
 
     return ifIs { eq(gotDot, 0) }
         { "" }
@@ -138,12 +137,11 @@ fn checkExternalSource(source) {
 
     var lastCh = ".";  ## Init to `"."` to make the first check work out.
 
-    ## `collect` is used here as a "for-each," ignoring the collected result.
-    name.collect(
+    name.forEach
         { ch ->
             checkExternalSourcePair(lastCh, ch);
             lastCh := ch
-        });
+        };
 
     checkExternalSourcePair(lastCh, ".");
     return source
@@ -191,12 +189,11 @@ fn checkInternalSource(source) {
 
     var lastCh = "/";  ## Init to `"/"` to make the first check work out.
 
-    ## `collect` is used here as a "for-each," ignoring the collected result.
-    name.collect(
+    name.forEach
         { ch ->
             checkInternalSourcePair(lastCh, ch);
             lastCh := ch;
-        });
+        };
 
     checkInternalSourcePair(lastCh, "/");
     return source
