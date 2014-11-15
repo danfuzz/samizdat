@@ -27,7 +27,7 @@ def RANGE_0_ETC = OpenRange.new(0);
 
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
-    return nodes.collect { node -> convertPexIn(node) }
+    return nodes.collect(convertPexIn)
 };
 
 ## Converts a pex to a method call on its converted inner pex.
@@ -177,7 +177,6 @@ fn convertPexIn(node) {
                 def target = convertPexIn(node::target);
                 def name = convertPexIn(node::name);
                 def values = convertPexIn(node::values);
-
                 withFinalBindings(node, @{target, name, values});
             },
 
@@ -185,14 +184,12 @@ fn convertPexIn(node) {
                 def target = convertPexIn(node::target);
                 def name = convertPexIn(node::name);
                 def values = convertPexInList(node::values);
-
                 withFinalBindings(node, @{target, name, values});
             },
 
             @closure: { . ->
                 def statements = convertPexInList(node::statements);
                 def yieldNode = convertPexIn(node::yield);
-
                 node.cat(@{statements, yield: yieldNode})
             },
 
