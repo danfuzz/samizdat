@@ -4,7 +4,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll, filterPump;
+import core.Generator :: filterAll;
 
 import ./constructors1 :: *;
 import ./getters :: *;
@@ -72,7 +72,7 @@ fn extractMethods(allMethods, scope) {
     ## constructor.
     var converted = {};
 
-    filterPump(selectedMethods) { one ->
+    selectedMethods.forEach { one ->
         def name = one::name;
         ifIs { converted.get(name) }
             { die("Duplicate method: ", cast(String, name)) };
@@ -111,7 +111,7 @@ fn makeMapLikeExpression(mappings, classLit, emptyLit) {
             }
     };
 
-    filterPump(mappings) { one ->
+    mappings.forEach { one ->
         ifIs { one.hasName(@mapping) }
             {
                 def keys = one::keys;
@@ -195,7 +195,7 @@ export fn makeCallGeneral(target, name, values*) {
             }
     };
 
-    filterPump(values) { actual ->
+    values.forEach { actual ->
         ifValue { actual::interpolate }
             { node ->
                 addPendingToCooked();
@@ -234,7 +234,7 @@ export fn makeClassDef(name, attributes, methods) {
     ifNot { eq(attributes.get_size(), attribMap.get_size()) }
         { die("Duplicate attribute.") };
 
-    filterPump(attribMap.keyList()) { key ->
+    attribMap.keyList().forEach { key ->
         ifNot { CLASS_ATTRIBUTES.get(key) }
             { die("Invalid attribute: ", cast(String, key)) }
     };
@@ -426,7 +426,7 @@ export fn makeInfoTable(node) {
             { addToResources(s::source, s::format) };
     };
 
-    filterPump(statements) { s ->
+    statements.forEach { s ->
         ifIs { s.hasName(@exportSelection) }
             { addToExports(s::select) };
         ifIs { s.hasName(@export) }
