@@ -102,6 +102,13 @@ expectEq("del 11", "",        "xy".del(0, 1));
 expectEq("del 12", "23",      "01234".del(0, 1, 4));
 expectEq("del 13", "muffins", "mufxfins".del(3));
 
+expectVoid("forEach 1", { "".forEach() });
+expectVoid("forEach 2", { "a".forEach() });
+expectVoid("forEach 3", { "abc".forEach() });
+
+var x = "";
+"abc".forEach { ch -> x := x.cat("+", ch) };
+expectEq("forEach 4", "+a+b+c", x);
 
 expectEq("keyList 1", [],              "".keyList());
 expectEq("keyList 2", [0],             "x".keyList());
