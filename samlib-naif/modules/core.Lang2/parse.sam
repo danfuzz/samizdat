@@ -9,7 +9,7 @@
 #= language core.Lang1
 
 import core.Format;
-import core.Generator :: collectAll, filterPump;
+import core.Generator :: collectAll, forEachAll;
 import core.LangNode :: *;
 import core.Peg;
 import core.Range :: ClosedRange, OpenRange;
@@ -26,7 +26,7 @@ import ./tokenize :: tokenize;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, ClosedRange.newInclusive(1, 50))
+    forEachAll(pending, ClosedRange.newInclusive(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -1993,7 +1993,7 @@ def parIfExpression = {:
     optElse = (
         @else
         clause = parBasicNullaryClosure
-        ## We include the `yieldDef` (if any) here and in the `filterPump`
+        ## We include the `yieldDef` (if any) here and in the `forEachAll`
         ## below, so that we get the proper application of the implicit
         ## yield rule.
         { makeFullClosure(@{yieldDef*, clause*}) }
@@ -2280,7 +2280,7 @@ def parDoExpression = {:
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     yield? $Generator::filterPump(expr1, expr2) { name1, name2 /next ->
+##     yield? $Generator::forEachAll(expr1, expr2) { name1, name2 /next ->
 ##         def \"continue" = next;
 ##         stat1; stat2
 ##     }
@@ -2309,7 +2309,7 @@ def parForExpression = {:
             yieldDef: @break,
             statements: [breakDef*],
             yield: makeMaybe(
-                makeFunCall(REFS::Generator_filterPump, loopClosure, genInits*))
+                makeFunCall(REFS::Generator_forEachAll, loopClosure, genInits*))
         });
 
         makeFunCall(mainClosure)

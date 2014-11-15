@@ -47,7 +47,7 @@ export fn collectAll(filterFunction, generators*) {
 };
 
 ## Documented in spec.
-export fn filterPump(filterFunction, generators*) {
+export fn forEachAll(filterFunction, generators*) {
     return? ifIs { eq(generators.get_size(), 1) }
         {
             ## We are iterating a single generator, so just use `.forEach()`

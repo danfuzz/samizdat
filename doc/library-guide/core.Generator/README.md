@@ -65,7 +65,7 @@ from a call to `optFilterFunction*`, if the function is specified. If the
 function is not specified, the return value of this method is the same as the
 last yielded element of the generator before it became voided.
 
-**Note:** The function `filterPump` is a multi-generator generalization
+**Note:** The function `forEachAll` is a multi-generator generalization
 of this method.
 
 #### `.nextValue(box) -> generator | void`
@@ -93,7 +93,7 @@ This is a convenient and idiomatic shorthand for saying something like:
 
 **Syntax Note:** Used in the translation of comprehension forms.
 
-#### `filterPump(filterFunction, generators*) -> void`
+#### `forEachAll(filterFunction, generators*) -> void`
 
 Iterates over the given generators, calling the given `filterFunction`
 on generated items, iterating until at least one of the generators

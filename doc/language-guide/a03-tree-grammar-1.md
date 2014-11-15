@@ -15,7 +15,7 @@ can be used.
 
 ```
 import core.Format;
-import core.Generator :: filterPump;
+import core.Generator :: forEachAll;
 import core.Lang0;
 import core.LangNode :: *;
 import core.Peg;
@@ -30,7 +30,7 @@ import core.Range :: ClosedRange;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, ClosedRange.newInclusive(1, 50))
+    forEachAll(pending, ClosedRange.newInclusive(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
