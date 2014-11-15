@@ -482,19 +482,23 @@ METH_IMPL_0(Map, fetch) {
 
 // Documented in spec.
 METH_IMPL_0_1(Map, forEach, function) {
-    if (function == NULL) {
-        // Without a function, this method doesn't possibly do anything.
-        return NULL;
-    }
-
     MapInfo *info = getInfo(ths);
     zint size = info->size;
+    zvalue result = NULL;
 
-    for (zint i = 0; i < size; i++) {
-        FUN_CALL(function, mapFromMapping(info->elems[i]));
+    if (function == NULL) {
+        // Without a function, this method just returns the last element.
+        return (size == 0) ? NULL : mapFromMapping(info->elems[size - 1]);
     }
 
-    return NULL;
+    for (zint i = 0; i < size; i++) {
+        zvalue v = FUN_CALL(function, mapFromMapping(info->elems[i]));
+        if (v != NULL) {
+            result = v;
+        }
+    }
+
+    return result;
 }
 
 // Documented in header.

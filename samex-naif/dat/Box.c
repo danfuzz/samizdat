@@ -72,11 +72,11 @@ METH_IMPL_0(Box, fetch) {
 METH_IMPL_0_1(Box, forEach, function) {
     zvalue value = METH_CALL(ths, fetch);
 
-    if ((value != NULL) && (function != NULL)) {
-        FUN_CALL(function, value);
+    if ((value == NULL) || (function == NULL)) {
+        return value;
+    } else {
+        return FUN_CALL(function, value);
     }
-
-    return NULL;
 }
 
 // Documented in spec.

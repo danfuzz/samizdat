@@ -277,19 +277,23 @@ METH_IMPL_0(List, fetch) {
 
 // Documented in spec.
 METH_IMPL_0_1(List, forEach, function) {
-    if (function == NULL) {
-        // Without a function, this method doesn't possibly do anything.
-        return NULL;
-    }
-
     ListInfo *info = getInfo(ths);
     zarray arr = info->a;
+    zvalue result = NULL;
 
-    for (zint i = 0; i < arr.size; i++) {
-        FUN_CALL(function, arr.elems[i]);
+    if (function == NULL) {
+        // Without a function, this method just returns the last element.
+        return (arr.size == 0) ? NULL : arr.elems[arr.size - 1];
     }
 
-    return NULL;
+    for (zint i = 0; i < arr.size; i++) {
+        zvalue v = FUN_CALL(function, arr.elems[i]);
+        if (v != NULL) {
+            result = v;
+        }
+    }
+
+    return result;
 }
 
 // Documented in header.
