@@ -22,6 +22,9 @@ import core.Range :: OpenRange;
 ## Private Definitions
 ##
 
+## The open range `(0..)`.
+def RANGE_0_ETC = OpenRange.new(0);
+
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
     return nodes.collect { node -> convertPexIn(node) }
@@ -113,7 +116,7 @@ fn convertPex(node, formals) {
                 ## Convert all the pexes, passing in appropriately-extended
                 ## formals lists to each conversion.
                 def convertedPexes =
-                    collectAll(OpenRange.new(0), node::pexes)
+                    collectAll(RANGE_0_ETC, node::pexes)
                         { n, pex ->
                             def subPex = ifIs { pex.hasName(@varDef) }
                                 { pex::value }
