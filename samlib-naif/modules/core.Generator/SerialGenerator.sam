@@ -5,7 +5,7 @@
 ##
 ## `SerialGenerator` Class
 ##
-## Payload is `{generators: [gens*]}`, a list of sub-generators.
+## Payload is `{first: generator, rest: [generator*]}`.
 
 #= language core.Lang0
 
@@ -33,7 +33,10 @@ export class SerialGenerator
         ifIs { eq(generators.get_size(), 1) }
             { return generators* };
 
-        return this.(NEW)(@{generators})
+        return this.(NEW)(@{
+            first: generators.nth(0),
+            rest: generators.sliceInclusive(1)
+        })
     };
 
 
@@ -58,21 +61,12 @@ export class SerialGenerator
     ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
-        def subGens = data::generators;
 
-        return? ifValue { subGens.nth(0) }
-            { firstGen ->
-                def moreGens = subGens.sliceInclusive(1);
-
-                ifValue { firstGen.nextValue(box) }
-                    { nextGenerator ->
-                        this.(NEW)(
-                            @{generators: [nextGenerator, moreGens*]})
-                    }
-                    {
-                        ## First generator was voided.
-                        SerialGenerator.new(moreGens*).nextValue(box)
-                    }
+        return? ifValue { data::first.nextValue(box) }
+            { nextGen -> this.(NEW)(@{data*, first: nextGen}) }
+            {
+                ## First generator was voided.
+                SerialGenerator.new(data::rest*).nextValue(box)
             }
     };
 };
