@@ -92,7 +92,7 @@ msgAll("FilterGenerator (square even numbers)",
         });
 
 note("forEachAll (one generator)");
-pumped := forEachAll([1, 2, 3, 4])
+var pumped = forEachAll([1, 2, 3, 4])
     { value ->
         note("    Yay ", $Format::source(value));
         ifIs { le(value, 3) }
