@@ -60,20 +60,21 @@ export class ParaGenerator
     .nextValue(box) {
         def data = this.(ACCESS)();
         def subGens = data::generators;
-
+        var yields = [];
         var result;
-        def generatorCalls = subGens.collect
+
+        def nexts = subGens.collect
             { gen ->
                 ifValue { gen.nextValue(result?) }
-                    { nextGenerator -> [result, nextGenerator] }
+                    { nextGen ->
+                        yields := [yields*, result];
+                        nextGen
+                    }
                     {
-                        ## One of the sub-generators became voided.
+                        ## This sub-generator became voided.
                         return
                     }
             };
-
-        def yields = generatorCalls.collect { one -> one.nth(0) };
-        def nexts = generatorCalls.collect { one -> one.nth(1) };
 
         box* := yields;
         return this.(NEW)(@{generators: nexts})
