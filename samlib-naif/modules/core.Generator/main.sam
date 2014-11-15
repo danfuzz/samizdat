@@ -36,8 +36,8 @@ export def stdForEach = Generator_stdForEach;
 export fn filterAll(filterFunction, generators*) {
     return ifIs { eq(generators.get_size(), 1) }
         {
-            ## We are filtering a single generator, so just use the
-            ## special-case (and often more efficient) `collect`.
+            ## We are collecting a single generator, so just use `.collect()`
+            ## directly.
             (generators*).collect(filterFunction)
         }
         {
@@ -48,30 +48,18 @@ export fn filterAll(filterFunction, generators*) {
 
 ## Documented in spec.
 export fn filterPump(filterFunction, generators*) {
-    var result = [];
-    var innerResult;
-
-    ifIs { eq(generators.get_size(), 1) }
+    return? ifIs { eq(generators.get_size(), 1) }
         {
-            ## Handle a single generator as a special case to avoid a lot of
-            ## unnecessary wrapping / unwrapping.
-            var gen = generators*;
-            loop {
-                ifValue { gen.nextValue(innerResult?) }
-                    { nextGen ->
-                        ifValue { filterFunction(innerResult) }
-                            { value -> result := [value] };
-                        gen := nextGen
-                    }
-                    {
-                        ## The generator was voided.
-                        return? result*
-                    }
-            }
+            ## We are iterating a single generator, so just use `.forEach()`
+            ## directly.
+            (generators*).forEach(filterFunction)
         }
         {
             ## General case of multiple (or zero) generators.
             var gen = ParaGenerator.new(generators*);
+            var result = [];
+            var innerResult;
+
             loop {
                 ifValue { gen.nextValue(innerResult?) }
                     { nextGen ->
