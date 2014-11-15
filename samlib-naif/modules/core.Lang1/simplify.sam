@@ -209,13 +209,10 @@ fn convertPexIn(node) {
                 withFinalBindings(node, @{target, value})
             },
 
-            @varDef: { . ->
-                node.cat(@{value: convertPexIn(node::value)})
-            },
-
             @export:
             @maybe:
-            @noYield: { . ->
+            @noYield:
+            @varDef: { . ->
                 node.cat(@{value: convertPexIn(node::value)})
             },
 
