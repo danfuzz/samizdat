@@ -35,15 +35,10 @@ fn makeCallPex(target, name, node, formals, moreArgs*) {
     return makeCall(target, name, convertPex(node::pex, formals), moreArgs*)
 };
 
-## Makes a node with additional / replacement bindings from the original.
-fn withBindings(orig, more) {
-    return @(orig.get_name()){orig*, more*}
-};
-
 ## Makes a node with additional / replacement bindings from the original,
 ## but *without* intermediate bindings.
 fn withFinalBindings(orig, more) {
-    return withBindings(withoutIntermediates(orig), more)
+    return withoutIntermediates(orig).cat(more)
 };
 
 ## Expands the given pex node into an expression node.
@@ -198,7 +193,7 @@ fn convertPexIn(node) {
                 def statements = convertPexInList(node::statements);
                 def yieldNode = convertPexIn(node::yield);
 
-                withBindings(node, @{statements, yield: yieldNode})
+                node.cat(@{statements, yield: yieldNode})
             },
 
             @fetch: { . ->
@@ -218,13 +213,13 @@ fn convertPexIn(node) {
             },
 
             @varDef: { . ->
-                withBindings(node, @{value: convertPexIn(node::value)})
+                node.cat(@{value: convertPexIn(node::value)})
             },
 
             @export:
             @maybe:
             @noYield: { . ->
-                withBindings(node, @{value: convertPexIn(node::value)})
+                node.cat(@{value: convertPexIn(node::value)})
             },
 
             @exportSelection:
