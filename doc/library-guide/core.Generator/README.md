@@ -96,23 +96,7 @@ is voided. This function returns the last non-void value yielded by
 `filterFunction`. If `filterFunction` never yields a value, then this
 function returns void.
 
-This is equivalent to calling `generatorPump` on a filter generator
-constructed with the same arguments as a call to this function,
-that is, something like:
-
-```
-generatorPump(FilterGenerator.new(generator, ...) { ... code ... })
-```
-
 **Syntax Note:** Used in the translation of `for` forms.
-
-#### `generatorPump(generator) -> void`
-
-Generator iterator, ignoring results. This takes a generator, calling
-it repeatedly until it becomes voided.
-
-This function returns the last value yielded by the generator. If the
-generator never yielded a value, this function returns void.
 
 #### `stdCollect(generator, optFilterFunction?) -> list`
 

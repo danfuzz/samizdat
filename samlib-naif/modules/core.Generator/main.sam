@@ -86,14 +86,3 @@ export fn filterPump(filterFunction, generators*) {
             }
         }
 };
-
-## Documented in spec.
-export fn generatorPump(generator) {
-    var gen = generator;
-    var result;
-
-    loop {
-        gen := ifValueOr { gen.nextValue(result?) }
-            { return? result }
-    }
-};
