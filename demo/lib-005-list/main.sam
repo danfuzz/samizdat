@@ -91,13 +91,14 @@ expectEq("del 10", ["y"],  ["x", "y"].del(0, 0));
 expectEq("del 11", [],     ["x", "y"].del(0, 1));
 expectEq("del 12", [2, 3], [0, 1, 2, 3, 4].del(0, 1, 4));
 
-expectVoid("forEach 1", { [].forEach() });
-expectVoid("forEach 2", { [1].forEach() });
-expectVoid("forEach 3", { [1, 2, 3].forEach() });
+expectVoid("forEach 1",     { [].forEach() });
+expectEq("forEach 2",   1,  [1].forEach());
+expectEq("forEach 3",   3,  [1, 2, 3].forEach());
+expectEq("forEach 4",   13, [1, 2, 3].forEach { n -> n.add(10) });
 
 var x = 0;
 [1, 2, 3].forEach { n -> x := x.add(n) };
-expectEq("forEach 4", 6, x);
+expectEq("forEach 5", 6, x);
 
 expectEq("keyList 1", [],        [].keyList());
 expectEq("keyList 2", [0],       ["x"].keyList());

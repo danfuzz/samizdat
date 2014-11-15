@@ -87,13 +87,14 @@ expectEq("del 9",  {b: 2},       {a: 1, b: 2, c: 3}.del(@a, @c));
 expectEq("del 10", {b: 2, d: 4}, {a: 1, b: 2, c: 3, d: 4}.del(@a, @c));
 expectEq("del 11", {b: 2},       {a: 1, b: 2, c: 3, d: 4}.del(@a, @c, @d));
 
-expectVoid("forEach 1", { {}.forEach() });
-expectVoid("forEach 2", { {a: 1}.forEach() });
-expectVoid("forEach 3", { {a:1, b:2, c:3}.forEach() });
+expectVoid("forEach 1",           { {}.forEach() });
+expectEq("forEach 2",   {a:1},    {a: 1}.forEach());
+expectEq("forEach 3",   {c:3},    {a:1, b:2, c:3}.forEach());
+expectEq("forEach 4",   "{x: 9}", {a:1, b:2, c:3, x:9}.forEach { m -> $Format::source(m) });
 
 var x = "";
 {a:1, b:2, c:3}.forEach { mapping -> x := x.cat($Format::source(mapping)) };
-expectEq("forEach 4", "{a: 1}{b: 2}{c: 3}", x);
+expectEq("forEach 5", "{a: 1}{b: 2}{c: 3}", x);
 
 expectEq("keyList 1", [],       {}.keyList());
 expectEq("keyList 2", [@a],     {a: 10}.keyList());
