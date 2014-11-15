@@ -48,7 +48,7 @@ export class FilterGenerator
     ## Documented in spec.
     .forEach(optFilterFunction?) {
         ## Just use the standard implementation.
-        return Generator_stdForEach(this, optFilterFunction*)
+        return? Generator_stdForEach(this, optFilterFunction*)
     };
 
     ## Documented in spec.
