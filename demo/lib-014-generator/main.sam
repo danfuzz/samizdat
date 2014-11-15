@@ -91,18 +91,8 @@ msgAll("FilterGenerator (square even numbers)",
                 { value.mul(value) }
         });
 
-note("generatorPump on FilterGenerator");
-var pumped = generatorPump(
-    FilterGenerator.new([1, 2, 3, 4])
-        { value ->
-            note("    Yay ", $Format::source(value));
-            ifIs { eq(value, 3) }
-                { value.add(100) }
-        });
-note("Got: ", $Format::source(pumped), "\n");
-
-note("filterPump (one generator)");
-pumped := filterPump([1, 2, 3, 4])
+note("forEachAll (one generator)");
+var pumped = forEachAll([1, 2, 3, 4])
     { value ->
         note("    Yay ", $Format::source(value));
         ifIs { le(value, 3) }
@@ -110,8 +100,8 @@ pumped := filterPump([1, 2, 3, 4])
     };
 note("Got: ", $Format::source(pumped), "\n");
 
-note("filterPump (two generators)");
-pumped := filterPump("abcdefg", [1, 2, 3, 4])
+note("forEachAll (two generators)");
+pumped := forEachAll("abcdefg", [1, 2, 3, 4])
     { ch, value ->
         note("    Yay ", ch, " ", $Format::source(value));
         ifIs { eq(value, 3) }

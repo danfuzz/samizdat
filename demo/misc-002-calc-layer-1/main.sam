@@ -35,7 +35,7 @@ def UNARY_OPS = {
 fn applyAll(initialValue, functions) {
     var result = initialValue;
 
-    filterPump(functions) { function ->
+    functions.forEach { function ->
         result := function(result)
     };
 
@@ -81,7 +81,7 @@ fn applyShuntingYard(initialValue, opValues) {
     var ops = [];
     var values = [initialValue];
 
-    filterPump(opValues) { opValue ->
+    opValues.forEach { opValue ->
         def op = opValue::op;
         def value = opValue::value;
         def opVal = reducePending(ops, values, op::precedence);
@@ -110,7 +110,7 @@ def number = {:
     digits = digit+
     {
         var result = 0;
-        filterPump(digits) { digit ->
+        digits.forEach { digit ->
             result := digit.add(result.mul(10))
         };
         result

@@ -5,7 +5,6 @@
 #= language core.Lang1
 
 import core.Format;
-import core.Generator :: filterPump;
 import core.LangNode :: *;
 
 
@@ -21,7 +20,7 @@ def CHAR_0 = cast(Int, "0");
 fn intOrVoid(string) {
     var value = 0;
 
-    filterPump(string) { ch ->
+    string.forEach { ch ->
         ifIs { perLt(ch, "0") } { return };
         ifIs { perGt(ch, "9") } { return };
         def digit = cast(Int, ch).sub(CHAR_0);
@@ -36,7 +35,7 @@ fn intOrVoid(string) {
 fn maxOf(values*) {
     var max = -1;
 
-    filterPump(values) { v ->
+    values.forEach { v ->
         ifIs { perGt(v, max) }
             { max := v }
     };

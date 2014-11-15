@@ -94,6 +94,31 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
     return result;
 }
 
+// Documented in spec.
+FUNC_IMPL_1_2(Generator_stdForEach, generator, function) {
+    zvalue box = cm_new(Cell);
+    zvalue result = NULL;
+
+    for (;;) {
+        generator = METH_CALL(generator, nextValue, box);
+
+        if (generator == NULL) {
+            break;
+        }
+
+        if (function == NULL) {
+            result = cm_fetch(box);
+        } else {
+            zvalue v = FUN_CALL(function, cm_fetch(box));
+            if (v != NULL) {
+                result = v;
+            }
+        }
+    }
+
+    return result;
+}
+
 /** Initializes the module. */
 MOD_INIT(Generator) {
     MOD_USE_NEXT(Box);
@@ -103,6 +128,9 @@ MOD_INIT(Generator) {
         datImmortalize(FUNC_VALUE(Generator_stdCollect));
 
     FUN_Generator_stdFetch = datImmortalize(FUNC_VALUE(Generator_stdFetch));
+
+    FUN_Generator_stdForEach =
+        datImmortalize(FUNC_VALUE(Generator_stdForEach));
 }
 
 // Documented in header.
@@ -110,3 +138,6 @@ zvalue FUN_Generator_stdCollect = NULL;
 
 // Documented in header.
 zvalue FUN_Generator_stdFetch = NULL;
+
+// Documented in header.
+zvalue FUN_Generator_stdForEach = NULL;

@@ -483,6 +483,27 @@ METH_IMPL_0(String, fetch) {
     }
 }
 
+// Documented in spec.
+METH_IMPL_0_1(String, forEach, function) {
+    StringInfo *info = getInfo(ths);
+    zstring s = info->s;
+    zvalue result = NULL;
+
+    if (function == NULL) {
+        // Without a function, this method just returns the last element.
+        return (s.size == 0) ? NULL : stringFromZchar(s.chars[s.size - 1]);
+    }
+
+    for (zint i = 0; i < s.size; i++) {
+        zvalue v = FUN_CALL(function, stringFromZchar(s.chars[i]));
+        if (v != NULL) {
+            result = v;
+        }
+    }
+
+    return result;
+}
+
 // Documented in header.
 METH_IMPL_0(String, gcMark) {
     StringInfo *info = getInfo(ths);
@@ -623,6 +644,7 @@ MOD_INIT(String) {
             METH_BIND(String, debugString),
             METH_BIND(String, del),
             METH_BIND(String, fetch),
+            METH_BIND(String, forEach),
             METH_BIND(String, gcMark),
             METH_BIND(String, get_size),
             METH_BIND(String, nextValue),

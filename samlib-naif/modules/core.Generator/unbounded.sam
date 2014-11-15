@@ -22,3 +22,8 @@ export fn unboundedCollect(this, optFilterFunction?) {
 export fn unboundedFetch(this) {
     die("Cannot `fetch` unbounded generator.");
 };
+
+## Documented in spec.
+export fn unboundedForEach(this) {
+    die("Cannot `forEach` unbounded generator.");
+};

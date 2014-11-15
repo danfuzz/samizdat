@@ -4,8 +4,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterPump;
-
 
 ##
 ## Private Definitions
@@ -57,7 +55,7 @@ export fn canYieldVoid(node) {
 export fn formalsMaxArgs(formals) {
     var maxArgs = 0;
 
-    filterPump(formals) { f ->
+    formals.forEach { f ->
         ifValue { f::repeat }
             { rep ->
                 ifIs { eq(rep, @"*") } { return -1 };
@@ -73,7 +71,7 @@ export fn formalsMaxArgs(formals) {
 export fn formalsMinArgs(formals) {
     var minArgs = 0;
 
-    filterPump(formals) { f /next ->
+    formals.forEach { f /next ->
         ifValue { f::repeat }
             { rep ->
                 ifIs { eq(rep, @"?") } { yield /next };
@@ -89,7 +87,7 @@ export fn formalsMinArgs(formals) {
 export fn intFromDigits(base, digits) {
     var result = 0;
 
-    filterPump(digits) { digit ->
+    digits.forEach { digit ->
         def value = intFromDigitToken(digit);
         ifIs { perNe(value, -1) }
             { result := result.mul(base).add(value) }

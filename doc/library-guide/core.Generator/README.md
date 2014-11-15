@@ -42,8 +42,8 @@ The default implementation of this method iterates over calls to
 `nextValue()` in the expected manner, collecting up all the yielded
 results.
 
-**Note:** The function `filterAll` is a multi-generator generalization
-of this function.
+**Note:** The function `collectAll` is a multi-generator generalization
+of this method.
 
 #### `.fetch() -> . | void`
 
@@ -53,6 +53,20 @@ a voided generator. It is a fatal error (terminating the runtime) if
 
 **Syntax Note:** Used in the translation of `expression*` forms when they
 are *not* collection constructor or function call arguments.
+
+#### `.forEach(optFilterFunction?) -> . | void`
+
+This iterates over the generator. It acts as if `.nextValue()` is called to
+yield all the elements of the generator. If `optFilterFunction*` is specified,
+it is called on each yielded value in order, as a single argument.
+
+The return value of this method is the same as the last non-void return value
+from a call to `optFilterFunction*`, if the function is specified. If the
+function is not specified, the return value of this method is the same as the
+last yielded element of the generator before it became voided.
+
+**Note:** The function `forEachAll` is a multi-generator generalization
+of this method.
 
 #### `.nextValue(box) -> generator | void`
 
@@ -66,7 +80,7 @@ returns void.
 <br><br>
 ### Functions
 
-#### `filterAll(filterFunction, generators*) -> list`
+#### `collectAll(filterFunction, generators*) -> list`
 
 Creates a filter generator over the indicated generators, and collects
 the results of running it into a list.
@@ -79,7 +93,7 @@ This is a convenient and idiomatic shorthand for saying something like:
 
 **Syntax Note:** Used in the translation of comprehension forms.
 
-#### `filterPump(filterFunction, generators*) -> void`
+#### `forEachAll(filterFunction, generators*) -> void`
 
 Iterates over the given generators, calling the given `filterFunction`
 on generated items, iterating until at least one of the generators
@@ -87,49 +101,46 @@ is voided. This function returns the last non-void value yielded by
 `filterFunction`. If `filterFunction` never yields a value, then this
 function returns void.
 
-This is equivalent to calling `generatorPump` on a filter generator
-constructed with the same arguments as a call to this function,
-that is, something like:
-
-```
-generatorPump(FilterGenerator.new(generator, ...) { ... code ... })
-```
-
 **Syntax Note:** Used in the translation of `for` forms.
-
-#### `generatorPump(generator) -> void`
-
-Generator iterator, ignoring results. This takes a generator, calling
-it repeatedly until it becomes voided.
-
-This function returns the last value yielded by the generator. If the
-generator never yielded a value, this function returns void.
 
 #### `stdCollect(generator, optFilterFunction?) -> list`
 
-"Standard" implementation of `collect`, in terms of `nextValue`. This
-function is provided as a convenient function to bind `collect` to, for
+"Standard" implementation of `.collect()`, in terms of `.nextValue()`. This
+function is provided as a convenient function to bind `.collect` to, for
 classes that don't have anything fancier to do.
 
 #### `stdFetch(generator) -> . | void`
 
-"Standard" implementation of `fetch`, in terms of `nextValue`. This
-function is provided as a convenient function to bind `fetch` to, for
+"Standard" implementation of `.fetch()`, in terms of `.nextValue()`. This
+function is provided as a convenient function to bind `.fetch` to, for
 classes that don't have anything fancier to do.
 
-#### `unboundedCollect(generator, optFilterFunction?) ->  n/a  ## Terminates the runtime.`
+#### `stdForEach(generator, optFilterFunction?) -> . | void`
 
-Handy implementation of `collect` which simply dies with a message indicating
+"Standard" implementation of `.forEach()`, in terms of `.nextValue()`. This
+function is provided as a convenient function to bind `.forEach` to, for
+classes that don't have anything fancier to do.
+
+#### `unboundedCollect(generator, optFilterFunction?) -> n/a  ## Terminates the runtime.`
+
+Handy implementation of `.collect()` which simply dies with a message
+indicating that the given generator is unbounded (that is, has infinite
+elements). This function is provided as a convenient thing to bind `.collect`
+to, for appropriate classes.
+
+#### `unboundedFetch(generator) -> n/a  ## Terminates the runtime.`
+
+Handy implementation of `.fetch()` which simply dies with a message indicating
 that the given generator is unbounded (that is, has infinite elements).
-This function is provided as a convenient thing to bind `collect` to, for
+This function is provided as a convenient thing to bind `.fetch` to, for
 appropriate classes.
 
-#### `unboundedFetch(generator) ->  n/a  ## Terminates the runtime.`
+#### `unboundedForEach(generator) -> n/a  ## Terminates the runtime.`
 
-Handy implementation of `fetch` which simply dies with a message indicating
-that the given generator is unbounded (that is, has infinite elements).
-This function is provided as a convenient thing to bind `fetch` to, for
-appropriate classes.
+Handy implementation of `.forEach()` which simply dies with a message
+indicating that the given generator is unbounded (that is, has infinite
+elements). This function is provided as a convenient thing to bind `.forEach`
+to, for appropriate classes.
 
 
 <br><br>

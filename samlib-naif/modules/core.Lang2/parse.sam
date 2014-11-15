@@ -9,7 +9,7 @@
 #= language core.Lang1
 
 import core.Format;
-import core.Generator :: filterAll, filterPump;
+import core.Generator :: collectAll, forEachAll;
 import core.LangNode :: *;
 import core.Peg;
 import core.Range :: ClosedRange, OpenRange;
@@ -26,7 +26,7 @@ import ./tokenize :: tokenize;
 fn reportError(pending) {
     note("Pending tokens:");
 
-    filterPump(pending, ClosedRange.newInclusive(1, 50))
+    forEachAll(pending, ClosedRange.newInclusive(1, 50))
         { token, . -> note("    ", $Format::source(token)) };
 
     die("\nExtra tokens at end of program.")
@@ -454,8 +454,8 @@ def parUnaryExpression = {:
         def prefixes = basePrefixes::prefixes;
         var result = basePrefixes::base;
 
-        filterPump(postfixes) { op -> result := op(result) };
-        filterPump(prefixes) { op -> result := op(result) };
+        postfixes.forEach { op -> result := op(result) };
+        prefixes.forEach { op -> result := op(result) };
         result
     }
 :};
@@ -1174,7 +1174,7 @@ def BINARY_OPERATORS = {
 fn makeBinaryCalls(firstEx, opExList) {
     var result = firstEx;
 
-    filterPump(opExList) { opEx ->
+    opExList.forEach { opEx ->
         def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
         result := makeFunCall(resolvedOp, result, opEx::expr)
     };
@@ -1384,7 +1384,7 @@ def parGeneratorList = {:
 
 ## Helper for `parComprehensionExpression`, which parses the body of a
 ## comprehension, yielding appropriate arguments for a call to either
-## `FilterGenerator.new` or `filterAll`.
+## `FilterGenerator.new` or `collectAll`.
 def parComprehensionBody = {:
     genList = parGeneratorList
     @"->"
@@ -1417,7 +1417,7 @@ def parComprehensionBody = {:
 ## ```
 ## =>
 ## ```
-## $Generator::filterAll(expr1, expr2)
+## $Generator::collectAll(expr1, expr2)
 ##     { name1, name2 -> filterBody }
 ## ```
 def parComprehensionExpression = {:
@@ -1431,7 +1431,7 @@ def parComprehensionExpression = {:
     body = parComprehensionBody
     @"]"
 
-    { makeFunCall(REFS::Generator_filterAll, body*) }
+    { makeFunCall(REFS::Generator_collectAll, body*) }
 :};
 
 ## Helper for `parRangeExpression`, which parses the body of a
@@ -1808,7 +1808,7 @@ def parLogicAndExpression = {:
             ## lists.
             def formals = most.collect { clause -> clause::formal };
             def testThunks =
-                filterAll(most, OpenRange.new(0))
+                collectAll(most, OpenRange.new(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             formals.sliceExclusive(0, index))
@@ -1916,7 +1916,7 @@ def parMultiTest = {:
             ## lists.
             def formals = clauses.collect { clause -> clause::formal };
             def testThunks =
-                filterAll(clauses, OpenRange.new(0))
+                collectAll(clauses, OpenRange.new(0))
                     { clause, index ->
                         withFormals(clause::testThunk,
                             formals.sliceExclusive(0, index))
@@ -1993,7 +1993,7 @@ def parIfExpression = {:
     optElse = (
         @else
         clause = parBasicNullaryClosure
-        ## We include the `yieldDef` (if any) here and in the `filterPump`
+        ## We include the `yieldDef` (if any) here and in the `forEachAll`
         ## below, so that we get the proper application of the implicit
         ## yield rule.
         { makeFullClosure(@{yieldDef*, clause*}) }
@@ -2010,7 +2010,7 @@ def parIfExpression = {:
         ## `reduction*` (which also handles the case of a missing final
         ## `else`).
         var reduction = optElse;
-        filterPump(clauses) { clause ->
+        clauses.forEach { clause ->
             ## See above about `yieldDef`.
             def closure =
                 makeFullClosure(@{yieldDef*, clause::then*});
@@ -2280,7 +2280,7 @@ def parDoExpression = {:
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     yield? $Generator::filterPump(expr1, expr2) { name1, name2 /next ->
+##     yield? $Generator::forEachAll(expr1, expr2) { name1, name2 /next ->
 ##         def \"continue" = next;
 ##         stat1; stat2
 ##     }
@@ -2309,7 +2309,7 @@ def parForExpression = {:
             yieldDef: @break,
             statements: [breakDef*],
             yield: makeMaybe(
-                makeFunCall(REFS::Generator_filterPump, loopClosure, genInits*))
+                makeFunCall(REFS::Generator_forEachAll, loopClosure, genInits*))
         });
 
         makeFunCall(mainClosure)

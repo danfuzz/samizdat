@@ -13,7 +13,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterAll;
+import core.Generator :: collectAll;
 import core.LangNode :: *;
 import core.Range :: OpenRange;
 
@@ -22,9 +22,12 @@ import core.Range :: OpenRange;
 ## Private Definitions
 ##
 
+## The open range `(0..)`.
+def RANGE_0_ETC = OpenRange.new(0);
+
 ## Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
-    return nodes.collect { node -> convertPexIn(node) }
+    return nodes.collect(convertPexIn)
 };
 
 ## Converts a pex to a method call on its converted inner pex.
@@ -32,15 +35,10 @@ fn makeCallPex(target, name, node, formals, moreArgs*) {
     return makeCall(target, name, convertPex(node::pex, formals), moreArgs*)
 };
 
-## Makes a node with additional / replacement bindings from the original.
-fn withBindings(orig, more) {
-    return @(orig.get_name()){orig*, more*}
-};
-
 ## Makes a node with additional / replacement bindings from the original,
 ## but *without* intermediate bindings.
 fn withFinalBindings(orig, more) {
-    return withBindings(withoutIntermediates(orig), more)
+    return withoutIntermediates(orig).cat(more)
 };
 
 ## Expands the given pex node into an expression node.
@@ -113,7 +111,7 @@ fn convertPex(node, formals) {
                 ## Convert all the pexes, passing in appropriately-extended
                 ## formals lists to each conversion.
                 def convertedPexes =
-                    filterAll(OpenRange.new(0), node::pexes)
+                    collectAll(RANGE_0_ETC, node::pexes)
                         { n, pex ->
                             def subPex = ifIs { pex.hasName(@varDef) }
                                 { pex::value }
@@ -179,7 +177,6 @@ fn convertPexIn(node) {
                 def target = convertPexIn(node::target);
                 def name = convertPexIn(node::name);
                 def values = convertPexIn(node::values);
-
                 withFinalBindings(node, @{target, name, values});
             },
 
@@ -187,15 +184,13 @@ fn convertPexIn(node) {
                 def target = convertPexIn(node::target);
                 def name = convertPexIn(node::name);
                 def values = convertPexInList(node::values);
-
                 withFinalBindings(node, @{target, name, values});
             },
 
             @closure: { . ->
                 def statements = convertPexInList(node::statements);
                 def yieldNode = convertPexIn(node::yield);
-
-                withBindings(node, @{statements, yield: yieldNode})
+                node.cat(@{statements, yield: yieldNode})
             },
 
             @fetch: { . ->
@@ -214,14 +209,11 @@ fn convertPexIn(node) {
                 withFinalBindings(node, @{target, value})
             },
 
-            @varDef: { . ->
-                withBindings(node, @{value: convertPexIn(node::value)})
-            },
-
             @export:
             @maybe:
-            @noYield: { . ->
-                withBindings(node, @{value: convertPexIn(node::value)})
+            @noYield:
+            @varDef: { . ->
+                node.cat(@{value: convertPexIn(node::value)})
             },
 
             @exportSelection:

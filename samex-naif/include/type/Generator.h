@@ -22,4 +22,7 @@ extern zvalue FUN_Generator_stdCollect;
 /** `core.Generator::stdFetch`: Documented in spec. */
 extern zvalue FUN_Generator_stdFetch;
 
+/** `core.Generator::stdForEach`: Documented in spec. */
+extern zvalue FUN_Generator_stdForEach;
+
 #endif

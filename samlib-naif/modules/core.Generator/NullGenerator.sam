@@ -31,6 +31,11 @@ export class NullGenerator
     };
 
     ## Documented in spec.
+    .forEach(optFilterFunction?) {
+        ## Do nothing. Return void.
+    };
+
+    ## Documented in spec.
     .nextValue(box) {
         ## Do nothing. Return void.
     };

@@ -393,7 +393,6 @@ METH_IMPL_rest(Map, cat, args) {
 METH_IMPL_0_1(Map, collect, function) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
-    zmapping mappings[size];
     zvalue result[size];
     zint at = 0;
 
@@ -479,6 +478,27 @@ METH_IMPL_0(Map, fetch) {
             die("Invalid to call `fetch` on map with size > 1.");
         }
     }
+}
+
+// Documented in spec.
+METH_IMPL_0_1(Map, forEach, function) {
+    MapInfo *info = getInfo(ths);
+    zint size = info->size;
+    zvalue result = NULL;
+
+    if (function == NULL) {
+        // Without a function, this method just returns the last element.
+        return (size == 0) ? NULL : mapFromMapping(info->elems[size - 1]);
+    }
+
+    for (zint i = 0; i < size; i++) {
+        zvalue v = FUN_CALL(function, mapFromMapping(info->elems[i]));
+        if (v != NULL) {
+            result = v;
+        }
+    }
+
+    return result;
 }
 
 // Documented in header.
@@ -660,6 +680,7 @@ MOD_INIT(Map) {
             METH_BIND(Map, collect),
             METH_BIND(Map, del),
             METH_BIND(Map, fetch),
+            METH_BIND(Map, forEach),
             METH_BIND(Map, gcMark),
             METH_BIND(Map, get),
             METH_BIND(Map, get_key),

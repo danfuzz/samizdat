@@ -275,6 +275,27 @@ METH_IMPL_0(List, fetch) {
     }
 }
 
+// Documented in spec.
+METH_IMPL_0_1(List, forEach, function) {
+    ListInfo *info = getInfo(ths);
+    zarray arr = info->a;
+    zvalue result = NULL;
+
+    if (function == NULL) {
+        // Without a function, this method just returns the last element.
+        return (arr.size == 0) ? NULL : arr.elems[arr.size - 1];
+    }
+
+    for (zint i = 0; i < arr.size; i++) {
+        zvalue v = FUN_CALL(function, arr.elems[i]);
+        if (v != NULL) {
+            result = v;
+        }
+    }
+
+    return result;
+}
+
 // Documented in header.
 METH_IMPL_0(List, gcMark) {
     ListInfo *info = getInfo(ths);
@@ -436,6 +457,7 @@ MOD_INIT(List) {
             METH_BIND(List, collect),
             METH_BIND(List, del),
             METH_BIND(List, fetch),
+            METH_BIND(List, forEach),
             METH_BIND(List, gcMark),
             METH_BIND(List, get_size),
             METH_BIND(List, nextValue),
