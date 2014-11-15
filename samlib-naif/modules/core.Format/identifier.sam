@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterPump;
-
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_STARTS = {
@@ -36,7 +34,7 @@ export fn isIdentifier(symbol) {
     ifNot { IDENTIFIER_STARTS.get(string.nth(0)) }
         { return };
 
-    filterPump(string) { ch ->
+    string.forEach { ch ->
         ifNot { IDENTIFIER_CHARS.get(ch) }
             { return }
     };

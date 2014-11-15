@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterPump;
-
 import ./PegFail :: fail;
 
 
@@ -42,7 +40,7 @@ export class PegChoice
     ## Documented in spec.
     .parse(state) {
         def data = this.(ACCESS)();
-        filterPump(data::rules) { rule ->
+        data::rules.forEach { rule ->
             ifValue { state.applyRule(rule) }
                 { newState -> return newState }
         };

@@ -8,8 +8,6 @@
 
 #= language core.Lang0
 
-import core.Generator :: filterPump;
-
 import ./PegResult :: *;
 import ./PegSet :: *;
 
@@ -71,8 +69,7 @@ export class PegSequence
         def origContext = state.get_context();
         var remainingState = state;
 
-        ## This is akin to `for (rule in data::rules) { ... }`.
-        filterPump(data::rules) { rule ->
+        data::rules.forEach { rule ->
             ifValue { remainingState.applyRule(rule) }
                 { newState -> remainingState := newState }
                 {
