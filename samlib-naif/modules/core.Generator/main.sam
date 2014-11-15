@@ -55,22 +55,7 @@ export fn filterPump(filterFunction, generators*) {
             (generators*).forEach(filterFunction)
         }
         {
-            ## General case of multiple (or zero) generators.
-            var gen = ParaGenerator.new(generators*);
-            var result = [];
-            var innerResult;
-
-            loop {
-                ifValue { gen.nextValue(innerResult?) }
-                    { nextGen ->
-                        ifValue { filterFunction(innerResult*) }
-                            { value -> result := [value] };
-                        gen := nextGen
-                    }
-                    {
-                        ## The inner generator was voided.
-                        return? result*
-                    }
-            }
+            ## The general case.
+            FilterGenerator.new(filterFunction, generators*).forEach()
         }
 };
