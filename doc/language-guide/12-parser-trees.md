@@ -157,14 +157,13 @@ This corresponds to the syntax `pex*`.
 
 ### Other nodes
 
-#### `@varDef{name: name, value: pex}`
+#### `@varDef{name: symbol, value: pex}`
 
 Representation of a name-bound expression. These are *only* ever valid
 as direct elements of the array of parsing nodes attached to a `sequence`
 node. Anywhere else is an error.
 
-* `name: name` &mdash; An arbitrary literal name
-  (typically a string).
+* `name: symbol` &mdash; An arbitrary name.
 
 * `value: pex` &mdash; A parsing expression node.
 
