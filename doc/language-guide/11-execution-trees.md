@@ -258,6 +258,7 @@ Nodes of this type are only allowed to appear in the following contexts:
 * As the `value` binding of an `apply` node.
 * As the `value` binding of a `nonlocalExit` node.
 * As the `value` binding of a `store` node.
+* As the `value` binding of a `varDef` node.
 * As the `yield` binding of a `closure` node, but only during intermediate
   processing.
 * As the node passed as an argument to `$Code::eval`.
