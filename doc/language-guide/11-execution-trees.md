@@ -445,12 +445,12 @@ Examples:
 @external{name: "core.potions.Blort"}
 ```
 
-#### `formal` &mdash; `{name?: name, repeat?: repeat}`
+#### `formal` &mdash; `@{name?: symbol, repeat?: repeat}`
 
-* `name: name` (optional) &mdash; An arbitrary value (must be a symbol),
-  which indicates the name of the variable to be bound for this
-  formal. If omitted, then this indicates an unused argument which is
-  not bound to a variable in the environment of the closure body.
+* `name: symbol` (optional) &mdash; An arbitrary symbol, which indicates the
+  name of the variable to be bound for this formal. If omitted, then this
+  indicates an unused argument which is not bound to a variable in the
+  execution environment of the closure body.
 
 * `repeat: repeat` (optional) &mdash; Indicates (if present) that the number
   of actual arguments bound by this formal is not necessarily exactly one.
