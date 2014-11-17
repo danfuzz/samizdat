@@ -23,11 +23,13 @@ This corresponds to the syntax `{: pex :}`.
 
 ### Terminal parsing expression nodes
 
-#### `@any`
+#### `@any{}`
 
 Representation of the "match anything" rule.
 
 This corresponds to the syntax `.`.
+
+**Note:** The usual way to represent EOF is `@lookaheadFailure{pex: @any{}}`.
 
 #### `@code{yieldDef?: name, statements: [statement*], yield: expression}`
 
@@ -46,11 +48,14 @@ Representation of a code expression.
 This corresponds to the syntax `{ <yieldDef> -> statement1; statement2;
 etc; yieldExpression }`.
 
-#### `@empty`
+#### `@empty{}`
 
 Representation of the "empty" ("always succeed" / no-op) rule.
 
 This corresponds to the syntax `()`.
+
+**Note:** The usual way to represent an unconditional failure is
+`@lookaheadFailure{pex: @empty{}}`.
 
 #### `@string{value: string}`
 
