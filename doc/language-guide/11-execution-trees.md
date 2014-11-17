@@ -311,7 +311,7 @@ node.
 This represents a variable definition statement as part of a closure body.
 
 When run successfully, nodes of this type cause `name` to be bound in the
-current (topmost) execution environment. The `box` binding determines the
+current (innermost) execution environment. The `box` binding determines the
 nature of the variable:
 
   * `@cell` &mdash; The variable is a mutable cell, which can be initially
