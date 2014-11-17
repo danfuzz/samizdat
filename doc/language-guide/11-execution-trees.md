@@ -5,23 +5,22 @@ Execution Trees
 ---------------
 
 Samizdat source code is itself parsed into a well-specified parse tree form
-before being executed (or being prepared for execution). This format,
-along with API defined by the primitively-defined part of the core library,
-are the analog to a bytecode specification in systems that are
-bytecode-based.
+before being executed (or being prepared for execution). This format, along
+with API defined by the primitively-defined part of the core library, are the
+analog to a bytecode specification in systems that are bytecode-based.
 
 This section details all of the data structures of this form.
 
 This section does *not* cover the forms used when building parsers. Parser
-parse trees are covered in a later section. To be clear, those forms are
-converted into the forms described in this section as an intermediate
-step of parser construction.
+execution trees are covered in a later section. To be clear, those forms are
+converted into the forms described in this section as an intermediate step of
+parser construction.
+
 
 <br><br>
 ### Expression Nodes
 
-Each of these node types can appear anywhere an "expression"
-is called for.
+Each of these node types can appear anywhere an "expression" is called for.
 
 #### `apply` &mdash; `@apply{target: expression, name: expression, values: expression}`
 
