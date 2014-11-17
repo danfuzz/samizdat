@@ -1066,45 +1066,42 @@ def parPexTerm = {:
     parPexCode | parPexThunk
 :};
 
-## Parses a repeat (or not) parsing expression.
-def parPexRepeat = {:
-    pex = parPexTerm
-    (
-        repeat = [@"?" @"*" @"+"]
-        { @(PEX_TYPES.get(repeat.get_name())){pex} }
-    |
-        { pex }
-    )
-:};
-
-## Parses a lookahead (or not) parsing expression. This covers both lookahead
-## success and lookahead failure.
-def parPexLookahead = {:
-    (
-        lookahead = [@"&" @"!"]
-        pex = parPexRepeat
-        { @(PEX_TYPES.get(lookahead.get_name())){pex} }
-    )
-|
-    parPexRepeat
-:};
-
-## Parses a name (or not) parsing expression.
-def parPexName = {:
-    (
+## Parses a fully-qualified parsing item.
+def parPexItem = {:
+    optName = (
         name = parNameSymbol
         @"="
-        pex = parPexLookahead
-        { @varDef{name, value: pex} }
-    )
-|
-    parPexLookahead
+        { name }
+    )?
+
+    optLookahead = [@"&" @"!"]?
+    base = parPexTerm
+    optRepeat = [@"?" @"*" @"+"]?
+
+    {
+        var pex = base;
+
+        ifValue { optRepeat* }
+            { repeat ->
+                pex := @(PEX_TYPES.get(repeat.get_name())){pex}
+            };
+        ifValue { optLookahead* }
+            { lookahead ->
+                pex := @(PEX_TYPES.get(lookahead.get_name())){pex}
+            };
+        ifValue { optName* }
+            { name ->
+                pex := @varDef{name, value: pex}
+            };
+
+        pex
+    }
 :};
 
 ## Parses a sequence parsing expression. This includes sequences of length
 ## one, but it does *not* parse empty (zero-length) sequences.
 def parPexSequence = {:
-    pexes = parPexName+
+    pexes = parPexItem+
     { @sequence{pexes} }
 :};
 

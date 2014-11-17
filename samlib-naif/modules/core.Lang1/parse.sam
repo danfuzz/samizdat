@@ -836,40 +836,38 @@ def parPexTerm = PegMain.newChoice(
     parPexThunk);
 
 ## Documented in spec.
-def parPexRepeat = PegMain.newSequence(
-    parPexTerm,
-    PegChoice.new(
+def parPexItem = PegMain.newSequence(
+    PegRepeat.new(
         PegSequence.new(
-            PegSet.new(@"?", @"*", @"+"),
-            PegCode.new { pex, repeat ->
-                @(PEX_TYPES.get(repeat.get_name())){pex}
-            }),
-        PegCode.new { pex -> pex }));
+            parNameSymbol,
+            PegSet.new(@"="),
+            PegCode.new { name, . -> name }),
+        0, 1),
+    PegRepeat.new(PegSet.new(@"&", @"!"), 0, 1),
+    parPexTerm,
+    PegRepeat.new(PegSet.new(@"?", @"*", @"+"), 0, 1),
+    PegCode.new { optName, optLookahead, base, optRepeat ->
+        var pex = base;
 
-## Documented in spec.
-def parPexLookahead = PegMain.newChoice(
-    PegSequence.new(
-        PegSet.new(@"&", @"!"),
-        parPexRepeat,
-        PegCode.new { lookahead, pex ->
-            @(PEX_TYPES.get(lookahead.get_name())){pex}
-        }),
-    parPexRepeat);
+        ifValue { optRepeat* }
+            { repeat ->
+                pex := @(PEX_TYPES.get(repeat.get_name())){pex}
+            };
+        ifValue { optLookahead* }
+            { lookahead ->
+                pex := @(PEX_TYPES.get(lookahead.get_name())){pex}
+            };
+        ifValue { optName* }
+            { name ->
+                pex := @varDef{name, value: pex}
+            };
 
-## Documented in spec.
-def parPexName = PegMain.newChoice(
-    PegSequence.new(
-        parNameSymbol,
-        PegSet.new(@"="),
-        parPexLookahead,
-        PegCode.new { name, ., pex ->
-            @varDef{name, value: pex}
-        }),
-    parPexLookahead);
+        pex
+    });
 
 ## Documented in spec.
 def parPexSequence = PegMain.newSequence(
-    PegRepeat.new(parPexName, 1),
+    PegRepeat.new(parPexItem, 1),
     PegCode.new { pexes -> @sequence{pexes} });
 
 ## Documented in spec.
