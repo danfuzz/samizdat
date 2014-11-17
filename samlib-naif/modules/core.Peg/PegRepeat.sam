@@ -35,6 +35,21 @@ export class PegRepeat
     };
 
     ## Documented in spec.
+    class.newOpt(rule) {
+        return this.(NEW)(@{rule, minSize: 0, maxSize: 1})
+    };
+
+    ## Documented in spec.
+    class.newPlus(rule) {
+        return this.(NEW)(@{rule, minSize: 1})
+    };
+
+    ## Documented in spec.
+    class.newStar(rule) {
+        return this.(NEW)(@{rule, minSize: 0})
+    };
+
+    ## Documented in spec.
     .parse(state) { ->
         def data = this.(ACCESS)();
         def rule = data::rule;
@@ -59,7 +74,8 @@ export class PegRepeat
                 { newState ->
                     ## Successfully parsed the inner rule. Extract the result,
                     ## and reset the context.
-                    results := [results*, newState.get_context().reverseNth(0)];
+                    results :=
+                        [results*, newState.get_context().reverseNth(0)];
                     remainingState := newState.withContext(origContext);
                     maxCheck()
                 }
