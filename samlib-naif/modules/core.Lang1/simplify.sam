@@ -91,13 +91,11 @@ fn convertPex(node, formals) {
             },
 
             @opt: { . ->
-                makeCallPex(REFS::Peg_PegRepeat, SYMS::new,
-                    node, formals, LITS::INT_0, LITS::INT_1)
+                makeCallPex(REFS::Peg_PegRepeat, SYMS::newOpt, node, formals)
             },
 
             @plus: { . ->
-                makeCallPex(REFS::Peg_PegRepeat, SYMS::new,
-                    node, formals, LITS::INT_1)
+                makeCallPex(REFS::Peg_PegRepeat, SYMS::newPlus, node, formals)
             },
 
             @sequence: { . ->
@@ -124,7 +122,7 @@ fn convertPex(node, formals) {
             },
 
             @star: { . ->
-                makeCallPex(REFS::Peg_PegRepeat, SYMS::new, node, formals)
+                makeCallPex(REFS::Peg_PegRepeat, SYMS::newStar, node, formals)
             },
 
             @string: { . ->
