@@ -814,7 +814,7 @@ def parPexSet = PegMain.newSequence(
             }),
         PegMain.newSequence(
             PegRepeat.new(parPexToken, 1),
-            PegCode.new { tokens -> tokens.collect({ n -> n::value }) }),
+            PegCode.new { tokens -> tokens.collect { n -> n::value } }),
         PegResult.new([])),
     PegSet.new(@"]"),
     PegCode.new { ., type, terminals, . -> @(type){values: terminals} });

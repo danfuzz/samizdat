@@ -1045,7 +1045,7 @@ def parPexSet = {:
         { "".cat(strings*).collect { ch -> cast(Symbol, ch) } }
     |
         tokens = parPexToken+
-        { tokens.collect({ n -> n::value }) }
+        { tokens.collect { n -> n::value } }
     |
         { [] }
     )
