@@ -19,13 +19,11 @@ fn splitAtChar(s, ch) {
         current := ""
     };
 
-    ## This uses `collect` just for the filter function, ignoring the
-    ## collected result.
-    s.collect({ one ->
+    s.forEach { one ->
         ifIs { eq(one, ch) }
             { addCurrentToResult() }
             { current := current.cat(one) }
-    });
+    };
 
     addCurrentToResult();
     return result
