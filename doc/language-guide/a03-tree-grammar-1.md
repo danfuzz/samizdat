@@ -972,14 +972,6 @@ def PEX_TYPES = {
     @"+": @plus
 };
 
-## Parses a parenthesized parsing expression.
-def parPexParenExpression = {:
-    @"("
-    pex = %parPexChoice
-    @")"
-    { pex }
-:};
-
 ## Parses a variable reference parsing expression.
 def parPexVarRef = {:
     name = parNameSymbol
@@ -1066,11 +1058,12 @@ def parPexTerm = {:
     { @any{} }
 |
     @"("
+    result = (%parPexChoice | { @empty{} })
     @")"
-    { @empty{} }
+    { result }
 |
     parPexVarRef | parPexString | parPexToken | parPexSet |
-    parPexCode | parPexThunk | parPexParenExpression
+    parPexCode | parPexThunk
 :};
 
 ## Parses a repeat (or not) parsing expression.

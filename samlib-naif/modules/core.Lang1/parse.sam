@@ -749,13 +749,6 @@ def PEX_TYPES = {
     @"+": @plus
 };
 
-## Documented in spec.
-def parPexParenExpression = PegMain.newSequence(
-    PegSet.new(@"("),
-    PegThunk.new { . -> parPexChoice },
-    PegSet.new(@")"),
-    PegCode.new { ., pex, . -> pex });
-
 ## Parses a variable reference parsing expression.
 def parPexVarRef = PegMain.newSequence(
     parNameSymbol,
@@ -817,7 +810,6 @@ def parPexCode = PegMain.newSequence(
     parNullaryClosure,
     PegCode.new { closure -> @code{closure*} });
 
-
 ## Documented in spec.
 def parPexThunk = PegMain.newSequence(
     PegSet.new(@"%"),
@@ -831,15 +823,17 @@ def parPexTerm = PegMain.newChoice(
         PegResult.new(@any{})),
     PegSequence.new(
         PegSet.new(@"("),
+        PegChoice.new(
+            PegThunk.new { . -> parPexChoice },
+            PegResult.new(@empty{})),
         PegSet.new(@")"),
-        PegResult.new(@empty{})),
+        PegCode.new { ., result, . -> result }),
     parPexVarRef,
     parPexString,
     parPexToken,
     parPexSet,
     parPexCode,
-    parPexThunk,
-    parPexParenExpression);
+    parPexThunk);
 
 ## Documented in spec.
 def parPexRepeat = PegMain.newSequence(
