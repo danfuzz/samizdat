@@ -750,13 +750,6 @@ def PEX_TYPES = {
 };
 
 ## Documented in spec.
-parPexBlock := PegMain.newSequence(
-    PegSet.new(@"{:"),
-    PegThunk.new { . -> parPexChoice },
-    PegSet.new(@":}"),
-    PegCode.new { ., pex, . -> @parser{pex} });
-
-## Documented in spec.
 def parPexParenExpression = PegMain.newSequence(
     PegSet.new(@"("),
     PegThunk.new { . -> parPexChoice },
@@ -893,6 +886,13 @@ parPexChoice := PegMain.newSequence(
             PegSet.new(@"|"),
             parPexSequence)),
     PegCode.new { one, rest -> @choice{pexes: [one, rest*]} });
+
+## Documented in spec.
+parPexBlock := PegMain.newSequence(
+    PegSet.new(@"{:"),
+    parPexChoice,
+    PegSet.new(@":}"),
+    PegCode.new { ., pex, . -> @parser{pex} });
 
 
 ##

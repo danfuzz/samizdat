@@ -972,14 +972,6 @@ def PEX_TYPES = {
     @"+": @plus
 };
 
-## Parses a parser function.
-parPexBlock := {:
-    @"{:"
-    pex = %parPexChoice
-    @":}"
-    { @parser{pex} }
-:};
-
 ## Parses a parenthesized parsing expression.
 def parPexParenExpression = {:
     @"("
@@ -1128,6 +1120,14 @@ parPexChoice := {:
     one = parPexSequence
     rest = (@"|" parPexSequence)*
     { @choice{pexes: [one, rest*]} }
+:};
+
+## Parses a parser block. This results in a `@parser` value.
+parPexBlock := {:
+    @"{:"
+    pex = parPexChoice
+    @":}"
+    { @parser{pex} }
 :};
 
 
