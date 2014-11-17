@@ -972,22 +972,6 @@ def PEX_TYPES = {
     @"+": @plus
 };
 
-## Parses a parser function.
-parPexBlock := {:
-    @"{:"
-    pex = %parPexChoice
-    @":}"
-    { @parser{pex} }
-:};
-
-## Parses a parenthesized parsing expression.
-def parPexParenExpression = {:
-    @"("
-    pex = %parPexChoice
-    @")"
-    { pex }
-:};
-
 ## Parses a variable reference parsing expression.
 def parPexVarRef = {:
     name = parNameSymbol
@@ -1074,52 +1058,50 @@ def parPexTerm = {:
     { @any{} }
 |
     @"("
+    result = (%parPexChoice | { @empty{} })
     @")"
-    { @empty{} }
+    { result }
 |
     parPexVarRef | parPexString | parPexToken | parPexSet |
-    parPexCode | parPexThunk | parPexParenExpression
+    parPexCode | parPexThunk
 :};
 
-## Parses a repeat (or not) parsing expression.
-def parPexRepeat = {:
-    pex = parPexTerm
-    (
-        repeat = [@"?" @"*" @"+"]
-        { @(PEX_TYPES.get(repeat.get_name())){pex} }
-    |
-        { pex }
-    )
-:};
-
-## Parses a lookahead (or not) parsing expression. This covers both lookahead
-## success and lookahead failure.
-def parPexLookahead = {:
-    (
-        lookahead = [@"&" @"!"]
-        pex = parPexRepeat
-        { @(PEX_TYPES.get(lookahead.get_name())){pex} }
-    )
-|
-    parPexRepeat
-:};
-
-## Parses a name (or not) parsing expression.
-def parPexName = {:
-    (
+## Parses a fully-qualified parsing item.
+def parPexItem = {:
+    optName = (
         name = parNameSymbol
         @"="
-        pex = parPexLookahead
-        { @varDef{name, value: pex} }
-    )
-|
-    parPexLookahead
+        { name }
+    )?
+
+    optLookahead = [@"&" @"!"]?
+    base = parPexTerm
+    optRepeat = [@"?" @"*" @"+"]?
+
+    {
+        var pex = base;
+
+        ifValue { optRepeat* }
+            { repeat ->
+                pex := @(PEX_TYPES.get(repeat.get_name())){pex}
+            };
+        ifValue { optLookahead* }
+            { lookahead ->
+                pex := @(PEX_TYPES.get(lookahead.get_name())){pex}
+            };
+        ifValue { optName* }
+            { name ->
+                pex := @varDef{name, value: pex}
+            };
+
+        pex
+    }
 :};
 
 ## Parses a sequence parsing expression. This includes sequences of length
 ## one, but it does *not* parse empty (zero-length) sequences.
 def parPexSequence = {:
-    pexes = parPexName+
+    pexes = parPexItem+
     { @sequence{pexes} }
 :};
 
@@ -1128,6 +1110,14 @@ parPexChoice := {:
     one = parPexSequence
     rest = (@"|" parPexSequence)*
     { @choice{pexes: [one, rest*]} }
+:};
+
+## Parses a parser block. This results in a `@parser` value.
+parPexBlock := {:
+    @"{:"
+    pex = parPexChoice
+    @":}"
+    { @parser{pex} }
 :};
 
 

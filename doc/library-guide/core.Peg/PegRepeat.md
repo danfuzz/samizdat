@@ -5,25 +5,36 @@ core.Peg :: PegRepeat
 ---------------------
 
 An instance of this class is a parser rule which matches another rule
-multiple times, yielding a list of resulting matches. If `optMinSize*` is
-specified, then this rule fails unless the size of the yielded list is at
-least as given. If `optMaxSize*` is specified, then this rule will only ever
-match at most that many repetitions.
-
-These syntactic equivalences hold:
-
-* `Repeat.new(rule)` is equivalent to `{: rule* :}`.
-* `Repeat.new(rule, 1)` is equivalent to `{: rule+ :}`.
-* `Repeat.new(rule, 0, 1)` is equivalent to `{: rule? :}`.
+multiple times, yielding a list of resulting matches. Instances have a
+minimum number of repetitions and an *optional* maximum number of repetitions.
+If the maximum number of repetitions is not specified, then there is no
+limit.
 
 
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(rule, optMinSize?, optMaxSize?) -> :PegRepeat`
+#### `class.new(rule, minSize, optMaxSize?) -> :PegRepeat`
 
-Creates an instance of this class.
+Creates an instance of this class. The constructed instance requires at
+least `minSize` repetitions of the target `rule` in order for this instance
+to succeed at parsing. If `optMaxSize*` is specified, then this instance
+immediately succeeds as soon as it parses that many repetitions.
 
+#### `class.newOpt(rule) -> :PegRepeat`
+
+Creates an instance of this class with minimum size 0 and maximum size 1.
+This is equivalent to the syntax `{: rule? :}`.
+
+#### `class.newPlus(rule) -> :PegRepeat`
+
+Creates an instance of this class with minimum size 1 and no maximum size.
+This is equivalent to the syntax `{: rule+ :}`.
+
+#### `class.newStar(rule) -> :PegRepeat`
+
+Creates an instance of this class with minimum size 0 and no maximum size.
+This is equivalent to the syntax `{: rule* :}`.
 
 <br><br>
 ### Method Definitions: `Parser` protocol.

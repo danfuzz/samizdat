@@ -22,8 +22,7 @@ export class PegRepeat
         access: ACCESS,
         new: NEW {
     ## Documented in spec.
-    class.new(rule, optMinSize?, optMaxSize?) {
-        def minSize = ifValueOr { optMinSize* } { 0 };
+    class.new(rule, minSize, optMaxSize?) {
         def maxMap = ifValue { optMaxSize* }
             { sz ->
                 ifIs { lt(sz, minSize) }
@@ -32,6 +31,21 @@ export class PegRepeat
             }
             { @{} };
         return this.(NEW)(@{maxMap*, minSize, rule})
+    };
+
+    ## Documented in spec.
+    class.newOpt(rule) {
+        return this.(NEW)(@{rule, minSize: 0, maxSize: 1})
+    };
+
+    ## Documented in spec.
+    class.newPlus(rule) {
+        return this.(NEW)(@{rule, minSize: 1})
+    };
+
+    ## Documented in spec.
+    class.newStar(rule) {
+        return this.(NEW)(@{rule, minSize: 0})
     };
 
     ## Documented in spec.
@@ -59,7 +73,8 @@ export class PegRepeat
                 { newState ->
                     ## Successfully parsed the inner rule. Extract the result,
                     ## and reset the context.
-                    results := [results*, newState.get_context().reverseNth(0)];
+                    results :=
+                        [results*, newState.get_context().reverseNth(0)];
                     remainingState := newState.withContext(origContext);
                     maxCheck()
                 }
