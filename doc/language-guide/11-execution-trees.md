@@ -89,7 +89,7 @@ produced by the function `$LangNode::makeInterpolate`.
 **Note:** Function calls can be represented by nodes of this type, with
 `target` bound to the function and `name` bound to the literal symbol `@call`.
 
-#### `closure` &mdash; `info?: symbolTable, name?: symbol, yieldDef?: symbol,` `formals: [formal*], statements: [statement*], yield: expression}`
+#### `closure` &mdash; `@closure{info?: symbolTable, name?: symbol, yieldDef?: symbol, formals: [formal*], statements: [statement*], yield: expression}`
 
 * `info: symbolTable` (optional) &mdash; The metainformation of the closure.
   Only present in nodes which represent top-level module definitions that
