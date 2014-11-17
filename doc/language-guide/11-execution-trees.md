@@ -89,11 +89,7 @@ produced by the function `$LangNode::makeInterpolate`.
 **Note:** Function calls can be represented by nodes of this type, with
 `target` bound to the function and `name` bound to the literal symbol `@call`.
 
-#### `closure` &mdash; `formals: [formal+], info?: symbolTable, name?: symbol,` `statements: [statement*], yield: expression, yieldDef?: name}`
-
-* `formals: [formal+]` &mdash; An array of zero or more `formal`
-  elements (as defined below). This defines the formal arguments to
-  the function.
+#### `closure` &mdash; `info?: symbolTable, name?: symbol, yieldDef?: symbol,` `formals: [formal*], statements: [statement*], yield: expression}`
 
 * `info: symbolTable` (optional) &mdash; The metainformation of the closure.
   Only present in nodes which represent top-level module definitions that
@@ -101,6 +97,12 @@ produced by the function `$LangNode::makeInterpolate`.
 
 * `name: symbol` (optional) &mdash; The function name of the closure, as
   a symbol. Only used for producing debugging info (e.g. stack traces).
+
+* `yieldDef: symbol` (optional) &mdash; A name to bind as the nonlocal-exit
+  function.
+
+* `formals: [formal*]` &mdash; A list of zero or more `formal` elements (as
+  defined below). This defines the formal arguments to the closure.
 
 * `statements: [statement*]` &mdash; A list of statement
   nodes. A statement node must be either an expression node, or one of the
@@ -111,41 +113,48 @@ produced by the function `$LangNode::makeInterpolate`.
   result value for a call. Allowed to be a `maybe` or `void` node. In
   intermediate forms, also allowed to be a `nonlocalExit` node.
 
-* `yieldDef: name` (optional) &mdash; A name (must be a symbol) to
-  bind as the nonlocal-exit function.
-
 This represents a closure (anonymous function) definition.
 
-When run, a closure function (representation of the closure as an in-model
-value) is created, which binds as variables the names of all
-the formals to all the incoming actual arguments (as defined below),
-binds the `yieldDef` name if specified to a nonlocal-exit function,
-and binds all other variable names to whatever they already refer to in
-the lexical evaluation environment. This closure function is the result of
-evaluation.
+When evaluated, a closure function (representation of the closure as an
+in-model value) is created, but no code in the closure is executed.
 
-If a nonlocal-exit function is defined, then that function accepts zero
-or one argument. When called, it causes an immediate return from the active
-function that it was bound to, yielding as a result whatever was passed to
-it (including void). It is an error (terminating the runtime) to use a
-nonlocal-exit function after the active function it was bound to has exit.
+When a closure function is called, all of the following takes place (in this
+order, or at least indistinguishable from this order):
 
-When the closure function is actually called (e.g. by virtue of being the
-designated `function` in a `call` node), a fresh execution environment is
-created, in which the actual arguments are bound to the formals. If
-there are too few actual arguments, the call fails (terminating the
-runtime). After that, the `statements` are evaluated in
-order. Finally, if there is a `yield`, then that is evaluated. The
-result of the call is the same as the result of the `yield` evaluation
-(including possibly void if the node is a `maybe` or `void`) if a `yield`
-was present, or void if there was no `yield` to evaluate.
+* A fresh execution environment is constructed.
+
+* If defined, the `yieldDef` name is bound as a variable to a nonlocal exit
+  function.
+
+  A nonlocal-exit function accepts zero or one argument. When called, it
+  causes an immediate return from the active function that it was bound to,
+  yielding as a result whatever was passed to it (including void). It is an
+  error (terminating the runtime) to use a nonlocal-exit function after the
+  active function it was bound to has exit.
+
+* All of the `formals` (formal arguments) are bound as variables to the
+  incoming actual arguments.
+
+* Each of the `statements` is evaluated, in order. The results of evaluation
+  are ignored.
+
+* If defined, the `yield` expression is evaluated. The final returned result
+  of the function call is the result of this `yield`. If `yield` is defined
+  as a `maybe` or `void` node, then it is possible or mandatory (respectively)
+  for the final result to be void.
+
+* If `yield` was not defined, then the final returned result of the function
+  call is void.
+
+Any free variable references encountered during evaluation are taken to refer
+to variables defined in the lexical environment of the closure. **Note:** The
+lexical environment always includes a top-level "global" environment.
 
 **Note:** As a possible clarification about nonlocal-exit functions: Defining
 and using these amounts to something along the lines of `try` / `catch` in
-systems that are defined using those terms. In C terms, the facility is
-along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
-facility is an implementation of downward-passed / upward-called
-continuations.
+systems that are defined using those terms. In C terms, the facility is along
+the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the facility is an
+implementation of downward-passed / upward-called continuations.
 
 #### `fetch` &mdash; `@fetch{target: expression, interpolate?: expression}`
 
@@ -285,7 +294,7 @@ These are nodes that are akin to expression nodes, but are limited to
 be used only as direct as elements of the `statements` list of a `closure`
 node.
 
-#### `varDef` &mdash; `@varDef{name: name, value?: expression, top?: true}`
+#### `varDef` &mdash; `@varDef{name: name, box: symbol, value?: expression, top?: true}`
 
 * `name: name` &mdash; Variable name to define (must be a symbol).
 
