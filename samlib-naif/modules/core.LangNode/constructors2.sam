@@ -299,12 +299,11 @@ export fn makeFullClosure(baseData) {
         { baseData.get_data() };
     def formals = ifValueOr { table::formals } { [] };
     var statements = ifValueOr { table::statements } { [] };
-    def statSz = statements.get_size();
 
     def yieldNode = ifValueOr
         { expandYield(table) }
         { ifIs { table::yieldDef } { @void{} } }
-        { ifIs { eq(statSz, 0) } { @void{} } }
+        { ifIs { eq(statements, []) } { @void{} } }
         {
             def lastStat = statements.reverseNth(0);
             ifIs { isExpression(lastStat) }
