@@ -229,9 +229,18 @@ def parList = PegMain.newSequence(
     parUnadornedList,
     PegSet.new(@"]"),
     PegCode.new { ., expressions, . ->
-        ifIs { eq(expressions, []) }
+        ifIs { expressions.totalEq([]) }
             { LITS::EMPTY_LIST }
-            { makeCallGeneral(LITS::List, SYMS::new, expressions*) }
+            {
+                def result = makeCallGeneral(
+                    LITS::List, SYMS::new, expressions*);
+                ## If we end up with an `apply` node, then its `values` is
+                ## going to be a list-yielding expression, in which case we
+                ## can return that directly.
+                ifIs { result.hasName(@apply) }
+                    { result::values }
+                    { result }
+            }
     });
 
 ## Documented in spec.
@@ -388,7 +397,7 @@ def parYieldOrNonlocal = PegMain.newSequence(
             ifNot { optQuest* } { @void{} }
         }),
     PegCode.new { ., ., name, value ->
-        ifIs { eq(name, @yield{}) }
+        ifIs { name.hasName(@yield) }
             { value }
             { makeNonlocalExit(name, value) }
     });

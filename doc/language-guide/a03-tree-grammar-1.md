@@ -285,9 +285,18 @@ def parList = {:
     expressions = parUnadornedList
     @"]"
     {
-        ifIs { eq(expressions, []) }
+        ifIs { expressions.totalEq([]) }
             { LITS::EMPTY_LIST }
-            { makeCallGeneral(LITS::List, SYMS::new, expressions*) }
+            {
+                def result = makeCallGeneral(
+                    LITS::List, SYMS::new, expressions*);
+                ## If we end up with an `apply` node, then its `value` is
+                ## going to be a list-yielding expression, in which case we
+                ## can return that directly.
+                ifIs { result.hasName(@apply) }
+                    { result::values }
+                    { result }
+            }
     }
 :};
 
@@ -518,7 +527,7 @@ def parYieldOrNonlocal = {:
     )
 
     {
-        ifIs { eq(name, @yield{}) }
+        ifIs { name.hasName(@yield) }
             { value }
             { makeNonlocalExit(name, value) }
     }
