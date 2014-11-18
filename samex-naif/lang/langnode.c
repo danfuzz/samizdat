@@ -1005,8 +1005,7 @@ zvalue withTop(zvalue node) {
 
 // Documented in spec.
 zvalue withYieldDef(zvalue node, zvalue name) {
-    zvalue data = get_data(node);
-    zvalue yieldDef = cm_get(data, SYM(yieldDef));
+    zvalue yieldDef = cm_get(node, SYM(yieldDef));
     zvalue newBindings;
 
     if (yieldDef != NULL) {
