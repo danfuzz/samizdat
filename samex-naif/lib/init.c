@@ -158,6 +158,7 @@ MOD_INIT(lib) {
     MOD_USE(Box);
     MOD_USE(Generator);
     MOD_USE(Map);
+    MOD_USE(Null);
     MOD_USE(Object);
     MOD_USE(io);
     MOD_USE(lang);

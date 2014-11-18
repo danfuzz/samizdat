@@ -33,6 +33,7 @@ MOD_INIT(lang) {
     MOD_USE(lang_const);
     MOD_USE(Closure);
     MOD_USE(Map);
+    MOD_USE(Null);
 
     utilZero(langSymbolMap);
 
