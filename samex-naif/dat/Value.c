@@ -166,7 +166,6 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Class);
     MOD_USE_NEXT(Symbol);
     MOD_USE_NEXT(SymbolTable);
-    MOD_USE_NEXT(Object);
     MOD_USE_NEXT(Record);
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Int);
