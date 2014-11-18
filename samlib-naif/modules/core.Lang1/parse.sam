@@ -247,25 +247,19 @@ def parList = PegMain.newSequence(
 def parFullClosure = PegMain.newSequence(
     PegLookaheadSuccess.new(PegSet.new(@"{")),
     PegThunk.new { . -> parRawClosure },
-    PegCode.new { ., raw ->
-        def closure = makeFullClosure(raw);
-        withoutTops(closure)
-    });
+    PegCode.new { ., raw -> withoutTops(makeFullClosure(raw)) });
 
 ## Documented in spec.
 def parBasicClosure = PegMain.newSequence(
     PegLookaheadSuccess.new(PegSet.new(@"{")),
     PegThunk.new { . -> parRawClosure },
-    PegCode.new { ., raw ->
-        def closure = makeBasicClosure(raw);
-        withoutTops(closure)
-    });
+    PegCode.new { ., raw -> withoutTops(makeBasicClosure(raw)) });
 
 ## Documented in spec.
 def parNullaryClosure = PegMain.newSequence(
     parFullClosure,
     PegCode.new { c ->
-        ifIs { ne(c::formals, []) }
+        ifNot { c::formals.totalEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -274,7 +268,7 @@ def parNullaryClosure = PegMain.newSequence(
 def parBasicNullaryClosure = PegMain.newSequence(
     parBasicClosure,
     PegCode.new { c ->
-        ifIs { ne(c::formals, []) }
+        ifNot { c::formals.totalEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     });

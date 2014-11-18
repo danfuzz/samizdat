@@ -307,10 +307,7 @@ def parFullClosure = {:
     &@"{"
     raw = %parRawClosure
 
-    {
-        def closure = makeFullClosure(raw);
-        withoutTops(closure)
-    }
+    { withoutTops(makeFullClosure(raw)) }
 :};
 
 ## Parses a closure, resulting in one that does *not* necessarily have
@@ -319,10 +316,7 @@ def parBasicClosure = {:
     &@"{"  ## Lookahead for same reason as above.
     raw = %parRawClosure
 
-    {
-        def closure = makeBasicClosure(raw);
-        withoutTops(closure)
-    }
+    { withoutTops(makeBasicClosure(raw)) }
 :};
 
 ## Parses a closure which must not define any formal arguments. This is done
@@ -337,7 +331,7 @@ def parNullaryClosure = {:
     c = parFullClosure
 
     {
-        ifIs { ne(c::formals, []) }
+        ifNot { c::formals.totalEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -349,7 +343,7 @@ def parBasicNullaryClosure = {:
     c = parBasicClosure
 
     {
-        ifIs { ne(c::formals, []) }
+        ifNot { c::formals.totalEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }
