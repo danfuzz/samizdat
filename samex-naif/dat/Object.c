@@ -29,20 +29,27 @@ static ObjectInfo *getInfo(zvalue obj) {
 }
 
 /**
- * Class method to construct an instance. This is the function that's bound as
- * the class method for the `new` symbol.
+ * Helper for the two constructor methods, which does all the work.
  */
-CMETH_IMPL_0_1(Object, new, data) {
+static zvalue doNew(zvalue cls, zvalue data) {
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
     } else {
         assertHasClass(data, CLS_SymbolTable);
     }
 
-    zvalue result = datAllocValue(thsClass, sizeof(ObjectInfo));
+    zvalue result = datAllocValue(cls, sizeof(ObjectInfo));
 
     getInfo(result)->data = data;
     return result;
+}
+
+/**
+ * Class method to construct an instance. This is the function that's bound as
+ * the class method for the `new` symbol.
+ */
+CMETH_IMPL_0_1(Object, new, data) {
+    return doNew(thsClass, data);
 }
 
 /**
@@ -50,16 +57,7 @@ CMETH_IMPL_0_1(Object, new, data) {
  * as the instance method for the `new` symbol.
  */
 METH_IMPL_0_1(Object, new, data) {
-    if (data == NULL) {
-        data = EMPTY_SYMBOL_TABLE;
-    } else {
-        assertHasClass(data, CLS_SymbolTable);
-    }
-
-    zvalue result = datAllocValue(classOf(ths), sizeof(ObjectInfo));
-
-    getInfo(result)->data = data;
-    return result;
+    return doNew(classOf(ths), data);
 }
 
 /**
