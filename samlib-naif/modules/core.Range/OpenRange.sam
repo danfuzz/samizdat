@@ -5,13 +5,16 @@
 ##
 ## `OpenRange` Class
 ##
-## Payload: `{start: intOrChar, increment: int}`
+## Payload:
+##   converter: function
+##   increment: int
+##   value:     intOrChar
 
 #= language core.Lang0
 
 import core.Generator :: unboundedCollect, unboundedFetch, unboundedForEach;
 
-import ./rangeAdd :: *;
+import ./converter :: converterFor;
 
 
 ##
@@ -28,7 +31,10 @@ export class OpenRange
     ## Documented in spec.
     class.new(firstValue, optIncrement?) {
         def increment = ifValueOr { optIncrement* } { 1 };
-        return this.(NEW)(@{firstValue, increment})
+        def converter = converterFor(classOf(firstValue));
+        def value = cast(Int, firstValue);
+
+        return this.(NEW)(@{converter, increment, value})
     };
 
     ## Documented in spec.
@@ -52,11 +58,11 @@ export class OpenRange
     ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
-        def firstValue = data::firstValue;
+        def converter = data::converter;
         def increment = data::increment;
+        def value = data::value;
 
-        box* := firstValue;
-        return OpenRange.(NEW)(
-            @{firstValue: rangeAdd(firstValue, increment), increment})
+        box* := converter(value);
+        return this.(NEW)(@{data*, value: value.add(increment)});
     };
 };

@@ -1,0 +1,35 @@
+## Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#= language core.Lang0
+
+
+##
+## Private Definitions
+##
+
+## Int->Int "conversion" function.
+fn convertInt(x) {
+    return x
+};
+
+## Int->String conversion function.
+fn convertString(x) {
+    return String.castFrom(x)
+};
+
+
+##
+## Exported Definitions
+##
+
+## Returns a conversion function from int to the given class.
+export fn converterFor(cls) {
+    return ifSwitch(
+        { -> cls },
+        {
+            (Int):    { . -> convertInt },
+            (String): { . -> convertString }
+        })
+};
