@@ -8,7 +8,7 @@
 ## Payload:
 ##   converter: function
 ##   increment: int
-##   value: intOrChar
+##   value:     intOrChar
 
 #= language core.Lang0
 

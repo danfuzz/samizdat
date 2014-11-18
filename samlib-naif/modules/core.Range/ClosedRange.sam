@@ -5,7 +5,11 @@
 ##
 ## `ClosedRange` Class
 ##
-## Payload: `{firstValue: intOrChar, increment: int, size: int}`
+## Payload:
+##   converter: function
+##   increment: int
+##   value:     intOrChar
+##   size:      int
 
 #= language core.Lang0
 
@@ -28,11 +32,15 @@ export class ClosedRange
     ## Documented in spec.
     class.new(firstValue, size, optIncrement?) {
         def increment = ifValueOr { optIncrement* } { 1 };
+        def converter = converterFor(classOf(firstValue));
+        def value = cast(Int, firstValue);
 
         ifNot { Int.accepts(size) }
             { die("`size` must be an int.") };
+        ifIs { lt(size, 0) }
+            { die("`size` must be non-negative.") };
 
-        return this.(NEW)(@{firstValue, increment, size})
+        return this.(NEW)(@{converter, increment, value, size})
     };
 
     ## Documented in spec.
@@ -99,16 +107,17 @@ export class ClosedRange
     ## Documented in spec.
     .nextValue(box) {
         def data = this.(ACCESS)();
+        def size = data::size;
 
-        return? ifValue { gt(data::size, 0) }
-            { size ->
-                def firstValue = data::firstValue;
-                def increment = data::increment;
-                box* := firstValue;
-                ClosedRange.(NEW)(@{
-                    firstValue: rangeAdd(firstValue, increment),
-                    increment,
-                    size:       size.sub(1)})
+        return? ifNot { size.totalEq(0) }
+            {
+                def value = data::value;
+                box* := data::converter(value);
+                return this.(NEW)(@{
+                    data*,
+                    value: value.add(data::increment),
+                    size:  size.sub(1)
+                });
             }
     };
 };
