@@ -560,9 +560,17 @@ DEF_PARSE(list) {
     zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return (get_size(expressions) == 0)
-        ? LITS(EMPTY_LIST)
-        : makeCallGeneral(LITS(List), SYMS(new), expressions);
+    if (get_size(expressions) == 0) {
+        return LITS(EMPTY_LIST);
+    }
+
+    zvalue result = makeCallGeneral(LITS(List), SYMS(new), expressions);
+
+    if (valEq(get_name(result), SYM(apply))) {
+        return cm_get(result, SYM(values));
+    } else {
+        return result;
+    }
 }
 
 // Documented in spec.
