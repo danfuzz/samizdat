@@ -37,10 +37,10 @@ export class ClosedRange
 
         ifNot { Int.accepts(size) }
             { die("`size` must be an int.") };
-        ifIs { lt(size, 0) }
-            { die("`size` must be non-negative.") };
 
-        return this.(NEW)(@{converter, increment, value, size})
+        def nonnegSize = ifValueOr { ge(size, 0) } { 0 };
+
+        return this.(NEW)(@{converter, increment, value, size: nonnegSize})
     };
 
     ## Documented in spec.
