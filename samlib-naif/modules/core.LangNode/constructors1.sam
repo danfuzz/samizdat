@@ -49,7 +49,7 @@ export fn makeExportSelection(names+) {
 
 ## Documented in spec.
 export fn makeFunCall(function, values*) {
-    return ifIs { eq(function.get_name(), @literal) }
+    return ifIs { function.hasName(@literal) }
         {
             ## Treat it as a method call.
             def first = values.nth(0);

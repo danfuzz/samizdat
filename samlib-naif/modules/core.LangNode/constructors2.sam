@@ -65,7 +65,7 @@ fn expandYield(table) {
 fn extractMethods(allMethods, scope) {
     ## Get all the methods of the appropriate scope.
     def selectedMethods = allMethods.collect
-        { one -> ifIs { eq(scope, one.get_name()) } { one } };
+        { one -> ifIs { one.hasName(scope) } { one } };
 
     ## This becomes a map from method name to a pair `[name, closure]`, the
     ## pairs being suitable for interpolation as arguments to the symbol table
