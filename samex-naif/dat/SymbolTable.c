@@ -235,6 +235,12 @@ zvalue symtabFromZassoc(zassoc ass) {
 }
 
 // Documented in header.
+zvalue symtabGet(zvalue symtab, zvalue key) {
+    assertHasClass(symtab, CLS_SymbolTable);
+    return symtabGetUnchecked(symtab, key);
+}
+
+// Documented in header.
 bool symtabGet2(zvalue symtab,
         zvalue key1, zvalue *got1,
         zvalue key2, zvalue *got2) {
