@@ -61,7 +61,7 @@ METH_IMPL_0(LookupCache, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(LookupCache) {
-    MOD_USE(Core);
+    MOD_USE(Value);
 
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `gcMark` method gets called during gc,

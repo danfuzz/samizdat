@@ -7,7 +7,6 @@
 //
 
 #include "type/Builtin.h"
-#include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Sequence.h"
@@ -153,8 +152,6 @@ METH_IMPL_2_3(Sequence, sliceGeneral, style, start, end) {
 
 /** Initializes the module. */
 MOD_INIT(Sequence) {
-    MOD_USE_NEXT(Generator);
-
     FUN_Sequence_get          = datImmortalize(FUNC_VALUE(Sequence_get));
     FUN_Sequence_keyList      = datImmortalize(FUNC_VALUE(Sequence_keyList));
     FUN_Sequence_reverseNth   = datImmortalize(FUNC_VALUE(Sequence_reverseNth));

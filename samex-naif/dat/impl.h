@@ -26,18 +26,6 @@ enum {
     /** Largest code point to keep a cached single-character string for. */
     DAT_MAX_CACHED_CHAR = 127,
 
-    /**
-     * Maximum number of items that can be `collect`ed or `filter`ed out
-     * of a generator, period.
-     */
-    DAT_MAX_GENERATOR_ITEMS_HARD = 50000,
-
-    /**
-     * Maximum number of items that can be `collect`ed or `filter`ed out
-     * of a generator, without resorting to heavyweight memory operations.
-     */
-    DAT_MAX_GENERATOR_ITEMS_SOFT = 1000,
-
     /** Maximum number of immortal values allowed. */
     DAT_MAX_IMMORTALS = 10000,
 
