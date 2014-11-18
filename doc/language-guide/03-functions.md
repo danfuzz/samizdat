@@ -351,4 +351,7 @@ When provided, the `new` symbol is bound as both a class and instance method
 which constructs new instances, taking an optional data payload argument.
 
 When provided, the `access` symbol is bound as an instance method which
-takes no arguments and returns the data payload of the instance.
+takes either zero or one argument. If given no arguments, it returns the data
+payload of the instance. If given one argument, it is taken to be a symbol
+and returns the so-named binding from the data payload, or void if the name
+isn't bound.

@@ -14,7 +14,7 @@ become bound as both class and instance methods:
   empty symbol table).
 
 * As an instance method, the `access` secret is used to get the data payload
-  of an object. It takes no arguments.
+  of an object. It takes one optional argument.
 
 
 <br><br>
