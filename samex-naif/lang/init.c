@@ -32,6 +32,7 @@ extern zevalType symbolEvalType(zvalue symbol);
 MOD_INIT(lang) {
     MOD_USE(lang_const);
     MOD_USE(Closure);
+    MOD_USE(Map);
 
     utilZero(langSymbolMap);
 
