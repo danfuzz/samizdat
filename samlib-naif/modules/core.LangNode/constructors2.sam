@@ -217,9 +217,8 @@ export fn makeCallGeneral(target, name, values*) {
     return ifIs { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
-            def first = cookedValues.nth(0);
-            def rest = cookedValues.sliceInclusive(1);
-            makeApply(target, name, makeCall(first, SYMS::cat, rest*))
+            makeApply(target, name,
+                makeCall(LITS::EMPTY_LIST, SYMS::cat, cookedValues*))
         }
         {
             ## Only one. Use it directly as the values for the `apply` node.

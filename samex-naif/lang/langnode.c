@@ -440,9 +440,9 @@ zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values) {
     addPendingToCooked();
 
     if (cookAt > 1) {
-        zvalue first = cookedValues[0];
-        zvalue rest = listFromZarray((zarray) {cookAt - 1, &cookedValues[1]});
-        return makeApply(target, name, makeCall(first, SYMS(cat), rest));
+        zvalue cookedList = listFromZarray((zarray) {cookAt, cookedValues});
+        return makeApply(target, name,
+            makeCall(LITS(EMPTY_LIST), SYMS(cat), cookedList));
     } else {
         return makeApply(target, name, cookedValues[0]);
     }
