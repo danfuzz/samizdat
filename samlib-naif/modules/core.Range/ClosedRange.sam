@@ -9,7 +9,7 @@
 
 #= language core.Lang0
 
-import core.Generator :: stdCollect;
+import core.Generator :: stdCollect, stdFetch, stdForEach;
 
 import ./rangeAdd :: *;
 
@@ -88,13 +88,13 @@ export class ClosedRange
     ## Documented in spec.
     .fetch() {
         ## Just use the standard implementation.
-        return Generator_stdFetch(this)
+        return stdFetch(this)
     };
 
     ## Documented in spec.
     .forEach(optFilterFunction?) {
         ## Just use the standard implementation.
-        return? Generator_stdForEach(this, optFilterFunction*)
+        return? stdForEach(this, optFilterFunction*)
     };
 
     ## Documented in spec.
