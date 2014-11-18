@@ -64,8 +64,9 @@ METH_IMPL_0_1(Object, new, data) {
  * Method to get the given object's data payload. This is the function
  * that's bound as the instance method for the `access` symbol.
  */
-METH_IMPL_0(Object, access) {
-    return getInfo(ths)->data;
+METH_IMPL_0_1(Object, access, key) {
+    zvalue data = getInfo(ths)->data;
+    return (key == NULL) ? data : symtabGet(data, key);
 }
 
 
