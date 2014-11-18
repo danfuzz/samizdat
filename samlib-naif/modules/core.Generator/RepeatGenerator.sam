@@ -56,12 +56,11 @@ export class RepeatGenerator
 
     ## Documented in spec.
     .nextValue(box) {
-        def data = this.(ACCESS)();
-        def size = data::size;
+        def size = this.(ACCESS)(@size);
 
         return? ifIs { perGt(size, 0) }
             {
-                def value = data::value;
+                def value = this.(ACCESS)(@value);
                 box* := value;
                 this.(NEW)(@{size: size.sub(1), value})
             }

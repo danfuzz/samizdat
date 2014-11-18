@@ -28,8 +28,10 @@ export class BasicState
 
     ## Documented in spec.
     .addContext(item) {
-        def data = this.(ACCESS)();
-        return this.(NEW)(@{data*, context: [data::context*, item]})
+        return this.(NEW)(@{
+            this.(ACCESS)()*,
+            context: [this.(ACCESS)(@context)*, item]
+        })
     };
 
     ## Documented in spec.
@@ -39,22 +41,23 @@ export class BasicState
 
     ## Documented in spec.
     .get_context() {
-        return this.(ACCESS)()::context
+        return this.(ACCESS)(@context)
     };
 
     ## Documented in spec.
     .shiftInput() {
-        def data = this.(ACCESS)();
         def result;
-        return? ifValue { data::input.nextValue(result?) }
+        return? ifValue { this.(ACCESS)(@input).nextValue(result?) }
             { input ->
-                this.(NEW)(@{input, context: [data::context*, result]})
+                this.(NEW)(@{
+                    input,
+                    context: [this.(ACCESS)(@context)*, result]
+                })
             }
     };
 
     ## Documented in spec.
     .withContext(context) {
-        def data = this.(ACCESS)();
-        return this.(NEW)(@{data*, context})
+        return this.(NEW)(@{this.(ACCESS)()*, context})
     };
 };

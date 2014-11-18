@@ -106,16 +106,15 @@ export class ClosedRange
 
     ## Documented in spec.
     .nextValue(box) {
-        def data = this.(ACCESS)();
-        def size = data::size;
+        def size = this.(ACCESS)(@size);
 
         return? ifNot { size.totalEq(0) }
             {
-                def value = data::value;
-                box* := data::converter(value);
+                def value = this.(ACCESS)(@value);
+                box* := this.(ACCESS)(@converter)(value);
                 return this.(NEW)(@{
-                    data*,
-                    value: value.add(data::increment),
+                    this.(ACCESS)()*,
+                    value: value.add(this.(ACCESS)(@increment)),
                     size:  size.sub(1)
                 });
             }
