@@ -39,8 +39,7 @@ export class PegChoice
 
     ## Documented in spec.
     .parse(state) {
-        def data = this.(ACCESS)();
-        data::rules.forEach { rule ->
+        this.(ACCESS)(@rules).forEach { rule ->
             ifValue { state.applyRule(rule) }
                 { newState -> return newState }
         };
