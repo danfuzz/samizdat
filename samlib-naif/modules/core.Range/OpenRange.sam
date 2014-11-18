@@ -14,7 +14,7 @@
 
 import core.Generator :: unboundedCollect, unboundedFetch, unboundedForEach;
 
-import ./rangeAdd :: *;
+import ./converter :: converterFor;
 
 
 ##

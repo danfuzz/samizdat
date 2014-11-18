@@ -15,7 +15,7 @@
 
 import core.Generator :: stdCollect, stdFetch, stdForEach;
 
-import ./rangeAdd :: *;
+import ./converter :: converterFor;
 
 
 ##
