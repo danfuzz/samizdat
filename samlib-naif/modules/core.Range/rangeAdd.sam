@@ -6,6 +6,21 @@
 
 
 ##
+## Private Definitions
+##
+
+## Int->Int "conversion" function.
+fn convertInt(x) {
+    return x
+};
+
+## Int->String conversion function.
+fn convertString(x) {
+    return String.castFrom(x)
+};
+
+
+##
 ## Exported Definitions
 ##
 
@@ -16,5 +31,15 @@ export fn rangeAdd(base, amount) {
         {
             (Int):    { . -> base.add(amount) },
             (String): { . -> cast(String, cast(Int, base).add(amount)) }
+        })
+};
+
+## Returns a conversion function from int to the given class.
+export fn converterFor(cls) {
+    return ifSwitch(
+        { -> cls },
+        {
+            (Int):    { . -> convertInt },
+            (String): { . -> convertString }
         })
 };
