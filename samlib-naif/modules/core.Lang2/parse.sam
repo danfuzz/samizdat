@@ -1550,12 +1550,12 @@ def parIndexPostfix = {:
             )
 
             {
-                def funcRef = ifIs { op.hasName(@"..") }
+                def name = ifIs { op.hasName(@"..") }
                     { SYMS::sliceInclusive }
                     { SYMS::sliceExclusive };
                 def startNode = start::value;
 
-                { node -> makeFunCall(funcRef, node, startNode, optEndNode*) }
+                { node -> makeCall(node, name, startNode, optEndNode*) }
             }
         |
             ## At least one of start or end is `fromEnd`, so we have to
