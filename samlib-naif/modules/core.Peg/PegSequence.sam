@@ -65,11 +65,10 @@ export class PegSequence
         ## Each rule after the first gets passed as additional context
         ## the matched results of all the previous rules, in order.
 
-        def data = this.(ACCESS)();
         def origContext = state.get_context();
         var remainingState = state;
 
-        data::rules.forEach { rule ->
+        this.(ACCESS)(@rules).forEach { rule ->
             ifValue { remainingState.applyRule(rule) }
                 { newState -> remainingState := newState }
                 {

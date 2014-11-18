@@ -60,13 +60,11 @@ export class SerialGenerator
 
     ## Documented in spec.
     .nextValue(box) {
-        def data = this.(ACCESS)();
-
-        return? ifValue { data::first.nextValue(box) }
-            { nextGen -> this.(NEW)(@{data*, first: nextGen}) }
+        return? ifValue { this.(ACCESS)(@first).nextValue(box) }
+            { nextGen -> this.(NEW)(@{this.(ACCESS)()*, first: nextGen}) }
             {
                 ## First generator was voided.
-                SerialGenerator.new(data::rest*).nextValue(box)
+                SerialGenerator.new(this.(ACCESS)(@rest)*).nextValue(box)
             }
     };
 };

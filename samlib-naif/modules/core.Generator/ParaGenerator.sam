@@ -58,8 +58,7 @@ export class ParaGenerator
 
     ## Documented in spec.
     .nextValue(box) {
-        def data = this.(ACCESS)();
-        def subGens = data::generators;
+        def subGens = this.(ACCESS)(@generators);
         var yields = [];
         var result;
 

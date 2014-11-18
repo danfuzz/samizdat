@@ -57,12 +57,10 @@ export class OpenRange
 
     ## Documented in spec.
     .nextValue(box) {
-        def data = this.(ACCESS)();
-        def converter = data::converter;
-        def increment = data::increment;
-        def value = data::value;
+        def increment = this.(ACCESS)(@increment);
+        def value = this.(ACCESS)(@value);
 
-        box* := converter(value);
-        return this.(NEW)(@{data*, value: value.add(increment)});
+        box* := this.(ACCESS)(@converter)(value);
+        return this.(NEW)(@{this.(ACCESS)()*, value: value.add(increment)});
     };
 };

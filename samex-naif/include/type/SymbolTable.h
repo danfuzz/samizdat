@@ -43,6 +43,13 @@ zvalue symtabFromZarray(zarray arr);
 zvalue symtabFromZassoc(zassoc ass);
 
 /**
+ * Gets a single bound value from of a symbol table. This is equivalent to
+ * calling the `.get()` method but (a) avoids method dispatch and (b) is
+ * available for use before the system is fully booted.
+ */
+zvalue symtabGet(zvalue symtab, zvalue key);
+
+/**
  * Gets the values of two keys out of a symbol table, storing them via the
  * given pointers. Returns `true` iff all keys were bound.
  */

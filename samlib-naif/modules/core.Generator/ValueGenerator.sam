@@ -48,8 +48,7 @@ export class ValueGenerator
 
     ## Documented in spec.
     .nextValue(box) {
-        def data = this.(ACCESS)();
-        box* := data::value;
+        box* := this.(ACCESS)(@value);
         return this
     };
 };

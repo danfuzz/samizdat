@@ -97,12 +97,12 @@ class Blort
     };
 
     .get_foo() {
-        def box = this.(ACCESS)()::box;
+        def box = this.(ACCESS)(@box);
         return box*
     };
 
     .set_foo(value) {
-        def box = this.(ACCESS)()::box;
+        def box = this.(ACCESS)(@box);
         box* := value + 1;
         return value
     };
@@ -128,12 +128,12 @@ class Fizmo
     };
 
     .get(key) {
-        def box = this.(ACCESS)()::box;
+        def box = this.(ACCESS)(@box);
         return? (box*)[key]
     };
 
     .set(key, value) {
-        def box = this.(ACCESS)()::box;
+        def box = this.(ACCESS)(@box);
         box* := @{(box*)*, (key): value + 1};
         return value
     };

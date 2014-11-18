@@ -28,8 +28,7 @@ export class PegResult
 
     ## Documented in spec.
     .parse(state) {
-        def data = this.(ACCESS)();
-        return state.addContext(data::value)
+        return state.addContext(this.(ACCESS)(@value))
     };
 };
 

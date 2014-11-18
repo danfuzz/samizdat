@@ -82,6 +82,7 @@ print(Igram);
 def igram = Igram.(NEW)(@{effect: "purple -> invisible"});
 print(igram);
 print(igram.(ACCESS)());
+print(igram.(ACCESS)(@effect));
 igram.hello();
 
 ## Class with secrets and just one class method.
@@ -101,3 +102,4 @@ print(Frotz);
 def frotz = Frotz.new("glowing");
 print(frotz);
 print(frotz.(ACCESS)());
+print(frotz.(ACCESS)(@light));

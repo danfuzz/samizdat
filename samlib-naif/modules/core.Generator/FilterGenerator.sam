@@ -53,9 +53,8 @@ export class FilterGenerator
 
     ## Documented in spec.
     .nextValue(box) {
-        def data = this.(ACCESS)();
-        var innerGen = data::generator;
-        def filterFunction = data::filterFunction;
+        var innerGen = this.(ACCESS)(@generator);
+        def filterFunction = this.(ACCESS)(@filterFunction);
         var result;
 
         ## This loop handles the fact that the filter function is
