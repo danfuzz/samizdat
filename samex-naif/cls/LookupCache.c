@@ -13,7 +13,7 @@
 //
 
 /** The cache. */
-static LookupCacheEntry theCache[DAT_LOOKUP_CACHE_SIZE];
+static LookupCacheEntry theCache[CLS_LOOKUP_CACHE_SIZE];
 
 
 //
@@ -30,9 +30,9 @@ LookupCacheEntry *lookupCacheFind(zvalue container, zvalue key) {
     // difference between using `&` and `%` to calculate the cache index, so
     // we go for `%` and a prime number cache size to get probably-better
     // cache behavior.
-    LookupCacheEntry *entry = &theCache[hash % DAT_LOOKUP_CACHE_SIZE];
+    LookupCacheEntry *entry = &theCache[hash % CLS_LOOKUP_CACHE_SIZE];
 
-    if (DAT_CHATTY_LOOKUP_CACHE) {
+    if (CLS_CHATTY_LOOKUP_CACHE) {
         static int hits = 0;
         static int total = 0;
         if ((entry->container == container) && (entry->key == key)) {

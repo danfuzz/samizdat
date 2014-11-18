@@ -15,10 +15,10 @@
 
 enum {
     /** Whether to spew to the console about map cache hits. */
-    DAT_CHATTY_LOOKUP_CACHE = false,
+    CLS_CHATTY_LOOKUP_CACHE = false,
 
     /** Whether to be paranoid about values in collections / records. */
-    DAT_CONSTRUCTION_PARANOIA = false,
+    CLS_CONSTRUCTION_PARANOIA = false,
 
     /**
      * Number of entries in the lookup cache. Probably best for this to be a
@@ -28,7 +28,7 @@ enum {
      * have been observed before). The size of the cache is chosen to hit the
      * point of diminishing returns.
      */
-    DAT_LOOKUP_CACHE_SIZE = 6007
+    CLS_LOOKUP_CACHE_SIZE = 6007
 };
 
 #endif

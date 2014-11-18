@@ -194,7 +194,7 @@ static zvalue putMapping(zvalue map, zmapping mapping) {
 
 // Documented in header.
 zvalue mapFromArray(zint size, zmapping *mappings) {
-    if (DAT_CONSTRUCTION_PARANOIA) {
+    if (CLS_CONSTRUCTION_PARANOIA) {
         for (zint i = 0; i < size; i++) {
             assertValid(mappings[i].key);
             assertValid(mappings[i].value);
