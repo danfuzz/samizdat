@@ -5,7 +5,7 @@
 ##
 ## `OpenRange` Class
 ##
-## Payload: `{start: intOrChar, increment: int}`
+## Payload: `{firstValue: intOrChar, increment: int}`
 
 #= language core.Lang0
 
