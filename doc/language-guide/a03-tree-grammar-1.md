@@ -527,7 +527,7 @@ def parYieldOrNonlocal = {:
     )
 
     {
-        ifIs { eq(name, @yield{}) }
+        ifIs { name.hasName(@yield) }
             { value }
             { makeNonlocalExit(name, value) }
     }

@@ -397,7 +397,7 @@ def parYieldOrNonlocal = PegMain.newSequence(
             ifNot { optQuest* } { @void{} }
         }),
     PegCode.new { ., ., name, value ->
-        ifIs { eq(name, @yield{}) }
+        ifIs { name.hasName(@yield) }
             { value }
             { makeNonlocalExit(name, value) }
     });
