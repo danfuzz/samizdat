@@ -198,21 +198,21 @@ to) a `varDef` node.
 Makes an `exportSelection` node to export the variables with the given
 `names`. Each of the `names` must be a symbol.
 
-#### `makeFullClosure(baseData) -> node`
+#### `makeFullClosure(base) -> node`
 
-Makes a `closure` node, using the bindings of `baseData` as a basis, adding
+Makes a `closure` node, using the bindings of `base` as a basis, adding
 in defaults like `makeBasicClosure()` (see which), and also performing
-expansion and defaulting for the `yield` binding. `baseData` must either be
+expansion and defaulting for the `yield` binding. `base` must either be
 a `@closure` node (allowed to be incomplete) or a symbol table.
 
-If `baseData` binds `yield`, then that binding is reflected in the result.
+If `base` binds `yield`, then that binding is reflected in the result.
 If the binding is to a `nonlocalExit` node, then that node is expanded
 into an appropriate function call. As a special case, if it binds a
-`nonlocalExit` which would call the `yieldDef` defined in `baseData`, then
+`nonlocalExit` which would call the `yieldDef` defined in `base`, then
 the function call is elided.
 
-If `baseData` does *not* bind `yield`, then in the result, `yield` is bound
-to `@void` unless all of the following are true of `baseData`:
+If `base` does *not* bind `yield`, then in the result, `yield` is bound
+to `@void` unless all of the following are true of `base`:
 
 * The table does *not* include a binding for `yieldDef`. That is, it does not
   have a named or implicit nonlocal exit.
