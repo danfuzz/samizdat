@@ -5,7 +5,7 @@
 ##
 ## `ClosedRange` Class
 ##
-## Payload: `{start: intOrChar, increment: int, size: int}`
+## Payload: `{firstValue: intOrChar, increment: int, size: int}`
 
 #= language core.Lang0
 
@@ -29,7 +29,6 @@ export class ClosedRange
     class.new(firstValue, size, optIncrement?) {
         def increment = ifValueOr { optIncrement* } { 1 };
 
-        ## The use of `totalLt` ensures that `size` is an int.
         ifNot { Int.accepts(size) }
             { die("`size` must be an int.") };
 
