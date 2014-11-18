@@ -11,6 +11,7 @@
 
 /** Initializes the module. */
 MOD_INIT(cls) {
+    MOD_USE(Bool);
     MOD_USE(Map);
     MOD_USE(Null);
 }

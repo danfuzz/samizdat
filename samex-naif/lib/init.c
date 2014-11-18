@@ -154,10 +154,7 @@ zvalue libNewEnvironment(const char *libraryPath) {
 
 /** Initializes the module. */
 MOD_INIT(lib) {
-    MOD_USE(Bool);
-    MOD_USE(Box);
-    MOD_USE(Generator);
-    MOD_USE(Object);
+    MOD_USE(Value);
     MOD_USE(cls);
     MOD_USE(io);
     MOD_USE(lang);

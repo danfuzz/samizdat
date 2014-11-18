@@ -372,7 +372,7 @@ METH_IMPL_0(Closure, gcMark) {
 
 /** Initializes the module. */
 MOD_INIT(Closure) {
-    MOD_USE(Box);
+    MOD_USE(Value);
     MOD_USE(Jump);
 
     CLS_Closure = makeCoreClass(symbolFromUtf8(-1, "Closure"), CLS_Core,
