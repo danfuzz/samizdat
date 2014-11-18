@@ -80,8 +80,8 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 }
 
 // Documented in `LangNode` source.
-static zvalue expandYield(zvalue table) {
-    zvalue yieldNode = cm_get(table, SYM(yield));
+static zvalue expandYield(zvalue node) {
+    zvalue yieldNode = cm_get(node, SYM(yield));
 
     if (     (yieldNode == NULL)
           || !recordEvalTypeIs(yieldNode, EVAL_nonlocalExit)) {
@@ -90,7 +90,7 @@ static zvalue expandYield(zvalue table) {
 
     zvalue function = cm_get(yieldNode, SYM(function));
     zvalue value = cm_get(yieldNode, SYM(value));
-    zvalue yieldDef = cm_get(table, SYM(yieldDef));
+    zvalue yieldDef = cm_get(node, SYM(yieldDef));
     zvalue functionTarget = cm_get(function, SYM(target));
 
     if (     recordEvalTypeIs(function, EVAL_fetch)
@@ -548,13 +548,11 @@ zvalue makeExportSelection(zvalue names) {
 }
 
 // Documented in spec.
-zvalue makeFullClosure(zvalue baseData) {
-    zvalue table = classAccepts(CLS_SymbolTable, baseData)
-        ? baseData : get_data(baseData);
-    zvalue formals = cm_get(table, SYM(formals));
-    zvalue statements = cm_get(table, SYM(statements));
+zvalue makeFullClosure(zvalue base) {
+    zvalue formals = cm_get(base, SYM(formals));
+    zvalue statements = cm_get(base, SYM(statements));
     zint statSz = (statements == NULL) ? 0 : get_size(statements);
-    zvalue yieldNode = expandYield(table);
+    zvalue yieldNode = expandYield(base);
 
     if (formals == NULL) {
         formals = EMPTY_LIST;
@@ -566,7 +564,7 @@ zvalue makeFullClosure(zvalue baseData) {
 
     if (     (yieldNode == NULL)
           && (statSz != 0)
-          && (cm_get(table, SYM(yieldDef)) == NULL)) {
+          && (cm_get(base, SYM(yieldDef)) == NULL)) {
         zvalue lastStat = cm_nth(statements, statSz - 1);
         if (isExpression(lastStat)) {
             statements = METH_CALL(statements, sliceExclusive, INT_0);
@@ -582,7 +580,8 @@ zvalue makeFullClosure(zvalue baseData) {
 
     return cm_new(Record, SYM(closure),
         cm_cat(
-            table,
+            EMPTY_SYMBOL_TABLE,
+            base,
             tableFrom3(
                 SYM(formals),    formals,
                 SYM(statements), statements,
