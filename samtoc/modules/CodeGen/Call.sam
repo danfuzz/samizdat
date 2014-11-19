@@ -47,37 +47,37 @@ export class Call
     };
 
     .flatten() {
-        def data = this.(ACCESS)();
-        def args = data::args;
+        def args = this.(ACCESS)(@args);
+        def function = this.(ACCESS)(@function);
 
         return "".cat(
-            data::function.flatten(),
+            function.flatten(),
             "(",
-            ( a in args, i in (#args.. by -1) ->
+            [ a in args, i in (#args.. by -1) ->
                 "".cat(a.flatten(), (i == 1) & "" | ", ")
-            )*,
+            ]*,
             ")"
         )
     };
 
     .indent(level, maxColumns) {
-        def data = this.(ACCESS)();
+        def args = this.(ACCESS)(@args);
+        def function = this.(ACCESS)(@function);
         def prefix = INDENTATION[level];
-        def args = data::args;
         def nextLevel = level + 1;
 
         return "".cat(
-            prefix, data::function.flatten(),
+            prefix, function.flatten(),
             "(\n",
-            ( a in args, i in (#args.. by -1) ->
+            [ a in args, i in (#args.. by -1) ->
                 "".cat(a.indent(nextLevel, maxColumns), (i == 1) & "" | ",\n")
-            )*,
+            ]*,
             ")"
         )
     };
 
     .prefersFlat() {
-        def data = this.(ACCESS)();
-        return? data::flatOk** & this;
+        def flatOk = this.(ACCESS)(@flatOk);
+        return? flatOk** & this;
     };
 };

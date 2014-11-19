@@ -62,9 +62,9 @@ export fn translate(node, varsBox) {
         @call: {
             def target = translate(node::target, varsBox);
             def name = translate(node::name, varsBox);
-            def values = ( a in node::values ->
+            def values = [ a in node::values ->
                 nonVoid(translate(a, varsBox))
-            );
+            ];
             MethCall.new(target, name, values*)
         };
 
@@ -73,10 +73,10 @@ export fn translate(node, varsBox) {
             ## closure maker.
             def vars = varsBox*;
             Call.new("makeClosure_\(node::id)",
-                ( name in get_varRefs(node) ->
+                [ name in get_varRefs(node) ->
                     vars[name]::name
                         | die("Capture of undefined variable: \%q(name)");
-                )*)
+                ]*)
         };
 
         @fetch: {

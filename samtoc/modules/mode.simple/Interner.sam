@@ -23,7 +23,7 @@ export class Interner
     };
 
     .intern(value) {
-        def box = this.(ACCESS)()::box;
+        def box = this.(ACCESS)(@box);
         def values = box*;
 
         if (def already = values[value]) {
@@ -37,7 +37,7 @@ export class Interner
     };
 
     .get_interns() {
-        def box = this.(ACCESS)()::box;
+        def box = this.(ACCESS)(@box);
         def values = box*;
         def boxList = [ n in (0..#values) -> def result; result? ];
 

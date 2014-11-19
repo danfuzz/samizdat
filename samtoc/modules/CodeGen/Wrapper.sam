@@ -30,16 +30,14 @@ export class Wrapper
     };
 
     .flatten() {
-        def data = this.(ACCESS)();
-        def flatBox = data::flatBox;
+        def flatBox = this.(ACCESS)(@flatBox);
 
         return flatBox*
-            | (flatBox* := data::tree.flatten())
+            | (flatBox* := this.(ACCESS)(@tree).flatten())
     };
 
     .indent(level, maxColumns) {
-        def data = this.(ACCESS)();
-        def tree = data::tree;
+        def tree = this.(ACCESS)(@tree);
 
         if (tree.prefersFlat()) {
             def flat = this.flatten();
@@ -53,7 +51,7 @@ export class Wrapper
     };
 
     .prefersFlat() {
-        def data = this.(ACCESS)();
-        return? data::tree.prefersFlat() & this;
+        def tree = this.(ACCESS)(@tree);
+        return? tree.prefersFlat() & this;
     };
 };

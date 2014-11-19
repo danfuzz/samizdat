@@ -30,23 +30,26 @@ export class Assign
     };
 
     .flatten() {
-        def data = this.(ACCESS)();
-        return "\(data::target.flatten()) = \(data::value.flatten())"
+        def target = this.(ACCESS)(@target);
+        def value = this.(ACCESS)(@value);
+        return "\(target.flatten()) = \(value.flatten())"
     };
 
     .indent(level, maxColumns) {
-        def data = this.(ACCESS)();
+        def target = this.(ACCESS)(@target);
+        def value = this.(ACCESS)(@value);
         return "".cat(
-            data::target.indent(level, maxColumns),
+            target.indent(level, maxColumns),
             " =\n",
-            data::value.indent(level + 1, maxColumns)
+            value.indent(level + 1, maxColumns)
         )
     };
 
     .prefersFlat() {
-        def data = this.(ACCESS)();
-        return? data::target.prefersFlat()
-            & data::value.prefersFlat()
+        def target = this.(ACCESS)(@target);
+        def value = this.(ACCESS)(@value);
+        return? target.prefersFlat()
+            & value.prefersFlat()
             & this
     };
 };

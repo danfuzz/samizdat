@@ -31,32 +31,32 @@ export class Comment
     };
 
     .flatten() {
-        def data = this.(ACCESS)();
-        def text = data::text;
+        def text = this.(ACCESS)(@text);
 
-        return (def payload = data::payload)
+        return (def payload = this.(ACCESS)(@payload))
             & "/* \(text) */ \(payload.flatten())"
             | "/* \(text) */"
     };
 
     .indent(level, maxColumns) {
-        def data = this.(ACCESS)();
+        def text = this.(ACCESS)(@text);
         def prefix = INDENTATION[level];
 
-        return if (def p = data::payload) {
+        return if (def payload = this.(ACCESS)(@payload)) {
             "".cat(
-                prefix, "// ", data::text, "\n",
-                p.indent(level, maxColumns)
+                prefix, "// ", text, "\n",
+                payload.indent(level, maxColumns)
             )
         } else {
-            "\(prefix)/* \(data::text) */"
+            "\(prefix)/* \(text) */"
         }
     };
 
     .prefersFlat() {
-        def data = this.(ACCESS)();
-        return? (#data::text < 30)
-            & (((def payload = data::payload)
+        def text = this.(ACCESS)(@text);
+
+        return? (#text < 30)
+            & (((def payload = this.(ACCESS)(@payload))
                 & payload.prefersFlat()?
                 | true?)*)
             & this

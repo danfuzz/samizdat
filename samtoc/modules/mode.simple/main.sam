@@ -39,11 +39,11 @@ fn closureDeclaration(cloIdx, clo, literals) {
     def varRefs = get_varRefs(clo);
     def decl = Call.new(
         "static zvalue makeClosure_\(cloIdx)",
-        ( idx in (0..), name in varRefs ->
+        [ idx in (0..), name in varRefs ->
             Comment.new(
                 "\%q(name)",
                 $vars::freeVarDecl(name, idx))
-        )*);
+        ]*);
 
     return if (def ref = clo::name) {
         Comment.new("\%q(literals[ref::id])", decl)
@@ -185,33 +185,33 @@ export fn compile(resolver, sourcePath, targetPath) {
     def closuresNode = collectClosures(litsNode);
     def closures = closuresNode::closures;
     def closureDeclarations = "".cat(
-        ( idx in (0..), clo in closures ->
+        [ idx in (0..), clo in closures ->
             def stat = Statement.new(
                 closureDeclaration(idx, clo, partialLits));
             "\(usualIndent(stat, 0))\n"
-        )*);
+        ]*);
     def closureMakers = "".cat(
-        ( idx in (0..), clo in closures ->
+        [ idx in (0..), clo in closures ->
             closureMaker(idx, clo, partialLits)
-        )*);
+        ]*);
     def closureBodies = "".cat(
-        ( idx in (0..), clo in closures ->
+        [ idx in (0..), clo in closures ->
             closureBody(idx, clo, partialLits)
-        )*);
+        ]*);
     def mainClosure = mainClosureMaker(closuresNode::node, interner);
 
     def literals = interner.interns;
     def literalDeclarations = "".cat(
-        ( index in (0..!#literals) ->
+        [ index in (0..!#literals) ->
             "static zvalue LIT_\(index) = NULL;\n"
-        )*);
+        ]*);
     def literalInits = "".cat(
-        ( index in (0..), lit in literals ->
+        [ index in (0..), lit in literals ->
             def init = Statement.new(
                 Call.new("datImmortalize",
                     Assign.new("LIT_\(index)", $DataCode::convert(lit))));
             "\(usualIndent(init, 2))\n"
-        )*);
+        ]*);
 
     def replacements = {
         closureBodies,
