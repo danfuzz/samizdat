@@ -328,7 +328,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         case EVAL_importModuleSelection:
         case EVAL_importResource: {
             info->statements = makeDynamicImport(orig);
-            convertNode(&info->statements);
+            convertList(&info->statements);
             break;
         }
 
