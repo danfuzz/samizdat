@@ -116,6 +116,14 @@ zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
 void execStatements(Frame *frame, zvalue statements);
 
 /**
+ * Converts an `expression` node or list (per se) of same. This converts
+ * nodes into instances of `ExecNode`, and stores a reference to the
+ * replacement via the given pointer. As a convenience, if `*orig` is `NULL`,]
+ * this function does nothing.
+ */
+void exnoConvert(zvalue *orig);
+
+/**
  * Executes a translated `expression` node. This allows for converted `maybe`
  * and `void` nodes.
  */

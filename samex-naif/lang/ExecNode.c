@@ -257,6 +257,26 @@ static void executeStatements(zvalue statements, Frame *frame) {
 //
 
 // Documented in header.
+void exnoConvert(zvalue *orig) {
+    if (*orig == NULL) {
+        // Nothing to do.
+    } else if (classAccepts(CLS_Record, *orig)) {
+        *orig = cm_new(ExecNode, *orig);
+    } else {
+        // Assumed to be a list.
+        zarray arr = zarrayFromList(*orig);
+        zvalue result[arr.size];
+
+        for (zint i = 0; i < arr.size; i++) {
+            result[i] = arr.elems[i];
+            exnoConvert(&result[i]);
+        }
+
+        *orig = listFromZarray((zarray) {arr.size, result});
+    }
+}
+
+// Documented in header.
 zvalue exnoExecute(zvalue node, Frame *frame) {
     assertHasClass(node, CLS_ExecNode);
     return execute(node, frame, EX_maybe);
