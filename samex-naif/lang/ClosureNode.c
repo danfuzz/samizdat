@@ -143,7 +143,13 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
 //
 
 // Documented in header.
-zvalue exnoExecuteClosure(zvalue node, Frame *frame) {
+zvalue exnoBuildClosure(zvalue node, Frame *frame) {
+    // TODO! FIXME!
+    die("TODO");
+}
+
+// Documented in header.
+zvalue exnoCallClosure(zvalue node, Frame *frame, zarray args) {
     // TODO! FIXME!
     die("TODO");
 }

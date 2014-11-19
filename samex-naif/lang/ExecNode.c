@@ -103,7 +103,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
         }
 
         case EVAL_closure: {
-            result = exnoExecuteClosure(info->value, frame);
+            result = exnoBuildClosure(info->value, frame);
             break;
         }
 

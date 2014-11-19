@@ -119,6 +119,22 @@ zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
 void execStatements(Frame *frame, zvalue statements);
 
 /**
+ * Executes a translated `closure` node, which means that a closure is to be
+ * constructed. This takes a `ClosureNode` (not an `ExecNode`) and returns a
+ * `Closure` instance.
+ */
+zvalue exnoBuildClosure(zvalue node, Frame *frame);
+
+/**
+ * Calls a closure, using the given `node` to drive argument binding and
+ * execution. This is where `Closure.call()` bottoms out to do most of its
+ * work. `frame` is the execution frame that was active at the time the
+ * closure was constructed. `args` are the arguments being passed to this
+ * call.
+ */
+zvalue exnoCallClosure(zvalue node, Frame *frame, zarray args);
+
+/**
  * Converts an `expression` node or list (per se) of same. This converts
  * nodes into instances of `ExecNode`, and stores a reference to the
  * replacement via the given pointer. As a convenience, if `*orig` is `NULL`,]
@@ -131,12 +147,6 @@ void exnoConvert(zvalue *orig);
  * `ExecNode`. This allows for converted `maybe` and `void` nodes.
  */
 zvalue exnoExecute(zvalue node, Frame *frame);
-
-/**
- * Executes a translated `closure` node. This takes a `ClosureNode` (not an
- * `ExecNode`).
- */
-zvalue exnoExecuteClosure(zvalue node, Frame *frame);
 
 /**
  * Initializes the given frame. The `frame` is assumed to live on the
