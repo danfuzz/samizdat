@@ -149,6 +149,13 @@ void exnoConvert(zvalue *orig);
 zvalue exnoExecute(zvalue node, Frame *frame);
 
 /**
+ * Executes a list (per se) of translated `expression` nodes, treating them
+ * as statements. (E.g., it allows variable definitions and doesn't care if
+ * they yield void.)
+ */
+void exnoExecuteStatements(zvalue statements, Frame *frame);
+
+/**
  * Initializes the given frame. The `frame` is assumed to live on the
  * C stack. The `parentFrame` if non-`NULL` must live on the heap.
  */

@@ -56,9 +56,6 @@ static ExecNodeInfo *getInfo(zvalue value) {
     return (ExecNodeInfo *) datPayload(value);
 }
 
-// Defined below.
-static void executeStatements(zvalue statements, Frame *frame);
-
 /**
  * Identifies the variant of execution.
  */
@@ -121,7 +118,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
                 die("Invalid use of `import*` node.");
             }
 
-            executeStatements(info->values, frame);
+            exnoExecuteStatements(info->values, frame);
             return NULL;
         }
 
@@ -198,17 +195,6 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
     }
 }
 
-/**
- * Executes a list of statements.
- */
-static void executeStatements(zvalue statements, Frame *frame) {
-    zarray arr = zarrayFromList(statements);
-
-    for (zint i = 0; i < arr.size; i++) {
-        execute(arr.elems[i], frame, EX_statement);
-    }
-}
-
 
 //
 // Module Definitions
@@ -238,6 +224,15 @@ void exnoConvert(zvalue *orig) {
 zvalue exnoExecute(zvalue node, Frame *frame) {
     assertHasClass(node, CLS_ExecNode);
     return execute(node, frame, EX_maybe);
+}
+
+// Documented in header.
+void exnoExecuteStatements(zvalue statements, Frame *frame) {
+    zarray arr = zarrayFromList(statements);
+
+    for (zint i = 0; i < arr.size; i++) {
+        execute(arr.elems[i], frame, EX_statement);
+    }
 }
 
 
