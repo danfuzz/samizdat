@@ -70,34 +70,6 @@ static ExecNodeInfo *getInfo(zvalue value) {
     return (ExecNodeInfo *) datPayload(value);
 }
 
-/**
- * Converts a single per-spec executable tree node into an `ExecNode`,
- * storing the converted result back through the given pointer. As a
- * convenience, if `*orig` is `NULL`, this function does nothing.
- */
-static void convertNode(zvalue *orig) {
-    if (*orig != NULL) {
-        *orig = cm_new(ExecNode, *orig);
-    }
-}
-
-/**
- * Converts each of the elements of the given list into an `ExecNode`,
- * storing the converted list of all the conversions back through the given
- * pointer.
- */
-static void convertList(zvalue *orig) {
-    zarray arr = zarrayFromList(*orig);
-    zvalue result[arr.size];
-
-    for (zint i = 0; i < arr.size; i++) {
-        result[i] = arr.elems[i];
-        convertNode(&result[i]);
-    }
-
-    *orig = listFromZarray((zarray) {arr.size, result});
-}
-
 // Defined below.
 static void executeStatements(zvalue statements, Frame *frame);
 
@@ -308,11 +280,9 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                 die("Invalid `apply` or `call` node.");
             }
 
-            convertNode(&info->target);
-            convertNode(&info->name);
-            if (type == EVAL_call) {
-                convertList(&info->values);
-            }
+            exnoConvert(&info->target);
+            exnoConvert(&info->name);
+            exnoConvert(&info->values);
 
             break;
         }
@@ -330,8 +300,8 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                 SYM(name),     &info->name,
                 SYM(yieldDef), &info->yieldDef);
 
-            convertList(&info->statements);
-            convertNode(&info->yield);
+            exnoConvert(&info->statements);
+            exnoConvert(&info->yield);
             break;
         }
 
@@ -340,7 +310,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                 die("Invalid `fetch` node.");
             }
 
-            convertNode(&info->target);
+            exnoConvert(&info->target);
             break;
         }
 
@@ -348,7 +318,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         case EVAL_importModuleSelection:
         case EVAL_importResource: {
             info->statements = makeDynamicImport(orig);
-            convertList(&info->statements);
+            exnoConvert(&info->statements);
             break;
         }
 
@@ -360,7 +330,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             }
 
             if (type != EVAL_literal) {
-                convertNode(&info->value);
+                exnoConvert(&info->value);
             }
 
             break;
@@ -373,8 +343,8 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                 die("Invalid `store` node.");
             }
 
-            convertNode(&info->target);
-            convertNode(&info->value);
+            exnoConvert(&info->target);
+            exnoConvert(&info->value);
             break;
         }
 
@@ -396,7 +366,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                 }
             }
 
-            convertNode(&info->value);
+            exnoConvert(&info->value);
             break;
         }
 
