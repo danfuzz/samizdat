@@ -136,7 +136,7 @@ zvalue exnoExecute(zvalue node, Frame *frame);
  * Executes a translated `closure` node. This takes a `ClosureNode` (not an
  * `ExecNode`).
  */
-zvalue exnoExecuteClosure(zvalue node);
+zvalue exnoExecuteClosure(zvalue node, Frame *frame);
 
 /**
  * Initializes the given frame. The `frame` is assumed to live on the
