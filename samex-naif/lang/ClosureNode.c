@@ -20,11 +20,39 @@
 //
 
 /**
- * Payload data.
+ * Repetition style of a formal argument.
+ */
+typedef enum {
+    REP_NONE,
+    REP_QMARK,
+    REP_STAR,
+    REP_PLUS
+} zrepeat;
+
+/**
+ * Formal argument.
  */
 typedef struct {
-    /** `node::formals`. */
-    zvalue formals;
+    /** Name (optional). */
+    zvalue name;
+
+    /** Repetition style. */
+    zrepeat repeat;
+} zformal;
+
+/**
+ * Payload data. This corresponds with the payload of a `closure` node, but
+ * with `formals` reworked to be easier to digest.
+ */
+typedef struct {
+    /** The `node::formals`, converted for easier use. */
+    zformal formals[LANG_MAX_FORMALS];
+
+    /** The result of `get_size(formals)`. */
+    zint formalsSize;
+
+    /** The number of actual names in `formals`, plus one for a `yieldDef`. */
+    zint formalsNameCount;
 
     /** `node::name`. */
     zvalue name;
@@ -44,6 +72,69 @@ typedef struct {
  */
 static ClosureNodeInfo *getInfo(zvalue value) {
     return (ClosureNodeInfo *) datPayload(value);
+}
+
+/**
+ * Converts the given `formals`, storing the result in the given `info`.
+ */
+static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
+    zarray formals = zarrayFromList(formalsList);
+
+    if (formals.size > LANG_MAX_FORMALS) {
+        die("Too many formals: %lld", formals.size);
+    }
+
+    zvalue names[formals.size + 1];  // For detecting duplicates.
+    zint nameCount = 0;
+
+    if (info->yieldDef != NULL) {
+        names[0] = info->yieldDef;
+        nameCount = 1;
+    }
+
+    for (zint i = 0; i < formals.size; i++) {
+        zvalue formal = formals.elems[i];
+        zvalue name, repeat;
+        zrepeat rep;
+
+        symtabGet2(formal, SYM(name), &name, SYM(repeat), &repeat);
+
+        if (name != NULL) {
+            names[nameCount] = name;
+            nameCount++;
+        }
+
+        if (repeat == NULL) {
+            rep = REP_NONE;
+        } else {
+            switch (symbolEvalType(repeat)) {
+                case EVAL_CH_STAR:  { rep = REP_STAR;  break; }
+                case EVAL_CH_PLUS:  { rep = REP_PLUS;  break; }
+                case EVAL_CH_QMARK: { rep = REP_QMARK; break; }
+                default: {
+                    die("Invalid repeat modifier: %s", cm_debugString(repeat));
+                }
+            }
+        }
+
+        info->formals[i] = (zformal) {.name = name, .repeat = rep};
+    }
+
+    // Detect duplicate formal argument names.
+
+    if (nameCount > 1) {
+        symbolSort(nameCount, names);
+        for (zint i = 1; i < nameCount; i++) {
+            if (names[i - 1] == names[i]) {
+                die("Duplicate formal name: %s", cm_debugString(names[i]));
+            }
+        }
+    }
+
+    // All's well. Finish up.
+
+    info->formalsSize = formals.size;
+    info->formalsNameCount = nameCount;
 }
 
 
@@ -68,9 +159,10 @@ zvalue exnoExecuteClosure(zvalue node) {
 CMETH_IMPL_1(ClosureNode, new, orig) {
     zvalue result = datAllocValue(CLS_ClosureNode, sizeof(ClosureNodeInfo));
     ClosureNodeInfo *info = getInfo(result);
+    zvalue formals;
 
     if (!recGet3(orig,
-            SYM(formals),    &info->formals,
+            SYM(formals),    &formals,
             SYM(statements), &info->statements,
             SYM(yield),      &info->yield)) {
         die("Invalid `closure` node.");
@@ -83,6 +175,8 @@ CMETH_IMPL_1(ClosureNode, new, orig) {
 
     exnoConvert(&info->statements);
     exnoConvert(&info->yield);
+    convertFormals(info, formals);
+
     return result;
 }
 
@@ -95,11 +189,14 @@ METH_IMPL_0(ClosureNode, debugSymbol) {
 METH_IMPL_0(ClosureNode, gcMark) {
     ClosureNodeInfo *info = getInfo(ths);
 
-    datMark(info->formals);
     datMark(info->name);
     datMark(info->statements);
     datMark(info->yield);
     datMark(info->yieldDef);
+
+    for (zint i = 0; i < info->formalsSize; i++) {
+        datMark(info->formals[i].name);
+    }
 
     return NULL;
 }
