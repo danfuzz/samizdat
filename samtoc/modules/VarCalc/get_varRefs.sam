@@ -12,7 +12,7 @@ import ./get_varDefs :: get_varDefs;
 
 ## Extracts and combines the `varRefs` of all the arguments.
 fn catVarRefs(nodes*) {
-    return [].cat(( n in nodes -> get_varRefs(n) )*)
+    return [].cat([ n in nodes -> get_varRefs(n) ]*)
 };
 
 
@@ -48,7 +48,7 @@ export fn get_varRefs(node) {
             ## The extra element at the end is to represent the closure
             ## yield.
             def statementDefs =
-                [( s in node::statements -> get_varDefs(s) )*, []];
+                [[ s in node::statements -> get_varDefs(s) ]*, []];
 
             ## What's happening here is that for each statement (and the
             ## yield at the end), we get its variable references and
@@ -60,7 +60,7 @@ export fn get_varRefs(node) {
             ## refs to a map (refs as keys, values all `null`), and then
             ## doing key deletion. The resulting `statmentRefs` is a list
             ## of these maps.
-            def statementRefs = (
+            def statementRefs = [
                     s in [node::statements*, node::yield],
                     idx in (0..) ->
                 def defs = baseLocals.cat(statementDefs[..!idx]*);
@@ -69,7 +69,7 @@ export fn get_varRefs(node) {
                    refs := refs.del(d)
                 };
                 refs
-            );
+            ];
 
             ## The result of concatenating all the `statementRefs` is a
             ## map. The final result is the list of refs, that is, a list
