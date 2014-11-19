@@ -179,7 +179,7 @@ fn String_convert(value) {
     ## Each `stringChar()` call returns a list (each list element representing
     ## one byte), and we have to interpolate+concatenate them all together in
     ## order to find the encoded length.
-    def bodyChars = [].cat((ch in value -> stringChar(ch))*);
+    def bodyChars = [].cat([ ch in value -> stringChar(ch) ]*);
 
     return Call.new("stringFromUtf8",
         "\(#bodyChars)", "\"\(bodyChars)\"")
@@ -193,7 +193,7 @@ fn Symbol_convert(value) {
 
     ## See comment in `String_convert`.
     def name = cast(String, value);
-    def bodyChars = [].cat((ch in name -> stringChar(ch))*);
+    def bodyChars = [].cat([ ch in name -> stringChar(ch) ]*);
 
     return Call.new("symbolFromUtf8", "\(#bodyChars)", "\"\(bodyChars)\"")
 };
@@ -204,7 +204,7 @@ fn SymbolTable_convert(value) {
     ## Convert to a map, and process the result similar to how map conversion
     ## works.
 
-    def map = {}.cat(value);
+    def map = cast(Map, value);
     def mapPairs = [ mapping in map ->
         [convert(mapping.key), convert(mapping.value)]
     ];
