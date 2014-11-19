@@ -80,7 +80,7 @@ fn processFormalsWithRepeat(clo, names) {
 
     def preInits = [
         "zint argAt = 0",
-        [].cat(( v in varList -> v::preInit )*)*
+        [].cat([ v in varList -> v::preInit ]*)*
     ];
 
     def vars = ( v in varList ->
@@ -143,14 +143,14 @@ fn processYieldDef(clo) {
 ## closure, if any.
 fn processFreeVars(clo) {
     def names = get_varRefs(clo);
-    def vars = ( idx in (0..), name in names ->
+    def vars = [ idx in (0..), name in names ->
         @{(name): @{
             origName: name,
             kind:     "free",
             name:     freeVarName(name, idx),
             init:     "state[\(idx)]"
         }}
-    );
+    ];
 
     return @{names, preInits: [], cleanups: [], vars: @{}.cat(vars*)}
 };
@@ -206,12 +206,12 @@ export fn processVars(clo) {
     def names = [formals::names*, freeVars::names*, yieldDef::names*];
 
     ## Make C local variable defintions for all the variables.
-    def varStats = ( name in names ->
+    def varStats = [ name in names ->
         def binding = vars[name];
         Comment.new(
             "\%q(cast(String, binding::origName))",
             Assign.new("zvalue \(binding::name)", binding::init));
-    );
+    ];
 
     return @{
         cleanups: [
