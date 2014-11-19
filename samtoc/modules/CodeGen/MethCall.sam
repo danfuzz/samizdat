@@ -57,9 +57,9 @@ export class MethCall
         } else {
             "".cat(
                 "(zvalue[]) { ",
-                ( a in args, i in (#args.. by -1) ->
+                [ a in args, i in (#args.. by -1) ->
                     "".cat(a.flatten(), (i == 1) & "" | ", ")
-                )*,
+                ]*,
                 " }")
         };
 
@@ -86,10 +86,10 @@ export class MethCall
             def level2 = level + 2;
             "".cat(
                 "(zvalue[]) {\n",
-                ( a in args, i in (#args.. by -1) ->
+                [ a in args, i in (#args.. by -1) ->
                     a.indent(level2, maxColumns).cat(
                         (i == 1) & "" | ",\n")
-                )*,
+                ]*,
                 "}")
         };
 

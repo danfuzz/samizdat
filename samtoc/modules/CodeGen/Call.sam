@@ -53,9 +53,9 @@ export class Call
         return "".cat(
             data::function.flatten(),
             "(",
-            ( a in args, i in (#args.. by -1) ->
+            [ a in args, i in (#args.. by -1) ->
                 "".cat(a.flatten(), (i == 1) & "" | ", ")
-            )*,
+            ]*,
             ")"
         )
     };
@@ -69,9 +69,9 @@ export class Call
         return "".cat(
             prefix, data::function.flatten(),
             "(\n",
-            ( a in args, i in (#args.. by -1) ->
+            [ a in args, i in (#args.. by -1) ->
                 "".cat(a.indent(nextLevel, maxColumns), (i == 1) & "" | ",\n")
-            )*,
+            ]*,
             ")"
         )
     };
