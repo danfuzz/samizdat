@@ -30,9 +30,6 @@
  * for execution.
  */
 typedef struct {
-    /** Original node. */
-    zvalue orig;
-
     /** Type of the node. */
     zevalType type;
 
@@ -257,7 +254,6 @@ CMETH_IMPL_1(ExecNode, new, orig) {
     ExecNodeInfo *info = getInfo(result);
 
     info->type = type;
-    info->orig = orig;
 
     switch (type) {
         case EVAL_apply:
@@ -375,7 +371,6 @@ METH_IMPL_0(ExecNode, debugSymbol) {
 METH_IMPL_0(ExecNode, gcMark) {
     ExecNodeInfo *info = getInfo(ths);
 
-    datMark(info->orig);
     datMark(info->box);
     datMark(info->name);
     datMark(info->target);
