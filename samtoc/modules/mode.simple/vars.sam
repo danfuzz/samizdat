@@ -159,7 +159,7 @@ fn processFreeVars(clo) {
 ## (must be safe), an arbitrary original `name`, and an optional `optIndex`
 ## (an unsigned int).
 fn safeName(prefix, name, optIndex?) {
-    def nameStr = Symbol.accepts(name) & cast(String, name) | "\(name)";
+    def nameStr = cast(String, name);
     def chars = [ ch in nameStr -> C_IDENT_CHARS[ch] & ch | "_" ];
     def index = (def i = optIndex*) & [i, "_"] | "";
 
