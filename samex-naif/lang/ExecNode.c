@@ -23,10 +23,11 @@
 
 /**
  * Payload data. This is approximately a union (in the math sense, not the C
- * sense) of all the possible named bindings of any executable node type.
- * Bound values which are themselves executable nodes are recursively
- * translated. Other values are in some cases left alone and in others
- * translated to a more convenient form for execution.
+ * sense) of all the possible named bindings of any executable node type,
+ * *except* for `closure` (which gets its own class). Bound values which are
+ * themselves executable nodes are recursively translated. Other values are in
+ * some cases left alone and in others translated to a more convenient form
+ * for execution.
  */
 typedef struct {
     /** Original node. */
@@ -38,29 +39,17 @@ typedef struct {
     /** `node::box`. */
     zvalue box;
 
-    /** `node::formals`. */
-    zvalue formals;
-
     /** `node::name`. */
     zvalue name;
-
-    /** `node::statements`. */
-    zvalue statements;
 
     /** `node::target`. */
     zvalue target;
 
-    /** `node::value`. */
+    /** `node::value`. Also used to hold `ClosureNode`s. */
     zvalue value;
 
-    /** `node::values`. */
+    /** `node::values`. Also used to hold the `statements` of an `import*`. */
     zvalue values;
-
-    /** `node::yield`. */
-    zvalue yield;
-
-    /** `node::yieldDef`. */
-    zvalue yieldDef;
 } ExecNodeInfo;
 
 /**
@@ -117,8 +106,8 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
         }
 
         case EVAL_closure: {
-            // TODO
-            die("FIXME");
+            result = exnoExecuteClosure(info->value);
+            break;
         }
 
         case EVAL_fetch: {
@@ -135,7 +124,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
                 die("Invalid use of `import*` node.");
             }
 
-            executeStatements(info->statements, frame);
+            executeStatements(info->values, frame);
             return NULL;
         }
 
@@ -288,20 +277,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         }
 
         case EVAL_closure: {
-            if (!recGet3(orig,
-                    SYM(formals),    &info->formals,
-                    SYM(statements), &info->statements,
-                    SYM(yield),      &info->yield)) {
-                die("Invalid `closure` node.");
-            }
-
-            // These are both optional.
-            recGet2(orig,
-                SYM(name),     &info->name,
-                SYM(yieldDef), &info->yieldDef);
-
-            exnoConvert(&info->statements);
-            exnoConvert(&info->yield);
+            info->value = cm_new(ClosureNode, orig);
             break;
         }
 
@@ -317,8 +293,8 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         case EVAL_importModule:
         case EVAL_importModuleSelection:
         case EVAL_importResource: {
-            info->statements = makeDynamicImport(orig);
-            exnoConvert(&info->statements);
+            info->values = makeDynamicImport(orig);
+            exnoConvert(&info->values);
             break;
         }
 
@@ -401,14 +377,10 @@ METH_IMPL_0(ExecNode, gcMark) {
 
     datMark(info->orig);
     datMark(info->box);
-    datMark(info->formals);
     datMark(info->name);
-    datMark(info->statements);
     datMark(info->target);
     datMark(info->value);
     datMark(info->values);
-    datMark(info->yield);
-    datMark(info->yieldDef);
 
     return NULL;
 }
@@ -416,6 +388,7 @@ METH_IMPL_0(ExecNode, gcMark) {
 /** Initializes the module. */
 MOD_INIT(ExecNode) {
     MOD_USE(cls);
+    MOD_USE(ClosureNode);
 
     CLS_ExecNode = makeCoreClass(symbolFromUtf8(-1, "ExecNode"), CLS_Core,
         METH_TABLE(

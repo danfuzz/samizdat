@@ -95,6 +95,9 @@ typedef struct Frame {
 /** Type for closure functions. */
 extern zvalue CLS_Closure;
 
+/** Type for converted `closure` nodes. */
+extern zvalue CLS_ClosureNode;
+
 /** Type for executable nodes. */
 extern zvalue CLS_ExecNode;
 
@@ -124,10 +127,16 @@ void execStatements(Frame *frame, zvalue statements);
 void exnoConvert(zvalue *orig);
 
 /**
- * Executes a translated `expression` node. This allows for converted `maybe`
- * and `void` nodes.
+ * Executes a translated `expression` node, in particular an instance of
+ * `ExecNode`. This allows for converted `maybe` and `void` nodes.
  */
 zvalue exnoExecute(zvalue node, Frame *frame);
+
+/**
+ * Executes a translated `closure` node. This takes a `ClosureNode` (not an
+ * `ExecNode`).
+ */
+zvalue exnoExecuteClosure(zvalue node);
 
 /**
  * Initializes the given frame. The `frame` is assumed to live on the
