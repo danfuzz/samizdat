@@ -294,7 +294,7 @@ These are nodes that are akin to expression nodes, but are limited to
 be used only as direct as elements of the `statements` list of a `closure`
 node.
 
-#### `varDef` &mdash; `@varDef{name: name, box: symbol, value?: expression, top?: true}`
+#### `varDef` &mdash; `@varDef{name: name, box: symbol, value: expression, top?: true}`
 
 * `name: name` &mdash; Variable name to define (must be a symbol).
 
