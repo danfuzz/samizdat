@@ -116,6 +116,12 @@ zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
 void execStatements(Frame *frame, zvalue statements);
 
 /**
+ * Executes a translated `expression` node. This allows for converted `maybe`
+ * and `void` nodes.
+ */
+zvalue exnoExecute(zvalue node, Frame *frame);
+
+/**
  * Initializes the given frame. The `frame` is assumed to live on the
  * C stack. The `parentFrame` if non-`NULL` must live on the heap.
  */

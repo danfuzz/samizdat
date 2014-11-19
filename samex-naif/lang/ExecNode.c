@@ -10,6 +10,7 @@
 
 #include "const.h"
 #include "type/define.h"
+#include "type/Box.h"
 #include "type/List.h"
 
 #include "impl.h"
@@ -35,7 +36,7 @@ typedef struct {
     zevalType type;
 
     /** `node::box`. */
-    zevalType box;
+    zvalue box;
 
     /** `node::formals`. */
     zvalue formals;
@@ -97,12 +98,169 @@ static void convertList(zvalue *orig) {
     *orig = listFromZarray((zarray) {arr.size, result});
 }
 
+// Defined below.
+static void executeStatements(zvalue statements, Frame *frame);
+
+/**
+ * Identifies the variant of execution.
+ */
+typedef enum {
+    EX_statement,  // Yield ignored; also allows `varDef` and `import*`.
+    EX_value,      // Must yield a value (not void).
+    EX_maybe,      // This allows both `maybe` and `void`.
+    EX_voidOk      // Allowed to yield void.
+} zexecOperation;
+
+/**
+ * Executes a single `ExecNode`. `op` identifies the variant. Can return
+ * `NULL`.
+ */
+static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
+    ExecNodeInfo *info = getInfo(node);
+
+    zvalue result;
+    switch (info->type) {
+        case EVAL_apply: {
+            zvalue target = execute(info->target, frame, EX_value);
+            zvalue name = execute(info->name, frame, EX_value);
+            zvalue values = execute(info->values, frame, EX_maybe);
+
+            result = methApply(target, name, values);
+            break;
+        }
+
+        case EVAL_call: {
+            zvalue target = execute(info->target, frame, EX_value);
+            zvalue name = execute(info->name, frame, EX_value);
+            zarray values = zarrayFromList(info->values);
+
+            // Evaluate each argument expression.
+            zvalue args[values.size];
+            for (zint i = 0; i < values.size; i++) {
+                args[i] = execute(values.elems[i], frame, EX_value);
+            }
+
+            result = methCall(target, name, (zarray) {values.size, args});
+            break;
+        }
+
+        case EVAL_closure: {
+            // TODO
+            die("FIXME");
+        }
+
+        case EVAL_fetch: {
+            zvalue target = execute(info->target, frame, EX_value);
+
+            result = cm_fetch(target);
+            break;
+        }
+
+        case EVAL_importModule:
+        case EVAL_importModuleSelection:
+        case EVAL_importResource: {
+            if (op != EX_statement) {
+                die("Invalid use of `import*` node.");
+            }
+
+            executeStatements(info->statements, frame);
+            return NULL;
+        }
+
+        case EVAL_literal: {
+            result = info->value;
+            break;
+        }
+
+        case EVAL_maybe: {
+            if (op != EX_maybe) {
+                die("Invalid use of `maybe` node.");
+            }
+
+            // Return directly, to avoid the non-void check.
+            return execute(info->value, frame, EX_voidOk);
+        }
+
+        case EVAL_noYield: {
+            mustNotYield(execute(info->value, frame, EX_voidOk));
+            // `mustNotYield` will `die` before trying to return here.
+        }
+
+        case EVAL_store: {
+            zvalue target = execute(info->target, frame, EX_value);
+            zvalue value = execute(info->values, frame, EX_maybe);
+
+            result = cm_store(target, value);
+            break;
+        }
+
+        case EVAL_varDef: {
+            if (op != EX_statement) {
+                die("Invalid use of `varDef` node.");
+            }
+
+            zvalue value = execute(info->value, frame, EX_maybe);
+            zvalue boxInstance = (value == NULL)
+                ? METH_CALL(info->box, new)
+                : METH_CALL(info->box, new, value);
+
+            frameDef(frame, info->name, boxInstance);
+            return NULL;
+        }
+
+        case EVAL_varRef: {
+            result = frameGet(frame, info->name);
+            break;
+        }
+
+        case EVAL_void: {
+            if (op != EX_maybe) {
+                die("Invalid use of `void` node.");
+            }
+
+            return NULL;
+        }
+
+        default: {
+            die("Invalid type (shouldn't happen): %d", info->type);
+        }
+    }
+
+    // Note: Some cases above return directly, so as to properly avoid this
+    // check.
+    switch (op) {
+        case EX_statement: { return NULL;   }
+        case EX_voidOk:    { return result; }
+        default: {
+            if (result == NULL) {
+                die("Invalid use of void expression result.");
+            }
+            return result;
+        }
+    }
+}
+
+/**
+ * Executes a list of statements.
+ */
+static void executeStatements(zvalue statements, Frame *frame) {
+    zarray arr = zarrayFromList(statements);
+
+    for (zint i = 0; i < arr.size; i++) {
+        execute(arr.elems[i], frame, EX_statement);
+    }
+}
+
 
 //
 // Module Definitions
 //
 
-// TODO
+// Documented in header.
+zvalue exnoExecute(zvalue node, Frame *frame) {
+    assertHasClass(node, CLS_ExecNode);
+    return execute(node, frame, EX_maybe);
+}
 
 
 //
@@ -201,25 +359,20 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         }
 
         case EVAL_varDef: {
-            zvalue box;
             if (!recGet3(orig,
-                    SYM(box),   &box,
+                    SYM(box),   &info->box,
                     SYM(name),  &info->name,
                     SYM(value), &info->value)) {
                 die("Invalid `varDef` node.");
             }
 
-            info->box = symbolEvalType(box);
-            switch (info->box) {
-                case EVAL_cell:
-                case EVAL_lazy:
-                case EVAL_promise:
-                case EVAL_result: {
-                    // These are all valid.
-                    break;
-                }
+            switch (symbolEvalType(info->box)) {
+                case EVAL_cell:    { info->box = CLS_Cell;    break; }
+                case EVAL_lazy:    { info->box = CLS_Lazy;    break; }
+                case EVAL_promise: { info->box = CLS_Promise; break; }
+                case EVAL_result:  { info->box = CLS_Result;  break; }
                 default: {
-                    die("Invalid `box` spec: %s", cm_debugString(box));
+                    die("Invalid `box` spec: %s", cm_debugString(info->box));
                 }
             }
 
@@ -257,6 +410,7 @@ METH_IMPL_0(ExecNode, gcMark) {
     ExecNodeInfo *info = getInfo(ths);
 
     datMark(info->orig);
+    datMark(info->box);
     datMark(info->formals);
     datMark(info->name);
     datMark(info->statements);
