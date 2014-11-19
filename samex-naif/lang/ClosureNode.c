@@ -228,7 +228,7 @@ static zvalue callClosureMain(zvalue node, Frame *parentFrame,
 
     Frame frame;
     zvalue argTable = bindArguments(info, exitFunction, args);
-    frameInit(&frame, &parentFrame, /*FIXME*/ NULL, argTable);
+    frameInit(&frame, parentFrame, /*FIXME*/ NULL, argTable);
 
     // Execute the statements, updating the frame as needed.
     exnoExecuteStatements(info->statements, &frame);
@@ -241,12 +241,6 @@ static zvalue callClosureMain(zvalue node, Frame *parentFrame,
 //
 // Module Definitions
 //
-
-// Documented in header.
-zvalue exnoBuildClosure(zvalue node, Frame *frame) {
-    // TODO! FIXME!
-    die("TODO");
-}
 
 // Documented in header.
 zvalue exnoCallClosure(zvalue node, Frame *frame, zarray args) {

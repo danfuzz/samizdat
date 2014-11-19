@@ -336,6 +336,16 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
     return result;
 }
 
+// Documented in header.
+zvalue exnoBuildClosure(zvalue node, Frame *frame) {
+    zvalue result = datAllocValue(CLS_Closure, sizeof(ClosureInfo));
+    ClosureInfo *info = getInfo(result);
+
+    info->node = node;
+    frameSnap(&info->frame, frame);
+    return result;
+}
+
 
 //
 // Class Definition
@@ -343,6 +353,7 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 
 // Documented in header.
 METH_IMPL_rest(Closure, call, args) {
+#if 0
     if (getInfo(ths)->yieldDef == NULL) {
         return callClosureMain(ths, NULL, args);
     }
@@ -354,6 +365,10 @@ METH_IMPL_rest(Closure, call, args) {
     jumpRetire(jump);
 
     return result;
+#endif
+
+    ClosureInfo *info = getInfo(ths);
+    return exnoCallClosure(info->node, &info->frame, args);
 }
 
 // Documented in header.
