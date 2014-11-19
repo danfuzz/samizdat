@@ -9,7 +9,10 @@
 
 #include "const.h"
 #include "type/define.h"
+#include "type/Box.h"
+#include "type/Jump.h"
 #include "type/List.h"
+#include "type/SymbolTable.h"
 
 #include "impl.h"
 
@@ -136,6 +139,104 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
     info->formalsNameCount = nameCount;
 }
 
+/**
+ * Creates a variable map for all the formal arguments of the given
+ * function.
+ */
+static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
+        zarray args) {
+    zmapping elems[info->formalsNameCount];
+    zformal *formals = info->formals;
+    zint formalsSize = info->formalsSize;
+    zint elemAt = 0;
+    zint argAt = 0;
+
+    for (zint i = 0; i < formalsSize; i++) {
+        zvalue name = formals[i].name;
+        zrepeat repeat = formals[i].repeat;
+        bool ignore = (name == NULL);
+        zvalue value;
+
+        if (repeat != REP_NONE) {
+            zint count;
+
+            switch (repeat) {
+                case REP_STAR: {
+                    count = args.size - argAt;
+                    break;
+                }
+                case REP_PLUS: {
+                    if (argAt >= args.size) {
+                        die("Function called with too few arguments "
+                            "(plus argument): %lld",
+                            args.size);
+                    }
+                    count = args.size - argAt;
+                    break;
+                }
+                case REP_QMARK: {
+                    count = (argAt >= args.size) ? 0 : 1;
+                    break;
+                }
+                default: {
+                    die("Invalid repeat enum (shouldn't happen).");
+                }
+            }
+
+            value = ignore
+                ? NULL
+                : listFromZarray((zarray) {count, &args.elems[argAt]});
+            argAt += count;
+        } else if (argAt >= args.size) {
+            die("Function called with too few arguments: %lld", args.size);
+        } else {
+            value = args.elems[argAt];
+            argAt++;
+        }
+
+        if (!ignore) {
+            elems[elemAt].key = name;
+            elems[elemAt].value = cm_new(Result, value);
+            elemAt++;
+        }
+    }
+
+    if (argAt != args.size) {
+        die("Function called with too many arguments: %lld > %lld",
+            args.size, argAt);
+    }
+
+    if (exitFunction != NULL) {
+        elems[elemAt].key = info->yieldDef;
+        elems[elemAt].value = cm_new(Result, exitFunction);
+        elemAt++;
+    }
+
+    return symtabFromZassoc((zassoc) {elemAt, elems});
+}
+
+/**
+ * Helper that does the main work of `exnoCallClosure`, including nonlocal
+ * exit binding when appropriate.
+ */
+static zvalue callClosureMain(zvalue node, Frame *parentFrame,
+        zvalue exitFunction, zarray args) {
+    ClosureNodeInfo *info = getInfo(node);
+
+    // With the closure's frame as the parent, bind the formals and
+    // nonlocal exit (if present), creating a new execution frame.
+
+    Frame frame;
+    zvalue argTable = bindArguments(info, exitFunction, args);
+    frameInit(&frame, &parentFrame, /*FIXME*/ NULL, argTable);
+
+    // Execute the statements, updating the frame as needed.
+    exnoExecuteStatements(info->statements, &frame);
+
+    // Execute the yield expression, and return the final result.
+    return exnoExecute(info->yield, &frame);
+}
+
 
 //
 // Module Definitions
@@ -149,8 +250,17 @@ zvalue exnoBuildClosure(zvalue node, Frame *frame) {
 
 // Documented in header.
 zvalue exnoCallClosure(zvalue node, Frame *frame, zarray args) {
-    // TODO! FIXME!
-    die("TODO");
+    if (getInfo(node)->yieldDef == NULL) {
+        return callClosureMain(node, frame, NULL, args);
+    }
+
+    zvalue jump = makeJump();
+    jumpArm(jump);
+
+    zvalue result = callClosureMain(node, frame, jump, args);
+    jumpRetire(jump);
+
+    return result;
 }
 
 
