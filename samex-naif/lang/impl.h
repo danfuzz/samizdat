@@ -95,6 +95,9 @@ typedef struct Frame {
 /** Type for closure functions. */
 extern zvalue CLS_Closure;
 
+/** Type for executable nodes. */
+extern zvalue CLS_ExecNode;
+
 /**
  * Executes a `closure` form.
  */
