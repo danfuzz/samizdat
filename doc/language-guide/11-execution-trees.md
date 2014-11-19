@@ -281,7 +281,7 @@ appear in intermediate trees as the `yield` binding of a `closure` node.
 The function `LangNode::makeFullClosure()` converts these into other
 forms. See the docs of that function for more details.
 
-#### `void` &mdash; `@void`
+#### `void` &mdash; `@void{}`
 
 This is an expression node which always evaluates to void. Nodes of this
 type are only allowed to appear in the contexts where `maybe` nodes are valid.
