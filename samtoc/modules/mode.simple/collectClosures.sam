@@ -34,15 +34,8 @@ fn bodies(node, bodiesBox) {
             def statements = [ s in node::statements -> bodies(s, bodiesBox) ];
             def yieldNode = bodies(node::yield, bodiesBox);
             def varRefs = get_varRefs(node);
-
-            def newNode = makeFullClosure(@{
-                formals: node::formals,
-                ((def name = node::name) & @{name} | @{})*,
-                statements,
-                varRefs,
-                yield: yieldNode,
-                ((def yieldDef = node::yieldDef) & @{yieldDef} | @{})*
-            });
+            def newNode = @closure{
+                node*, statements, varRefs, yield: yieldNode};
 
             def bodies = bodiesBox*;
             if (def already = bodies[newNode]) {
