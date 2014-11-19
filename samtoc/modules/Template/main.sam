@@ -62,5 +62,5 @@ export fn apply(templateString, defs) {
                 defs[item::name] | "<MISSING \%q(item::name)>")
     ];
 
-    return "\[texts*]"
+    return "\(texts)"
 };
