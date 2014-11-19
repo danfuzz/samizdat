@@ -16,6 +16,12 @@
 extern zvalue CLS_Record;
 
 /**
+ * Gets the values of one key out of a record, storing it via the given
+ * pointer. Returns `true` iff the key was bound.
+ */
+bool recGet1(zvalue record, zvalue key, zvalue *got);
+
+/**
  * Gets the values of two keys out of a record, storing them via the given
  * pointers. Returns `true` iff all keys were bound.
  */
