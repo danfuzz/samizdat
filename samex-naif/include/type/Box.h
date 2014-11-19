@@ -9,7 +9,7 @@
 #ifndef _TYPE_BOX_H_
 #define _TYPE_BOX_H_
 
-#include "type/Generator.h"
+#include "type/Core.h"
 
 
 /** Class value for in-model class `Box`. */

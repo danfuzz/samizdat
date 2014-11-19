@@ -14,8 +14,6 @@
 #ifndef _TYPE_SEQUENCE_H_
 #define _TYPE_SEQUENCE_H_
 
-#include <stdbool.h>
-
 #include "type/Value.h"
 
 
