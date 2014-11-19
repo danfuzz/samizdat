@@ -26,18 +26,18 @@ export class Statement
     };
 
     .flatten() {
-        def data = this.(ACCESS)();
-        return "\(data::tree.flatten());"
+        def tree = this.(ACCESS)(@tree);
+        return "\(tree.flatten());"
     };
 
     .indent(level, maxColumns) {
-        def data = this.(ACCESS)();
-        return "\(data::tree.indent(level, maxColumns));\n"
+        def tree = this.(ACCESS)(@tree);
+        return "\(tree.indent(level, maxColumns));\n"
     };
 
     .prefersFlat() {
-        def data = this.(ACCESS)();
-        return? data::tree.prefersFlat()
+        def tree = this.(ACCESS)(@tree);
+        return? tree.prefersFlat()
             & this
     };
 };

@@ -27,22 +27,22 @@ export class Return
     };
 
     .flatten() {
-        def data = this.(ACCESS)();
-        return "return \(data::tree.flatten())"
+        def tree = this.(ACCESS)(@tree);
+        return "return \(tree.flatten())"
     };
 
     .indent(level, maxColumns) {
-        def data = this.(ACCESS)();
+        def tree = this.(ACCESS)(@tree);
         def prefix = INDENTATION[level];
 
         return "\
             \(prefix)return
-            \(data::tree.indent(level + 1, maxColumns))"
+            \(tree.indent(level + 1, maxColumns))"
     };
 
     .prefersFlat() {
-        def data = this.(ACCESS)();
-        return? data::tree.prefersFlat()
+        def tree = this.(ACCESS)(@tree);
+        return? tree.prefersFlat()
             & this
     };
 };

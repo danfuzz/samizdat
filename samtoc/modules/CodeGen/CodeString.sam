@@ -33,13 +33,12 @@ export class CodeString
     };
 
     .flatten() {
-        def data = this.(ACCESS)();
-        return data::text
+        return this.(ACCESS)(@text);
     };
 
     .indent(level, maxColumns) {
-        def data = this.(ACCESS)();
-        return INDENTATION[level].cat(data::text)
+        def text = this.(ACCESS)(@text);
+        return INDENTATION[level].cat(text)
     };
 
     .prefersFlat() {
