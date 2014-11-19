@@ -194,7 +194,7 @@ static zvalue putMapping(zvalue map, zmapping mapping) {
 
 // Documented in header.
 zvalue mapFromArray(zint size, zmapping *mappings) {
-    if (DAT_CONSTRUCTION_PARANOIA) {
+    if (CLS_CONSTRUCTION_PARANOIA) {
         for (zint i = 0; i < size; i++) {
             assertValid(mappings[i].key);
             assertValid(mappings[i].value);
@@ -666,7 +666,6 @@ METH_IMPL_0(Map, valueList) {
 /** Initializes the module. */
 MOD_INIT(Map) {
     MOD_USE(Generator);
-    MOD_USE(List);
     MOD_USE(LookupCache);
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,

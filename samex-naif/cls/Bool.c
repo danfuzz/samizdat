@@ -207,7 +207,7 @@ METH_IMPL_1(Bool, xor, other) {
 
 /** Initializes the module. */
 MOD_INIT(Bool) {
-    MOD_USE(Int);
+    MOD_USE(Value);
 
     CLS_Bool = makeCoreClass(SYM(Bool), CLS_Core,
         METH_TABLE(

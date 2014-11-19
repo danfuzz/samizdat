@@ -166,12 +166,11 @@ MOD_INIT(Value) {
     MOD_USE_NEXT(Class);
     MOD_USE_NEXT(Symbol);
     MOD_USE_NEXT(SymbolTable);
-    MOD_USE_NEXT(Object);
     MOD_USE_NEXT(Record);
     MOD_USE_NEXT(Builtin);
+    MOD_USE_NEXT(Box);
     MOD_USE_NEXT(Int);
     MOD_USE_NEXT(List);
-    MOD_USE_NEXT(Null);
     MOD_USE_NEXT(String);
 
     // No class init here. That happens in `MOD_INIT(objectModel)` and

@@ -39,19 +39,24 @@ later-named modules depending only on earlier-named ones):
   messaging, Unicode conversion, and about the simplest memory
   allocation facility.
 
-* `dat` &mdash; "Low-layer" data and plubming model. This implements all the
-  low-layer data types as well as the subtrate for such stuff as allocation
-  and function calling. Also provides related utilities, such as assertions.
-  Depends on `util`.
+* `dat` &mdash; "Lowest-layer" data and plumbing model. This implements all
+  the low-layer data types as well as the subtrate for such stuff as
+  allocation and method calling. Also provides related utilities, such as
+  assertions. Depends on `util`.
+
+* `cls` &mdash; "Lowish-layer" classes. This contains classes, such as
+  data types and utilities, that are (a) possible to define just in terms
+  of the `dat` classes, and (b) aren't required in the implementation of
+  `dat` itself. Depends on `util`, `cls`, and `dat`.
 
 * `io` &mdash; I/O functions. This implements a minimal set of I/O
-  operations. Depends on `util` and `dat`.
+  operations. Depends on `util`, `cls`, and `dat`.
 
 * `lang` &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any of the library itself. Depends on `util` and `dat`.
+  not implement any of the library itself. Depends on `util`, `cls`, and `dat`.
 
 * `lib` &mdash; Library bindings. This pulls together primitive definitions
   from `dat` and `lang`, additional primitive definitions defined in this
@@ -59,7 +64,7 @@ later-named modules depending only on earlier-named ones):
   file evaluation mechanism. Depends on everything above it.
 
 * `main` &mdash; Where it all comes together. This implements the
-  C `main()` function. Depends on everything else.
+  C `main()` function. Depends on everything above it.
 
 
 ### Coding Conventions

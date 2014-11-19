@@ -21,9 +21,9 @@
 
 // Documented in spec.
 FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
-    zvalue stackArr[DAT_MAX_GENERATOR_ITEMS_SOFT];
+    zvalue stackArr[CLS_MAX_GENERATOR_ITEMS_SOFT];
     zvalue *arr = stackArr;
-    zint maxSize = DAT_MAX_GENERATOR_ITEMS_SOFT;
+    zint maxSize = CLS_MAX_GENERATOR_ITEMS_SOFT;
     zint at = 0;
 
     zstackPointer save = datFrameStart();
@@ -50,7 +50,7 @@ FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
 
         if (at == maxSize) {
             if (arr == stackArr) {
-                maxSize = DAT_MAX_GENERATOR_ITEMS_HARD;
+                maxSize = CLS_MAX_GENERATOR_ITEMS_HARD;
                 arr = utilAlloc(maxSize * sizeof(zvalue));
                 utilCpy(zvalue, arr, stackArr, at);
             } else {
@@ -121,8 +121,7 @@ FUNC_IMPL_1_2(Generator_stdForEach, generator, function) {
 
 /** Initializes the module. */
 MOD_INIT(Generator) {
-    MOD_USE_NEXT(Box);
-    MOD_USE_NEXT(List);
+    MOD_USE(Value);
 
     FUN_Generator_stdCollect =
         datImmortalize(FUNC_VALUE(Generator_stdCollect));

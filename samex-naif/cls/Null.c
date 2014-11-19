@@ -41,7 +41,7 @@ METH_IMPL_1(Null, totalOrder, other) {
 
 /** Initializes the module. */
 MOD_INIT(Null) {
-    MOD_USE(Int);
+    MOD_USE(Value);
 
     CLS_Null = makeCoreClass(SYM(Null), CLS_Core,
         NULL,

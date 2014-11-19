@@ -20,36 +20,11 @@ enum {
     /** Whether to spew to the console during gc. */
     DAT_CHATTY_GC = false,
 
-    /** Whether to spew to the console about map cache hits. */
-    DAT_CHATTY_LOOKUP_CACHE = false,
-
     /** Whether to be paranoid about values in collections / records. */
     DAT_CONSTRUCTION_PARANOIA = false,
 
-    /**
-     * Number of entries in the lookup cache. Probably best for this to be a
-     * prime number (to get better distribution of cache elements). In
-     * practice, it looks like the theoretical best case is probably about
-     * 99.6% (that is, nearly every lookup is for a container/key pair that
-     * have been observed before). The size of the cache is chosen to hit the
-     * point of diminishing returns.
-     */
-    DAT_LOOKUP_CACHE_SIZE = 6007,
-
     /** Largest code point to keep a cached single-character string for. */
     DAT_MAX_CACHED_CHAR = 127,
-
-    /**
-     * Maximum number of items that can be `collect`ed or `filter`ed out
-     * of a generator, period.
-     */
-    DAT_MAX_GENERATOR_ITEMS_HARD = 50000,
-
-    /**
-     * Maximum number of items that can be `collect`ed or `filter`ed out
-     * of a generator, without resorting to heavyweight memory operations.
-     */
-    DAT_MAX_GENERATOR_ITEMS_SOFT = 1000,
 
     /** Maximum number of immortal values allowed. */
     DAT_MAX_IMMORTALS = 10000,

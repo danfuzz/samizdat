@@ -30,6 +30,7 @@ extern zevalType symbolEvalType(zvalue symbol);
 
 /** Initializes the module. */
 MOD_INIT(lang) {
+    MOD_USE(cls);
     MOD_USE(lang_const);
     MOD_USE(Closure);
 
