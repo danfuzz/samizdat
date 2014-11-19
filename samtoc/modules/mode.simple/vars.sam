@@ -160,10 +160,10 @@ fn processFreeVars(clo) {
 ## (an unsigned int).
 fn safeName(prefix, name, optIndex?) {
     def nameStr = Symbol.accepts(name) & cast(String, name) | "\(name)";
-    def chars = ( ch in nameStr -> C_IDENT_CHARS[ch] & ch | "_" );
+    def chars = [ ch in nameStr -> C_IDENT_CHARS[ch] & ch | "_" ];
     def index = (def i = optIndex*) & [i, "_"] | "";
 
-    return "\(prefix)_\(index)\[chars*]"
+    return "\(prefix)_\(index)\(chars)"
 };
 
 
