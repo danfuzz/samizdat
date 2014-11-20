@@ -43,15 +43,7 @@ void frameMark(Frame *frame) {
 
 // Documented in header.
 void frameDef(Frame *frame, zvalue name, zvalue box) {
-    zvalue vars = frame->vars;
-    zvalue newVars = symtabWithNewMapping(vars, (zmapping) {name, box});
-
-    if (newVars == NULL) {
-        zvalue nameStr = cm_castFrom(CLS_String, name);
-        die("Variable already defined: %s", cm_debugString(nameStr));
-    }
-
-    frame->vars = newVars;
+    frame->vars = symtabCatMapping(frame->vars, (zmapping) {name, box});
 }
 
 // Documented in header.
