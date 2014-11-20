@@ -13,7 +13,6 @@
 #include "type/SymbolTable.h"
 #include "type/define.h"
 
-#include "LookupCache.h"
 #include "impl.h"
 
 
@@ -103,15 +102,6 @@ static zint mapFind(zvalue map, MapInfo *info, zvalue key) {
         }
     }
 
-    LookupCacheEntry *entry = lookupCacheFind(map, key);
-
-    if ((entry->container == map) && (entry->key == key)) {
-        return entry->index;
-    }
-
-    entry->container = map;
-    entry->key = key;
-
     zint min = 0;
     zint max = info->size - 1;
 
@@ -121,7 +111,6 @@ static zint mapFind(zvalue map, MapInfo *info, zvalue key) {
             case ZLESS: { max = guess - 1; break; }
             case ZMORE: { min = guess + 1; break; }
             default: {
-                entry->index = guess;
                 return guess;
             }
         }
@@ -132,8 +121,7 @@ static zint mapFind(zvalue map, MapInfo *info, zvalue key) {
     // so that an insertion point of `0` can be unambiguously
     // represented.
 
-    zint result = entry->index = ~min;
-    return result;
+    return ~min;
 }
 
 /**
@@ -666,7 +654,6 @@ METH_IMPL_0(Map, valueList) {
 /** Initializes the module. */
 MOD_INIT(Map) {
     MOD_USE(Generator);
-    MOD_USE(LookupCache);
 
     CLS_Map = makeCoreClass(SYM(Map), CLS_Core,
         METH_TABLE(

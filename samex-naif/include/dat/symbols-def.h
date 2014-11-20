@@ -22,7 +22,6 @@ DEF_SYMBOL(Int);
 DEF_SYMBOL(Jump);
 DEF_SYMBOL(Lazy);
 DEF_SYMBOL(List);
-DEF_SYMBOL(LookupCache);
 DEF_SYMBOL(Map);
 DEF_SYMBOL(Metaclass);
 DEF_SYMBOL(Null);

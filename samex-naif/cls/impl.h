@@ -14,21 +14,8 @@
 
 
 enum {
-    /** Whether to spew to the console about map cache hits. */
-    CLS_CHATTY_LOOKUP_CACHE = false,
-
     /** Whether to be paranoid about values in collections / records. */
     CLS_CONSTRUCTION_PARANOIA = false,
-
-    /**
-     * Number of entries in the lookup cache. Probably best for this to be a
-     * prime number (to get better distribution of cache elements). In
-     * practice, it looks like the theoretical best case is probably about
-     * 99.6% (that is, nearly every lookup is for a container/key pair that
-     * have been observed before). The size of the cache is chosen to hit the
-     * point of diminishing returns.
-     */
-    CLS_LOOKUP_CACHE_SIZE = 6007,
 
     /**
      * Maximum number of items that can be `collect`ed or `filter`ed out
