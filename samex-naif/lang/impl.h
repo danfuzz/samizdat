@@ -140,6 +140,12 @@ zvalue exnoExecute(zvalue node, Frame *frame);
 void exnoExecuteStatements(zvalue statements, Frame *frame);
 
 /**
+ * Given an `ExecNode`, returns the name of the variable it defines, if any.
+ * This returns `NULL` for everything but converted `varDef` nodes.
+ */
+zvalue exnoVarDefName(zvalue node);
+
+/**
  * Initializes the given frame. The `frame` is assumed to live on the
  * C stack. The `parentFrame` if non-`NULL` must live on the heap.
  */

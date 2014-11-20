@@ -77,16 +77,34 @@ static ClosureNodeInfo *getInfo(zvalue value) {
 }
 
 /**
+ * Helper for `convertFormals` which does name duplication detection.
+ */
+static void detectDuplicates(zint size, zvalue *arr) {
+    if (size <= 1) {
+        return;
+    }
+
+    symbolSort(size, arr);
+    for (zint i = 1; i < size; i++) {
+        if (arr[i - 1] == arr[i]) {
+            die("Duplicate name: %s", cm_debugString(arr[i]));
+        }
+    }
+}
+
+/**
  * Converts the given `formals`, storing the result in the given `info`.
  */
 static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
     zarray formals = zarrayFromList(formalsList);
+    zarray statements = zarrayFromList(info->statements);
 
     if (formals.size > LANG_MAX_FORMALS) {
         die("Too many formals: %lld", formals.size);
     }
 
-    zvalue names[formals.size + 1];  // For detecting duplicates.
+    // The `names` array is for detecting duplicates.
+    zvalue names[formals.size + statements.size + 1];
     zint nameCount = 0;
 
     if (info->yieldDef != NULL) {
@@ -124,19 +142,21 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
 
     // Detect duplicate formal argument names.
 
-    if (nameCount > 1) {
-        symbolSort(nameCount, names);
-        for (zint i = 1; i < nameCount; i++) {
-            if (names[i - 1] == names[i]) {
-                die("Duplicate formal name: %s", cm_debugString(names[i]));
-            }
+    detectDuplicates(nameCount, names);
+    info->formalsSize = formals.size;
+    info->formalsNameCount = nameCount;
+
+    // Detect duplicate variable names.
+
+    for (zint i = 0; i < statements.size; i++) {
+        zvalue name = exnoVarDefName(statements.elems[i]);
+        if (name != NULL) {
+            names[nameCount] = name;
+            nameCount++;
         }
     }
 
-    // All's well. Finish up.
-
-    info->formalsSize = formals.size;
-    info->formalsNameCount = nameCount;
+    detectDuplicates(nameCount, names);
 }
 
 /**

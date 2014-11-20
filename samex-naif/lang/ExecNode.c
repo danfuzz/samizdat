@@ -236,6 +236,15 @@ void exnoExecuteStatements(zvalue statements, Frame *frame) {
     }
 }
 
+// Documented in header.
+zvalue exnoVarDefName(zvalue node) {
+    ExecNodeInfo *info = getInfo(node);
+
+    return (info->type == EVAL_varDef)
+        ? info->name
+        : NULL;
+}
+
 
 //
 // Exported Definitions
