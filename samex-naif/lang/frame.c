@@ -49,7 +49,7 @@ void frameDef(Frame *frame, zvalue name, zvalue box) {
 // Documented in header.
 zvalue frameGet(Frame *frame, zvalue name) {
     for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
-        zvalue result = cm_get(frame->vars, name);
+        zvalue result = symtabGet(frame->vars, name);
 
         if (result != NULL) {
             return result;
