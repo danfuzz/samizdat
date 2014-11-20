@@ -279,23 +279,6 @@ zint symtabSize(zvalue symtab) {
     return getInfo(symtab)->size;
 }
 
-// Documented in header.
-zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping) {
-    assertHasClass(symtab, CLS_SymbolTable);
-
-    zvalue result = allocClone(symtab);
-    SymbolTableInfo *info = getInfo(result);
-    zint expectSize = info->size + 1;
-
-    putInto(&result, &info, mapping);
-
-    if (info->size != expectSize) {
-        return NULL;
-    }
-
-    return result;
-}
-
 
 //
 // Class Definition

@@ -78,11 +78,4 @@ bool symtabGet2(zvalue symtab,
  */
 zint symtabSize(zvalue symtab);
 
-/**
- * Returns a new symbol table with the given additional mapping. This fails
- * and returns `NULL` if the original table already has a mapping for the
- * indicated symbol.
- */
-zvalue symtabWithNewMapping(zvalue symtab, zmapping mapping);
-
 #endif
