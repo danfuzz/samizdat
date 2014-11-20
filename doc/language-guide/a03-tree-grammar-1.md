@@ -169,7 +169,7 @@ def parLiteral = {:
     { symbol }
 :};
 
-## Parses a map key.
+## Parses a map or table key.
 def parKey = {:
     key = parKeyLiteral
     @":"
@@ -180,7 +180,7 @@ def parKey = {:
     { key }
 :};
 
-## Parses a mapping (element of a map).
+## Parses a mapping (element of a map or table).
 def parMapping = {:
     keys = parKey+
     value = parExpression
