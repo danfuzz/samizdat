@@ -264,8 +264,6 @@ zvalue langEval0(zvalue env, zvalue node) {
     Frame frame;
     frameInit(&frame, NULL, NULL, env);
 
-    // TODO: Evaluate the converted form.
-    zvalue converted = cm_new(ExecNode, node);
-
-    return execExpressionOrMaybe(&frame, node);
+    exnoConvert(&node);
+    return exnoExecute(node, &frame);
 }
