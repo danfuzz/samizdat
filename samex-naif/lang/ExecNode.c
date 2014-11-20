@@ -143,7 +143,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
 
         case EVAL_store: {
             zvalue target = execute(info->target, frame, EX_value);
-            zvalue value = execute(info->values, frame, EX_maybe);
+            zvalue value = execute(info->value, frame, EX_maybe);
 
             result = cm_store(target, value);
             break;
