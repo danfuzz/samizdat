@@ -160,7 +160,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
 }
 
 /**
- * Creates a variable map for all the formal arguments of the given
+ * Creates a variable table for all the formal arguments of the given
  * function.
  */
 static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,

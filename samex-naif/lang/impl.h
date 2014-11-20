@@ -85,7 +85,7 @@ typedef struct Frame {
     /** Parent frame. May be `NULL`. */
     struct Frame *parentFrame;
 
-    /** Variables defined in this frame, as a map from names to values. */
+    /** Variables defined in this frame, as a table from names to values. */
     zvalue vars;
 
     /** Is this frame on the heap? Used for validation/asserts. */
