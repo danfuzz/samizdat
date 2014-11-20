@@ -27,6 +27,8 @@ export class PegRepeat
             { sz ->
                 ifIs { lt(sz, minSize) }
                     { die("Invalid repeat spec: maxSize < minSize") };
+                ifIs { lt(sz, 0) }
+                    { die("Invalid repeat spec: maxSize < 0") };
                 @{maxSize: sz}
             }
             { @{} };
