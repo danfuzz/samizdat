@@ -368,7 +368,7 @@ METH_IMPL_rest(Closure, call, args) {
 #endif
 
     ClosureInfo *info = getInfo(ths);
-    return exnoCallClosure(info->node, &info->frame, args);
+    return exnoCallClosure(info->node, &info->frame, ths, args);
 }
 
 // Documented in header.

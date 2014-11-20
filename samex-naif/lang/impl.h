@@ -128,11 +128,12 @@ zvalue exnoBuildClosure(zvalue node, Frame *frame);
 /**
  * Calls a closure, using the given `node` to drive argument binding and
  * execution. This is where `Closure.call()` bottoms out to do most of its
- * work. `frame` is the execution frame that was active at the time the
- * closure was constructed. `args` are the arguments being passed to this
- * call.
+ * work. `parentFrame` is the execution frame that was active at the time the
+ * closure was constructed. `parentClosure` is the object that holds
+ * `parentFrame`. `args` are the arguments being passed to this call.
  */
-zvalue exnoCallClosure(zvalue node, Frame *frame, zarray args);
+zvalue exnoCallClosure(zvalue node, Frame *parentFrame, zvalue parentClosure,
+        zarray args);
 
 /**
  * Converts an `expression` node or list (per se) of same. This converts

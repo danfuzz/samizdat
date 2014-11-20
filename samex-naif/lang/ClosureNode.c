@@ -220,7 +220,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
  * exit binding when appropriate.
  */
 static zvalue callClosureMain(zvalue node, Frame *parentFrame,
-        zvalue exitFunction, zarray args) {
+        zvalue parentClosure, zvalue exitFunction, zarray args) {
     ClosureNodeInfo *info = getInfo(node);
 
     // With the closure's frame as the parent, bind the formals and
@@ -228,7 +228,7 @@ static zvalue callClosureMain(zvalue node, Frame *parentFrame,
 
     Frame frame;
     zvalue argTable = bindArguments(info, exitFunction, args);
-    frameInit(&frame, parentFrame, /*FIXME*/ NULL, argTable);
+    frameInit(&frame, parentFrame, parentClosure, argTable);
 
     // Execute the statements, updating the frame as needed.
     exnoExecuteStatements(info->statements, &frame);
@@ -243,15 +243,17 @@ static zvalue callClosureMain(zvalue node, Frame *parentFrame,
 //
 
 // Documented in header.
-zvalue exnoCallClosure(zvalue node, Frame *frame, zarray args) {
+zvalue exnoCallClosure(zvalue node, Frame *parentFrame, zvalue parentClosure,
+        zarray args) {
     if (getInfo(node)->yieldDef == NULL) {
-        return callClosureMain(node, frame, NULL, args);
+        return callClosureMain(node, parentFrame, parentClosure, NULL, args);
     }
 
     zvalue jump = makeJump();
     jumpArm(jump);
 
-    zvalue result = callClosureMain(node, frame, jump, args);
+    zvalue result =
+        callClosureMain(node, parentFrame, parentClosure, jump, args);
     jumpRetire(jump);
 
     return result;
