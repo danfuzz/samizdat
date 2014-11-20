@@ -196,6 +196,28 @@ void arrayFromSymtab(zmapping *result, zvalue symtab) {
 }
 
 // Documented in header.
+zvalue symtabCatMapping(zvalue symtab, zmapping mapping) {
+    return symtabCatZassoc(symtab, (zassoc) {1, &mapping});
+}
+
+// Documented in header.
+zvalue symtabCatZassoc(zvalue symtab, zassoc ass) {
+    assertHasClass(symtab, CLS_SymbolTable);
+
+    if (ass.size == 0) {
+        return symtab;
+    }
+
+    zvalue result = allocClone(symtab);
+    SymbolTableInfo *info = getInfo(result);
+
+    for (zint i = 0; i < ass.size; i++) {
+        putInto(&result, &info, ass.elems[i]);
+    }
+    return result;
+}
+
+// Documented in header.
 zvalue symtabFromMapping(zmapping mapping) {
     return symtabFromZassoc((zassoc) {1, &mapping});
 }

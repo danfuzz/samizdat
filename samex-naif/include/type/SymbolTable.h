@@ -26,6 +26,22 @@ extern zvalue EMPTY_SYMBOL_TABLE;
 void arrayFromSymtab(zmapping *result, zvalue symtab);
 
 /**
+ * Adds or replaces a mapping in a symbol table. This is equivalent to
+ * calling the `.cat()` method with a single-mapping argument, but (a) avoids
+ * method dispatch and (b) is available for use before the system is fully
+ * booted.
+ */
+zvalue symtabCatMapping(zvalue symtab, zmapping mapping);
+
+/**
+ * Adds or replaces a series of mappings in a symbol table. This is equivalent
+ * to calling the `.cat()` method with the result of a call to
+ * `symtabFromZassoc`, but (a) avoids method dispatch and (b) is available for
+ * use before the system is fully booted.
+ */
+zvalue symtabCatZassoc(zvalue symtab, zassoc ass);
+
+/**
  * Gets a single-mapping symbol table of the given mapping.
  */
 zvalue symtabFromMapping(zmapping mapping);
