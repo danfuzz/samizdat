@@ -12,6 +12,7 @@
 #include "type/define.h"
 #include "type/Box.h"
 #include "type/List.h"
+#include "type/SymbolTable.h"
 
 #include "impl.h"
 #include "langnode.h"
@@ -233,6 +234,29 @@ void exnoExecuteStatements(zvalue statements, Frame *frame) {
     for (zint i = 0; i < arr.size; i++) {
         execute(arr.elems[i], frame, EX_statement);
     }
+}
+
+
+//
+// Exported Definitions
+//
+
+// Documented in header.
+zvalue langEval0(zvalue env, zvalue node) {
+    zint size = get_size(env);
+    zmapping mappings[size];
+
+    arrayFromSymtab(mappings, env);
+    for (zint i = 0; i < size; i++) {
+        mappings[i].value = cm_new(Result, mappings[i].value);
+    }
+    env = symtabFromZassoc((zassoc) {size, mappings});
+
+    Frame frame;
+    frameInit(&frame, NULL, NULL, env);
+
+    exnoConvert(&node);
+    return exnoExecute(node, &frame);
 }
 
 
