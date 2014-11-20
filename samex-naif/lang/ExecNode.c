@@ -414,7 +414,7 @@ MOD_INIT(ExecNode) {
     MOD_USE(Closure);
     MOD_USE(ClosureNode);
 
-    CLS_ExecNode = makeCoreClass(symbolFromUtf8(-1, "ExecNode"), CLS_Core,
+    CLS_ExecNode = makeCoreClass(SYM(ExecNode), CLS_Core,
         METH_TABLE(
             CMETH_BIND(ExecNode, new)),
         METH_TABLE(

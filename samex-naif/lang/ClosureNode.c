@@ -87,7 +87,8 @@ static void detectDuplicates(zint size, zvalue *arr, const char *kind) {
     symbolSort(size, arr);
     for (zint i = 1; i < size; i++) {
         if (arr[i - 1] == arr[i]) {
-            die("Duplicate %s name: %s", kind, cm_debugString(arr[i]));
+            zvalue nameStr = cm_castFrom(CLS_String, arr[i]);
+            die("Duplicate %s name: %s", kind, cm_debugString(nameStr));
         }
     }
 }
@@ -160,7 +161,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
 }
 
 /**
- * Creates a variable map for all the formal arguments of the given
+ * Creates a variable table for all the formal arguments of the given
  * function.
  */
 static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
@@ -337,8 +338,7 @@ MOD_INIT(ClosureNode) {
     MOD_USE(cls);
     MOD_USE(Jump);
 
-    CLS_ClosureNode = makeCoreClass(
-        symbolFromUtf8(-1, "ClosureNode"), CLS_Core,
+    CLS_ClosureNode = makeCoreClass(SYM(ClosureNode), CLS_Core,
         METH_TABLE(
             CMETH_BIND(ClosureNode, new)),
         METH_TABLE(

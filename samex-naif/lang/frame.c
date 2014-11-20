@@ -22,9 +22,6 @@
 // Documented in header.
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
         zvalue vars) {
-    assertValidOrNull(parentClosure);
-    assertValid(vars);
-
     if ((parentFrame != NULL) && !parentFrame->onHeap) {
         die("Stack-allocated `parentFrame`.");
     }
@@ -43,21 +40,13 @@ void frameMark(Frame *frame) {
 
 // Documented in header.
 void frameDef(Frame *frame, zvalue name, zvalue box) {
-    zvalue vars = frame->vars;
-    zvalue newVars = symtabWithNewMapping(vars, (zmapping) {name, box});
-
-    if (newVars == NULL) {
-        zvalue nameStr = cm_castFrom(CLS_String, name);
-        die("Variable already defined: %s", cm_debugString(nameStr));
-    }
-
-    frame->vars = newVars;
+    frame->vars = symtabCatMapping(frame->vars, (zmapping) {name, box});
 }
 
 // Documented in header.
 zvalue frameGet(Frame *frame, zvalue name) {
     for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
-        zvalue result = cm_get(frame->vars, name);
+        zvalue result = symtabGet(frame->vars, name);
 
         if (result != NULL) {
             return result;
@@ -70,9 +59,6 @@ zvalue frameGet(Frame *frame, zvalue name) {
 
 // Documented in header.
 void frameSnap(Frame *target, Frame *source) {
-    assertValidOrNull(source->parentClosure);
-    assertValid(source->vars);
-
     *target = *source;
     target->onHeap = true;
 }

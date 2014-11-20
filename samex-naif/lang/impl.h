@@ -24,16 +24,16 @@ enum {
     LANG_MAX_FORMALS = 20,
 
     /**
-     * Maximum number of tokens in a given parse (which is the maximum
-     * number of characters for a tokenizer).
-     */
-    LANG_MAX_TOKENS = 100000,
-
-    /**
      * Maximum number of characters in a tokenized string constant,
      * identifier, or directive.
      */
-    LANG_MAX_STRING_CHARS = 200
+    LANG_MAX_STRING_CHARS = 200,
+
+    /**
+     * Maximum number of tokens in a given parse (which is the maximum
+     * number of characters for a tokenizer).
+     */
+    LANG_MAX_TOKENS = 100000
 };
 
 /** Simple enumeration for all the evaluable node classes and symbols. */
@@ -85,7 +85,7 @@ typedef struct Frame {
     /** Parent frame. May be `NULL`. */
     struct Frame *parentFrame;
 
-    /** Variables defined in this frame, as a map from names to values. */
+    /** Variables defined in this frame, as a table from names to values. */
     zvalue vars;
 
     /** Is this frame on the heap? Used for validation/asserts. */

@@ -21,11 +21,21 @@ extern zvalue CLS_Class;
 extern zvalue CLS_Metaclass;
 
 /**
- * Asserts that the given value has the given class. If not, this aborts
- * the process with a diagnostic message. **Note:** This does not do a
- * validity check on the given arguments.
+ * Helper for `assertHasClass()` which does a more heavyweight check.
+ * This should *not* be called directly.
  */
-void assertHasClass(zvalue value, zvalue cls);
+void assertHasClass0(zvalue value, zvalue cls);
+
+/**
+ * Asserts that the given value has the given class. If not, this aborts
+ * the process with a diagnostic message. **Note:** This does not necessarily
+ * do a validity check on the given arguments.
+ */
+inline void assertHasClass(zvalue value, zvalue cls) {
+    if (classOf(value) != cls) {
+        assertHasClass0(value, cls);
+    }
+}
 
 /**
  * Like `cls.accepts(value)`, except this works before the system is fully
