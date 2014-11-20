@@ -3,7 +3,7 @@
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 ##
-## String literal demo
+## Bool literal demo
 ##
 
 #= language core.Lang0

@@ -79,7 +79,7 @@ static ClosureNodeInfo *getInfo(zvalue value) {
 /**
  * Helper for `convertFormals` which does name duplication detection.
  */
-static void detectDuplicates(zint size, zvalue *arr) {
+static void detectDuplicates(zint size, zvalue *arr, const char *kind) {
     if (size <= 1) {
         return;
     }
@@ -87,7 +87,7 @@ static void detectDuplicates(zint size, zvalue *arr) {
     symbolSort(size, arr);
     for (zint i = 1; i < size; i++) {
         if (arr[i - 1] == arr[i]) {
-            die("Duplicate name: %s", cm_debugString(arr[i]));
+            die("Duplicate %s name: %s", kind, cm_debugString(arr[i]));
         }
     }
 }
@@ -142,7 +142,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
 
     // Detect duplicate formal argument names.
 
-    detectDuplicates(nameCount, names);
+    detectDuplicates(nameCount, names, "formal argument");
     info->formalsSize = formals.size;
     info->formalsNameCount = nameCount;
 
@@ -156,7 +156,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
         }
     }
 
-    detectDuplicates(nameCount, names);
+    detectDuplicates(nameCount, names, "variable");
 }
 
 /**
