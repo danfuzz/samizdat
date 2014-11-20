@@ -83,7 +83,7 @@ METH_IMPL_0(Closure, gcMark) {
 MOD_INIT(Closure) {
     MOD_USE(cls);
 
-    CLS_Closure = makeCoreClass(symbolFromUtf8(-1, "Closure"), CLS_Core,
+    CLS_Closure = makeCoreClass(SYM(Closure), CLS_Core,
         NULL,
         METH_TABLE(
             METH_BIND(Closure, call),

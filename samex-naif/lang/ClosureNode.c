@@ -338,8 +338,7 @@ MOD_INIT(ClosureNode) {
     MOD_USE(cls);
     MOD_USE(Jump);
 
-    CLS_ClosureNode = makeCoreClass(
-        symbolFromUtf8(-1, "ClosureNode"), CLS_Core,
+    CLS_ClosureNode = makeCoreClass(SYM(ClosureNode), CLS_Core,
         METH_TABLE(
             CMETH_BIND(ClosureNode, new)),
         METH_TABLE(
