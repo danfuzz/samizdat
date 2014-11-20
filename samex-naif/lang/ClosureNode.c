@@ -315,6 +315,7 @@ METH_IMPL_0(ClosureNode, gcMark) {
 /** Initializes the module. */
 MOD_INIT(ClosureNode) {
     MOD_USE(cls);
+    MOD_USE(Jump);
 
     CLS_ClosureNode = makeCoreClass(
         symbolFromUtf8(-1, "ClosureNode"), CLS_Core,

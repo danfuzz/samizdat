@@ -378,6 +378,7 @@ METH_IMPL_0(ExecNode, gcMark) {
 /** Initializes the module. */
 MOD_INIT(ExecNode) {
     MOD_USE(cls);
+    MOD_USE(Closure);
     MOD_USE(ClosureNode);
 
     CLS_ExecNode = makeCoreClass(symbolFromUtf8(-1, "ExecNode"), CLS_Core,

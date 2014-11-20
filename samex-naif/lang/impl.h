@@ -102,23 +102,6 @@ extern zvalue CLS_ClosureNode;
 extern zvalue CLS_ExecNode;
 
 /**
- * Executes a `closure` form.
- */
-zvalue execClosure(Frame *frame, zvalue closureNode);
-
-/**
- * Executes an `expression` form, with `@maybe` and `@void` nodes allowed.
- * Returns the evaluated result. Only returns void (represented as `NULL`)
- * if given a `@maybe` node which evaluated to void, or a `@void` node.
- */
-zvalue execExpressionOrMaybe(Frame *frame, zvalue e);
-
-/**
- * Executes a list of `statement` forms.
- */
-void execStatements(Frame *frame, zvalue statements);
-
-/**
  * Executes a translated `closure` node, which means that a closure is to be
  * constructed. This takes a `ClosureNode` (not an `ExecNode`) and returns a
  * `Closure` instance.
