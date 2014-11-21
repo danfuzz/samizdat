@@ -28,12 +28,12 @@ msg(@"potion"{});
 msg(@(@potion){});
 
 msg(@"^zorch^"{blortch: "scorch"});
-msg(@fizmo(@{a: 1, b: 2, c: 3}));
 msg(@fizmo{a: 1, b: 2, c: 3});
+msg(@fizmo{@{a: 1, b: 2, c: 3}*});
 
 ## Keywords can be used as types.
 msg(@def{x: 10});
-msg(@fn(@{z: 100}));
+msg(@fn{z: 100});
 
 ## Accessing data via `get` calls, explicitly and implicitly.
 msg(@foo{a: 1, b: 2}.get(@a));

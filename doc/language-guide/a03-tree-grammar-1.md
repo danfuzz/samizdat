@@ -169,7 +169,7 @@ def parLiteral = {:
     { symbol }
 :};
 
-## Parses a map key.
+## Parses a map or table key.
 def parKey = {:
     key = parKeyLiteral
     @":"
@@ -180,7 +180,7 @@ def parKey = {:
     { key }
 :};
 
-## Parses a mapping (element of a map).
+## Parses a mapping (element of a map or table).
 def parMapping = {:
     keys = parKey+
     value = parExpression
@@ -240,16 +240,14 @@ def parRecord = {:
         parParenExpression
     )
 
-    value = (
-        parParenExpression
-    |
-        @"{"
-        mappings = parMappings
-        @"}"
-        { makeSymbolTableExpression(mappings*) }
-    )
+    @"{"
+    mappings = parMappings
+    @"}"
 
-    { makeCall(LITS::Record, SYMS::new, name, value) }
+    {
+        makeCall(LITS::Record, SYMS::new, name,
+            makeSymbolTableExpression(mappings*))
+    }
 :};
 
 ## Parses a list item or function call argument. This handles all of:

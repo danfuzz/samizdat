@@ -16,18 +16,18 @@ If passed as a record, the record name of `data` is ignored; only its
 bindings matter. These equivalences hold for Samizdat source code:
 
 ```
-@x{}            is equivalent to  Record.new(@x)
-@(expr){}       is equivalent to  Record.new(expr)
-@x(value)       is equivalent to  Record.new(@x, value)
-@(expr)(value)  is equivalent to  Record.new(expr, value)
-@x{key: value}  is equivalent to  Record.new(@x, @{key: value})
+@x{}             is equivalent to  Record.new(@x)
+@(expr){}        is equivalent to  Record.new(expr)
+@x{value*}       is equivalent to  Record.new(@x, value)
+@(expr){value*}  is equivalent to  Record.new(expr, value)
+@x{key: value}   is equivalent to  Record.new(@x, @{key: value})
 ```
 
 It is a fatal error (terminating the runtime) to pass for `name` anything
 other than a symbol. It is also a fatal error to pass for `data` anything
 other than a symbol table.
 
-**Syntax Note:** Used in the translation of `@(type)(value)` and related forms.
+**Syntax Note:** Used in the translation of `@(type){...}` and related forms.
 
 
 <br><br>

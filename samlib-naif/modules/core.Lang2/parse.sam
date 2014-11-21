@@ -165,7 +165,7 @@ def parLiteral = {:
     { symbol }
 :};
 
-## Parses a map key.
+## Parses a map or table key.
 def parKey = {:
     key = parKeyLiteral
     @":"
@@ -176,7 +176,7 @@ def parKey = {:
     { key }
 :};
 
-## Parses a mapping (element of a map).
+## Parses a mapping (element of a map or table).
 def parMapping = {:
     keys = parKey+
     value = parExpression
@@ -236,16 +236,14 @@ def parRecord = {:
         parParenExpression
     )
 
-    value = (
-        parParenExpression
-    |
-        @"{"
-        mappings = parMappings
-        @"}"
-        { makeSymbolTableExpression(mappings*) }
-    )
+    @"{"
+    mappings = parMappings
+    @"}"
 
-    { makeCall(LITS::Record, SYMS::new, name, value) }
+    {
+        makeCall(LITS::Record, SYMS::new, name,
+            makeSymbolTableExpression(mappings*))
+    }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
@@ -1238,7 +1236,8 @@ fn makeCompareCalls(firstEx, opExList) {
                     statements: [makeVarDef(rightName, @result, opEx::expr)],
                     yield: makeMaybe(
                         makeFunCall(REFS::ifIs,
-                            makeThunk(makeFunCall(resolvedOp, leftRef, rightRef)),
+                            makeThunk(
+                                makeFunCall(resolvedOp, leftRef, rightRef)),
                             transform(rightRef, rest*)))
                 })
             }
@@ -2302,7 +2301,8 @@ def parForExpression = {:
             yieldDef: @break,
             statements: [breakDef*],
             yield: makeMaybe(
-                makeFunCall(REFS::Generator_forEachAll, loopClosure, genInits*))
+                makeFunCall(REFS::Generator_forEachAll,
+                    loopClosure, genInits*))
         });
 
         makeFunCall(mainClosure)

@@ -274,7 +274,8 @@ export fn makeDynamicImport(node) {
 
                 def source = node::source;
                 def names = get_definedNames(node);
-                def loadCall = makeFunCall(REFS::loadModule, makeLiteral(source));
+                def loadCall =
+                    makeFunCall(REFS::loadModule, makeLiteral(source));
 
                 collectAll(names, node::select) { name, sel ->
                     makeVarDef(name, @result,
@@ -351,7 +352,7 @@ export fn makeImport(baseData) {
                     data := data.del(@select);
                 };
 
-            return @importModuleSelection(data)
+            return @importModuleSelection{data*}
         };
 
     ifNot { data::name }
@@ -368,11 +369,11 @@ export fn makeImport(baseData) {
             ## It's a resource.
             ifIs { data::source.hasName(@external) }
                 { die("Cannot import external resource.") };
-            return @importResource(data)
+            return @importResource{data*}
         };
 
     ## It's a whole-module import.
-    return @importModule(data)
+    return @importModule{data*}
 };
 
 ## Documented in spec.
