@@ -22,10 +22,9 @@ you want to be terse.
 Samizdat is a high-level programming language somewhere down the
 family lineage from all of [ALGOL](http://en.wikipedia.org/wiki/ALGOL),
 [Lisp](http://en.wikipedia.org/wiki/LISP), and
-[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is
-intended that the language be an attractive target for use in
-text processing, free-form data structure manipulation, and general
-higher-level systems programming.
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is intended that the
+language be an attractive target for use in text processing, free-form data
+structure manipulation, and general higher-level systems programming.
 
 As a fundamental part of its philosophy, Samizdat eschews hidden state and
 randomness, aiming for it to be the case that a given piece of code will run
@@ -60,8 +59,7 @@ These all exist in some form, though most are still very much in-progress.
 * `samlib-naif` &mdash; In-language core library for Layers 0&ndash;2.
 
   This is an implementation of the non-primitive portion of the
-  core library, sufficient for running code written in
-  Layers 0&ndash;2.
+  core library, sufficient for running code written in Layers 0&ndash;2.
 
   See [the library spec](doc/library-guide) and
   [the implementation's README](samlib-naif/README.md) for more details.
@@ -113,34 +111,31 @@ These all exist in some form, though most are still very much in-progress.
 
 * `samex-deft` &mdash; Samizdat interpreter.
 
-  Tool that accepts input written in Samizdat (per se), and runs
-  it.
+  Tool that accepts input written in Samizdat (per se), and runs it.
 
   Written in Samizdat Layer N (for the ultimate value of `N`).
 
 * `samtoc-solo` &mdash; Tool to compile Samizdat source code.
 
-  Compiler that accepts bona fide Samizdat syntax and outputs C
-  code to be linked and run with an associated library (details
-  TBD).
+  Compiler that accepts bona fide Samizdat syntax and outputs C code to be
+  linked and run with an associated library (details TBD).
 
   Written in Samizdat. Used to produce (at least) two executables:
 
   * Run using interpreted `samex-deft` and given `samtoc-solo`'s source as
     input, in order to produce a compiled version of `samtoc-solo`.
 
-  * Run as a compiled binary (output of the previous bullet item)
-    and given `samex-deft`'s source as input, in order to produce a
-    compiled version of `samex-deft`.
+  * Run as a compiled binary (output of the previous bullet item) and given
+    `samex-deft`'s source as input, in order to produce a compiled version of
+    `samex-deft`.
 
 * `samizdat-naif.sam` &mdash; Samizdat Layer 0 interpreter.
 
-  This is a maximally-reifying implementation of Samizdat Layer 0,
-  meant to be both an "executable specification" for Samizdat Layer
-  0 (to help enable the implementation of Samizdat Layer 0 in even
-  yet other languages), as well as an implementation that can be
-  relied upon for further iterative development of the other layers of
-  the language implementation.
+  This is a maximally-reifying implementation of Samizdat Layer 0, meant to be
+  both an "executable specification" for Samizdat Layer 0 (to help enable the
+  implementation of Samizdat Layer 0 in even yet other languages), as well as
+  an implementation that can be relied upon for further iterative development
+  of the other layers of the language implementation.
 
   Written in Samizdat. Run and compiled-and-run with `samex-deft` and
   `samtoc-solo` (respectively), for purposes of verification, validation, and
