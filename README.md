@@ -197,9 +197,8 @@ $ blur
 $
 ```
 
-As of this writing, the full build can take up to something like half an
-hour on mid-range personal computing hardware. Among its steps, the build
-consists of:
+As of this writing, the full build can take about ten to fifteen minutes on
+mid-range personal computing hardware. Among its steps, the build consists of:
 
 * Compilation of the core runtime, into an executable binary.
 * Compilation of the Samizdat compiler, into a collection of loadable
