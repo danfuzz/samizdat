@@ -9,7 +9,7 @@ exist, though all are still incomplete works-in-progress.
   This is an interpreter for Layer 0 of the language, which can be paired
   with a companion library to interpret Layer 1 and Layer 2 as well.
 
-  See [the language spec](../doc/language-guide) and
+  See [the language spec](../language-guide) and
   [the implementation's README](../../samex-naif/README.md) for more details.
 
 * `samlib-naif` &mdash; In-language core library for Layers 0&ndash;2.
@@ -17,7 +17,7 @@ exist, though all are still incomplete works-in-progress.
   This is an implementation of the non-primitive portion of the
   core library, sufficient for running code written in Layers 0&ndash;2.
 
-  See [the library spec](../doc/library-guide) and
+  See [the library spec](../library-guide) and
   [the implementation's README](../../samlib-naif/README.md) for more details.
 
 * `samex-tot` &mdash; Runtime build with "compiled" core library.
