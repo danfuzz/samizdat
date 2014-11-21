@@ -166,13 +166,12 @@ Samizdat intentionally limits its prerequisites, as a simplifying tactic.
 Producing a Samizdat executable, per se, requires two items of its
 environment:
 
-* Samizdat requires a C compiler / linker. The variant of C used in Samizdat
-  is C99 with modest use of extensions that are available in both Clang and
-  the Gnu C compiler.
+* A C compiler / linker. The variant of C used in Samizdat is C99 with modest
+  use of extensions that are available in both Clang and the Gnu C compiler.
 
-* Samizdat requires a C library to link with. It expects to link with a
-  Posix-compatible library which exports a few additional commonly-supported
-  functions, including notably those for dynamic code loading.
+* A C library to link with. It expects to link with a Posix-compatible library
+  which exports a few additional commonly-supported functions, including
+  notably those for dynamic code loading.
 
 The automated build for Samizdat requires these additional items:
 
