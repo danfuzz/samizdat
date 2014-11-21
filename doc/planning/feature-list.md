@@ -39,7 +39,7 @@ Existing
     * File path parsing.
     * Limited commandline parsing.
     * Value formatting (stringification).
-  * Basic I/O support (enough to build a compiler).
+  * Basic I/O support (enough to build an off-line compiler).
 
 * Compiler
   * Minimal "compiler" which produces executable tree nodes, as C code.
@@ -63,6 +63,10 @@ Required
       * Gradual typing annotations for formals and variables.
     * Modern allocator / garbage collector.
     * Full support for multiple threads (actor model).
+    * Built-in native compilation (JIT or JIT-like):
+      * Used for evaluating executable tree nodes.
+      * x86 back-end.
+      * ARM back-end.
   * Basic interpreted runtime, written in Samizdat.
 
 * Library
