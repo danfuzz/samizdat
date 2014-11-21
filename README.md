@@ -42,11 +42,7 @@ Overview
 --------
 
 The following is an overview of the pieces of the system that currently
-exist (if incompletely), followed by pieces that are merely planned.
-
-### Existing pieces
-
-These all exist in some form, though most are still very much in-progress.
+exist, though all are still incomplete works-in-progress.
 
 * `samex-naif` &mdash; Simple interpreter, written in C.
 
@@ -96,54 +92,6 @@ These all exist in some form, though most are still very much in-progress.
   It has a handful of different compilation modes, of varying sophistication.
 
   See [the implementation's README](samtoc/README.md) for more details.
-
-### Planned pieces
-
-* `samex-3` &hellip; `samex-N` &mdash; Samizdat Layers 3
-  through N interpreters.
-
-  For each `N`, `samizdat-N` accepts the language Samizdat Layer N,
-  translating it to the same underlying executable parse tree form that is
-  specified by Layer 0 and executed by `samex-naif` and `samizdat-naif`.
-
-  For `M` and `N` where `M == N + 1`, `samizdat-M` is written in the
-  language implemented by Samizdat Layer N.
-
-* `samex-deft` &mdash; Samizdat interpreter.
-
-  Tool that accepts input written in Samizdat (per se), and runs it.
-
-  Written in Samizdat Layer N (for the ultimate value of `N`).
-
-* `samtoc-solo` &mdash; Tool to compile Samizdat source code.
-
-  Compiler that accepts bona fide Samizdat syntax and outputs C code to be
-  linked and run with an associated library (details TBD).
-
-  Written in Samizdat. Used to produce (at least) two executables:
-
-  * Run using interpreted `samex-deft` and given `samtoc-solo`'s source as
-    input, in order to produce a compiled version of `samtoc-solo`.
-
-  * Run as a compiled binary (output of the previous bullet item) and given
-    `samex-deft`'s source as input, in order to produce a compiled version of
-    `samex-deft`.
-
-* `samizdat-naif.sam` &mdash; Samizdat Layer 0 interpreter.
-
-  This is a maximally-reifying implementation of Samizdat Layer 0, meant to be
-  both an "executable specification" for Samizdat Layer 0 (to help enable the
-  implementation of Samizdat Layer 0 in even yet other languages), as well as
-  an implementation that can be relied upon for further iterative development
-  of the other layers of the language implementation.
-
-  Written in Samizdat. Run and compiled-and-run with `samex-deft` and
-  `samtoc-solo` (respectively), for purposes of verification, validation, and
-  further language iteration.
-
-* ?
-
-* Profit!
 
 ### Editor Support
 
