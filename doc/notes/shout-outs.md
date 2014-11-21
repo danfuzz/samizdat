@@ -5,7 +5,7 @@ Samizdat wouldn't exist without a lot of inspiring language work
 embodied in dozens of systems developed over the better part of the
 preceding century.
 
-The language came about as a second-order effect of Dan's
+The language came about as a second-order effect of Danfuzz's
 ongoing desire to explore the intersection of all of
 [promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
 [object-capability](http://en.wikipedia.org/wiki/Object-capability_model)
