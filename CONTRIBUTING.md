@@ -1,7 +1,8 @@
 How to contribute to this project
 =================================
 
-Here are some guidelines for contributing to this project.
+**Thank you in advance for your contributions!** Here are some guidelines to
+follow.
 
 - - - - -
 
@@ -71,9 +72,8 @@ ADDITIONAL INFORMATION
 Feature Requests
 ----------------
 
-If you have a feature request, then just use the same workflow as
-for reporting bugs. It is okay to fill in `n/a` for the OS and Compiler
-fields.
+If you have a feature request, then just use the same workflow as for
+reporting bugs. It is okay to fill in `n/a` for the OS and Compiler fields.
 
 - - - - -
 
@@ -105,7 +105,8 @@ to do:
   ```
 
   **If you are not willing to do this, then your code will not be
-  accepted into the project.**
+  accepted into the project.** This is meant as a lightweight, yet still
+  useful, way to prevent ne'er-do-wells from poisoning the project.
 
 * Using the standard Git and GitHub workflow, fork the project, create
   one or more commits that address the issue in question, and submit the
@@ -120,8 +121,13 @@ to do:
 
 * Test your patch. As of this writing, the most automated way to do that
   is to run `demo/run-all --runtime=tot --compiler=simple --build`, ensuring
-  that no test fails. However, beware that these tests are far from complete,
-  and it is also possible for them to produce incorrect output without a hard
-  failure. Therefore, it is particularly important to (a) make sure your
-  patch is covered by a test, and (b) inspect the output of that test
-  "manually" for correctness.
+  that no test fails.
+
+  However, beware that these tests are far from complete, and it is also
+  possible for them to produce incorrect output without a hard failure.
+  Therefore, it is particularly important to (a) make sure your patch is
+  covered by a test, and (b) inspect the output of that test "manually" for
+  correctness.
+
+  For bonus points, fix any related tests so that they do fail hard and loud
+  instead of silently.
