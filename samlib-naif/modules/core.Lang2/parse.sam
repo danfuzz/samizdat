@@ -1236,7 +1236,8 @@ fn makeCompareCalls(firstEx, opExList) {
                     statements: [makeVarDef(rightName, @result, opEx::expr)],
                     yield: makeMaybe(
                         makeFunCall(REFS::ifIs,
-                            makeThunk(makeFunCall(resolvedOp, leftRef, rightRef)),
+                            makeThunk(
+                                makeFunCall(resolvedOp, leftRef, rightRef)),
                             transform(rightRef, rest*)))
                 })
             }
@@ -2300,7 +2301,8 @@ def parForExpression = {:
             yieldDef: @break,
             statements: [breakDef*],
             yield: makeMaybe(
-                makeFunCall(REFS::Generator_forEachAll, loopClosure, genInits*))
+                makeFunCall(REFS::Generator_forEachAll,
+                    loopClosure, genInits*))
         });
 
         makeFunCall(mainClosure)

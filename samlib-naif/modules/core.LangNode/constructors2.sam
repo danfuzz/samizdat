@@ -274,7 +274,8 @@ export fn makeDynamicImport(node) {
 
                 def source = node::source;
                 def names = get_definedNames(node);
-                def loadCall = makeFunCall(REFS::loadModule, makeLiteral(source));
+                def loadCall =
+                    makeFunCall(REFS::loadModule, makeLiteral(source));
 
                 collectAll(names, node::select) { name, sel ->
                     makeVarDef(name, @result,

@@ -81,7 +81,9 @@ def tokString = PegMain.newSequence(
         PegSequence.new(
             PegSequence.newString("\""),
             PegCode.new { ., parts, . -> @string{value: "".cat(parts*)} }),
-        PegCode.new { ., . -> @error{value: "Unterminated string literal."} }));
+        PegCode.new { ., . ->
+            @error{value: "Unterminated string literal."}
+        }));
 
 ## These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
