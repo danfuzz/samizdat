@@ -98,7 +98,8 @@ to do:
     agents to act as my agent, for the purpose of copyright management
     of my contributions to this project.
   * All code I contribute to this project is my own original work.
-  * I have permission to contribute to this project under these terms.
+  * I am not subject to any obligation that prevents me from contributing to
+    this project under these terms.
 
   Signed,
   [your real name]
