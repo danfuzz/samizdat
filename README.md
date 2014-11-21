@@ -215,9 +215,9 @@ built binaries are deposited in the directory `out/final/bin`. If you used
 
 You can also run the various demo / test cases, with the scripts
 `demo/run <demo-number>` or `demo/run-all`. Demo numbers are of the form
-`N-MMM` where `N` is a language "layer" and `MMM` is a sequence number.
-Each lives in a directory named with its number along with a suggestive
-summary, e.g. `0-001-string-literal`.
+`X-NNN` where `X` is a category and `NNN` is a sequence number. Each lives in
+a directory named with its number suffixed with a suggestive summary, e.g.
+`0-001-string-literal`.
 
 #### Quick-turnaround partial build
 
