@@ -15,10 +15,10 @@ memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
 (STM), having first learned of the power of this combination when working
 on [E](https://en.wikipedia.org/wiki/E_%28programming_language%29). The
 Samizdat language has a mostly-immutable data model and generally has
-"capability nature," but it does not innately implement promises, actors,
-or STM (yet). It is intended to be a fertile substrate on which to explore
-these topics, while still being a practical and compelling language in its
-own right.
+"capability nature," but it does not innately implement "real" promises,
+actors, or STM (yet). It is intended to be a fertile substrate on which to
+explore these topics, while still being a practical and compelling language
+in its own right.
 
 Samizdat's syntax can be traced in part to
 [ALGOL](http://en.wikipedia.org/wiki/ALGOL), through
