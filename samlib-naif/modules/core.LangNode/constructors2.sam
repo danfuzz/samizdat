@@ -351,7 +351,7 @@ export fn makeImport(baseData) {
                     data := data.del(@select);
                 };
 
-            return @importModuleSelection(data)
+            return @importModuleSelection{data*}
         };
 
     ifNot { data::name }
@@ -368,11 +368,11 @@ export fn makeImport(baseData) {
             ## It's a resource.
             ifIs { data::source.hasName(@external) }
                 { die("Cannot import external resource.") };
-            return @importResource(data)
+            return @importResource{data*}
         };
 
     ## It's a whole-module import.
-    return @importModule(data)
+    return @importModule{data*}
 };
 
 ## Documented in spec.
