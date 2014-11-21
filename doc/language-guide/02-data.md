@@ -364,24 +364,26 @@ A record is a value that is constructed with an explicit record name and
 data payload. Record names can be either symbols or record classes.
 
 Record literals are introduced with an at-sign (`@`). This is followed by
-a required name and then a data payload, which must be a symbol table.
-The name and payload must each be surrounded by parentheses (separately), with
-the following exceptions:
+a required name, which must be a symbol; and then a data payload, which must
+be a symbol table. The name must be surrounded by parentheses, and the payload
+must be surrounded by curly braces.
 
-* If the name is literal, then it can be represented as its double-quoted
-  name, directly after the `@`, with no parentheses required. In addition,
-  if the name abides by the syntax for identifiers in the language, then the
-  quotes can be omitted.
+As an exception, if the name is literal, then it can be represented as its
+double-quoted name, directly after the `@`, with no parentheses required.
+In addition, if the name abides by the syntax for identifiers in the language,
+then the quotes can be omitted.
 
-* If the data payload is a literal symbol table form (`@{...}`), then it can
-  be represented without parentheses or the `@` prefix.
+The payload can use the same `*`-postfix interpolation syntax that is used
+on symbol tables. It is valid to interpolate symbol tables, other records (in
+which case the interpolated record name is ignored), and maps (as long as
+all keys are symbols).
 
 ```
-@(@heartState)(@{state: "pure"}  ## "heart state" value, symbol table payload
-@heartState{state: "pure"}       ## usual shorthand for same
+@(@heartState){state: "pure"}  ## "heart state" value, symbol table payload
+@"heartState"{state: "pure"}   ## shorthand for same
+@heartState{state: "pure"}     ## more usual shorthand for same
 
-@spell(@{name: "frotz", purpose: "cause glow"})  ## symbol table payload
-@spell{name: "frotz", purpose: "cause glow"}     ## shorthand for same
+@(calcName()){calcPayload()*}  ## with name and payload computed, not literal
 ```
 
 **Note:** As a convenience, the `get` function works on records
