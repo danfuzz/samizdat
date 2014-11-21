@@ -217,7 +217,7 @@ You can also run the various demo / test cases, with the scripts
 `demo/run <demo-number>` or `demo/run-all`. Demo numbers are of the form
 `X-NNN` where `X` is a category and `NNN` is a sequence number. Each lives in
 a directory named with its number suffixed with a suggestive summary, e.g.
-`0-001-string-literal`.
+`lib-001-bool`.
 
 #### Quick-turnaround partial build
 
