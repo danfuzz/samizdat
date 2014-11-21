@@ -256,7 +256,7 @@ $ cd samizdat
 $ ./demo/run-all --runtime=tot --compiler=simple --clean-build --time
 ```
 
-As of this writing, running this command takes about 33 minutes on a
+As of this writing, running this command takes about fifteen minutes on a
 mid-range laptop of recent vintage.
 
 
