@@ -93,14 +93,14 @@ exist, though all are still incomplete works-in-progress.
 
   See [the implementation's README](samtoc/README.md) for more details.
 
+
+Development, Building and Testing
+---------------------------------
+
 ### Editor Support
 
 Find syntax highlighter packages for Atom and TextMate / SublimeText in the
 [the etc/ directory](etc).
-
-
-Building and Testing
---------------------
 
 ### Prerequisites
 
