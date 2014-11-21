@@ -236,16 +236,14 @@ def parRecord = {:
         parParenExpression
     )
 
-    value = (
-        parParenExpression
-    |
-        @"{"
-        mappings = parMappings
-        @"}"
-        { makeSymbolTableExpression(mappings*) }
-    )
+    @"{"
+    mappings = parMappings
+    @"}"
 
-    { makeCall(LITS::Record, SYMS::new, name, value) }
+    {
+        makeCall(LITS::Record, SYMS::new, name,
+            makeSymbolTableExpression(mappings*))
+    }
 :};
 
 ## Parses a list item or function call argument. This handles all of:

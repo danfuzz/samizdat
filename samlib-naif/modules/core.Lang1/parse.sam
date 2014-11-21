@@ -191,17 +191,12 @@ def parRecord = PegMain.newSequence(
     PegChoice.new(
         parIdentifierSymbol,
         parParenExpression),
-    PegChoice.new(
-        parParenExpression,
-        PegSequence.new(
-            PegSet.new(@"{"),
-            parMappings,
-            PegSet.new(@"}"),
-            PegCode.new { ., ., ., mappings, . ->
-                makeSymbolTableExpression(mappings*)
-            })),
-    PegCode.new { ., name, value ->
-        makeCall(LITS::Record, SYMS::new, name, value)
+    PegSet.new(@"{"),
+    parMappings,
+    PegSet.new(@"}"),
+    PegCode.new { ., name, ., mappings, . ->
+        makeCall(LITS::Record, SYMS::new, name,
+            makeSymbolTableExpression(mappings*))
     });
 
 ## Documented in spec.
