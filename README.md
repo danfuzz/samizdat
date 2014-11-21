@@ -51,11 +51,17 @@ $ git clone git@github.com:danfuzz/samizdat.git
 $ cd samizdat
 $ . env.sh
 
-## Build and run everything.
-$ ./demo/run-all --runtime=tot --compiler=simple --clean-build --time
+## Build samex-naif (the basic runtime).
+$ blur --in-dir=samex-naif
 
-## Once built, run a script.
+## Build samex-tot (the somewhat better runtime), which takes much longer.
+$ blur --in-dir=samex-tot
+
+## Once a runtime is built, run a script.
 $ samex path/to/script.sam
+
+## Build everything from scratch, and run all tests.
+$ ./demo/run-all --runtime=tot --compiler=simple --clean-build
 ```
 
 
