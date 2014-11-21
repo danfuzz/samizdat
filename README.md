@@ -7,7 +7,8 @@ This project is an incomplete work-in-progress.
 * There are tons of rough edges and *many* things missing from both the
   design and implementation.
 * The code is aimed *way* more at ease-of-understanding and
-  ease-of-modification than efficiency.
+  ease-of-modification than efficiency. Generated parser performance is
+  particularly embarrassing.
 * Nearly everything is subject to change.
 
 - - - - - - - - - -
