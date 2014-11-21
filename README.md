@@ -16,15 +16,15 @@ This project is an incomplete work-in-progress.
 Samizdat
 ========
 
-This is the source for the Samizdat programming language, or "Sam" if
-you want to be terse.
+This is the the Samizdat programming language, or "Sam" if you want to be
+terse.
 
 Samizdat is a high-level programming language somewhere down the
 family lineage from all of [ALGOL](http://en.wikipedia.org/wiki/ALGOL),
 [Lisp](http://en.wikipedia.org/wiki/LISP), and
-[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is intended that the
-language be an attractive target for use in text processing, free-form data
-structure manipulation, and general higher-level systems programming.
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is intended to be an
+attractive target for use in text processing, free-form data structure
+manipulation, and general higher-level systems application programming.
 
 As a fundamental part of its philosophy, Samizdat eschews hidden state and
 randomness, aiming for it to be the case that a given piece of code will run
