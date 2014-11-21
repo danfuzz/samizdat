@@ -38,8 +38,9 @@ Find lots of documentation in [the doc/ directory](doc), including notably:
 * an [overview](doc/development-planning/overview.md) of the "moving parts"
   of the system.
 * a brief [development guide](doc/development-planning/guide.md).
-* a handful of [shout-outs](doc/notes/shout-outs.md) that may help understand
-  where the system is coming from (both literally and figuratively).
+* a [manifesto](doc/notes/manifesto.md) and a handful of
+  [shout-outs](doc/notes/shout-outs.md) that may help understand where the
+  system is coming from (both literally and figuratively).
 
 
 TLDR Get Started
