@@ -1,5 +1,5 @@
 Why is Samizdat aggressively self-hosted?
------------------------------------------
+=========================================
 
 There are lots of language implementations in the world that are themselves
 written mostly or entirely in other languages. Samizdat is not one of them.
