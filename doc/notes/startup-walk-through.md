@@ -1,5 +1,5 @@
 Runtime Startup Walk-Through
-----------------------------
+============================
 
 This is a brief sketch of what happens when the runtime gets started. This
 applies to both `samex-naif` and `samex-tot`.
