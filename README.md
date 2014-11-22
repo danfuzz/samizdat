@@ -27,11 +27,11 @@ attractive target for use in text processing, free-form data structure
 manipulation, and general higher-level systems application programming.
 
 As a fundamental part of its philosophy, Samizdat eschews hidden state and
-randomness, aiming for it to be the case that a given piece of code will run
-completely identically on multiple different runs. It also aims for the use
-of immutable data as an attractive first recourse. This all makes it a
-"functional" language of sorts, in the "Scheme camp" moreso than the
-"Haskell camp."
+randomness, aiming for programs to be fully deterministic unless they
+explicitly rely on external state (such as a filesystem or network link).
+It also attempts to make immutable data as an attractive first recourse.
+This all makes Samizdat a "functional" language of sorts, in the "Scheme camp"
+moreso than the "Haskell camp."
 
 Find lots of documentation in [the doc/ directory](doc), including notably:
 
