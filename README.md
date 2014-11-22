@@ -35,7 +35,7 @@ in the "Scheme camp" moreso than the "Haskell camp."
 
 Find lots of documentation in [the doc/ directory](doc), including notably:
 
-* an [overview](doc/development-planning/overview.md) of the "moving parts"
+* an [overview](doc/development-planning/overview.md) of the main components
   of the system.
 * a brief [development guide](doc/development-planning/guide.md).
 * a [manifesto](doc/notes/manifesto.md) and a handful of
