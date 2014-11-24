@@ -67,20 +67,21 @@ fn extractMethods(allMethods, scope) {
     def selectedMethods = allMethods.collect
         { one -> ifIs { one.hasName(scope) } { one } };
 
-    ## This becomes a map from method name to a pair `[name, closure]`, the
-    ## pairs being suitable for interpolation as arguments to the symbol table
-    ## constructor.
-    var converted = {};
+    ## This is a set-like map of method names, used to detect duplicates.
+    var names = @{};
 
-    selectedMethods.forEach { one ->
+    ## Each yield from the `collect` is a pair `[name, closure]`, which when
+    ## `.cat()`ed below are properly set up as arguments to the symbol table
+    ## constructor.
+    def pairs = selectedMethods.collect { one ->
         def name = one::name;
-        ifIs { converted.get(name) }
+        ifIs { names.get(name) }
             { die("Duplicate method: ", cast(String, name)) };
-        converted := {converted*, (name): [makeLiteral(name), @closure{one*}]}
+        names := @{names*, (name): true};
+        [makeLiteral(name), @closure{one*}]
     };
 
-    return makeCall(LITS::SymbolTable, SYMS::new,
-        ([].cat(converted.valueList()*))*);
+    return makeCall(LITS::SymbolTable, SYMS::new, [].cat(pairs*)*)
 };
 
 ## Helper for `makeMapExpression` and `makeSymbolTableExpression`, which

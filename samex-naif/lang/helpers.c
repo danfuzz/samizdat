@@ -21,29 +21,23 @@ zvalue listFrom1(zvalue e1) {
 
 // Documented in header.
 zvalue listFrom2(zvalue e1, zvalue e2) {
-    return listFrom5(e1, e2, NULL, NULL, NULL);
+    return listFrom4(e1, e2, NULL, NULL);
 }
 
 // Documented in header.
 zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
-    return listFrom5(e1, e2, e3, NULL, NULL);
+    return listFrom4(e1, e2, e3, NULL);
 }
 
 // Documented in header.
 zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
-    return listFrom5(e1, e2, e3, e4, NULL);
-}
-
-// Documented in header.
-zvalue listFrom5(zvalue e1, zvalue e2, zvalue e3, zvalue e4, zvalue e5) {
-    zvalue elems[5];
+    zvalue elems[4];
     zint at = 0;
 
     if (e1 != NULL) { elems[at] = e1; at++; }
     if (e2 != NULL) { elems[at] = e2; at++; }
     if (e3 != NULL) { elems[at] = e3; at++; }
     if (e4 != NULL) { elems[at] = e4; at++; }
-    if (e5 != NULL) { elems[at] = e5; at++; }
 
     return (at == 0) ? EMPTY_LIST : listFromZarray((zarray) {at, elems});
 }
@@ -59,31 +53,19 @@ zvalue listPrepend(zvalue elem, zvalue list) {
 }
 
 // Documented in header.
-zvalue mapAppend(zvalue map, zvalue key, zvalue value) {
-    return cm_cat(map, mapFrom1(key, value));
-}
-
-// Documented in header.
-zvalue mapFrom1(zvalue k1, zvalue v1) {
-    return (v1 == NULL)
-        ? EMPTY_MAP
-        : mapFromMapping((zmapping) {k1, v1});
-}
-
-// Documented in header.
 zvalue recordFrom1(zvalue name, zvalue k1, zvalue v1) {
-    return recordFrom4(name, k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+    return cm_new(Record, name, tableFrom1(k1, v1));
 }
 
 // Documented in header.
 zvalue recordFrom2(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return recordFrom4(name, k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+    return cm_new(Record, name, tableFrom2(k1, v1, k2, v2));
 }
 
 // Documented in header.
 zvalue recordFrom3(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3) {
-    return recordFrom4(name, k1, v1, k2, v2, k3, v3, NULL, NULL);
+    return cm_new(Record, name, tableFrom3(k1, v1, k2, v2, k3, v3));
 }
 
 // Documented in header.

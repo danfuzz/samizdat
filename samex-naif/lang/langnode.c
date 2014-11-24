@@ -60,7 +60,7 @@ static zvalue addImportBinding(zvalue map, zvalue source, zvalue name) {
     zvalue names = cm_get(map, source);
 
     names = addTypeBinding((names == NULL) ? EMPTY_MAP : names, name);
-    return cm_cat(map, mapFrom1(source, names));
+    return cm_cat(map, mapFromMapping((zmapping) {source, names}));
 }
 
 /**
@@ -76,7 +76,7 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 
     // Unlike the `LangNode` version, this one doesn't de-duplicate formats.
     formats = listAppend(formats, format);
-    return cm_cat(map, mapFrom1(source, formats));
+    return cm_cat(map, mapFromMapping((zmapping) {source, formats}));
 }
 
 // Documented in `LangNode` source.
@@ -125,7 +125,8 @@ static zvalue expandYield(zvalue node) {
 // Documented in `LangNode` source.
 static zvalue extractMethods(zvalue allMethods, zvalue scope) {
     zarray methArr = zarrayFromList(allMethods);
-    zvalue converted = EMPTY_MAP;
+    zvalue names = EMPTY_SYMBOL_TABLE;
+    zvalue pairs = EMPTY_LIST;
 
     for (zint i = 0; i < methArr.size; i++) {
         zvalue one = methArr.elems[i];
@@ -133,19 +134,19 @@ static zvalue extractMethods(zvalue allMethods, zvalue scope) {
 
         if (!valEq(scope, get_name(one))) {
             continue;
-        } else if (cm_get(converted, name)) {
+        } else if (cm_get(names, name)) {
             die("Duplicate method: %s", cm_debugString(name));
         }
 
-        converted = mapAppend(converted,
-            name,
+        names = symtabCatMapping(names, (zmapping) {name, BOOL_TRUE});
+        pairs = listAppend(pairs,
             listFrom2(
                 makeLiteral(name),
                 cm_new(Record, SYM(closure), one)));
     }
 
     return makeCall(LITS(SymbolTable), SYMS(new),
-        METH_APPLY(EMPTY_LIST, cat, METH_CALL(converted, valueList)));
+        METH_APPLY(EMPTY_LIST, cat, pairs));
 }
 
 // Documented in `LangNode` source.
