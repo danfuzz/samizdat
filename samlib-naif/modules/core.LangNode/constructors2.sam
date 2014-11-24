@@ -81,7 +81,7 @@ fn extractMethods(allMethods, scope) {
         [makeLiteral(name), @closure{one*}]
     };
 
-    return makeCall(LITS::SymbolTable, SYMS::new, [].cat(pairs*))
+    return makeCall(LITS::SymbolTable, SYMS::new, [].cat(pairs*)*)
 };
 
 ## Helper for `makeMapExpression` and `makeSymbolTableExpression`, which
