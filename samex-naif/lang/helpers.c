@@ -21,29 +21,23 @@ zvalue listFrom1(zvalue e1) {
 
 // Documented in header.
 zvalue listFrom2(zvalue e1, zvalue e2) {
-    return listFrom5(e1, e2, NULL, NULL, NULL);
+    return listFrom4(e1, e2, NULL, NULL);
 }
 
 // Documented in header.
 zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
-    return listFrom5(e1, e2, e3, NULL, NULL);
+    return listFrom4(e1, e2, e3, NULL);
 }
 
 // Documented in header.
 zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
-    return listFrom5(e1, e2, e3, e4, NULL);
-}
-
-// Documented in header.
-zvalue listFrom5(zvalue e1, zvalue e2, zvalue e3, zvalue e4, zvalue e5) {
-    zvalue elems[5];
+    zvalue elems[4];
     zint at = 0;
 
     if (e1 != NULL) { elems[at] = e1; at++; }
     if (e2 != NULL) { elems[at] = e2; at++; }
     if (e3 != NULL) { elems[at] = e3; at++; }
     if (e4 != NULL) { elems[at] = e4; at++; }
-    if (e5 != NULL) { elems[at] = e5; at++; }
 
     return (at == 0) ? EMPTY_LIST : listFromZarray((zarray) {at, elems});
 }
