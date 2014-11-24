@@ -580,7 +580,6 @@ zvalue makeFullClosure(zvalue base) {
 
     return cm_new(Record, SYM(closure),
         cm_cat(
-            EMPTY_SYMBOL_TABLE,
             base,
             tableFrom3(
                 SYM(formals),    formals,
