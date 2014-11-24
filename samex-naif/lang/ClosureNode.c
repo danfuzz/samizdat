@@ -62,6 +62,9 @@ typedef struct {
     /** `node::statements`. */
     zvalue statements;
 
+    /** `zarray` pointer into `statements`. */
+    zarray statementsArr;
+
     /** `node::yield`. */
     zvalue yield;
 
@@ -252,7 +255,7 @@ static zvalue callClosureMain(zvalue node, Frame *parentFrame,
     frameInit(&frame, parentFrame, parentClosure, argTable);
 
     // Execute the statements, updating the frame as needed.
-    exnoExecuteStatements(info->statements, &frame);
+    exnoExecuteStatements(info->statementsArr, &frame);
 
     // Execute the yield expression, and return the final result.
     return exnoExecute(info->yield, &frame);
@@ -308,6 +311,8 @@ CMETH_IMPL_1(ClosureNode, new, orig) {
     exnoConvert(&info->statements);
     exnoConvert(&info->yield);
     convertFormals(info, formals);
+
+    info->statementsArr = zarrayFromList(info->statements);
 
     return result;
 }

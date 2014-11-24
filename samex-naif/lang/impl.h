@@ -133,11 +133,11 @@ void exnoConvert(zvalue *orig);
 zvalue exnoExecute(zvalue node, Frame *frame);
 
 /**
- * Executes a list (per se) of translated `expression` nodes, treating them
- * as statements. (E.g., it allows variable definitions and doesn't care if
- * they yield void.)
+ * Executes a `zarray` of translated `expression` nodes, treating them as
+ * statements. (E.g., it allows variable definitions and doesn't care if they
+ * yield void.)
  */
-void exnoExecuteStatements(zvalue statements, Frame *frame);
+void exnoExecuteStatements(zarray statements, Frame *frame);
 
 /**
  * Given an `ExecNode`, returns the name of the variable it defines, if any.
