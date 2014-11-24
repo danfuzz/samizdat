@@ -60,7 +60,7 @@ static zvalue addImportBinding(zvalue map, zvalue source, zvalue name) {
     zvalue names = cm_get(map, source);
 
     names = addTypeBinding((names == NULL) ? EMPTY_MAP : names, name);
-    return cm_cat(map, mapFrom1(source, names));
+    return cm_cat(map, mapFromMapping((zmapping) {source, names}));
 }
 
 /**
@@ -76,7 +76,7 @@ static zvalue addResourceBinding(zvalue map, zvalue source, zvalue format) {
 
     // Unlike the `LangNode` version, this one doesn't de-duplicate formats.
     formats = listAppend(formats, format);
-    return cm_cat(map, mapFrom1(source, formats));
+    return cm_cat(map, mapFromMapping((zmapping) {source, formats}));
 }
 
 // Documented in `LangNode` source.

@@ -53,13 +53,6 @@ zvalue listPrepend(zvalue elem, zvalue list) {
 }
 
 // Documented in header.
-zvalue mapFrom1(zvalue k1, zvalue v1) {
-    return (v1 == NULL)
-        ? EMPTY_MAP
-        : mapFromMapping((zmapping) {k1, v1});
-}
-
-// Documented in header.
 zvalue recordFrom1(zvalue name, zvalue k1, zvalue v1) {
     return cm_new(Record, name, tableFrom1(k1, v1));
 }
