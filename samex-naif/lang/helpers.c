@@ -59,11 +59,6 @@ zvalue listPrepend(zvalue elem, zvalue list) {
 }
 
 // Documented in header.
-zvalue mapAppend(zvalue map, zvalue key, zvalue value) {
-    return cm_cat(map, mapFrom1(key, value));
-}
-
-// Documented in header.
 zvalue mapFrom1(zvalue k1, zvalue v1) {
     return (v1 == NULL)
         ? EMPTY_MAP

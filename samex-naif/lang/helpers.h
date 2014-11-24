@@ -49,11 +49,6 @@ zvalue listAppend(zvalue list, zvalue elem);
 zvalue listPrepend(zvalue elem, zvalue list);
 
 /**
- * Appends a mapping to a map.
- */
-zvalue mapAppend(zvalue map, zvalue key, zvalue value);
-
-/**
  * Makes a 0-1 mapping map. Values are allowed to be `NULL`, in
  * which case the corresponding key isn't included in the result.
  */
