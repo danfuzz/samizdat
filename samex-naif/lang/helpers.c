@@ -61,18 +61,18 @@ zvalue mapFrom1(zvalue k1, zvalue v1) {
 
 // Documented in header.
 zvalue recordFrom1(zvalue name, zvalue k1, zvalue v1) {
-    return recordFrom4(name, k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+    return cm_new(Record, name, tableFrom1(k1, v1));
 }
 
 // Documented in header.
 zvalue recordFrom2(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return recordFrom4(name, k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+    return cm_new(Record, name, tableFrom2(k1, v1, k2, v2));
 }
 
 // Documented in header.
 zvalue recordFrom3(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3) {
-    return recordFrom4(name, k1, v1, k2, v2, k3, v3, NULL, NULL);
+    return cm_new(Record, name, tableFrom3(k1, v1, k2, v2, k3, v3));
 }
 
 // Documented in header.
