@@ -48,6 +48,9 @@ typedef struct {
 
     /** `node::values`. Also used to hold the `statements` of an `import*`. */
     zvalue values;
+
+    /** `zarray` pointer into `values`, when useful. */
+    zarray valuesArr;
 } ExecNodeInfo;
 
 /**
@@ -88,7 +91,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
         case EVAL_call: {
             zvalue target = execute(info->target, frame, EX_value);
             zvalue name = execute(info->name, frame, EX_value);
-            zarray values = zarrayFromList(info->values);
+            zarray values = info->valuesArr;
 
             // Evaluate each argument expression.
             zvalue args[values.size];
@@ -119,7 +122,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
                 die("Invalid use of `import*` node.");
             }
 
-            exnoExecuteStatements(info->values, frame);
+            exnoExecuteStatements(info->valuesArr, frame);
             return NULL;
         }
 
@@ -228,11 +231,9 @@ zvalue exnoExecute(zvalue node, Frame *frame) {
 }
 
 // Documented in header.
-void exnoExecuteStatements(zvalue statements, Frame *frame) {
-    zarray arr = zarrayFromList(statements);
-
-    for (zint i = 0; i < arr.size; i++) {
-        execute(arr.elems[i], frame, EX_statement);
+void exnoExecuteStatements(zarray statements, Frame *frame) {
+    for (zint i = 0; i < statements.size; i++) {
+        execute(statements.elems[i], frame, EX_statement);
     }
 }
 
@@ -297,6 +298,10 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             exnoConvert(&info->name);
             exnoConvert(&info->values);
 
+            if (type == EVAL_call) {
+                info->valuesArr = zarrayFromList(info->values);
+            }
+
             break;
         }
 
@@ -319,6 +324,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         case EVAL_importResource: {
             info->values = makeDynamicImport(orig);
             exnoConvert(&info->values);
+            info->valuesArr = zarrayFromList(info->values);
             break;
         }
 
