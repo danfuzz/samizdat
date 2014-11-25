@@ -795,11 +795,6 @@ zvalue makeRecordExpression(zvalue name, zvalue data) {
 }
 
 // Documented in spec.
-zvalue makeSymbolLiteral(zvalue name) {
-    return makeLiteral(symbolFromString(name));
-}
-
-// Documented in spec.
 zvalue makeSymbolTableExpression(zvalue mappings) {
     return makeMapLikeExpression(
         mappings, LITS(SymbolTable), LITS(EMPTY_SYMBOL_TABLE));

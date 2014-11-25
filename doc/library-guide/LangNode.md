@@ -360,11 +360,6 @@ Most of the time, this results in a node representing a call to `Record.new`.
 However, if both `name` and `data` are `literal` nodes, this function
 returns a `literal` node representing the actual constructed record.
 
-#### `makeSymbolLiteral(name) -> node`
-
-Makes a literal node that represents the symbol with the given `name`.
-`name` must be a string.
-
 #### `makeSymbolTableExpression(mappings*) -> node`
 
 Makes an expression node that represents the construction of a symbol table
