@@ -240,10 +240,7 @@ def parRecord = {:
     mappings = parMappings
     @"}"
 
-    {
-        makeCall(LITS::Record, SYMS::new, name,
-            makeSymbolTableExpression(mappings*))
-    }
+    { makeRecordExpression(name, makeSymbolTableExpression(mappings*)) }
 :};
 
 ## Parses a list item or function call argument. This handles all of:
