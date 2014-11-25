@@ -918,7 +918,7 @@ DEF_PARSE(formal) {
         repeat = get_name(repeat);
     }
 
-    return tableFrom2(SYM(name), name, SYM(repeat), repeat);
+    return recordFrom2(SYM(formal), SYM(name), name, SYM(repeat), repeat);
 }
 
 // Documented in spec.
@@ -1030,7 +1030,7 @@ DEF_PARSE(methodDef) {
 
     zvalue closure = withFormals(baseClosure,
         listPrepend(
-            tableFrom1(SYM(name), SYM(this)),
+            recordFrom1(SYM(formal), SYM(name), SYM(this)),
             cm_get(baseClosure, SYM(formals))));
 
     return cm_new(Record, scope, closure);

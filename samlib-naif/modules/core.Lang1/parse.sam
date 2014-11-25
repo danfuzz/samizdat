@@ -441,7 +441,7 @@ def parFormal = PegMain.newSequence(
             PegSet.new(@"?", @"*", @"+"),
             PegCode.new { ., r -> @{repeat: r.get_name()} }),
         PegResult.new(@{})),
-    PegCode.new { name, repeat -> @{name*, repeat*} });
+    PegCode.new { name, repeat -> @formal{name*, repeat*} });
 
 ## Documented in spec.
 def parFormalsList = PegMain.newChoice(
@@ -514,7 +514,8 @@ def parMethodDef = PegMain.newSequence(
     parFunctionCommon,
     PegCode.new { scope, ., baseClosure ->
         def closure =
-            withFormals(baseClosure, [@{name: @this}, baseClosure::formals*]);
+            withFormals(baseClosure,
+                [@formal{name: @this}, baseClosure::formals*]);
         @(scope){closure*}
     });
 
