@@ -195,8 +195,8 @@ export fn localVarName(name, index) {
     return safeName("local", name, index)
 };
 
-## Returns `{names, vars, inits}` for all variables that are defined
-## within the given closure.
+## Returns `@{names, inits, cleanups, vars}` for all variables that are
+## defined within the given closure.
 export fn processVars(clo) {
     def formals = processFormals(clo);
     def freeVars = processFreeVars(clo);
