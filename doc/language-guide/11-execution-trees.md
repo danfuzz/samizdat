@@ -445,7 +445,7 @@ Examples:
 @external{name: "core.potions.Blort"}
 ```
 
-#### `formal` &mdash; `@{name?: symbol, repeat?: repeat}`
+#### `formal` &mdash; `@formal{name?: symbol, repeat?: repeat}`
 
 * `name: symbol` (optional) &mdash; An arbitrary symbol, which indicates the
   name of the variable to be bound for this formal. If omitted, then this
@@ -472,6 +472,8 @@ Examples:
   * `@"+"` &mdash; indicates that this formal binds as many actual
     arguments as are available, and it must bind at least one. Other than
     the minumum of one, this is identical to the `"*"` modifier.
+
+This is a representation of a formal argument in a `@closure` node.
 
 If no `repeat` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
