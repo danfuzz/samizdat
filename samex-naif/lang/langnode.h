@@ -27,6 +27,9 @@
 bool canYieldVoid(zvalue node);
 
 // Documented in spec.
+zvalue extractLiteral(zvalue node);
+
+// Documented in spec.
 zvalue formalsMaxArgs(zvalue formals);
 
 // Documented in spec.
@@ -103,6 +106,9 @@ zvalue makeNoYield(zvalue value);
 
 /** Documented in spec. */
 zvalue makeNonlocalExit(zvalue function, zvalue optValue);
+
+// Documented in spec.
+zvalue makeRecordExpression(zvalue name, zvalue data);
 
 // Documented in spec.
 zvalue makeSymbolLiteral(zvalue name);

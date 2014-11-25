@@ -460,6 +460,16 @@ export fn makeMaybeValue(node) {
 };
 
 ## Documented in spec.
+export fn makeRecordExpression(name, data) {
+    return ifValueAndElse
+        { extractLiteral(name) }
+        { . -> extractLiteral(data) }
+        { nameValue, dataValue -> makeLiteral(@(nameValue){dataValue*}) }
+        ## else
+        { makeCall(LITS::Record, SYMS::new, name, data) }
+};
+
+## Documented in spec.
 export fn makeSymbolTableExpression(mappings*) {
     return makeMapLikeExpression(
         mappings, LITS::SymbolTable, LITS::EMPTY_SYMBOL_TABLE)

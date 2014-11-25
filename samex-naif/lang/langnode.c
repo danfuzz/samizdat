@@ -231,6 +231,13 @@ bool canYieldVoid(zvalue node) {
 }
 
 // Documented in spec.
+zvalue extractLiteral(zvalue node) {
+    return recordEvalTypeIs(node, EVAL_literal)
+        ? cm_get(node, SYM(value))
+        : NULL;
+}
+
+// Documented in spec.
 zvalue formalsMaxArgs(zvalue formals) {
     zint maxArgs = 0;
     zint sz = get_size(formals);
@@ -775,6 +782,18 @@ zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
     return recordFrom2(SYM(nonlocalExit),
         SYM(function), function, SYM(value), value);
+}
+
+// Documented in spec.
+zvalue makeRecordExpression(zvalue name, zvalue data) {
+    zvalue nameValue = extractLiteral(name);
+    zvalue dataValue = extractLiteral(data);
+
+    if ((nameValue != NULL) && (dataValue != NULL)) {
+        return makeLiteral(cm_new(Record, nameValue, dataValue));
+    } else {
+        return makeCall(LITS(Record), SYMS(new), listFrom2(name, data));
+    }
 }
 
 // Documented in spec.
