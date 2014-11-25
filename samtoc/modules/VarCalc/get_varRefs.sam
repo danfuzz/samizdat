@@ -43,12 +43,12 @@ export fn get_varRefs(node) {
             ## yield def (if any).
             def baseLocals = [
                 node::yieldDef?*,
-                ( f in node::formals -> f::name )*];
+                [ f in node::formals -> f::name ]*];
 
-            ## The extra element at the end is to represent the closure
-            ## yield.
-            def statementDefs =
-                [[ s in node::statements -> get_varDefs(s) ]*, []];
+            ## The extra element at the end is to represent the yield.
+            def statementDefs = [
+                [ s in node::statements -> get_varDefs(s) ]*,
+                []];
 
             ## What's happening here is that for each statement (and the
             ## yield at the end), we get its variable references and
