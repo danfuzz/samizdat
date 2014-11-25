@@ -74,6 +74,11 @@ arguments could possibly accept. If there is no limit, this returns `-1`.
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
 
+#### `extractLiteral(node) -> . | void`
+
+If `node` is a `literal`, this returns its literal value. If not, this
+returns void.
+
 #### `get_baseName(taggedName) -> string`
 
 Gets the "base" name from a tagged name value. Operates on `@external`
@@ -345,6 +350,15 @@ treated as if it were specified as `@void{}`.
 
 This produces a `nonlocalExit` node per se, which must eventually be
 processed via `makeFullClosure()` or similar.
+
+#### `makeRecordExpression(name, data) -> node`
+
+Makes an expression node that represents a construction of a record with
+the given `name` and `data`, both themselves expression nodes.
+
+Most of the time, this results in a node representing a call to `Record.new`.
+However, if both `name` and `data` are `literal` nodes, this function
+returns a `literal` node representing the actual constructed record.
 
 #### `makeSymbolLiteral(name) -> node`
 

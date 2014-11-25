@@ -121,7 +121,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
         zvalue name, repeat;
         zrepeat rep;
 
-        symtabGet2(formal, SYM(name), &name, SYM(repeat), &repeat);
+        recGet2(formal, SYM(name), &name, SYM(repeat), &repeat);
 
         if (name != NULL) {
             names[nameCount] = name;

@@ -51,6 +51,7 @@ DEF_SYMBOL(export,                "export");
 DEF_SYMBOL(exportSelection,       "exportSelection");
 DEF_SYMBOL(external,              "external");
 DEF_SYMBOL(fn,                    "fn");
+DEF_SYMBOL(formal,                "formal");
 DEF_SYMBOL(formals,               "formals");
 DEF_SYMBOL(format,                "format");
 DEF_SYMBOL(function,              "function");

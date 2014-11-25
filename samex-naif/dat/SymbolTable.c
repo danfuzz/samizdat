@@ -263,17 +263,6 @@ zvalue symtabGet(zvalue symtab, zvalue key) {
 }
 
 // Documented in header.
-bool symtabGet2(zvalue symtab,
-        zvalue key1, zvalue *got1,
-        zvalue key2, zvalue *got2) {
-    assertHasClass(symtab, CLS_SymbolTable);
-    *got1 = symtabGetUnchecked(symtab, key1);
-    *got2 = symtabGetUnchecked(symtab, key2);
-
-    return (*got1 != NULL) && (*got2 != NULL);
-}
-
-// Documented in header.
 zint symtabSize(zvalue symtab) {
     assertHasClass(symtab, CLS_SymbolTable);
     return getInfo(symtab)->size;
