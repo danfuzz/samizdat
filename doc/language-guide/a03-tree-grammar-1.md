@@ -417,13 +417,13 @@ def parPostfixOperator = {:
     @"."
     name = parNameSymbol
     {
-        def getterRef = makeSymbolLiteral("get_".cat(name));
+        def getterRef = makeLiteral(@get_.cat(name));
         { node ->
             def getterCall = makeCall(node, getterRef);
             @(getterCall.get_name()){
                 getterCall*,
                 lvalue: { expr ->
-                    def setterRef = makeSymbolLiteral("set_".cat(name));
+                    def setterRef = makeLiteral(@set_.cat(name));
                     makeCall(node, setterRef, expr)
                 }
             }
