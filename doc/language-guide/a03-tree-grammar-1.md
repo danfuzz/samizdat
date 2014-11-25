@@ -116,7 +116,7 @@ def parVarLvalue = {:
 ## returning a symbol literal in all cases.
 def parIdentifierSymbol = {:
     s = @string
-    { makeSymbolLiteral(s::value) }
+    { makeLiteral(cast(Symbol, s::value)) }
 |
     name = parNameSymbol
     { makeLiteral(name) }

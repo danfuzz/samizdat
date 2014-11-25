@@ -323,7 +323,10 @@ DEF_PARSE(identifierSymbol) {
     MARK();
 
     zvalue s = MATCH(string);
-    if (s != NULL) { return makeSymbolLiteral(cm_get(s, SYM(value))); }
+    if (s != NULL) {
+        zvalue value = cm_get(s, SYM(value));
+        return makeLiteral(symbolFromString(value));
+    }
 
     zvalue name = PARSE(nameSymbol);
     if (name != NULL) { return makeLiteral(name); }
