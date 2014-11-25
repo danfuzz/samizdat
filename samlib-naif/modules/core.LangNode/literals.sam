@@ -88,11 +88,6 @@ export fn makeLiteral(value) {
     return @literal{value}
 };
 
-## Documented in spec.
-export fn makeSymbolLiteral(name) {
-    return makeLiteral(cast(Symbol, name))
-};
-
 ## Note: The following constants need to be defined *after* the function
 ## `makeLiteral()` gets defined, as these use that.
 

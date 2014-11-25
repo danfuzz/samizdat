@@ -43,38 +43,34 @@ export fn get_varRefs(node) {
             ## yield def (if any).
             def baseLocals = [
                 node::yieldDef?*,
-                ( f in node::formals -> f::name )*];
+                [ f in node::formals -> f::name ]*];
 
-            ## The extra element at the end is to represent the closure
-            ## yield.
-            def statementDefs =
-                [[ s in node::statements -> get_varDefs(s) ]*, []];
+            ## The extra element at the end is to represent the yield.
+            def statementDefs = [
+                [ s in node::statements -> get_varDefs(s) ]*,
+                []];
 
             ## What's happening here is that for each statement (and the
-            ## yield at the end), we get its variable references and
-            ## remove from them refs for any variables that are locally
-            ## defined before the statement. This produces the array
-            ## `statementRefs` whose elements are merged, producing the
-            ## full set of free variables referenced by the closure as a
-            ## whole. Deletion from the list is achieved by converting the
-            ## refs to a map (refs as keys, values all `null`), and then
-            ## doing key deletion. The resulting `statmentRefs` is a list
-            ## of these maps.
+            ## yield at the end), we get its variable references and remove
+            ## from them refs for any variables that are locally defined
+            ## before the statement. This produces the array `statementRefs`
+            ## whose elements are merged, producing the full set of free
+            ## variables referenced by the closure as a whole. Deletion from
+            ## the list is achieved by converting the refs to a symtab (names
+            ## as keys, values all `null`), and then doing key deletion. The
+            ## resulting `statmentRefs` is a list of these symtabs.
             def statementRefs = [
                     s in [node::statements*, node::yield],
                     idx in (0..) ->
                 def defs = baseLocals.cat(statementDefs[..!idx]*);
-                var refs = {get_varRefs(s)*: null};
-                for (d in defs) {
-                   refs := refs.del(d)
-                };
-                refs
+                @{get_varRefs(s)*: null}.del(defs*)
             ];
 
             ## The result of concatenating all the `statementRefs` is a
-            ## map. The final result is the list of refs, that is, a list
-            ## of all the keys.
-            {}.cat(statementRefs*).keyList();
+            ## symtab. The final result is the list of referenced variable
+            ## names, that is, a list of all the keys. The cast to `Map` is
+            ## because symtab doesn't have `keyList()`.
+            cast(Map, @{}.cat(statementRefs*)).keyList();
         };
 
         @closureRef: {

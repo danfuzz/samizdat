@@ -83,41 +83,41 @@ fn processFormalsWithRepeat(clo, names) {
         [].cat([ v in varList -> v::preInit ]*)*
     ];
 
-    def vars = ( v in varList ->
+    def vars = [ v in varList ->
         (def origName = v::origName)
             & @{(origName): v.del(@preInit)}
-    );
+    ];
 
-    return {names, preInits, cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits, cleanups: [], vars: @{}.cat(vars*)}
 };
 
-## Returns `{names, vars, preInits}` for the formal arguments to the
-## given closure, if any.
+## Returns `@{names, preInits, cleanups, vars}` for the formal arguments to
+## the given closure, if any.
 fn processFormals(clo) {
     def names = [ f in clo::formals -> f::name ];
 
-    def vars = ( idx in (0..), f in clo::formals ->
+    def vars = [ idx in (0..), f in clo::formals ->
         if (f::repeat) {
             ## At least one argument has a repeat specifier. Do the requisite
             ## processing.
             return processFormalsWithRepeat(clo, names)
         };
 
-        (def name = f::name) &
-            @{(name): {
+        (def name = f::name)
+            & @{(name): {
                 origName: name,
                 kind:     "arg",
                 name:     safeName("arg", name, idx),
                 init:     MethCall.new("CLS_Result", "SYM(new)",
                               "args.elems[\(idx)]")
             }}
-    );
+    ];
 
-    return {names, preInits: [], cleanups: [], vars: {}.cat(vars*)}
+    return {names, preInits: [], cleanups: [], vars: @{}.cat(vars*)}
 };
 
-## Returns `{names, vars, preInits}` for the yield definition of the given
-## closure, if any.
+## Returns `@{names, preInits, cleanups, vars}` for the yield definition of
+## the given closure, if any.
 fn processYieldDef(clo) {
     return if (def name = clo::yieldDef) {
         @{
@@ -139,8 +139,8 @@ fn processYieldDef(clo) {
     }
 };
 
-## Returns `{names, vars, preInits}` for the free variables of the given
-## closure, if any.
+## Returns `@{names, preInits, cleanups, vars}` for the free variables of the
+## given closure, if any.
 fn processFreeVars(clo) {
     def names = get_varRefs(clo);
     def vars = [ idx in (0..), name in names ->
@@ -195,8 +195,8 @@ export fn localVarName(name, index) {
     return safeName("local", name, index)
 };
 
-## Returns `{names, vars, inits}` for all variables that are defined
-## within the given closure.
+## Returns `@{names, inits, cleanups, vars}` for all variables that are
+## defined within the given closure.
 export fn processVars(clo) {
     def formals = processFormals(clo);
     def freeVars = processFreeVars(clo);

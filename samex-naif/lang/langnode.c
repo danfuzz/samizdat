@@ -313,13 +313,11 @@ zvalue get_definedNames(zvalue node) {
 
             zvalue prefix = cm_get(node, SYM(prefix));
             if (prefix != NULL) {
-                zvalue prefixStr = cm_castFrom(CLS_String, prefix);
                 zarray arr = zarrayFromList(select);
                 zvalue elems[arr.size];
 
                 for (zint i = 0; i < arr.size; i++) {
-                    elems[i] =
-                        symbolFromString(cm_cat(prefixStr, arr.elems[i]));
+                    elems[i] = cm_cat(prefix, arr.elems[i]);
                 }
 
                 return listFromZarray((zarray) {arr.size, elems});
@@ -794,11 +792,6 @@ zvalue makeRecordExpression(zvalue name, zvalue data) {
     } else {
         return makeCall(LITS(Record), SYMS(new), listFrom2(name, data));
     }
-}
-
-// Documented in spec.
-zvalue makeSymbolLiteral(zvalue name) {
-    return makeLiteral(symbolFromString(name));
 }
 
 // Documented in spec.

@@ -76,10 +76,7 @@ export fn get_definedNames(node) {
                     };
 
                 ifValue { node::prefix }
-                    { prefix ->
-                        select.collect
-                            { name -> cast(Symbol, "".cat(prefix, name)) }
-                    }
+                    { prefix -> select.collect { name -> prefix.cat(name) } }
                     { select }
             },
 
