@@ -189,7 +189,7 @@ char *utilStrdup(const char *string) {
     zint len = strlen(string);
     char *result = utilAlloc(len + 1);
 
-    memcpy(result, string, len);
+    utilCpy(char, result, string, len);
     result[len] = '\0';
     return result;
 }
