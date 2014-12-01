@@ -16,148 +16,105 @@
 #include "langnode/type.h"
 #include "langnode/consts.h"
 
+
+//
+// Parallel to `constructors1.sam`:
+//
+
+// These are all documented in spec.
+zvalue makeApply(zvalue target, zvalue name, zvalue values);
+zvalue makeBasicClosure(zvalue map);
+zvalue makeCall(zvalue target, zvalue name, zvalue values);
+zvalue makeExport(zvalue node);
+zvalue makeExportSelection(zvalue names);
+zvalue makeFunCall(zvalue function, zvalue values);
+zvalue makeMaybe(zvalue value);
+zvalue makeNoYield(zvalue value);
+zvalue makeNonlocalExit(zvalue function, zvalue optValue);
+zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue);
+zvalue makeVarFetch(zvalue name);
+zvalue makeVarFetchGeneral(zvalue name);
+zvalue makeVarRef(zvalue name);
+zvalue makeVarStore(zvalue name, zvalue value);
+zvalue withFormals(zvalue node, zvalue formals);
+zvalue withName(zvalue node, zvalue name);
+zvalue withYieldDef(zvalue node, zvalue name);
+zvalue withoutIntermediates(zvalue node);
+
+
+//
+// Parallel to `constructors2.sam`:
+//
+
+// These are all documented in spec.
+zvalue makeAssignmentIfPossible(zvalue target, zvalue value);
+zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values);
+zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods);
+zvalue makeDynamicImport(zvalue node);
+zvalue makeFullClosure(zvalue base);
+zvalue makeFunCallGeneral(zvalue function, zvalue values);
+zvalue makeImport(zvalue baseData);
+zvalue makeInfoTable(zvalue node);
+zvalue makeInterpolate(zvalue node);
+zvalue makeMapExpression(zvalue mappings);
+zvalue makeMaybeValue(zvalue expression);
+zvalue makeRecordExpression(zvalue name, zvalue data);
+zvalue makeSymbolTableExpression(zvalue mappings);
+zvalue makeThunk(zvalue expression);
+zvalue withModuleDefs(zvalue node);
+zvalue withTop(zvalue node);
+zvalue withoutTops(zvalue node);
+
+
+//
+// Parallel to `literals.sam`:
+//
+
 /** Equivalent to `LITS::<name>` in the spec. */
 #define LITS(name) (LIT_##name)
-
-/** Equivalent to `REFS::<name>` in the spec. */
-#define REFS(name) (makeVarFetch(SYM(name)))
 
 /** Equivalent to `SYMS::<name>` in the spec. */
 #define SYMS(name) (makeLiteral(SYM(name)))
 
 // Documented in spec.
-bool canYieldVoid(zvalue node);
-
-// Documented in spec.
-zvalue extractLiteral(zvalue node);
-
-// Documented in spec.
-zvalue formalsMaxArgs(zvalue formals);
-
-// Documented in spec.
-zvalue formalsMinArgs(zvalue formals);
-
-// Documented in spec.
-zvalue get_baseName(zvalue source);
-
-// Documented in spec.
-zvalue get_definedNames(zvalue node);
-
-// Documented in spec.
-bool isExpression(zvalue node);
-
-// Documented in spec.
-zvalue makeApply(zvalue target, zvalue name, zvalue values);
-
-// Documented in spec.
-zvalue makeAssignmentIfPossible(zvalue target, zvalue value);
-
-// Documented in spec.
-zvalue makeBasicClosure(zvalue map);
-
-// Documented in spec.
-zvalue makeCall(zvalue target, zvalue name, zvalue values);
-
-// Documented in spec.
-zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values);
-
-// Documented in spec.
-zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods);
-
-// Documented in spec.
-zvalue makeDynamicImport(zvalue node);
-
-// Documented in spec.
-zvalue makeExport(zvalue node);
-
-// Documented in spec.
-zvalue makeExportSelection(zvalue names);
-
-// Documented in spec.
-zvalue makeFullClosure(zvalue base);
-
-// Documented in spec.
-zvalue makeFunCall(zvalue function, zvalue values);
-
-// Documented in spec.
-zvalue makeFunCallGeneral(zvalue function, zvalue values);
-
-// Documented in spec.
-zvalue makeImport(zvalue baseData);
-
-// Documented in spec.
-zvalue makeInfoTable(zvalue node);
-
-// Documented in spec.
-zvalue makeInterpolate(zvalue node);
-
-// Documented in spec.
 zvalue makeLiteral(zvalue value);
 
-// Documented in spec.
-zvalue makeMapExpression(zvalue mappings);
 
-// Documented in spec.
-zvalue makeMaybe(zvalue value);
+//
+// Parallel to `refs.sam`:
+//
 
-// Documented in spec.
-zvalue makeMaybeValue(zvalue expression);
+/** Equivalent to `REFS::<name>` in the spec. */
+#define REFS(name) (makeVarFetch(SYM(name)))
 
-// Documented in spec.
-zvalue makeNoYield(zvalue value);
 
-/** Documented in spec. */
-zvalue makeNonlocalExit(zvalue function, zvalue optValue);
+//
+// Parallel to `resolve.sam`:
+//
 
-// Documented in spec.
-zvalue makeRecordExpression(zvalue name, zvalue data);
-
-// Documented in spec.
-zvalue makeSymbolTableExpression(zvalue mappings);
-
-// Documented in spec.
-zvalue makeThunk(zvalue expression);
-
-// Documented in spec.
-zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue);
-
-// Documented in spec.
-zvalue makeVarFetch(zvalue name);
-
-// Documented in spec.
-zvalue makeVarFetchGeneral(zvalue name);
-
-// Documented in spec.
-zvalue makeVarRef(zvalue name);
-
-// Documented in spec.
-zvalue makeVarStore(zvalue name, zvalue value);
-
-// Documented in spec.
+// These are all documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn);
-
-// Documented in spec.
-zvalue withFormals(zvalue node, zvalue formals);
-
-// Documented in spec.
-zvalue withModuleDefs(zvalue node);
-
-// Documented in spec.
-zvalue withName(zvalue node, zvalue name);
-
-// Documented in spec.
 zvalue withResolvedImports(zvalue node, zvalue resolveFn);
 
-// Documented in spec.
-zvalue withTop(zvalue node);
 
-// Documented in spec.
-zvalue withYieldDef(zvalue node, zvalue name);
+//
+// Parallel to `getters.sam`:
+//
 
-// Documented in spec.
-zvalue withoutIntermediates(zvalue node);
+// These are all documented in spec.
+zvalue extractLiteral(zvalue node);
+zvalue get_baseName(zvalue source);
+zvalue get_definedNames(zvalue node);
 
-// Documented in spec.
-zvalue withoutTops(zvalue node);
+
+//
+// Parallel to `misc.sam`:
+//
+
+// These are all documented in spec.
+bool canYieldVoid(zvalue node);
+zvalue formalsMaxArgs(zvalue formals);
+zvalue formalsMinArgs(zvalue formals);
+bool isExpression(zvalue node);
 
 #endif
