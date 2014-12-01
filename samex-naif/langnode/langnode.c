@@ -20,28 +20,6 @@
 // Private functions
 //
 
-/** Splits a string into a list, separating at the given character. */
-static zvalue splitAtChar(zvalue string, zvalue chString) {
-    zchar ch = zcharFromString(chString);
-    zstring s = zstringFromString(string);
-    zvalue result[s.size + 1];
-    zint resultAt = 0;
-
-    for (zint at = 0; at <= s.size; /*at*/) {
-        zint endAt = at;
-        while ((endAt < s.size) && s.chars[endAt] != ch) {
-            endAt++;
-        }
-
-        result[resultAt] =
-            stringFromZstring((zstring) {endAt - at, &s.chars[at]});
-        resultAt++;
-        at = endAt + 1;
-    }
-
-    return listFromZarray((zarray) {resultAt, result});
-}
-
 /**
  * Adds a `{(name): Value}` binding to the given map or table.
  */
@@ -211,137 +189,8 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
 
 
 //
-// Module functions
+// Exported functions
 //
-
-// Documented in spec.
-bool canYieldVoid(zvalue node) {
-    switch (recordEvalType(node)) {
-        case EVAL_apply: { return true;  }
-        case EVAL_call:  { return true;  }
-        case EVAL_fetch: { return true;  }
-        case EVAL_maybe: { return true;  }
-        case EVAL_store: { return true;  }
-        case EVAL_void:  { return true;  }
-        default:         { return false; }
-    }
-}
-
-// Documented in spec.
-zvalue extractLiteral(zvalue node) {
-    return recordEvalTypeIs(node, EVAL_literal)
-        ? cm_get(node, SYM(value))
-        : NULL;
-}
-
-// Documented in spec.
-zvalue formalsMaxArgs(zvalue formals) {
-    zint maxArgs = 0;
-    zint sz = get_size(formals);
-
-    for (zint i = 0; i < sz; i++) {
-        zvalue one = cm_nth(formals, i);
-        zvalue repeat = cm_get(one, SYM(repeat));
-        if (valEqNullOk(repeat, SYM(CH_STAR))
-            || valEqNullOk(repeat, SYM(CH_PLUS))) {
-            maxArgs = -1;
-            break;
-        }
-        maxArgs++;
-    }
-
-    return intFromZint(maxArgs);
-}
-
-// Documented in spec.
-zvalue formalsMinArgs(zvalue formals) {
-    zint minArgs = 0;
-    zint sz = get_size(formals);
-
-    for (zint i = 0; i < sz; i++) {
-        zvalue one = cm_nth(formals, i);
-        zvalue repeat = cm_get(one, SYM(repeat));
-        if (!(valEqNullOk(repeat, SYM(CH_QMARK))
-              || valEqNullOk(repeat, SYM(CH_STAR)))) {
-            minArgs++;
-        }
-    }
-
-    return intFromZint(minArgs);
-}
-
-// Documented in spec.
-zvalue get_baseName(zvalue source) {
-    switch (recordEvalType(source)) {
-        case EVAL_external: {
-            zvalue components =
-                splitAtChar(cm_get(source, SYM(name)), STR_CH_DOT);
-            return cm_nth(components, get_size(components) - 1);
-        }
-        case EVAL_internal: {
-            zvalue components =
-                splitAtChar(cm_get(source, SYM(name)), STR_CH_SLASH);
-            zvalue last = cm_nth(components, get_size(components) - 1);
-            zvalue parts = splitAtChar(last, STR_CH_DOT);
-            return cm_nth(parts, 0);
-        }
-        default: {
-            die("Bad type for `get_baseName`.");
-        }
-    }
-}
-
-// Documented in spec.
-zvalue get_definedNames(zvalue node) {
-    switch (recordEvalType(node)) {
-        case EVAL_export: {
-            return get_definedNames(cm_get(node, SYM(value)));
-        }
-        case EVAL_importModule:
-        case EVAL_importResource:
-        case EVAL_varDef: {
-            return cm_new_List(cm_get(node, SYM(name)));
-        }
-        case EVAL_importModuleSelection: {
-            zvalue select = cm_get(node, SYM(select));
-            if (select == NULL) {
-                die("Cannot call `get_definedNames` on unresolved import.");
-            }
-
-            zvalue prefix = cm_get(node, SYM(prefix));
-            if (prefix != NULL) {
-                zarray arr = zarrayFromList(select);
-                zvalue elems[arr.size];
-
-                for (zint i = 0; i < arr.size; i++) {
-                    elems[i] = cm_cat(prefix, arr.elems[i]);
-                }
-
-                return listFromZarray((zarray) {arr.size, elems});
-            } else {
-                return select;
-            }
-        }
-        default: {
-            return EMPTY_LIST;
-        }
-    }
-}
-
-// Documented in spec.
-bool isExpression(zvalue node) {
-    switch (recordEvalType(node)) {
-        case EVAL_apply:   { return true;  }
-        case EVAL_call:    { return true;  }
-        case EVAL_closure: { return true;  }
-        case EVAL_fetch:   { return true;  }
-        case EVAL_literal: { return true;  }
-        case EVAL_noYield: { return true;  }
-        case EVAL_store:   { return true;  }
-        case EVAL_varRef:  { return true;  }
-        default:           { return false; }
-    }
-}
 
 // Documented in spec.
 zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
@@ -746,11 +595,6 @@ zvalue makeInterpolate(zvalue node) {
 }
 
 // Documented in spec.
-zvalue makeLiteral(zvalue value) {
-    return cm_new_Record(SYM(literal), SYM(value), value);
-}
-
-// Documented in spec.
 zvalue makeMapExpression(zvalue mappings) {
     return makeMapLikeExpression(mappings, LITS(Map), LITS(EMPTY_MAP));
 };
@@ -848,67 +692,6 @@ zvalue makeVarStore(zvalue name, zvalue value) {
 }
 
 // Documented in spec.
-zvalue resolveImport(zvalue node, zvalue resolveFn) {
-    if (recordEvalTypeIs(node, EVAL_importResource)) {
-        // No conversion, just validation. TODO: Validate.
-        //
-        // **Note:** This clause is at the top so as to avoid the call to
-        // `resolveFn()` below, which is inappropriate to do on resources.
-        return node;
-    }
-
-    zvalue resolved = EMPTY_SYMBOL_TABLE;
-    if (resolveFn != NULL) {
-        zvalue source = cm_get(node, SYM(source));
-        resolved = FUN_CALL(resolveFn, source);
-        if (resolved == NULL) {
-            die("Could not resolve import.");
-        } else if (!recordEvalTypeIs(resolved, EVAL_module)) {
-            die("Invalid resolution result (not a `@module`)");
-        }
-    }
-
-    switch (recordEvalType(node)) {
-        case EVAL_importModule: {
-            // No conversion, just validation (done above).
-            return node;
-        }
-        case EVAL_importModuleSelection: {
-            // Get the exports. When given a `NULL` `resolveFn`, this acts as
-            // if all sources resolve to an empty export map, and hence this
-            // node won't bind anything.
-            zvalue exports = EMPTY_LIST;
-            zvalue info = cm_get(resolved, SYM(info));
-            if (info != NULL) {
-                exports = cm_get(info, SYM(exports));
-            }
-
-            zvalue select = cm_get(node, SYM(select));
-            if (select != NULL) {
-                // The selection is specified. So no modification needs to be
-                // done to the node, just validation, including of the import
-                // in general (above) and the particular selection (here).
-                zint size = get_size(select);
-                for (zint i = 0; i < size; i++) {
-                    zvalue one = cm_nth(select, i);
-                    if (cm_get(exports, one) == NULL) {
-                        die("Could not resolve import selection.");
-                    }
-                }
-                return node;
-            } else {
-                // It's a wildcard select.
-                select = METH_CALL(exports, keyList);
-                return cm_cat(node, cm_new_SymbolTable(SYM(select), select));
-            }
-        }
-        default: {
-            die("Bad node type for `resolveImport`.");
-        }
-    }
-}
-
-// Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
     return cm_cat(node, cm_new_SymbolTable(SYM(formals), formals));
 }
@@ -977,45 +760,9 @@ zvalue withName(zvalue node, zvalue name) {
 }
 
 // Documented in spec.
-zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
-    zvalue rawStatements = cm_get(node, SYM(statements));
-    zarray arr = zarrayFromList(rawStatements);
-    zvalue elems[arr.size];
-
-    for (zint i = 0; i < arr.size; i++) {
-        zvalue s = elems[i] = arr.elems[i];
-        bool exported = false;
-        zvalue defNode = s;
-
-        if (recordEvalTypeIs(s, EVAL_export)) {
-            exported = true;
-            defNode = cm_get(s, SYM(value));
-        }
-
-        switch (recordEvalType(defNode)) {
-            case EVAL_importModule:
-            case EVAL_importModuleSelection:
-            case EVAL_importResource: {
-                zvalue resolved = resolveImport(defNode, resolveFn);
-                elems[i] = exported ? makeExport(resolved) : resolved;
-            }
-            default: {
-                // The rest of the types are intentionally left un-handled.
-                break;
-            }
-        }
-    }
-
-    zvalue converted = listFromZarray((zarray) {arr.size, elems});
-
-    return cm_cat(node, cm_new_SymbolTable(SYM(statements), converted));
-}
-
-// Documented in spec.
 zvalue withTop(zvalue node) {
     return cm_cat(node, cm_new_SymbolTable(SYM(top), BOOL_TRUE));
 }
-
 
 // Documented in spec.
 zvalue withYieldDef(zvalue node, zvalue name) {
