@@ -590,7 +590,7 @@ zvalue makeFullClosure(zvalue base) {
     return cm_new(Record, SYM(closure),
         cm_cat(
             base,
-            symtabFrom3(
+            cm_new_SymbolTable(
                 SYM(formals),    formals,
                 SYM(statements), statements,
                 SYM(yield),      yieldNode)));
@@ -734,7 +734,7 @@ zvalue makeInfoTable(zvalue node) {
         }
     }
 
-    return symtabFrom3(
+    return cm_new_SymbolTable(
         SYM(exports),   exports,
         SYM(imports),   imports,
         SYM(resources), resources);
@@ -968,7 +968,7 @@ zvalue withModuleDefs(zvalue node) {
                     SYMS(info),    yieldInfo))));
 
     return cm_cat(node,
-        symtabFrom3(
+        cm_new_SymbolTable(
             SYM(info),       info,
             SYM(statements), statements,
             SYM(yield),      yieldNode));
