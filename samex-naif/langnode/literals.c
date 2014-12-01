@@ -12,6 +12,13 @@
 //
 
 // Documented in spec.
+zvalue extractLiteral(zvalue node) {
+    return recordEvalTypeIs(node, EVAL_literal)
+        ? cm_get(node, SYM(value))
+        : NULL;
+}
+
+// Documented in spec.
 zvalue makeLiteral(zvalue value) {
     return cm_new_Record(SYM(literal), SYM(value), value);
 }

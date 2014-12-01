@@ -41,13 +41,6 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
 //
 
 // Documented in spec.
-zvalue extractLiteral(zvalue node) {
-    return recordEvalTypeIs(node, EVAL_literal)
-        ? cm_get(node, SYM(value))
-        : NULL;
-}
-
-// Documented in spec.
 zvalue get_baseName(zvalue source) {
     switch (recordEvalType(source)) {
         case EVAL_external: {

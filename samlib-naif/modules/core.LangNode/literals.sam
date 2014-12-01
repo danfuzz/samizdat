@@ -84,6 +84,12 @@ def VALUES = {
 ##
 
 ## Documented in spec.
+export fn extractLiteral(node) {
+    return? ifIs { node.hasName(@literal) }
+        { node::value }
+};
+
+## Documented in spec.
 export fn makeLiteral(value) {
     return @literal{value}
 };

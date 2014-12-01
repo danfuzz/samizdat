@@ -66,7 +66,6 @@ zvalue withoutTops(zvalue node);
 //
 
 // These are all documented in spec.
-zvalue extractLiteral(zvalue node);
 zvalue get_baseName(zvalue source);
 zvalue get_definedNames(zvalue node);
 
@@ -81,7 +80,8 @@ zvalue get_definedNames(zvalue node);
 /** Equivalent to `SYMS::<name>` in the spec. */
 #define SYMS(name) (makeLiteral(SYM(name)))
 
-// Documented in spec.
+// These are all documented in spec.
+zvalue extractLiteral(zvalue node);
 zvalue makeLiteral(zvalue value);
 
 
