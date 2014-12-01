@@ -1038,7 +1038,7 @@ DEF_PARSE(methodDef) {
 
     zvalue closure = withFormals(baseClosure,
         listPrepend(
-            recFrom1(SYM(formal), SYM(name), SYM(this)),
+            cm_new_Record(SYM(formal), SYM(name), SYM(this)),
             cm_get(baseClosure, SYM(formals))));
 
     return cm_new(Record, scope, closure);
@@ -1130,7 +1130,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = METH_APPLY(EMPTY_STRING, cat,
         cm_cat(cm_new_List(first), rest, optSuffix));
-    return recFrom1(SYM(internal), SYM(name), name);
+    return cm_new_Record(SYM(internal), SYM(name), name);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1141,7 +1141,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = METH_APPLY(EMPTY_STRING, cat, listPrepend(first, rest));
-    return recFrom1(SYM(external), SYM(name), name);
+    return cm_new_Record(SYM(external), SYM(name), name);
 }
 
 // Documented in spec.

@@ -548,12 +548,12 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return recFrom1(SYM(export), SYM(value), node);
+    return cm_new_Record(SYM(export), SYM(value), node);
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return recFrom1(SYM(exportSelection), SYM(select), names);
+    return cm_new_Record(SYM(exportSelection), SYM(select), names);
 }
 
 // Documented in spec.
@@ -750,7 +750,7 @@ zvalue makeInterpolate(zvalue node) {
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return recFrom1(SYM(literal), SYM(value), value);
+    return cm_new_Record(SYM(literal), SYM(value), value);
 }
 
 // Documented in spec.
@@ -760,7 +760,7 @@ zvalue makeMapExpression(zvalue mappings) {
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return recFrom1(SYM(maybe), SYM(value), value);
+    return cm_new_Record(SYM(maybe), SYM(value), value);
 }
 
 // Documented in spec.
@@ -777,7 +777,7 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return recFrom1(SYM(noYield), SYM(value), value);
+    return cm_new_Record(SYM(noYield), SYM(value), value);
 }
 
 // Documented in spec.
@@ -816,7 +816,7 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return recFrom1(SYM(varRef), SYM(name), name);
+    return cm_new_Record(SYM(varRef), SYM(name), name);
 }
 
 // Documented in spec.
@@ -830,7 +830,7 @@ zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue) {
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return recFrom1(SYM(fetch), SYM(target), makeVarRef(name));
+    return cm_new_Record(SYM(fetch), SYM(target), makeVarRef(name));
 }
 
 // Documented in spec.
