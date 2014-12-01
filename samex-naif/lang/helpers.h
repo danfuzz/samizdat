@@ -13,27 +13,6 @@
 
 
 /**
- * Makes a 0-1 element list.
- */
-zvalue listFrom1(zvalue e1);
-
-/**
- * Makes a 0-2 element list.
- */
-zvalue listFrom2(zvalue e1, zvalue e2);
-
-/**
- * Makes a 0-3 element list.
- */
-zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3);
-
-/**
- * Makes a 0-4 element list. Values are allowed to be `NULL`, in which case
- * they are omitted from the result.
- */
-zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4);
-
-/**
  * Makes a 0-1 mapping record.
  */
 zvalue recFrom1(zvalue name, zvalue k1, zvalue v1);

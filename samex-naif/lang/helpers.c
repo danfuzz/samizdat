@@ -2,7 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "type/List.h"
 #include "type/Map.h"
 #include "type/Record.h"
 #include "type/SymbolTable.h"
@@ -13,34 +12,6 @@
 //
 // Module functions
 //
-
-// Documented in header.
-zvalue listFrom1(zvalue e1) {
-    return (e1 == NULL) ? EMPTY_LIST : listFromValue(e1);
-}
-
-// Documented in header.
-zvalue listFrom2(zvalue e1, zvalue e2) {
-    return listFrom4(e1, e2, NULL, NULL);
-}
-
-// Documented in header.
-zvalue listFrom3(zvalue e1, zvalue e2, zvalue e3) {
-    return listFrom4(e1, e2, e3, NULL);
-}
-
-// Documented in header.
-zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
-    zvalue elems[4];
-    zint at = 0;
-
-    if (e1 != NULL) { elems[at] = e1; at++; }
-    if (e2 != NULL) { elems[at] = e2; at++; }
-    if (e3 != NULL) { elems[at] = e3; at++; }
-    if (e4 != NULL) { elems[at] = e4; at++; }
-
-    return (at == 0) ? EMPTY_LIST : listFromZarray((zarray) {at, elems});
-}
 
 // Documented in header.
 zvalue recFrom1(zvalue name, zvalue k1, zvalue v1) {
