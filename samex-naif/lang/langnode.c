@@ -140,7 +140,7 @@ static zvalue extractMethods(zvalue allMethods, zvalue scope) {
 
         names = symtabCatMapping(names, (zmapping) {name, BOOL_TRUE});
         pairs = listAppend(pairs,
-            listFrom2(
+            cm_new_List(
                 makeLiteral(name),
                 cm_new(Record, SYM(closure), one)));
     }
@@ -489,7 +489,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     }
 
     zvalue config = makeSymbolTableExpression(
-        listFrom2(accessSecret, newSecret));
+        cm_new_List(accessSecret, newSecret));
 
     zvalue call = makeCall(LITS(Object), SYMS(subclass),
         listFrom4(
@@ -535,7 +535,7 @@ zvalue makeDynamicImport(zvalue node) {
         case EVAL_importResource: {
             zvalue stat = makeVarDef(name, SYM(result),
                 makeFunCall(REFS(loadResource),
-                    listFrom2(makeLiteral(source), makeLiteral(format))));
+                    cm_new_List(makeLiteral(source), makeLiteral(format))));
             return cm_new_List(stat);
         }
         default: {
@@ -792,7 +792,7 @@ zvalue makeRecordExpression(zvalue name, zvalue data) {
     if ((nameValue != NULL) && (dataValue != NULL)) {
         return makeLiteral(cm_new(Record, nameValue, dataValue));
     } else {
-        return makeCall(LITS(Record), SYMS(new), listFrom2(name, data));
+        return makeCall(LITS(Record), SYMS(new), cm_new_List(name, data));
     }
 }
 
@@ -949,7 +949,7 @@ zvalue withModuleDefs(zvalue node) {
     for (zint i = 0; i < exports.size; i++) {
         zvalue name = exports.elems[i].key;
         exportValues = cm_cat(exportValues,
-            listFrom2(makeLiteral(name), makeVarFetch(name)));
+            cm_new_List(makeLiteral(name), makeVarFetch(name)));
     }
 
     zvalue yieldExports = (exports.size == 0)
@@ -957,7 +957,7 @@ zvalue withModuleDefs(zvalue node) {
         : makeCall(LITS(SymbolTable), SYMS(new), exportValues);
     zvalue yieldInfo = makeLiteral(info);
     zvalue yieldNode = makeCall(LITS(Record), SYMS(new),
-        listFrom2(
+        cm_new_List(
             SYMS(module),
             makeCall(LITS(SymbolTable), SYMS(new),
                 listFrom4(
