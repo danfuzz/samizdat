@@ -20,6 +20,12 @@ extern zvalue CLS_List;
 extern zvalue EMPTY_LIST;
 
 /**
+ * Constructs a list consisting of the given one with the given additional
+ * element appended to the end.
+ */
+zvalue listAppend(zvalue list, zvalue elem);
+
+/**
  * Constructs a list of size 1 from a single given `value`.
  */
 zvalue listFromValue(zvalue value);
@@ -28,6 +34,12 @@ zvalue listFromValue(zvalue value);
  * Constructs a list from a `zarray` (sized array of `zvalue`).
  */
 zvalue listFromZarray(zarray arr);
+
+/**
+ * Constructs a list consisting of the given element prepended to the front of
+ * the given original list.
+ */
+zvalue listPrepend(zvalue elem, zvalue list);
 
 /**
  * Gets a `zarray` of the given list. The result `elems` shares storage
