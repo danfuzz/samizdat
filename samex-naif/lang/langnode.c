@@ -372,7 +372,7 @@ zvalue makeApply(zvalue target, zvalue name, zvalue values) {
         values = TOK_void;
     }
 
-    return recFrom3(SYM(apply),
+    return cm_new_Record(SYM(apply),
         SYM(name),   name,
         SYM(target), target,
         SYM(values), values);
@@ -394,7 +394,7 @@ zvalue makeCall(zvalue target, zvalue name, zvalue values) {
         values = EMPTY_LIST;
     }
 
-    return recFrom3(SYM(call),
+    return cm_new_Record(SYM(call),
         SYM(name),   name,
         SYM(target), target,
         SYM(values), values);
@@ -742,7 +742,7 @@ zvalue makeInfoTable(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return recFrom3(SYM(fetch),
+    return cm_new_Record(SYM(fetch),
         SYM(target),      node,
         SYM(interpolate), node,
         SYM(lvalue),      EMPTY_LIST);
@@ -822,7 +822,7 @@ zvalue makeVarRef(zvalue name) {
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return recFrom3(SYM(varDef),
+    return cm_new_Record(SYM(varDef),
         SYM(name),  name,
         SYM(box),   box,
         SYM(value), value);
@@ -838,7 +838,7 @@ zvalue makeVarFetchGeneral(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
     zvalue ref = makeVarRef(name);
-    return recFrom3(SYM(fetch),
+    return cm_new_Record(SYM(fetch),
         SYM(box),    ref,
         SYM(lvalue), EMPTY_LIST,
         SYM(target), ref);
