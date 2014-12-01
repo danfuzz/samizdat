@@ -16,6 +16,14 @@
 extern zvalue CLS_Record;
 
 /**
+ * Makes a record from a `name` (a symbol) and a `zarray` where the contents
+ * are a list of "splayed" key-then-value pairs. The keys must all be symbols
+ * (of course). The `zarray` arrangement is identical to that of
+ * `symtabFromZarray()`.
+ */
+zvalue recFromZarray(zvalue name, zarray arr);
+
+/**
  * Gets the values of one key out of a record, storing it via the given
  * pointer. Returns `true` iff the key was bound.
  */
