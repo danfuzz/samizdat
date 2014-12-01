@@ -7,7 +7,7 @@
 //
 // Translation of the main info of a `closure` node.
 
-#include "const.h"
+#include "langnode.h"
 #include "type/define.h"
 #include "type/Box.h"
 #include "type/Jump.h"

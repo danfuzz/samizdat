@@ -8,14 +8,13 @@
 // Instances are translated from the (per spec) executable tree node form.
 // These are what are used when actually running the interpreter.
 
-#include "const.h"
+#include "langnode.h"
 #include "type/define.h"
 #include "type/Box.h"
 #include "type/List.h"
 #include "type/SymbolTable.h"
 
 #include "impl.h"
-#include "langnode.h"
 
 
 //

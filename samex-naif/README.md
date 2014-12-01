@@ -47,21 +47,26 @@ later-named modules depending only on earlier-named ones):
 * `cls` &mdash; "Lowish-layer" classes. This contains classes, such as
   data types and utilities, that are (a) possible to define just in terms
   of the `dat` classes, and (b) aren't required in the implementation of
-  `dat` itself. Depends on `util`, `cls`, and `dat`.
+  `dat` itself. Depends on `util`, `dat`, and `cls`.
 
-* `io` &mdash; I/O functions. This implements a minimal set of I/O
-  operations. Depends on `util`, `cls`, and `dat`.
+* `langnode` &mdash; Executable node construction and access utilities.
+  This is roughly equivalent to the in-language module `core.LangNode`.
+  Depends on `util`, `dat`, and `cls`.
 
 * `lang` &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any of the library itself. Depends on `util`, `cls`, and `dat`.
+  not implement any of the library itself. Depends on `util`, `dat`, `cls`,
+  and `langnode`.
+
+* `io` &mdash; I/O functions. This implements a minimal set of I/O
+  operations. Depends on `util`, `dat`, and `cls`.
 
 * `lib` &mdash; Library bindings. This pulls together primitive definitions
-  from `dat` and `lang`, additional primitive definitions defined in this
-  module, and in-language definitions which are loaded using the primitive
-  file evaluation mechanism. Depends on everything above it.
+  from other modules, additional primitive definitions defined in this module,
+  and in-language definitions which are loaded using the primitive file
+  evaluation mechanism. Depends on everything above it.
 
 * `main` &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything above it.

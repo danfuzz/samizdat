@@ -2,7 +2,7 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "const.h"
+#include "langnode.h"
 #include "type/Bool.h"
 #include "type/Class.h"
 #include "type/List.h"
@@ -15,7 +15,6 @@
 #include "util.h"
 
 #include "impl.h"
-#include "langnode.h"
 
 
 //

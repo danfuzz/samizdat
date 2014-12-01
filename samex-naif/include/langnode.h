@@ -13,6 +13,8 @@
 
 #include "type/Value.h"
 
+#include "langnode/type.h"
+#include "langnode/consts.h"
 
 /** Equivalent to `LITS::<name>` in the spec. */
 #define LITS(name) (LIT_##name)
