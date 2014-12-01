@@ -492,7 +492,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
         cm_new_List(accessSecret, newSecret));
 
     zvalue call = makeCall(LITS(Object), SYMS(subclass),
-        listFrom4(
+        cm_new_List(
             makeLiteral(name),
             config,
             extractMethods(methods, SYM(classMethod)),
@@ -960,7 +960,7 @@ zvalue withModuleDefs(zvalue node) {
         cm_new_List(
             SYMS(module),
             makeCall(LITS(SymbolTable), SYMS(new),
-                listFrom4(
+                cm_new_List(
                     SYMS(exports), yieldExports,
                     SYMS(info),    yieldInfo))));
 
