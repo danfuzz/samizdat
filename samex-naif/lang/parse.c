@@ -887,7 +887,7 @@ DEF_PARSE(yieldDef) {
 DEF_PARSE(optYieldDef) {
     zvalue result = PARSE(yieldDef);
     return (result != NULL)
-        ? tableFrom1(SYM(yieldDef), result) : EMPTY_SYMBOL_TABLE;
+        ? symtabFrom1(SYM(yieldDef), result) : EMPTY_SYMBOL_TABLE;
 }
 
 /**
@@ -934,7 +934,7 @@ DEF_PARSE(formalsList) {
  */
 DEF_PARSE(closureDeclarations1) {
     zvalue n = PARSE(nameSymbol);
-    return (n == NULL) ? EMPTY_SYMBOL_TABLE : tableFrom1(SYM(name), n);
+    return (n == NULL) ? EMPTY_SYMBOL_TABLE : symtabFrom1(SYM(name), n);
 }
 
 /**
@@ -949,11 +949,11 @@ DEF_PARSE(closureDeclarations2) {
     if (MATCH(CH_OPAREN) != NULL) {
         zvalue formals = PARSE(formalsList);    // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        return cm_cat(name, tableFrom1(SYM(formals), formals));
+        return cm_cat(name, symtabFrom1(SYM(formals), formals));
     } else {
         RESET();
         zvalue formals = PARSE(formalsList);    // This never fails.
-        return tableFrom1(SYM(formals), formals);
+        return symtabFrom1(SYM(formals), formals);
     }
 }
 
@@ -977,7 +977,7 @@ DEF_PARSE(closureDeclarations) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(closureDeclarations3); }
-    if (result == NULL) { result = tableFrom1(SYM(formals), EMPTY_LIST); }
+    if (result == NULL) { result = symtabFrom1(SYM(formals), EMPTY_LIST); }
 
     return result;
 }
@@ -1020,7 +1020,7 @@ DEF_PARSE(attribute) {
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(term);
 
-    return tableFrom1(key, value);
+    return symtabFrom1(key, value);
 }
 
 // Documented in spec.
@@ -1063,7 +1063,7 @@ DEF_PARSE(importName1) {
     zvalue key = MATCH(CH_STAR) ? SYM(prefix) : SYM(name);
     MATCH_OR_REJECT(CH_EQUAL);
 
-    return tableFrom1(key, name);
+    return symtabFrom1(key, name);
 }
 
 // Documented in spec.
@@ -1078,7 +1078,7 @@ DEF_PARSE(importFormat1) {
 
     MATCH_OR_REJECT(CH_AT);
     zvalue f = PARSE_OR_REJECT(identifierSymbol);
-    return tableFrom1(SYM(format), cm_get(f, SYM(value)));
+    return symtabFrom1(SYM(format), cm_get(f, SYM(value)));
 }
 
 // Documented in spec.
@@ -1156,7 +1156,7 @@ DEF_PARSE(importSelect1) {
     MATCH_OR_REJECT(CH_COLONCOLON);
     zvalue result = MATCH_OR_REJECT(CH_STAR);
 
-    return tableFrom1(SYM(select), SYM(CH_STAR));
+    return symtabFrom1(SYM(select), SYM(CH_STAR));
 }
 
 /** Helper for `importSelect`: Parses the second alternate. */
@@ -1166,7 +1166,7 @@ DEF_PARSE(importSelect2) {
     MATCH_OR_REJECT(CH_COLONCOLON);
     zvalue select = PARSE_OR_REJECT(nameSymbolList);
 
-    return tableFrom1(SYM(select), select);
+    return symtabFrom1(SYM(select), select);
 }
 
 // Documented in spec.
@@ -1194,7 +1194,7 @@ DEF_PARSE(importStatement) {
         nameOrPrefix,
         format,
         select,
-        tableFrom1(SYM(source), source));
+        symtabFrom1(SYM(source), source));
 
     return (optExport != NULL)
         ? makeExport(makeImport(data))
@@ -1275,7 +1275,7 @@ DEF_PARSE(closureBody) {
 
     PARSE(optSemicolons);
 
-    return tableFrom2(
+    return symtabFrom2(
         SYM(statements), statements,
         SYM(yield),      yieldNode);
 }
@@ -1333,7 +1333,7 @@ DEF_PARSE(program) {
     PARSE(optSemicolons);
 
     zvalue closure = makeFullClosure(
-        tableFrom2(SYM(statements), statements, SYM(yield), TOK_void));
+        symtabFrom2(SYM(statements), statements, SYM(yield), TOK_void));
     return withoutTops(closure);
 }
 

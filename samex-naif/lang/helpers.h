@@ -69,24 +69,24 @@ zvalue recFrom4(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
 /**
  * Makes a 0-1 mapping symbol table.
  */
-zvalue tableFrom1(zvalue k1, zvalue v1);
+zvalue symtabFrom1(zvalue k1, zvalue v1);
 
 /**
  * Makes a 0-2 mapping symbol table.
  */
-zvalue tableFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2);
+zvalue symtabFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2);
 
 /**
  * Makes a 0-3 mapping symbol table.
  */
-zvalue tableFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue symtabFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3);
 
 /**
  * Makes a 0-4 mapping symbol table. Values are allowed to be `NULL`, in
  * which case the corresponding key isn't included in the result.
  */
-zvalue tableFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue symtabFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4);
 
 #endif

@@ -54,44 +54,44 @@ zvalue listPrepend(zvalue elem, zvalue list) {
 
 // Documented in header.
 zvalue recFrom1(zvalue name, zvalue k1, zvalue v1) {
-    return cm_new(Record, name, tableFrom1(k1, v1));
+    return cm_new(Record, name, symtabFrom1(k1, v1));
 }
 
 // Documented in header.
 zvalue recFrom2(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return cm_new(Record, name, tableFrom2(k1, v1, k2, v2));
+    return cm_new(Record, name, symtabFrom2(k1, v1, k2, v2));
 }
 
 // Documented in header.
 zvalue recFrom3(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3) {
-    return cm_new(Record, name, tableFrom3(k1, v1, k2, v2, k3, v3));
+    return cm_new(Record, name, symtabFrom3(k1, v1, k2, v2, k3, v3));
 }
 
 // Documented in header.
 zvalue recFrom4(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
-    return cm_new(Record, name, tableFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
+    return cm_new(Record, name, symtabFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
 }
 
 // Documented in header.
-zvalue tableFrom1(zvalue k1, zvalue v1) {
-    return tableFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
+zvalue symtabFrom1(zvalue k1, zvalue v1) {
+    return symtabFrom4(k1, v1, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
 // Documented in header.
-zvalue tableFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return tableFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
+zvalue symtabFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return symtabFrom4(k1, v1, k2, v2, NULL, NULL, NULL, NULL);
 }
 
 // Documented in header.
-zvalue tableFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue symtabFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3) {
-    return tableFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
+    return symtabFrom4(k1, v1, k2, v2, k3, v3, NULL, NULL);
 }
 
 // Documented in header.
-zvalue tableFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue symtabFrom4(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
     zmapping elems[4];
     zint at = 0;

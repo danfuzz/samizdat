@@ -49,7 +49,7 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
  * Adds a `{(name): Value}` binding to the given map or table.
  */
 static zvalue addTypeBinding(zvalue map, zvalue name) {
-    return cm_cat(map, tableFrom1(name, CLS_Value));
+    return cm_cat(map, symtabFrom1(name, CLS_Value));
 }
 
 /**
@@ -382,7 +382,7 @@ zvalue makeApply(zvalue target, zvalue name, zvalue values) {
 zvalue makeBasicClosure(zvalue table) {
     return cm_new(Record, SYM(closure),
         cm_cat(
-            tableFrom2(SYM(formals), EMPTY_LIST, SYM(statements), EMPTY_LIST),
+            symtabFrom2(SYM(formals), EMPTY_LIST, SYM(statements), EMPTY_LIST),
             table));
 }
 
@@ -587,7 +587,7 @@ zvalue makeFullClosure(zvalue base) {
     return cm_new(Record, SYM(closure),
         cm_cat(
             base,
-            tableFrom3(
+            symtabFrom3(
                 SYM(formals),    formals,
                 SYM(statements), statements,
                 SYM(yield),      yieldNode)));
@@ -638,7 +638,7 @@ zvalue makeImport(zvalue baseData) {
         zvalue name = cm_cat(
             STR_CH_DOLLAR,
             get_baseName(cm_get(baseData, SYM(source))));
-        data = cm_cat(data, tableFrom1(SYM(name), symbolFromString(name)));
+        data = cm_cat(data, symtabFrom1(SYM(name), symbolFromString(name)));
     }
 
     if (cm_get(data, SYM(format)) != NULL) {
@@ -730,7 +730,7 @@ zvalue makeInfoTable(zvalue node) {
         }
     }
 
-    return tableFrom3(
+    return symtabFrom3(
         SYM(exports),   exports,
         SYM(imports),   imports,
         SYM(resources), resources);
@@ -806,7 +806,7 @@ zvalue makeThunk(zvalue expression) {
         ? makeMaybe(expression)
         : expression;
 
-    return makeFullClosure(tableFrom1(SYM(yield), yieldNode));
+    return makeFullClosure(symtabFrom1(SYM(yield), yieldNode));
 }
 
 // Documented in spec.
@@ -897,7 +897,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             } else {
                 // It's a wildcard select.
                 select = METH_CALL(exports, keyList);
-                return cm_cat(node, tableFrom1(SYM(select), select));
+                return cm_cat(node, symtabFrom1(SYM(select), select));
             }
         }
         default: {
@@ -908,7 +908,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
-    return cm_cat(node, tableFrom1(SYM(formals), formals));
+    return cm_cat(node, symtabFrom1(SYM(formals), formals));
 }
 
 // Documented in spec.
@@ -963,7 +963,7 @@ zvalue withModuleDefs(zvalue node) {
                     SYMS(info),    yieldInfo))));
 
     return cm_cat(node,
-        tableFrom3(
+        symtabFrom3(
             SYM(info),       info,
             SYM(statements), statements,
             SYM(yield),      yieldNode));
@@ -971,7 +971,7 @@ zvalue withModuleDefs(zvalue node) {
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
-    return cm_cat(node, tableFrom1(SYM(name), name));
+    return cm_cat(node, symtabFrom1(SYM(name), name));
 }
 
 // Documented in spec.
@@ -1006,12 +1006,12 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     zvalue converted = listFromZarray((zarray) {arr.size, elems});
 
-    return cm_cat(node, tableFrom1(SYM(statements), converted));
+    return cm_cat(node, symtabFrom1(SYM(statements), converted));
 }
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
-    return cm_cat(node, tableFrom1(SYM(top), BOOL_TRUE));
+    return cm_cat(node, symtabFrom1(SYM(top), BOOL_TRUE));
 }
 
 
@@ -1022,11 +1022,11 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
     if (yieldDef != NULL) {
         zvalue defStat = makeVarDef(name, SYM(result), makeVarFetch(yieldDef));
-        newBindings = tableFrom1(
+        newBindings = symtabFrom1(
             SYM(statements),
             listPrepend(defStat, cm_get(node, SYM(statements))));
     } else {
-        newBindings = tableFrom1(SYM(yieldDef), name);
+        newBindings = symtabFrom1(SYM(yieldDef), name);
     }
 
     return cm_cat(node, newBindings);
@@ -1108,5 +1108,5 @@ zvalue withoutTops(zvalue node) {
         : listFrom1(makeExportSelection(exports));
 
     return cm_cat(node,
-        tableFrom1(SYM(statements), cm_cat(tops, mains, optSelection)));
+        symtabFrom1(SYM(statements), cm_cat(tops, mains, optSelection)));
 }
