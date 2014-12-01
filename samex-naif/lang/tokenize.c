@@ -353,7 +353,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     }
 
     zvalue value = stringFromZstring(s);
-    return recFrom2(SYM(directive),
+    return cm_new_Record(SYM(directive),
         SYM(name), cm_get(name, SYM(value)),
         SYM(value), value);
 }

@@ -359,7 +359,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return NULL;
     } else if (recordEvalTypeIs(target, EVAL_fetch)) {
         zvalue innerTarget = cm_get(target, SYM(target));
-        return recFrom2(SYM(store),
+        return cm_new_Record(SYM(store),
             SYM(target), innerTarget, SYM(value), value);
     } else {
         die("Improper `lvalue` binding.");
@@ -478,14 +478,14 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
 
     zvalue accessSecret = cm_get(attribMap, SYM(access));
     if (accessSecret != NULL) {
-        accessSecret = recFrom2(SYM(mapping),
+        accessSecret = cm_new_Record(SYM(mapping),
             SYM(keys),  cm_new_List(SYMS(access)),
             SYM(value), accessSecret);
     }
 
     zvalue newSecret = cm_get(attribMap, SYM(new));
     if (newSecret != NULL) {
-        newSecret = recFrom2(SYM(mapping),
+        newSecret = cm_new_Record(SYM(mapping),
             SYM(keys),  cm_new_List(SYMS(new)),
             SYM(value), newSecret);
     }
@@ -783,7 +783,7 @@ zvalue makeNoYield(zvalue value) {
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return recFrom2(SYM(nonlocalExit),
+    return cm_new_Record(SYM(nonlocalExit),
         SYM(function), function, SYM(value), value);
 }
 
@@ -846,7 +846,7 @@ zvalue makeVarFetchGeneral(zvalue name) {
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return recFrom2(SYM(store),
+    return cm_new_Record(SYM(store),
         SYM(target), makeVarRef(name), SYM(value), value);
 }
 

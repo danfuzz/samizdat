@@ -443,7 +443,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return recFrom2(SYM(mapping),
+    return cm_new_Record(SYM(mapping),
         SYM(keys), keys,
         SYM(value), withoutIntermediates(value));
 }
@@ -470,7 +470,7 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return recFrom2(SYM(mapping),
+    return cm_new_Record(SYM(mapping),
         SYM(keys),  cm_new_List(makeLiteral(name)),
         SYM(value), makeVarFetch(name));
 }
@@ -921,7 +921,7 @@ DEF_PARSE(formal) {
         repeat = get_name(repeat);
     }
 
-    return recFrom2(SYM(formal), SYM(name), name, SYM(repeat), repeat);
+    return cm_new_Record(SYM(formal), SYM(name), name, SYM(repeat), repeat);
 }
 
 // Documented in spec.
