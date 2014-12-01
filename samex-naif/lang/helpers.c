@@ -53,23 +53,23 @@ zvalue listPrepend(zvalue elem, zvalue list) {
 }
 
 // Documented in header.
-zvalue recordFrom1(zvalue name, zvalue k1, zvalue v1) {
+zvalue recFrom1(zvalue name, zvalue k1, zvalue v1) {
     return cm_new(Record, name, tableFrom1(k1, v1));
 }
 
 // Documented in header.
-zvalue recordFrom2(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+zvalue recFrom2(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
     return cm_new(Record, name, tableFrom2(k1, v1, k2, v2));
 }
 
 // Documented in header.
-zvalue recordFrom3(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue recFrom3(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3) {
     return cm_new(Record, name, tableFrom3(k1, v1, k2, v2, k3, v3));
 }
 
 // Documented in header.
-zvalue recordFrom4(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+zvalue recFrom4(zvalue name, zvalue k1, zvalue v1, zvalue k2, zvalue v2,
         zvalue k3, zvalue v3, zvalue k4, zvalue v4) {
     return cm_new(Record, name, tableFrom4(k1, v1, k2, v2, k3, v3, k4, v4));
 }

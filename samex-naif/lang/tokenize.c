@@ -149,7 +149,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return recordFrom1(SYM(int), SYM(value), intval);
+    return recFrom1(SYM(int), SYM(value), intval);
 }
 
 /**
@@ -205,7 +205,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         }
     }
 
-    return recordFrom1(SYM(identifier), SYM(value), name);
+    return recFrom1(SYM(identifier), SYM(value), name);
 }
 
 /**
@@ -255,7 +255,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZstring(s);
-    return recordFrom1(SYM(string), SYM(value), string);
+    return recFrom1(SYM(string), SYM(value), string);
 }
 
 /**
@@ -271,7 +271,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue name = symbolFromString(cm_get(result, SYM(value)));
-    return recordFrom1(SYM(identifier), SYM(value), name);
+    return recFrom1(SYM(identifier), SYM(value), name);
 }
 
 /**
@@ -353,7 +353,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     }
 
     zvalue value = stringFromZstring(s);
-    return recordFrom2(SYM(directive),
+    return recFrom2(SYM(directive),
         SYM(name), cm_get(name, SYM(value)),
         SYM(value), value);
 }

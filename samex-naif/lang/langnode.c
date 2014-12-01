@@ -359,7 +359,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return NULL;
     } else if (recordEvalTypeIs(target, EVAL_fetch)) {
         zvalue innerTarget = cm_get(target, SYM(target));
-        return recordFrom2(SYM(store),
+        return recFrom2(SYM(store),
             SYM(target), innerTarget, SYM(value), value);
     } else {
         die("Improper `lvalue` binding.");
@@ -372,7 +372,7 @@ zvalue makeApply(zvalue target, zvalue name, zvalue values) {
         values = TOK_void;
     }
 
-    return recordFrom3(SYM(apply),
+    return recFrom3(SYM(apply),
         SYM(name),   name,
         SYM(target), target,
         SYM(values), values);
@@ -392,7 +392,7 @@ zvalue makeCall(zvalue target, zvalue name, zvalue values) {
         values = EMPTY_LIST;
     }
 
-    return recordFrom3(SYM(call),
+    return recFrom3(SYM(call),
         SYM(name),   name,
         SYM(target), target,
         SYM(values), values);
@@ -476,14 +476,14 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
 
     zvalue accessSecret = cm_get(attribMap, SYM(access));
     if (accessSecret != NULL) {
-        accessSecret = recordFrom2(SYM(mapping),
+        accessSecret = recFrom2(SYM(mapping),
             SYM(keys),  listFrom1(SYMS(access)),
             SYM(value), accessSecret);
     }
 
     zvalue newSecret = cm_get(attribMap, SYM(new));
     if (newSecret != NULL) {
-        newSecret = recordFrom2(SYM(mapping),
+        newSecret = recFrom2(SYM(mapping),
             SYM(keys),  listFrom1(SYMS(new)),
             SYM(value), newSecret);
     }
@@ -545,12 +545,12 @@ zvalue makeDynamicImport(zvalue node) {
 
 // Documented in spec.
 zvalue makeExport(zvalue node) {
-    return recordFrom1(SYM(export), SYM(value), node);
+    return recFrom1(SYM(export), SYM(value), node);
 }
 
 // Documented in spec.
 zvalue makeExportSelection(zvalue names) {
-    return recordFrom1(SYM(exportSelection), SYM(select), names);
+    return recFrom1(SYM(exportSelection), SYM(select), names);
 }
 
 // Documented in spec.
@@ -738,7 +738,7 @@ zvalue makeInfoTable(zvalue node) {
 
 // Documented in spec.
 zvalue makeInterpolate(zvalue node) {
-    return recordFrom3(SYM(fetch),
+    return recFrom3(SYM(fetch),
         SYM(target),      node,
         SYM(interpolate), node,
         SYM(lvalue),      EMPTY_LIST);
@@ -746,7 +746,7 @@ zvalue makeInterpolate(zvalue node) {
 
 // Documented in spec.
 zvalue makeLiteral(zvalue value) {
-    return recordFrom1(SYM(literal), SYM(value), value);
+    return recFrom1(SYM(literal), SYM(value), value);
 }
 
 // Documented in spec.
@@ -756,7 +756,7 @@ zvalue makeMapExpression(zvalue mappings) {
 
 // Documented in spec.
 zvalue makeMaybe(zvalue value) {
-    return recordFrom1(SYM(maybe), SYM(value), value);
+    return recFrom1(SYM(maybe), SYM(value), value);
 }
 
 // Documented in spec.
@@ -772,13 +772,13 @@ zvalue makeMaybeValue(zvalue expression) {
 
 // Documented in spec.
 zvalue makeNoYield(zvalue value) {
-    return recordFrom1(SYM(noYield), SYM(value), value);
+    return recFrom1(SYM(noYield), SYM(value), value);
 }
 
 // Documented in spec.
 zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return recordFrom2(SYM(nonlocalExit),
+    return recFrom2(SYM(nonlocalExit),
         SYM(function), function, SYM(value), value);
 }
 
@@ -811,13 +811,13 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue makeVarRef(zvalue name) {
-    return recordFrom1(SYM(varRef), SYM(name), name);
+    return recFrom1(SYM(varRef), SYM(name), name);
 }
 
 // Documented in spec.
 zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue) {
     zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return recordFrom3(SYM(varDef),
+    return recFrom3(SYM(varDef),
         SYM(name),  name,
         SYM(box),   box,
         SYM(value), value);
@@ -825,7 +825,7 @@ zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue) {
 
 // Documented in spec.
 zvalue makeVarFetch(zvalue name) {
-    return recordFrom1(SYM(fetch), SYM(target), makeVarRef(name));
+    return recFrom1(SYM(fetch), SYM(target), makeVarRef(name));
 }
 
 // Documented in spec.
@@ -833,7 +833,7 @@ zvalue makeVarFetchGeneral(zvalue name) {
     // See discussion in `makeAssignmentIfPossible` above, for details about
     // `lvalue`.
     zvalue ref = makeVarRef(name);
-    return recordFrom3(SYM(fetch),
+    return recFrom3(SYM(fetch),
         SYM(box),    ref,
         SYM(lvalue), EMPTY_LIST,
         SYM(target), ref);
@@ -841,7 +841,7 @@ zvalue makeVarFetchGeneral(zvalue name) {
 
 // Documented in spec.
 zvalue makeVarStore(zvalue name, zvalue value) {
-    return recordFrom2(SYM(store),
+    return recFrom2(SYM(store),
         SYM(target), makeVarRef(name), SYM(value), value);
 }
 

@@ -443,7 +443,7 @@ DEF_PARSE(mapping1) {
     zvalue keys = PARSE_PLUS_OR_REJECT(key);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return recordFrom2(SYM(mapping),
+    return recFrom2(SYM(mapping),
         SYM(keys), keys,
         SYM(value), withoutIntermediates(value));
 }
@@ -470,7 +470,7 @@ DEF_PARSE(mapping3) {
 
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
-    return recordFrom2(SYM(mapping),
+    return recFrom2(SYM(mapping),
         SYM(keys),  listFrom1(makeLiteral(name)),
         SYM(value), makeVarFetch(name));
 }
@@ -921,7 +921,7 @@ DEF_PARSE(formal) {
         repeat = get_name(repeat);
     }
 
-    return recordFrom2(SYM(formal), SYM(name), name, SYM(repeat), repeat);
+    return recFrom2(SYM(formal), SYM(name), name, SYM(repeat), repeat);
 }
 
 // Documented in spec.
@@ -1033,7 +1033,7 @@ DEF_PARSE(methodDef) {
 
     zvalue closure = withFormals(baseClosure,
         listPrepend(
-            recordFrom1(SYM(formal), SYM(name), SYM(this)),
+            recFrom1(SYM(formal), SYM(name), SYM(this)),
             cm_get(baseClosure, SYM(formals))));
 
     return cm_new(Record, scope, closure);
@@ -1125,7 +1125,7 @@ DEF_PARSE(importSource1) {
 
     zvalue name = METH_APPLY(EMPTY_STRING, cat,
         cm_cat(listFrom1(first), rest, optSuffix));
-    return recordFrom1(SYM(internal), SYM(name), name);
+    return recFrom1(SYM(internal), SYM(name), name);
 }
 
 /** Helper for `importSource`: Parses the second alternate. */
@@ -1136,7 +1136,7 @@ DEF_PARSE(importSource2) {
     zvalue rest = PARSE_STAR(importSourceDotName);
 
     zvalue name = METH_APPLY(EMPTY_STRING, cat, listPrepend(first, rest));
-    return recordFrom1(SYM(external), SYM(name), name);
+    return recFrom1(SYM(external), SYM(name), name);
 }
 
 // Documented in spec.
