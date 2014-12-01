@@ -49,7 +49,7 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
  * Adds a `{(name): Value}` binding to the given map or table.
  */
 static zvalue addTypeBinding(zvalue map, zvalue name) {
-    return cm_cat(map, symtabFrom1(name, CLS_Value));
+    return cm_cat(map, cm_new_SymbolTable(name, CLS_Value));
 }
 
 /**
@@ -639,7 +639,8 @@ zvalue makeImport(zvalue baseData) {
         zvalue name = cm_cat(
             STR_CH_DOLLAR,
             get_baseName(cm_get(baseData, SYM(source))));
-        data = cm_cat(data, symtabFrom1(SYM(name), symbolFromString(name)));
+        data = cm_cat(data,
+            cm_new_SymbolTable(SYM(name), symbolFromString(name)));
     }
 
     if (cm_get(data, SYM(format)) != NULL) {
@@ -808,7 +809,7 @@ zvalue makeThunk(zvalue expression) {
         ? makeMaybe(expression)
         : expression;
 
-    return makeFullClosure(symtabFrom1(SYM(yield), yieldNode));
+    return makeFullClosure(cm_new_SymbolTable(SYM(yield), yieldNode));
 }
 
 // Documented in spec.
@@ -899,7 +900,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             } else {
                 // It's a wildcard select.
                 select = METH_CALL(exports, keyList);
-                return cm_cat(node, symtabFrom1(SYM(select), select));
+                return cm_cat(node, cm_new_SymbolTable(SYM(select), select));
             }
         }
         default: {
@@ -910,7 +911,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
 
 // Documented in spec.
 zvalue withFormals(zvalue node, zvalue formals) {
-    return cm_cat(node, symtabFrom1(SYM(formals), formals));
+    return cm_cat(node, cm_new_SymbolTable(SYM(formals), formals));
 }
 
 // Documented in spec.
@@ -973,7 +974,7 @@ zvalue withModuleDefs(zvalue node) {
 
 // Documented in spec.
 zvalue withName(zvalue node, zvalue name) {
-    return cm_cat(node, symtabFrom1(SYM(name), name));
+    return cm_cat(node, cm_new_SymbolTable(SYM(name), name));
 }
 
 // Documented in spec.
@@ -1008,12 +1009,12 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
 
     zvalue converted = listFromZarray((zarray) {arr.size, elems});
 
-    return cm_cat(node, symtabFrom1(SYM(statements), converted));
+    return cm_cat(node, cm_new_SymbolTable(SYM(statements), converted));
 }
 
 // Documented in spec.
 zvalue withTop(zvalue node) {
-    return cm_cat(node, symtabFrom1(SYM(top), BOOL_TRUE));
+    return cm_cat(node, cm_new_SymbolTable(SYM(top), BOOL_TRUE));
 }
 
 
@@ -1024,11 +1025,11 @@ zvalue withYieldDef(zvalue node, zvalue name) {
 
     if (yieldDef != NULL) {
         zvalue defStat = makeVarDef(name, SYM(result), makeVarFetch(yieldDef));
-        newBindings = symtabFrom1(
+        newBindings = cm_new_SymbolTable(
             SYM(statements),
             listPrepend(defStat, cm_get(node, SYM(statements))));
     } else {
-        newBindings = symtabFrom1(SYM(yieldDef), name);
+        newBindings = cm_new_SymbolTable(SYM(yieldDef), name);
     }
 
     return cm_cat(node, newBindings);
@@ -1110,5 +1111,6 @@ zvalue withoutTops(zvalue node) {
         : cm_new_List(makeExportSelection(exports));
 
     return cm_cat(node,
-        symtabFrom1(SYM(statements), cm_cat(tops, mains, optSelection)));
+        cm_new_SymbolTable(
+            SYM(statements), cm_cat(tops, mains, optSelection)));
 }
