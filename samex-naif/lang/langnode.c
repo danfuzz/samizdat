@@ -382,7 +382,9 @@ zvalue makeApply(zvalue target, zvalue name, zvalue values) {
 zvalue makeBasicClosure(zvalue table) {
     return cm_new(Record, SYM(closure),
         cm_cat(
-            symtabFrom2(SYM(formals), EMPTY_LIST, SYM(statements), EMPTY_LIST),
+            cm_new_SymbolTable(
+                SYM(formals), EMPTY_LIST,
+                SYM(statements), EMPTY_LIST),
             table));
 }
 

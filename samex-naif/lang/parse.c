@@ -1280,9 +1280,13 @@ DEF_PARSE(closureBody) {
 
     PARSE(optSemicolons);
 
-    return symtabFrom2(
-        SYM(statements), statements,
-        SYM(yield),      yieldNode);
+    if (yieldNode == NULL) {
+        return cm_new_SymbolTable(SYM(statements), statements);
+    } else {
+        return cm_new_SymbolTable(
+            SYM(statements), statements,
+            SYM(yield),      yieldNode);
+    }
 }
 
 // Documented in spec.
@@ -1338,7 +1342,7 @@ DEF_PARSE(program) {
     PARSE(optSemicolons);
 
     zvalue closure = makeFullClosure(
-        symtabFrom2(SYM(statements), statements, SYM(yield), TOK_void));
+        cm_new_SymbolTable(SYM(statements), statements, SYM(yield), TOK_void));
     return withoutTops(closure);
 }
 
