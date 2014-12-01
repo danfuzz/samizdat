@@ -110,11 +110,11 @@ static zvalue expandYield(zvalue node) {
         case EVAL_maybe: {
             zvalue arg = makeInterpolate(
                 makeMaybeValue(cm_get(value, SYM(value))));
-            exitCall = makeFunCallGeneral(function, listFrom1(arg));
+            exitCall = makeFunCallGeneral(function, cm_new_List(arg));
             break;
         }
         default: {
-            exitCall = makeFunCall(function, listFrom1(value));
+            exitCall = makeFunCall(function, cm_new_List(value));
             break;
         }
     }
@@ -303,7 +303,7 @@ zvalue get_definedNames(zvalue node) {
         case EVAL_importModule:
         case EVAL_importResource:
         case EVAL_varDef: {
-            return listFrom1(cm_get(node, SYM(name)));
+            return cm_new_List(cm_get(node, SYM(name)));
         }
         case EVAL_importModuleSelection: {
             zvalue select = cm_get(node, SYM(select));
@@ -477,14 +477,14 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     zvalue accessSecret = cm_get(attribMap, SYM(access));
     if (accessSecret != NULL) {
         accessSecret = recFrom2(SYM(mapping),
-            SYM(keys),  listFrom1(SYMS(access)),
+            SYM(keys),  cm_new_List(SYMS(access)),
             SYM(value), accessSecret);
     }
 
     zvalue newSecret = cm_get(attribMap, SYM(new));
     if (newSecret != NULL) {
         newSecret = recFrom2(SYM(mapping),
-            SYM(keys),  listFrom1(SYMS(new)),
+            SYM(keys),  cm_new_List(SYMS(new)),
             SYM(value), newSecret);
     }
 
@@ -511,14 +511,15 @@ zvalue makeDynamicImport(zvalue node) {
     switch (recordEvalType(node)) {
         case EVAL_importModule: {
             zvalue stat = makeVarDef(name, SYM(result),
-                makeFunCall(REFS(loadModule), listFrom1(makeLiteral(source))));
-            return listFrom1(stat);
+                makeFunCall(REFS(loadModule),
+                    cm_new_List(makeLiteral(source))));
+            return cm_new_List(stat);
         }
         case EVAL_importModuleSelection: {
             zvalue names = get_definedNames(node);
             zint size = get_size(names);
             zvalue loadCall = makeFunCall(REFS(loadModule),
-                listFrom1(makeLiteral(source)));
+                cm_new_List(makeLiteral(source)));
 
             zvalue stats[size];
             for (zint i = 0; i < size; i++) {
@@ -526,7 +527,7 @@ zvalue makeDynamicImport(zvalue node) {
                 zvalue sel = cm_nth(select, i);
                 stats[i] = makeVarDef(name, SYM(result),
                     makeCall(loadCall, SYMS(get),
-                        listFrom1(makeLiteral(sel))));
+                        cm_new_List(makeLiteral(sel))));
             }
 
             return listFromZarray((zarray) {size, stats});
@@ -535,7 +536,7 @@ zvalue makeDynamicImport(zvalue node) {
             zvalue stat = makeVarDef(name, SYM(result),
                 makeFunCall(REFS(loadResource),
                     listFrom2(makeLiteral(source), makeLiteral(format))));
-            return listFrom1(stat);
+            return cm_new_List(stat);
         }
         default: {
             die("Bad node type for makeDynamicImport");
@@ -766,7 +767,8 @@ zvalue makeMaybeValue(zvalue expression) {
     if (box != NULL) {
         return box;
     } else {
-        return makeFunCall(REFS(maybeValue), listFrom1(makeThunk(expression)));
+        return makeFunCall(REFS(maybeValue),
+            cm_new_List(makeThunk(expression)));
     }
 }
 
@@ -1105,7 +1107,7 @@ zvalue withoutTops(zvalue node) {
 
     zvalue optSelection = (get_size(exports) == 0)
         ? EMPTY_LIST
-        : listFrom1(makeExportSelection(exports));
+        : cm_new_List(makeExportSelection(exports));
 
     return cm_cat(node,
         symtabFrom1(SYM(statements), cm_cat(tops, mains, optSelection)));

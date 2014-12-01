@@ -169,7 +169,7 @@ typedef zvalue (*parserFunction)(ParseState *);
 static zvalue parseOpt(parserFunction rule, ParseState *state) {
     zvalue one = rule(state);
 
-    return (one == NULL) ? EMPTY_LIST : listFrom1(one);
+    return (one == NULL) ? EMPTY_LIST : cm_new_List(one);
 }
 
 /**
@@ -214,7 +214,7 @@ static zvalue parseDelimitedSequence(parserFunction rule, zvalue tokenType,
         return EMPTY_LIST;
     }
 
-    zvalue result = listFrom1(item);
+    zvalue result = cm_new_List(item);
 
     for (;;) {
         MARK();
@@ -471,7 +471,7 @@ DEF_PARSE(mapping3) {
     zvalue name = PARSE_OR_REJECT(nameSymbol);
 
     return recFrom2(SYM(mapping),
-        SYM(keys),  listFrom1(makeLiteral(name)),
+        SYM(keys),  cm_new_List(makeLiteral(name)),
         SYM(value), makeVarFetch(name));
 }
 
@@ -735,7 +735,7 @@ DEF_PARSE(unaryExpression) {
                 break;
             }
             case EVAL_literal: {
-                result = makeCallGeneral(result, SYMS(get), listFrom1(one));
+                result = makeCallGeneral(result, SYMS(get), cm_new_List(one));
                 break;
             }
             default: {
@@ -1124,7 +1124,7 @@ DEF_PARSE(importSource1) {
     zvalue optSuffix = PARSE_OPT(importSourceDotName);
 
     zvalue name = METH_APPLY(EMPTY_STRING, cat,
-        cm_cat(listFrom1(first), rest, optSuffix));
+        cm_cat(cm_new_List(first), rest, optSuffix));
     return recFrom1(SYM(internal), SYM(name), name);
 }
 

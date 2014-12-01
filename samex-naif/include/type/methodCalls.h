@@ -72,11 +72,19 @@ char *cm_debugString(zvalue x);
 zvalue cm_newBox0(zvalue cls, zvalue value);
 
 /**
+ * Does the equivalent of calling `List.new(...)`, except that this uses
+ * lower-layer functionality, making this function safe to use before the
+ * class `List` is fully initialized. **Note:** This is a macro, and due to
+ * limitations on C macros, this must be passed at least one argument.
+ */
+#define cm_new_List(...) (listFromZarray( \
+    (zarray) {CALL_ARG_COUNT(__VA_ARGS__), CALL_ARG_ARRAY(__VA_ARGS__)}))
+
+/**
  * Does the equivalent of calling `SymbolTable.new(...)`, except that this
- * uses lower-layer functionality, making this function safe to use before
- * the class `SymbolTable` is fully initialized. **Note:** This is a macro,
- * and due to limitations on C macros, this must be passed at least one
- * argument.
+ * uses lower-layer functionality, making this function safe to use before the
+ * class `SymbolTable` is fully initialized. **Note:** This is a macro, and
+ * due to limitations on C macros, this must be passed at least one argument.
  */
 #define cm_new_SymbolTable(...) (symtabFromZarray( \
     (zarray) {CALL_ARG_COUNT(__VA_ARGS__), CALL_ARG_ARRAY(__VA_ARGS__)}))

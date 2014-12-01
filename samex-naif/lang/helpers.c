@@ -44,12 +44,12 @@ zvalue listFrom4(zvalue e1, zvalue e2, zvalue e3, zvalue e4) {
 
 // Documented in header.
 zvalue listAppend(zvalue list, zvalue elem) {
-    return cm_cat(list, listFrom1(elem));
+    return cm_cat(list, cm_new_List(elem));
 }
 
 // Documented in header.
 zvalue listPrepend(zvalue elem, zvalue list) {
-    return cm_cat(listFrom1(elem), list);
+    return cm_cat(cm_new_List(elem), list);
 }
 
 // Documented in header.
