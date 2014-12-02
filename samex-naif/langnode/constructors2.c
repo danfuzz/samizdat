@@ -213,40 +213,6 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 }
 
 // Documented in spec.
-zvalue makeApply(zvalue target, zvalue name, zvalue values) {
-    if (values == NULL) {
-        values = TOK_void;
-    }
-
-    return cm_new_Record(SYM(apply),
-        SYM(name),   name,
-        SYM(target), target,
-        SYM(values), values);
-}
-
-// Documented in spec.
-zvalue makeBasicClosure(zvalue table) {
-    return cm_new(Record, SYM(closure),
-        cm_cat(
-            cm_new_SymbolTable(
-                SYM(formals), EMPTY_LIST,
-                SYM(statements), EMPTY_LIST),
-            table));
-}
-
-// Documented in spec.
-zvalue makeCall(zvalue target, zvalue name, zvalue values) {
-    if (values == NULL) {
-        values = EMPTY_LIST;
-    }
-
-    return cm_new_Record(SYM(call),
-        SYM(name),   name,
-        SYM(target), target,
-        SYM(values), values);
-}
-
-// Documented in spec.
 zvalue makeCallGeneral(zvalue target, zvalue name, zvalue values) {
     // This is a fairly direct (but not exact) transliteration
     // of the corresponding code in `LangNode`.
@@ -393,16 +359,6 @@ zvalue makeDynamicImport(zvalue node) {
 }
 
 // Documented in spec.
-zvalue makeExport(zvalue node) {
-    return cm_new_Record(SYM(export), SYM(value), node);
-}
-
-// Documented in spec.
-zvalue makeExportSelection(zvalue names) {
-    return cm_new_Record(SYM(exportSelection), SYM(select), names);
-}
-
-// Documented in spec.
 zvalue makeFullClosure(zvalue base) {
     zvalue formals = cm_get(base, SYM(formals));
     zvalue statements = cm_get(base, SYM(statements));
@@ -440,17 +396,6 @@ zvalue makeFullClosure(zvalue base) {
                 SYM(formals),    formals,
                 SYM(statements), statements,
                 SYM(yield),      yieldNode)));
-}
-
-// Documented in spec.
-zvalue makeFunCall(zvalue function, zvalue values) {
-    if (symbolEq(get_name(function), SYM(literal))) {
-        zvalue first = cm_nth(values, 0);
-        zvalue rest = METH_CALL(values, sliceInclusive, INT_1);
-        return makeCall(first, function, rest);
-    } else {
-        return makeCall(function, SYMS(call), values);
-    }
 }
 
 // Documented in spec.
@@ -600,11 +545,6 @@ zvalue makeMapExpression(zvalue mappings) {
 };
 
 // Documented in spec.
-zvalue makeMaybe(zvalue value) {
-    return cm_new_Record(SYM(maybe), SYM(value), value);
-}
-
-// Documented in spec.
 zvalue makeMaybeValue(zvalue expression) {
     zvalue box = cm_get(expression, SYM(box));
 
@@ -614,18 +554,6 @@ zvalue makeMaybeValue(zvalue expression) {
         return makeFunCall(REFS(maybeValue),
             cm_new_List(makeThunk(expression)));
     }
-}
-
-// Documented in spec.
-zvalue makeNoYield(zvalue value) {
-    return cm_new_Record(SYM(noYield), SYM(value), value);
-}
-
-// Documented in spec.
-zvalue makeNonlocalExit(zvalue function, zvalue optValue) {
-    zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return cm_new_Record(SYM(nonlocalExit),
-        SYM(function), function, SYM(value), value);
 }
 
 // Documented in spec.
@@ -653,47 +581,6 @@ zvalue makeThunk(zvalue expression) {
         : expression;
 
     return makeFullClosure(cm_new_SymbolTable(SYM(yield), yieldNode));
-}
-
-// Documented in spec.
-zvalue makeVarRef(zvalue name) {
-    return cm_new_Record(SYM(varRef), SYM(name), name);
-}
-
-// Documented in spec.
-zvalue makeVarDef(zvalue name, zvalue box, zvalue optValue) {
-    zvalue value = (optValue == NULL) ? TOK_void : optValue;
-    return cm_new_Record(SYM(varDef),
-        SYM(name),  name,
-        SYM(box),   box,
-        SYM(value), value);
-}
-
-// Documented in spec.
-zvalue makeVarFetch(zvalue name) {
-    return cm_new_Record(SYM(fetch), SYM(target), makeVarRef(name));
-}
-
-// Documented in spec.
-zvalue makeVarFetchGeneral(zvalue name) {
-    // See discussion in `makeAssignmentIfPossible` above, for details about
-    // `lvalue`.
-    zvalue ref = makeVarRef(name);
-    return cm_new_Record(SYM(fetch),
-        SYM(box),    ref,
-        SYM(lvalue), EMPTY_LIST,
-        SYM(target), ref);
-}
-
-// Documented in spec.
-zvalue makeVarStore(zvalue name, zvalue value) {
-    return cm_new_Record(SYM(store),
-        SYM(target), makeVarRef(name), SYM(value), value);
-}
-
-// Documented in spec.
-zvalue withFormals(zvalue node, zvalue formals) {
-    return cm_cat(node, cm_new_SymbolTable(SYM(formals), formals));
 }
 
 // Documented in spec.
@@ -755,35 +642,8 @@ zvalue withModuleDefs(zvalue node) {
 }
 
 // Documented in spec.
-zvalue withName(zvalue node, zvalue name) {
-    return cm_cat(node, cm_new_SymbolTable(SYM(name), name));
-}
-
-// Documented in spec.
 zvalue withTop(zvalue node) {
     return cm_cat(node, cm_new_SymbolTable(SYM(top), BOOL_TRUE));
-}
-
-// Documented in spec.
-zvalue withYieldDef(zvalue node, zvalue name) {
-    zvalue yieldDef = cm_get(node, SYM(yieldDef));
-    zvalue newBindings;
-
-    if (yieldDef != NULL) {
-        zvalue defStat = makeVarDef(name, SYM(result), makeVarFetch(yieldDef));
-        newBindings = cm_new_SymbolTable(
-            SYM(statements),
-            listPrepend(defStat, cm_get(node, SYM(statements))));
-    } else {
-        newBindings = cm_new_SymbolTable(SYM(yieldDef), name);
-    }
-
-    return cm_cat(node, newBindings);
-};
-
-// Documented in spec.
-zvalue withoutIntermediates(zvalue node) {
-    return METH_CALL(node, del, SYM(box), SYM(interpolate), SYM(lvalue));
 }
 
 // Documented in spec.
