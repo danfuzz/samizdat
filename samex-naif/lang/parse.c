@@ -915,11 +915,14 @@ DEF_PARSE(formal) {
     }
 
     zvalue repeat = PARSE(formal1);  // Okay for it to be `NULL`.
-    if (repeat != NULL) {
-        repeat = get_name(repeat);
-    }
 
-    return cm_new_Record(SYM(formal), SYM(name), name, SYM(repeat), repeat);
+    if (repeat != NULL) {
+        return cm_new_Record(SYM(formal),
+            SYM(name),   name,
+            SYM(repeat), get_name(repeat));
+    } else {
+        return cm_new_Record(SYM(formal), SYM(name), name);
+    }
 }
 
 // Documented in spec.
