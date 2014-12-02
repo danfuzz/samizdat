@@ -94,7 +94,7 @@ Primitive logic conditional. This is like `ifValueAnd`, except that the
 function must accept at least two arguments, and the final two arguments
 are treated specially.
 
-In particular, if all of the `functions` returns a value, then this calls
+In particular, if all of the `functions` return a value, then this calls
 the `thenFunction` and returns its value. Otherwise &mdash; that is, if
 any of the `functions` returns void &mdash; then this calls the
 `elseFunction` and returns its value.
