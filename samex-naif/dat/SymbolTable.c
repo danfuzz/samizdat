@@ -224,6 +224,12 @@ zvalue symtabFromMapping(zmapping mapping) {
 
 // Documented in header.
 zvalue symtabFromZarray(zarray arr) {
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        for (zint i = 0; i < arr.size; i++) {
+            assertValid(arr.elems[i]);
+        }
+    }
+
     if (arr.size == 0) {
         return EMPTY_SYMBOL_TABLE;
     } else if ((arr.size & 1) != 0) {
@@ -242,6 +248,13 @@ zvalue symtabFromZarray(zarray arr) {
 
 // Documented in header.
 zvalue symtabFromZassoc(zassoc ass) {
+    if (DAT_CONSTRUCTION_PARANOIA) {
+        for (zint i = 0; i < ass.size; i++) {
+            assertValid(ass.elems[i].key);
+            assertValid(ass.elems[i].value);
+        }
+    }
+
     if (ass.size == 0) {
         return EMPTY_SYMBOL_TABLE;
     }
