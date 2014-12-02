@@ -116,9 +116,9 @@ expressions bottom out into, hence the name.
 #### `loop(function) -> void`
 
 Primitive unconditional loop construct. This repeatedly calls the given
-function with no arguments.
+`function` with no arguments.
 
-In order for the loop to terminate, the function must use a nonlocal exit.
+In order for the loop to terminate, the `function` must use a nonlocal exit.
 
 **Syntax Note:** Used in the translation of `do` and `while` forms.
 
