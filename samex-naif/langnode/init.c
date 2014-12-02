@@ -18,13 +18,13 @@
 znodeType nodeSymbolMap[DAT_MAX_SYMBOLS];
 
 // This provides the non-inline version of this function.
-extern znodeType recordEvalType(zvalue record);
+extern znodeType nodeRecType(zvalue record);
 
 // This provides the non-inline version of this function.
-extern bool recordEvalTypeIs(zvalue record, znodeType type);
+extern bool nodeRecTypeIs(zvalue record, znodeType type);
 
 // This provides the non-inline version of this function.
-extern znodeType symbolEvalType(zvalue symbol);
+extern znodeType nodeSymbolType(zvalue symbol);
 
 /** Initializes the module. */
 MOD_INIT(langnode) {

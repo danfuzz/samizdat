@@ -42,7 +42,7 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
 
 // Documented in spec.
 zvalue get_baseName(zvalue source) {
-    switch (recordEvalType(source)) {
+    switch (nodeRecType(source)) {
         case NODE_external: {
             zvalue components =
                 splitAtChar(cm_get(source, SYM(name)), STR_CH_DOT);
@@ -63,7 +63,7 @@ zvalue get_baseName(zvalue source) {
 
 // Documented in spec.
 zvalue get_definedNames(zvalue node) {
-    switch (recordEvalType(node)) {
+    switch (nodeRecType(node)) {
         case NODE_export: {
             return get_definedNames(cm_get(node, SYM(value)));
         }

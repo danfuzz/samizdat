@@ -59,7 +59,7 @@ static zvalue expandYield(zvalue node) {
     zvalue yieldNode = cm_get(node, SYM(yield));
 
     if (     (yieldNode == NULL)
-          || !recordEvalTypeIs(yieldNode, NODE_nonlocalExit)) {
+          || !nodeRecTypeIs(yieldNode, NODE_nonlocalExit)) {
         return yieldNode;
     }
 
@@ -68,8 +68,8 @@ static zvalue expandYield(zvalue node) {
     zvalue yieldDef = cm_get(node, SYM(yieldDef));
     zvalue functionTarget = cm_get(function, SYM(target));
 
-    if (     recordEvalTypeIs(function, NODE_fetch)
-          && recordEvalTypeIs(functionTarget, NODE_varRef)
+    if (     nodeRecTypeIs(function, NODE_fetch)
+          && nodeRecTypeIs(functionTarget, NODE_varRef)
           && (yieldDef != NULL)
           && valEq(cm_get(functionTarget, SYM(name)), yieldDef)) {
         return value;
@@ -77,7 +77,7 @@ static zvalue expandYield(zvalue node) {
 
     zvalue exitCall;
 
-    switch (recordEvalType(value)) {
+    switch (nodeRecType(value)) {
         case NODE_void: {
             exitCall = makeFunCall(function, NULL);
             break;
@@ -153,7 +153,7 @@ static zvalue makeMapLikeExpression(zvalue mappings, zvalue clsLit,
 
     for (zint i = 0; i < size; i++) {
         zvalue one = cm_nth(mappings, i);
-        if (recordEvalTypeIs(one, NODE_mapping)) {
+        if (nodeRecTypeIs(one, NODE_mapping)) {
             zvalue keys = cm_get(one, SYM(keys));
             zvalue value = cm_get(one, SYM(value));
             bool handled = false;
@@ -203,7 +203,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
 
     if (cm_get(target, SYM(lvalue)) == NULL) {
         return NULL;
-    } else if (recordEvalTypeIs(target, NODE_fetch)) {
+    } else if (nodeRecTypeIs(target, NODE_fetch)) {
         zvalue innerTarget = cm_get(target, SYM(target));
         return cm_new_Record(SYM(store),
             SYM(target), innerTarget, SYM(value), value);
@@ -322,7 +322,7 @@ zvalue makeDynamicImport(zvalue node) {
     zvalue select = cm_get(node, SYM(select));
     zvalue source = cm_get(node, SYM(source));
 
-    switch (recordEvalType(node)) {
+    switch (nodeRecType(node)) {
         case NODE_importModule: {
             zvalue stat = makeVarDef(name, SYM(result),
                 makeFunCall(REFS(loadModule),
@@ -438,7 +438,7 @@ zvalue makeImport(zvalue baseData) {
 
     if (cm_get(data, SYM(format)) != NULL) {
         // It's a resource.
-        if (recordEvalTypeIs(cm_get(data, SYM(source)), NODE_external)) {
+        if (nodeRecTypeIs(cm_get(data, SYM(source)), NODE_external)) {
             die("Cannot import external resource.");
         }
         return cm_new(Record, SYM(importResource), data);
@@ -465,7 +465,7 @@ zvalue makeInfoTable(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = cm_nth(statements, i);
 
-        switch (recordEvalType(s)) {
+        switch (nodeRecType(s)) {
             case NODE_exportSelection: {
                 zvalue select = cm_get(s, SYM(select));
                 zint sz = get_size(select);
@@ -494,7 +494,7 @@ zvalue makeInfoTable(zvalue node) {
         }
 
         // Intentionally *not* part of the above `switch` (see comment above).
-        switch (recordEvalType(s)) {
+        switch (nodeRecType(s)) {
             case NODE_importModule: {
                 imports = addImportBinding(imports,
                     cm_get(s, SYM(source)), SYM(module));
@@ -597,7 +597,7 @@ zvalue withModuleDefs(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = cm_nth(rawStatements, i);
 
-        switch (recordEvalType(s)) {
+        switch (nodeRecType(s)) {
             case NODE_exportSelection: {
                 continue;
             }
@@ -654,13 +654,13 @@ zvalue withoutTops(zvalue node) {
     zvalue tops = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = cm_nth(rawStatements, i);
-        zvalue defNode = recordEvalTypeIs(s, NODE_export)
+        zvalue defNode = nodeRecTypeIs(s, NODE_export)
             ? cm_get(s, SYM(value))
             : s;
 
         if (cm_get(defNode, SYM(top)) != NULL) {
             zvalue box = cm_get(defNode, SYM(box));
-            switch (symbolEvalType(box)) {
+            switch (nodeSymbolType(box)) {
                 case NODE_cell:
                 case NODE_promise: {
                     // Nothing to do.
@@ -683,7 +683,7 @@ zvalue withoutTops(zvalue node) {
     zvalue mains = EMPTY_LIST;
     for (zint i = 0; i < size; i++) {
         zvalue s = cm_nth(rawStatements, i);
-        zvalue defNode = recordEvalTypeIs(s, NODE_export)
+        zvalue defNode = nodeRecTypeIs(s, NODE_export)
             ? cm_get(s, SYM(value))
             : s;
 
@@ -700,7 +700,7 @@ zvalue withoutTops(zvalue node) {
     for (zint i = 0; i < size; i++) {
         zvalue s = cm_nth(rawStatements, i);
 
-        if (!recordEvalTypeIs(s, NODE_export)) {
+        if (!nodeRecTypeIs(s, NODE_export)) {
             continue;
         }
 

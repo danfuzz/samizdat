@@ -15,7 +15,7 @@
 
 // Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
-    if (recordEvalTypeIs(node, NODE_importResource)) {
+    if (nodeRecTypeIs(node, NODE_importResource)) {
         // No conversion, just validation. TODO: Validate.
         //
         // **Note:** This clause is at the top so as to avoid the call to
@@ -29,12 +29,12 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
             die("Could not resolve import.");
-        } else if (!recordEvalTypeIs(resolved, NODE_module)) {
+        } else if (!nodeRecTypeIs(resolved, NODE_module)) {
             die("Invalid resolution result (not a `@module`)");
         }
     }
 
-    switch (recordEvalType(node)) {
+    switch (nodeRecType(node)) {
         case NODE_importModule: {
             // No conversion, just validation (done above).
             return node;
@@ -85,12 +85,12 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         bool exported = false;
         zvalue defNode = s;
 
-        if (recordEvalTypeIs(s, NODE_export)) {
+        if (nodeRecTypeIs(s, NODE_export)) {
             exported = true;
             defNode = cm_get(s, SYM(value));
         }
 
-        switch (recordEvalType(defNode)) {
+        switch (nodeRecType(defNode)) {
             case NODE_importModule:
             case NODE_importModuleSelection:
             case NODE_importResource: {

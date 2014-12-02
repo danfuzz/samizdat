@@ -13,7 +13,7 @@
 
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
-    switch (recordEvalType(node)) {
+    switch (nodeRecType(node)) {
         case NODE_apply: { return true;  }
         case NODE_call:  { return true;  }
         case NODE_fetch: { return true;  }
@@ -62,7 +62,7 @@ zvalue formalsMinArgs(zvalue formals) {
 
 // Documented in spec.
 bool isExpression(zvalue node) {
-    switch (recordEvalType(node)) {
+    switch (nodeRecType(node)) {
         case NODE_apply:   { return true;  }
         case NODE_call:    { return true;  }
         case NODE_closure: { return true;  }

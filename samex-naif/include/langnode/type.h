@@ -55,21 +55,21 @@ extern znodeType nodeSymbolMap[DAT_MAX_SYMBOLS];
 /**
  * Gets the evaluation type (enumerated value) of the given record.
  */
-inline znodeType recordEvalType(zvalue record) {
+inline znodeType nodeRecType(zvalue record) {
     return nodeSymbolMap[recNameIndex(record)];
 }
 
 /**
  * Returns whether the evaluation type of the given record is as given.
  */
-inline bool recordEvalTypeIs(zvalue record, znodeType type) {
-    return recordEvalType(record) == type;
+inline bool nodeRecTypeIs(zvalue record, znodeType type) {
+    return nodeRecType(record) == type;
 }
 
 /**
  * Gets the evaluation type (enumerated value) of the given symbol.
  */
-inline znodeType symbolEvalType(zvalue symbol) {
+inline znodeType nodeSymbolType(zvalue symbol) {
     return nodeSymbolMap[symbolIndex(symbol)];
 }
 

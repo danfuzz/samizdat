@@ -277,7 +277,7 @@ zvalue langEval0(zvalue env, zvalue node) {
  * Constructs an instance from the given (per spec) executable tree node.
  */
 CMETH_IMPL_1(ExecNode, new, orig) {
-    znodeType type = recordEvalType(orig);
+    znodeType type = nodeRecType(orig);
     zvalue result = datAllocValue(CLS_ExecNode, sizeof(ExecNodeInfo));
     ExecNodeInfo *info = getInfo(result);
 
@@ -361,7 +361,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                 die("Invalid `varDef` node.");
             }
 
-            switch (symbolEvalType(info->box)) {
+            switch (nodeSymbolType(info->box)) {
                 case NODE_cell:    { info->box = CLS_Cell;    break; }
                 case NODE_lazy:    { info->box = CLS_Lazy;    break; }
                 case NODE_promise: { info->box = CLS_Promise; break; }

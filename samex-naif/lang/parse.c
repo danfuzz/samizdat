@@ -716,7 +716,7 @@ DEF_PARSE(unaryExpression) {
         if (classAccepts(CLS_List, one)) {
             // Regular function call.
             result = makeFunCallGeneral(result, one);
-        } else switch (recordEvalType(one)) {
+        } else switch (nodeRecType(one)) {
             case NODE_call: {
                 // Method call.
                 zvalue name = cm_get(one, SYM(name));
@@ -818,7 +818,7 @@ DEF_PARSE(yieldOrNonlocal) {
     zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
     zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue name = recordEvalTypeIs(op, NODE_yield)
+    zvalue name = nodeRecTypeIs(op, NODE_yield)
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
@@ -1392,7 +1392,7 @@ zvalue langParseProgram0(zvalue program) {
 
 // Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
-    if (recordEvalTypeIs(node, NODE_closure)) {
+    if (nodeRecTypeIs(node, NODE_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);
     }

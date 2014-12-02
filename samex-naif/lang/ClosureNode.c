@@ -131,7 +131,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
         if (repeat == NULL) {
             rep = REP_NONE;
         } else {
-            switch (symbolEvalType(repeat)) {
+            switch (nodeSymbolType(repeat)) {
                 case NODE_CH_STAR:  { rep = REP_STAR;  break; }
                 case NODE_CH_PLUS:  { rep = REP_PLUS;  break; }
                 case NODE_CH_QMARK: { rep = REP_QMARK; break; }
