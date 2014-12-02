@@ -420,13 +420,11 @@ def parPostfixOperator = {:
         def getterRef = makeLiteral(@get_.cat(name));
         { node ->
             def getterCall = makeCall(node, getterRef);
-            @(getterCall.get_name()){
-                getterCall*,
+            getterCall.cat(@{
                 lvalue: { expr ->
                     def setterRef = makeLiteral(@set_.cat(name));
                     makeCall(node, setterRef, expr)
-                }
-            }
+                }})
         }
     }
 |

@@ -120,5 +120,5 @@ export fn withResolvedImports(node, resolveFn) {
             { resolved }
     };
 
-    return @(node.get_name()){node*, statements: [converted*]}
+    return node.cat(@{statements: [converted*]})
 };
