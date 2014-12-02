@@ -104,17 +104,21 @@ note(v18);
 def v19 = maybeValue { ifValueAnd { "1" } { x -> } };
 note($Format::source(v19));  ## Should be `[]`.
 
-def v20 = ifValueAnd
+def v20 = maybeValue
+    {
+        ifValueAnd
+            { 1 }
+            { . -> 2 }
+            { ., . -> }
+    };
+note($Format::source(v20));  ## Should be `[]`.
+
+def v21 = ifValueAnd
     { "1" }
     { x -> x.cat("2") }
     { x, y -> x.cat(y, "3") }
     { x, y, z -> x.cat(y, z, "4") }
     { args* -> $Format::source(args) };
-note(v20);
-
-def v21 = ifValueAndElse
-    { "v21" }
-    { die("No.") };
 note(v21);
 
 def v22 = ifValueAndElse

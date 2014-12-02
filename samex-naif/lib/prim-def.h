@@ -48,7 +48,7 @@ PRIM_FUNC(ifNot,                  2, 2);
 PRIM_FUNC(ifSwitch,               2, 3);
 PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueAnd,             1, -1);
-PRIM_FUNC(ifValueAndElse,         2, -1);
+PRIM_FUNC(ifValueAndElse,         3, -1);
 PRIM_FUNC(ifValueOr,              0, -1);
 PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(maybeCast,              2, 2);
