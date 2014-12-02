@@ -908,21 +908,24 @@ DEF_PARSE(formal) {
 
     zvalue name = PARSE(nameSymbol);
 
-    if (name == NULL) {
+    if (name != NULL) {
+        name = cm_new_SymbolTable(SYM(name), name);
+    } else {
         // If there was no name, then the only valid form for a formal
         // is if this is an unnamed / unused argument.
         MATCH_OR_REJECT(CH_DOT);
+        name = EMPTY_SYMBOL_TABLE;
     }
 
     zvalue repeat = PARSE(formal1);  // Okay for it to be `NULL`.
 
     if (repeat != NULL) {
-        return cm_new_Record(SYM(formal),
-            SYM(name),   name,
-            SYM(repeat), get_name(repeat));
+        repeat = cm_new_SymbolTable(SYM(repeat), get_name(repeat));
     } else {
-        return cm_new_Record(SYM(formal), SYM(name), name);
+        repeat = EMPTY_SYMBOL_TABLE;
     }
+
+    return cm_new(Record, SYM(formal), cm_cat(name, repeat));
 }
 
 // Documented in spec.
