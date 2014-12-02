@@ -2,14 +2,13 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "const.h"
+#include "langnode.h"
 #include "util.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/String.h"
 #include "type/Symbol.h"
 
-#include "helpers.h"
 #include "impl.h"
 
 
@@ -149,7 +148,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return recordFrom1(SYM(int), SYM(value), intval);
+    return cm_new_Record(SYM(int), SYM(value), intval);
 }
 
 /**
@@ -205,7 +204,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         }
     }
 
-    return recordFrom1(SYM(identifier), SYM(value), name);
+    return cm_new_Record(SYM(identifier), SYM(value), name);
 }
 
 /**
@@ -255,7 +254,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZstring(s);
-    return recordFrom1(SYM(string), SYM(value), string);
+    return cm_new_Record(SYM(string), SYM(value), string);
 }
 
 /**
@@ -271,7 +270,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue name = symbolFromString(cm_get(result, SYM(value)));
-    return recordFrom1(SYM(identifier), SYM(value), name);
+    return cm_new_Record(SYM(identifier), SYM(value), name);
 }
 
 /**
@@ -353,7 +352,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     }
 
     zvalue value = stringFromZstring(s);
-    return recordFrom2(SYM(directive),
+    return cm_new_Record(SYM(directive),
         SYM(name), cm_get(name, SYM(value)),
         SYM(value), value);
 }
@@ -419,7 +418,7 @@ zvalue langLanguageOf0(zvalue string) {
     zvalue result = tokenizeAnyToken(&state);
 
     if ((result != NULL)
-        && recordEvalTypeIs(result, EVAL_directive)
+        && nodeRecTypeIs(result, NODE_directive)
         && valEq(cm_get(result, SYM(name)), SYM(language))) {
         return cm_get(result, SYM(value));
     }
@@ -439,7 +438,7 @@ zvalue langTokenize0(zvalue string) {
         zvalue one = tokenizeAnyToken(&state);
         if (one == NULL) {
             break;
-        } else if (!recordEvalTypeIs(one, EVAL_directive)) {
+        } else if (!nodeRecTypeIs(one, NODE_directive)) {
             if (out >= LANG_MAX_TOKENS) {
                 die("Too many tokens.");
             }

@@ -127,6 +127,18 @@ static zvalue doSlice(zvalue ths, bool inclusive,
 //
 
 // Documented in header.
+zvalue listAppend(zvalue list, zvalue elem) {
+    // `EMPTY_LIST` means we know we're calling `List.cat()` and not some
+    // other class's `.cat()`.
+    return cm_cat(EMPTY_LIST, list, listFromValue(elem));
+}
+
+// Documented in header.
+zvalue listPrepend(zvalue elem, zvalue list) {
+    return cm_cat(listFromValue(elem), list);
+}
+
+// Documented in header.
 zvalue listFromValue(zvalue value) {
     return listFromZarray((zarray) {1, &value});
 }

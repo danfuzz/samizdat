@@ -4,6 +4,7 @@
 
 #include <stddef.h>
 
+#include "langnode.h"
 #include "type/Bool.h"
 #include "type/List.h"
 #include "type/Map.h"
@@ -11,9 +12,6 @@
 #include "type/Object.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
-
-#include "const.h"
-#include "langnode.h"
 
 
 //
@@ -33,7 +31,7 @@
     SYM_DEF(name); \
     DEF_TOKEN(name)
 
-#include "const-def.h"
+#include "langnode/consts-def.h"
 
 #undef DEF_LITERAL
 #undef DEF_STRING
@@ -46,7 +44,7 @@
 //
 
 /** Initializes the module. */
-MOD_INIT(lang_const) {
+MOD_INIT(lang_consts) {
     zstackPointer save = datFrameStart();
 
     MOD_USE(Value);
@@ -64,7 +62,7 @@ MOD_INIT(lang_const) {
         SYM_INIT_WITH(name, str); \
         DEF_TOKEN(name)
 
-    #include "const-def.h"
+    #include "langnode/consts-def.h"
 
     datFrameReturn(save, NULL);
 

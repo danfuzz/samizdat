@@ -35,12 +35,6 @@ fn splitAtChar(s, ch) {
 ##
 
 ## Documented in spec.
-export fn extractLiteral(node) {
-    return? ifIs { node.hasName(@literal) }
-        { node::value }
-};
-
-## Documented in spec.
 export fn get_baseName(source) {
     return ifSwitch(
         { source.get_name() },

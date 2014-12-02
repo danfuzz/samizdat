@@ -43,6 +43,11 @@ static RecordInfo *getInfo(zvalue value) {
 //
 
 // Documented in header.
+zvalue recFromZarray(zvalue name, zarray arr) {
+    return cm_new(Record, name, symtabFromZarray(arr));
+}
+
+// Documented in header.
 bool recGet1(zvalue record, zvalue key, zvalue *got) {
     assertHasClass(record, CLS_Record);
     zvalue data = getInfo(record)->data;

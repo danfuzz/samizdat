@@ -124,13 +124,9 @@ static zvalue methCall0(zvalue target, zint nameIndex, zarray args) {
 
 // Documented in header.
 zvalue methApply(zvalue target, zvalue name, zvalue args) {
-    zint argCount = (args == NULL) ? 0 : get_size(args);
-
-    if (argCount == 0) {
-        return methCall(target, name, EMPTY_ZARRAY);
-    } else {
-        return methCall(target, name, zarrayFromList(args));
-    }
+    return (args == NULL)
+        ? methCall(target, name, EMPTY_ZARRAY)
+        : methCall(target, name, zarrayFromList(args));
 }
 
 // Documented in header.

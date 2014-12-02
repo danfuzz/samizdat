@@ -6,8 +6,8 @@
 // Commonly-used in-model constants.
 //
 
-#ifndef _CONST_H_
-#define _CONST_H_
+#ifndef _LANGNODE_CONSTS_H_
+#define _LANGNODE_CONSTS_H_
 
 #include "type/declare.h"
 
@@ -32,7 +32,7 @@
     DEF_TOKEN(name)
     // No semicolon here, so that use sites require it.
 
-#include "const-def.h"
+#include "langnode/consts-def.h"
 
 #undef DEF_LITERAL
 #undef DEF_STRING

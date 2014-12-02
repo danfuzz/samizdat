@@ -120,7 +120,7 @@ static char *resolveArgv0(const char *argv0) {
 
         size_t size = endPtr - pathEnv;
         char *onePath = utilAlloc(size + 1);
-        memcpy(onePath, pathEnv, size);
+        utilCpy(char, onePath, pathEnv, size);
         onePath[size] = '\0';
 
         char *oneFile = catTwoPaths(onePath, argv0);

@@ -7,7 +7,7 @@
 import core.Generator :: collectAll;
 
 import ./constructors1 :: *;
-import ./getters :: *;
+import ./getters :: get_baseName, get_definedNames;
 import ./literals :: *;
 import ./misc :: canYieldVoid, isExpression;
 import ./refs :: REFS;

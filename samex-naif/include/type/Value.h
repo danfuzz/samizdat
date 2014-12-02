@@ -40,7 +40,7 @@ bool valEqNullOk(zvalue value, zvalue other);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
- * values `{ -1, 0, 1 }`, with the usual comparison result meaning.
+ * values `{@less, @same, @more}`, with the usual comparison result meaning.
  * This calls through to `totalOrder` given values of the same class. **Note:**
  * It is invalid to pass `NULL` to this function.
  */

@@ -3,20 +3,16 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 //
-// Initialization
+// Executable tree node construction and manipulation
 //
 
-#include "module.h"
+#ifndef _LANGNODE_H_
+#define _LANGNODE_H_
 
+#include "type/Value.h"
 
-//
-// Module Definitions
-//
+#include "langnode/type.h"
+#include "langnode/consts.h"
+#include "langnode/functions.h"
 
-/** Initializes the module. */
-MOD_INIT(lang) {
-    MOD_USE(cls);
-    MOD_USE(langnode);
-    MOD_USE(Closure);
-    MOD_USE(ExecNode);
-}
+#endif
