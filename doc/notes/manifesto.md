@@ -14,7 +14,7 @@ has never taken hold in the industry. Because of this, its very good semantic
 ideas have languished.
 
 There is an opportunity for a system applications language which follows the
-dominant C tradition while providing semantics that better match how
+dominant C tradition while providing semantics that more fully embrace how
 intra- and inter-computer networking actually works.
 
 The Samizdat project is one possible take on how to fill this gap.
