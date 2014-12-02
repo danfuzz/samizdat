@@ -101,7 +101,7 @@ any of the `functions` returns void &mdash; then this calls the
 
 **Syntax Note:** Used in the translation of some multiple-binding `if` forms.
 
-#### `ifValueOr(functions+) -> . | void`
+#### `ifValueOr(functions*) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions` in
 order with no arguments, until one of them returns non-void. When a non-void
