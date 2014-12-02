@@ -51,7 +51,7 @@ export class PegRepeat
     };
 
     ## Documented in spec.
-    .parse(state) { ->
+    .parse(state) {
         def rule = this.(ACCESS)(@rule);
         def origContext = state.get_context();
         var remainingState = state;
