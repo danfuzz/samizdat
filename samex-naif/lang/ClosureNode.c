@@ -132,9 +132,9 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
             rep = REP_NONE;
         } else {
             switch (symbolEvalType(repeat)) {
-                case EVAL_CH_STAR:  { rep = REP_STAR;  break; }
-                case EVAL_CH_PLUS:  { rep = REP_PLUS;  break; }
-                case EVAL_CH_QMARK: { rep = REP_QMARK; break; }
+                case NODE_CH_STAR:  { rep = REP_STAR;  break; }
+                case NODE_CH_PLUS:  { rep = REP_PLUS;  break; }
+                case NODE_CH_QMARK: { rep = REP_QMARK; break; }
                 default: {
                     die("Invalid repeat modifier: %s", cm_debugString(repeat));
                 }

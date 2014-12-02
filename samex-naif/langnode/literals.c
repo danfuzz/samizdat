@@ -13,7 +13,7 @@
 
 // Documented in spec.
 zvalue extractLiteral(zvalue node) {
-    return recordEvalTypeIs(node, EVAL_literal)
+    return recordEvalTypeIs(node, NODE_literal)
         ? cm_get(node, SYM(value))
         : NULL;
 }

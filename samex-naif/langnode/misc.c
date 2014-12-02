@@ -14,12 +14,12 @@
 // Documented in spec.
 bool canYieldVoid(zvalue node) {
     switch (recordEvalType(node)) {
-        case EVAL_apply: { return true;  }
-        case EVAL_call:  { return true;  }
-        case EVAL_fetch: { return true;  }
-        case EVAL_maybe: { return true;  }
-        case EVAL_store: { return true;  }
-        case EVAL_void:  { return true;  }
+        case NODE_apply: { return true;  }
+        case NODE_call:  { return true;  }
+        case NODE_fetch: { return true;  }
+        case NODE_maybe: { return true;  }
+        case NODE_store: { return true;  }
+        case NODE_void:  { return true;  }
         default:         { return false; }
     }
 }
@@ -63,14 +63,14 @@ zvalue formalsMinArgs(zvalue formals) {
 // Documented in spec.
 bool isExpression(zvalue node) {
     switch (recordEvalType(node)) {
-        case EVAL_apply:   { return true;  }
-        case EVAL_call:    { return true;  }
-        case EVAL_closure: { return true;  }
-        case EVAL_fetch:   { return true;  }
-        case EVAL_literal: { return true;  }
-        case EVAL_noYield: { return true;  }
-        case EVAL_store:   { return true;  }
-        case EVAL_varRef:  { return true;  }
+        case NODE_apply:   { return true;  }
+        case NODE_call:    { return true;  }
+        case NODE_closure: { return true;  }
+        case NODE_fetch:   { return true;  }
+        case NODE_literal: { return true;  }
+        case NODE_noYield: { return true;  }
+        case NODE_store:   { return true;  }
+        case NODE_varRef:  { return true;  }
         default:           { return false; }
     }
 }

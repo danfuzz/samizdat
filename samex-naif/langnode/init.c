@@ -15,16 +15,16 @@
 //
 
 // Documented in header.
-zevalType nodeSymbolMap[DAT_MAX_SYMBOLS];
+znodeType nodeSymbolMap[DAT_MAX_SYMBOLS];
 
 // This provides the non-inline version of this function.
-extern zevalType recordEvalType(zvalue record);
+extern znodeType recordEvalType(zvalue record);
 
 // This provides the non-inline version of this function.
-extern bool recordEvalTypeIs(zvalue record, zevalType type);
+extern bool recordEvalTypeIs(zvalue record, znodeType type);
 
 // This provides the non-inline version of this function.
-extern zevalType symbolEvalType(zvalue symbol);
+extern znodeType symbolEvalType(zvalue symbol);
 
 /** Initializes the module. */
 MOD_INIT(langnode) {
@@ -33,7 +33,7 @@ MOD_INIT(langnode) {
 
     utilZero(nodeSymbolMap);
 
-    #define SYM_MAP(name) nodeSymbolMap[SYMIDX(name)] = EVAL_##name;
+    #define SYM_MAP(name) nodeSymbolMap[SYMIDX(name)] = NODE_##name;
 
     SYM_MAP(CH_PLUS);
     SYM_MAP(CH_QMARK);

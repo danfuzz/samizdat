@@ -43,12 +43,12 @@ static zvalue splitAtChar(zvalue string, zvalue chString) {
 // Documented in spec.
 zvalue get_baseName(zvalue source) {
     switch (recordEvalType(source)) {
-        case EVAL_external: {
+        case NODE_external: {
             zvalue components =
                 splitAtChar(cm_get(source, SYM(name)), STR_CH_DOT);
             return cm_nth(components, get_size(components) - 1);
         }
-        case EVAL_internal: {
+        case NODE_internal: {
             zvalue components =
                 splitAtChar(cm_get(source, SYM(name)), STR_CH_SLASH);
             zvalue last = cm_nth(components, get_size(components) - 1);
@@ -64,15 +64,15 @@ zvalue get_baseName(zvalue source) {
 // Documented in spec.
 zvalue get_definedNames(zvalue node) {
     switch (recordEvalType(node)) {
-        case EVAL_export: {
+        case NODE_export: {
             return get_definedNames(cm_get(node, SYM(value)));
         }
-        case EVAL_importModule:
-        case EVAL_importResource:
-        case EVAL_varDef: {
+        case NODE_importModule:
+        case NODE_importResource:
+        case NODE_varDef: {
             return cm_new_List(cm_get(node, SYM(name)));
         }
-        case EVAL_importModuleSelection: {
+        case NODE_importModuleSelection: {
             zvalue select = cm_get(node, SYM(select));
             if (select == NULL) {
                 die("Cannot call `get_definedNames` on unresolved import.");

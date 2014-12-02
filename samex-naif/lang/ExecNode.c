@@ -31,7 +31,7 @@
  */
 typedef struct {
     /** Type of the node. */
-    zevalType type;
+    znodeType type;
 
     /** `node::box`. */
     zvalue box;
@@ -78,7 +78,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
 
     zvalue result;
     switch (info->type) {
-        case EVAL_apply: {
+        case NODE_apply: {
             zvalue target = execute(info->target, frame, EX_value);
             zvalue name = execute(info->name, frame, EX_value);
             zvalue values = execute(info->values, frame, EX_maybe);
@@ -87,7 +87,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
             break;
         }
 
-        case EVAL_call: {
+        case NODE_call: {
             zvalue target = execute(info->target, frame, EX_value);
             zvalue name = execute(info->name, frame, EX_value);
             zarray values = info->valuesArr;
@@ -102,21 +102,21 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
             break;
         }
 
-        case EVAL_closure: {
+        case NODE_closure: {
             result = exnoBuildClosure(info->value, frame);
             break;
         }
 
-        case EVAL_fetch: {
+        case NODE_fetch: {
             zvalue target = execute(info->target, frame, EX_value);
 
             result = cm_fetch(target);
             break;
         }
 
-        case EVAL_importModule:
-        case EVAL_importModuleSelection:
-        case EVAL_importResource: {
+        case NODE_importModule:
+        case NODE_importModuleSelection:
+        case NODE_importResource: {
             if (op != EX_statement) {
                 die("Invalid use of `import*` node.");
             }
@@ -125,12 +125,12 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
             return NULL;
         }
 
-        case EVAL_literal: {
+        case NODE_literal: {
             result = info->value;
             break;
         }
 
-        case EVAL_maybe: {
+        case NODE_maybe: {
             if (op != EX_maybe) {
                 die("Invalid use of `maybe` node.");
             }
@@ -139,12 +139,12 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
             return execute(info->value, frame, EX_voidOk);
         }
 
-        case EVAL_noYield: {
+        case NODE_noYield: {
             mustNotYield(execute(info->value, frame, EX_voidOk));
             // `mustNotYield` will `die` before trying to return here.
         }
 
-        case EVAL_store: {
+        case NODE_store: {
             zvalue target = execute(info->target, frame, EX_value);
             zvalue value = execute(info->value, frame, EX_maybe);
 
@@ -152,7 +152,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
             break;
         }
 
-        case EVAL_varDef: {
+        case NODE_varDef: {
             if (op != EX_statement) {
                 die("Invalid use of `varDef` node.");
             }
@@ -166,12 +166,12 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
             return NULL;
         }
 
-        case EVAL_varRef: {
+        case NODE_varRef: {
             result = frameGet(frame, info->name);
             break;
         }
 
-        case EVAL_void: {
+        case NODE_void: {
             if (op != EX_maybe) {
                 die("Invalid use of `void` node.");
             }
@@ -240,7 +240,7 @@ void exnoExecuteStatements(zarray statements, Frame *frame) {
 zvalue exnoVarDefName(zvalue node) {
     ExecNodeInfo *info = getInfo(node);
 
-    return (info->type == EVAL_varDef)
+    return (info->type == NODE_varDef)
         ? info->name
         : NULL;
 }
@@ -277,15 +277,15 @@ zvalue langEval0(zvalue env, zvalue node) {
  * Constructs an instance from the given (per spec) executable tree node.
  */
 CMETH_IMPL_1(ExecNode, new, orig) {
-    zevalType type = recordEvalType(orig);
+    znodeType type = recordEvalType(orig);
     zvalue result = datAllocValue(CLS_ExecNode, sizeof(ExecNodeInfo));
     ExecNodeInfo *info = getInfo(result);
 
     info->type = type;
 
     switch (type) {
-        case EVAL_apply:
-        case EVAL_call: {
+        case NODE_apply:
+        case NODE_call: {
             if (!recGet3(orig,
                     SYM(target), &info->target,
                     SYM(name),   &info->name,
@@ -297,19 +297,19 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             exnoConvert(&info->name);
             exnoConvert(&info->values);
 
-            if (type == EVAL_call) {
+            if (type == NODE_call) {
                 info->valuesArr = zarrayFromList(info->values);
             }
 
             break;
         }
 
-        case EVAL_closure: {
+        case NODE_closure: {
             info->value = cm_new(ClosureNode, orig);
             break;
         }
 
-        case EVAL_fetch: {
+        case NODE_fetch: {
             if (!recGet1(orig, SYM(target), &info->target)) {
                 die("Invalid `fetch` node.");
             }
@@ -318,30 +318,30 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             break;
         }
 
-        case EVAL_importModule:
-        case EVAL_importModuleSelection:
-        case EVAL_importResource: {
+        case NODE_importModule:
+        case NODE_importModuleSelection:
+        case NODE_importResource: {
             info->values = makeDynamicImport(orig);
             exnoConvert(&info->values);
             info->valuesArr = zarrayFromList(info->values);
             break;
         }
 
-        case EVAL_literal:
-        case EVAL_maybe:
-        case EVAL_noYield: {
+        case NODE_literal:
+        case NODE_maybe:
+        case NODE_noYield: {
             if (!recGet1(orig, SYM(value), &info->value)) {
                 die("Invalid `literal`, `maybe`, or `noYield` node.");
             }
 
-            if (type != EVAL_literal) {
+            if (type != NODE_literal) {
                 exnoConvert(&info->value);
             }
 
             break;
         }
 
-        case EVAL_store: {
+        case NODE_store: {
             if (!recGet2(orig,
                     SYM(target), &info->target,
                     SYM(value),  &info->value)) {
@@ -353,7 +353,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             break;
         }
 
-        case EVAL_varDef: {
+        case NODE_varDef: {
             if (!recGet3(orig,
                     SYM(box),   &info->box,
                     SYM(name),  &info->name,
@@ -362,10 +362,10 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             }
 
             switch (symbolEvalType(info->box)) {
-                case EVAL_cell:    { info->box = CLS_Cell;    break; }
-                case EVAL_lazy:    { info->box = CLS_Lazy;    break; }
-                case EVAL_promise: { info->box = CLS_Promise; break; }
-                case EVAL_result:  { info->box = CLS_Result;  break; }
+                case NODE_cell:    { info->box = CLS_Cell;    break; }
+                case NODE_lazy:    { info->box = CLS_Lazy;    break; }
+                case NODE_promise: { info->box = CLS_Promise; break; }
+                case NODE_result:  { info->box = CLS_Result;  break; }
                 default: {
                     die("Invalid `box` spec: %s", cm_debugString(info->box));
                 }
@@ -375,14 +375,14 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             break;
         }
 
-        case EVAL_varRef: {
+        case NODE_varRef: {
             if (!recGet1(orig, SYM(name), &info->name)) {
                 die("Invalid `varRef` node.");
             }
             break;
         }
 
-        case EVAL_void: {
+        case NODE_void: {
             // Nothing to do.
             break;
         }

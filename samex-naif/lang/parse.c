@@ -717,22 +717,22 @@ DEF_PARSE(unaryExpression) {
             // Regular function call.
             result = makeFunCallGeneral(result, one);
         } else switch (recordEvalType(one)) {
-            case EVAL_call: {
+            case NODE_call: {
                 // Method call.
                 zvalue name = cm_get(one, SYM(name));
                 zvalue values = cm_get(one, SYM(values));
                 result = makeCallGeneral(result, name, values);
                 break;
             }
-            case EVAL_CH_STAR: {
+            case NODE_CH_STAR: {
                 result = makeInterpolate(result);
                 break;
             }
-            case EVAL_CH_QMARK: {
+            case NODE_CH_QMARK: {
                 result = makeMaybeValue(result);
                 break;
             }
-            case EVAL_literal: {
+            case NODE_literal: {
                 result = makeCallGeneral(result, SYMS(get), cm_new_List(one));
                 break;
             }
@@ -818,7 +818,7 @@ DEF_PARSE(yieldOrNonlocal) {
     zvalue op = PARSE_OR_REJECT(yieldOrNonlocal1);
     zvalue optQuest = MATCH(CH_QMARK);  // It's okay for this to be `NULL`.
 
-    zvalue name = recordEvalTypeIs(op, EVAL_yield)
+    zvalue name = recordEvalTypeIs(op, NODE_yield)
         ? PARSE(yieldOrNonlocal2)       // It's okay for this to be `NULL`.
         : NULL;
     if (name == NULL) {
@@ -1392,7 +1392,7 @@ zvalue langParseProgram0(zvalue program) {
 
 // Documented in header.
 zvalue langSimplify0(zvalue node, zvalue resolveFn) {
-    if (recordEvalTypeIs(node, EVAL_closure)) {
+    if (recordEvalTypeIs(node, NODE_closure)) {
         node = withResolvedImports(node, resolveFn);
         return withModuleDefs(node);
     }

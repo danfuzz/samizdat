@@ -15,7 +15,7 @@
 
 // Documented in spec.
 zvalue resolveImport(zvalue node, zvalue resolveFn) {
-    if (recordEvalTypeIs(node, EVAL_importResource)) {
+    if (recordEvalTypeIs(node, NODE_importResource)) {
         // No conversion, just validation. TODO: Validate.
         //
         // **Note:** This clause is at the top so as to avoid the call to
@@ -29,17 +29,17 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
             die("Could not resolve import.");
-        } else if (!recordEvalTypeIs(resolved, EVAL_module)) {
+        } else if (!recordEvalTypeIs(resolved, NODE_module)) {
             die("Invalid resolution result (not a `@module`)");
         }
     }
 
     switch (recordEvalType(node)) {
-        case EVAL_importModule: {
+        case NODE_importModule: {
             // No conversion, just validation (done above).
             return node;
         }
-        case EVAL_importModuleSelection: {
+        case NODE_importModuleSelection: {
             // Get the exports. When given a `NULL` `resolveFn`, this acts as
             // if all sources resolve to an empty export map, and hence this
             // node won't bind anything.
@@ -85,15 +85,15 @@ zvalue withResolvedImports(zvalue node, zvalue resolveFn) {
         bool exported = false;
         zvalue defNode = s;
 
-        if (recordEvalTypeIs(s, EVAL_export)) {
+        if (recordEvalTypeIs(s, NODE_export)) {
             exported = true;
             defNode = cm_get(s, SYM(value));
         }
 
         switch (recordEvalType(defNode)) {
-            case EVAL_importModule:
-            case EVAL_importModuleSelection:
-            case EVAL_importResource: {
+            case NODE_importModule:
+            case NODE_importModuleSelection:
+            case NODE_importResource: {
                 zvalue resolved = resolveImport(defNode, resolveFn);
                 elems[i] = exported ? makeExport(resolved) : resolved;
             }

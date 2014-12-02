@@ -51,7 +51,7 @@ static zvalue mainClosure(void) {
 //
 
 /** Top-level evaluation result. */
-static zvalue EVAL_RESULT = NULL;
+static zvalue NODE_RESULT = NULL;
 
 zvalue eval(zvalue env) {
   if (GLOBALS == NULL) {
@@ -61,10 +61,10 @@ zvalue eval(zvalue env) {
     die("Cannot re-eval with different global environment.");
   }
 
-  if (EVAL_RESULT == NULL) {
-    EVAL_RESULT = mainClosure();
-    datImmortalize(EVAL_RESULT);
+  if (NODE_RESULT == NULL) {
+    NODE_RESULT = mainClosure();
+    datImmortalize(NODE_RESULT);
   }
 
-  return EVAL_RESULT;
+  return NODE_RESULT;
 }
