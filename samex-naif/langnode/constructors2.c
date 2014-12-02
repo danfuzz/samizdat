@@ -293,6 +293,9 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
         accessSecret = cm_new_Record(SYM(mapping),
             SYM(keys),  cm_new_List(SYMS(access)),
             SYM(value), accessSecret);
+        accessSecret = cm_new_List(accessSecret);
+    } else {
+        accessSecret = EMPTY_LIST;
     }
 
     zvalue newSecret = cm_get(attribMap, SYM(new));
@@ -300,10 +303,13 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
         newSecret = cm_new_Record(SYM(mapping),
             SYM(keys),  cm_new_List(SYMS(new)),
             SYM(value), newSecret);
+        newSecret = cm_new_List(newSecret);
+    } else {
+        newSecret = EMPTY_LIST;
     }
 
     zvalue config = makeSymbolTableExpression(
-        cm_new_List(accessSecret, newSecret));
+        cm_cat(accessSecret, newSecret));
 
     zvalue call = makeCall(LITS(Object), SYMS(subclass),
         cm_new_List(
