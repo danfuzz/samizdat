@@ -15,7 +15,7 @@
 //
 
 // Documented in header.
-zevalType langSymbolMap[DAT_MAX_SYMBOLS];
+zevalType nodeSymbolMap[DAT_MAX_SYMBOLS];
 
 // This provides the non-inline version of this function.
 extern zevalType recordEvalType(zvalue record);
@@ -31,9 +31,9 @@ MOD_INIT(langnode) {
     MOD_USE(cls);
     MOD_USE(lang_consts);
 
-    utilZero(langSymbolMap);
+    utilZero(nodeSymbolMap);
 
-    #define SYM_MAP(name) langSymbolMap[SYMIDX(name)] = EVAL_##name;
+    #define SYM_MAP(name) nodeSymbolMap[SYMIDX(name)] = EVAL_##name;
 
     SYM_MAP(CH_PLUS);
     SYM_MAP(CH_QMARK);

@@ -50,13 +50,13 @@ typedef enum {
 } zevalType;
 
 /** Mapping from `Symbol` index to corresponding `zevalType`. */
-extern zevalType langSymbolMap[DAT_MAX_SYMBOLS];
+extern zevalType nodeSymbolMap[DAT_MAX_SYMBOLS];
 
 /**
  * Gets the evaluation type (enumerated value) of the given record.
  */
 inline zevalType recordEvalType(zvalue record) {
-    return langSymbolMap[recNameIndex(record)];
+    return nodeSymbolMap[recNameIndex(record)];
 }
 
 /**
@@ -70,7 +70,7 @@ inline bool recordEvalTypeIs(zvalue record, zevalType type) {
  * Gets the evaluation type (enumerated value) of the given symbol.
  */
 inline zevalType symbolEvalType(zvalue symbol) {
-    return langSymbolMap[symbolIndex(symbol)];
+    return nodeSymbolMap[symbolIndex(symbol)];
 }
 
 #endif
