@@ -38,7 +38,7 @@ fn msgTen(header, origGen) {
     { /done ->
         loop {
             count := count.sub(1);
-            ifIs { lt(count, 0) }
+            ifIs { Cmp.lt(count, 0) }
                 { yield /done };
 
             def result;

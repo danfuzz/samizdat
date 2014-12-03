@@ -66,7 +66,7 @@ fn applyShuntingYard(initialValue, opValues) {
         loop { /next ->
             ifValue { ops.reverseNth(0) }
                 { lastOp ->
-                    ifIs { ge(lastOp::precedence, precedence) }
+                    ifIs { Cmp.ge(lastOp::precedence, precedence) }
                         {
                             def opVal = applyTop(ops, values);
                             ops := opVal::ops;
@@ -182,7 +182,7 @@ def evalExpressions = {:
 ##
 
 export fn main(selfPath, origArgs*) {
-    def args = ifValueOr { ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
+    def args = ifValueOr { Cmp.ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
     def argsFiltered = args.collect { arg -> arg.cat("\n") };
     def exprString = "".cat(argsFiltered*);
     $Peg::apply(evalExpressions, exprString);
