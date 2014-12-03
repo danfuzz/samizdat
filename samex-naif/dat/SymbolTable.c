@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "type/Builtin.h"
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"

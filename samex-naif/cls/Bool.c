@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Bool.h"
+#include "type/Cmp.h"
 #include "type/Core.h"
 #include "type/Int.h"
 #include "type/define.h"

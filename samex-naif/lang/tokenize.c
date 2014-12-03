@@ -4,6 +4,7 @@
 
 #include "langnode.h"
 #include "util.h"
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/String.h"

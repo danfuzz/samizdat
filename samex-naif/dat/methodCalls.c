@@ -5,6 +5,7 @@
 #include <stdarg.h>
 
 #include "type/methodCalls.h"
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Symbol.h"

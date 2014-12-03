@@ -15,4 +15,23 @@
 /** Class value for in-model class `Cmp`. */
 extern zvalue CLS_Cmp;
 
+/**
+ * Performs the equivalent of `Cmp.eq(value, other)`. **Note:** It is invalid
+ * to pass `NULL` to this function.
+ */
+zvalue valEq(zvalue value, zvalue other);
+
+/**
+ * Like `valEq`, except that `NULL`s are accepted as arguments, and the
+ * function returns a `bool` (of necessity, since a `zvalue` result would be
+ * ambiguous).
+ */
+bool valEqNullOk(zvalue value, zvalue other);
+
+/**
+ * Performs the equivalent of `Cmp.order()`. **Note:** It is invalid to pass
+ * `NULL` to this function.
+ */
+zvalue valOrder(zvalue value, zvalue other);
+
 #endif

@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "io.h"
+#include "type/Cmp.h"
 #include "type/Map.h"
 #include "type/String.h"
 #include "type/Value.h"

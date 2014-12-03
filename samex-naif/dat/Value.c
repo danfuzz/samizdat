@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Value.h"
@@ -29,48 +30,6 @@ void datNonVoidError(void) {
 
 // This provides the non-inline version of this function.
 extern void *datPayload(zvalue value);
-
-// Documented in header.
-zvalue valEq(zvalue value, zvalue other) {
-    if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `valEq`.");
-    } else if (value == other) {
-        return value;
-    } else if (haveSameClass(value, other)) {
-        return (METH_CALL(value, totalEq, other) != NULL) ? value : NULL;
-    } else {
-        return NULL;
-    }
-}
-
-// Documented in header.
-bool valEqNullOk(zvalue value, zvalue other) {
-    if (value == other) {
-        return true;
-    } else if ((value == NULL) || (other == NULL)) {
-        return false;
-    } else {
-        return valEq(value, other) != NULL;
-    }
-}
-
-// Documented in header.
-zvalue valOrder(zvalue value, zvalue other) {
-    if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `valOrder`.");
-    } else if (value == other) {
-        return SYM(same);
-    }
-
-    zvalue valueCls = classOf(value);
-    zvalue otherCls = classOf(other);
-
-    if (valueCls == otherCls) {
-        return METH_CALL(value, totalOrder, other);
-    } else {
-        return METH_CALL(valueCls, perOrder, otherCls);
-    }
-}
 
 
 //

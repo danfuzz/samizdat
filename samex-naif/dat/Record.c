@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/Record.h"
 #include "type/SymbolTable.h"

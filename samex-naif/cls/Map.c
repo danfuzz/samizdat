@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "type/Box.h"
+#include "type/Cmp.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"
