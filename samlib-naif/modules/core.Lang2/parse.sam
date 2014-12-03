@@ -893,7 +893,7 @@ def parProgram = {:
         (
             ## There was at least one import, so there needs to be at least
             ## one semicolon between the final import and first statement.
-            { ne(imports, []) }
+            { Cmp.ne(imports, []) }
             @";"+
         |
             @";"*
@@ -997,8 +997,8 @@ def parPexSetString = {:
             def endChar = end::value;
 
             ## Reject non-single-character strings.
-            ifIs { ne(1, startChar.get_size()) } { yield /out };
-            ifIs { ne(1, endChar.get_size()) } { yield /out };
+            ifIs { Cmp.ne(1, startChar.get_size()) } { yield /out };
+            ifIs { Cmp.ne(1, endChar.get_size()) } { yield /out };
 
             yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
         }
@@ -1186,11 +1186,11 @@ fn makeBinaryCalls(firstEx, opExList) {
 ## {
 ##     def v1 = x;
 ##     def v2 = y;
-##     ifIs { lt(v1, v2) }
+##     ifIs { Cmp.perLt(v1, v2) }
 ##         {
 ##             def v3 = z;
-##             ifIs { le(v2, v3) }
-##                 { eq(v3, q) }
+##             ifIs { Cmp.perLe(v2, v3) }
+##                 { Cmp.perEq(v3, q) }
 ##         }
 ## }()
 ## ```
@@ -1201,7 +1201,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
 
-    ifIs { le(opExList.get_size(), 1) }
+    ifIs { Cmp.le(opExList.get_size(), 1) }
         {
             ## Trivial case of zero or one operator. Just use the result of
             ## the call to `makeBinaryCalls`.
@@ -1223,7 +1223,7 @@ fn makeCompareCalls(firstEx, opExList) {
     fn transform(leftRef, opEx, rest*) {
         def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
 
-        return ifIs { eq(rest, []) }
+        return ifIs { Cmp.eq(rest, []) }
             { makeThunk(makeFunCall(resolvedOp, leftRef, opEx::expr)) }
             {
                 def rightName = nextName();
@@ -1478,7 +1478,7 @@ def parRangeExpression = {:
 
     {
         ## The test here is to prevent open ranges from being allowed.
-        ifNot { eq(body::target, REFS::Range_OpenRange) }
+        ifNot { Cmp.eq(body::target, REFS::Range_OpenRange) }
             { makeCallGeneral(LITS::List, SYMS::new, makeInterpolate(body)) }
     }
 :};
@@ -1535,15 +1535,15 @@ def parIndexPostfix = {:
 
         (
             ## It's a non-size-dependant slice.
-            { eq(start::origin, @fromStart) }
+            { Cmp.eq(start::origin, @fromStart) }
 
             ## ...which means that the end had either be an "index from start"
             ## or "the end of the sequence, whatever index it may be."
             optEndNode = (
-                { eq(end::origin, @fromStart) }
+                { Cmp.eq(end::origin, @fromStart) }
                 { [end::value] }
             |
-                { eq(end, INDEX_AT_END_0) }
+                { Cmp.eq(end, INDEX_AT_END_0) }
                 { [] }
             )
 
@@ -1570,7 +1570,7 @@ def parIndexPostfix = {:
                             SYMS::value, start::value));
 
                 def optEndNode = (
-                    ifNot { eq(end, INDEX_AT_END_0) }
+                    ifNot { Cmp.eq(end, INDEX_AT_END_0) }
                         {
                             makeCall(LITS::Record, SYMS::new,
                                 makeLiteral(end::origin),
@@ -1595,7 +1595,7 @@ def parIndexPostfix = {:
         (
             ## It's a regular (from-start) index. This can also be used as
             ## an lvalue.
-            { eq(index::origin, @fromStart) }
+            { Cmp.eq(index::origin, @fromStart) }
 
             {
                 def value = index::value;
@@ -1770,18 +1770,18 @@ def parLogicAndExpression = {:
 
     (
         ## Not actually an `&` expression.
-        { eq(most, []) }
+        { Cmp.eq(most, []) }
         { last }
     |
         ## Non-compound `&` expression.
-        { eq(most.get_size(), 1) }
+        { Cmp.eq(most.get_size(), 1) }
         {
             def clause = most*;
             def formal = clause::formal;
             def testThunk = clause::testThunk;
             def resultThunk = makeThunk(last);
 
-            ifIs { eq(formal, {}) }
+            ifIs { Cmp.eq(formal, {}) }
                 { makeFunCall(REFS::ifIs, testThunk, resultThunk) }
                 {
                     makeFunCall(REFS::ifValue,
@@ -1878,13 +1878,13 @@ def parMultiTest = {:
 
     (
         ## Single test. Will translate as either `ifValue` or `ifIs`.
-        { eq(clauses.get_size(), 1) }
+        { Cmp.eq(clauses.get_size(), 1) }
         {
             def clause = clauses*;
             def formal = clause::formal;
             def testThunk = clause::testThunk;
             { thenThunk, elseThunk? ->
-                ifIs { eq(formal, {}) }
+                ifIs { Cmp.eq(formal, {}) }
                     {
                         makeFunCall(REFS::ifIs,
                             testThunk, thenThunk, elseThunk*)
@@ -2012,7 +2012,7 @@ def parIfExpression = {:
         ## unwrap it into a straight call, depending on if the original `if`
         ## has a yield def or not. Note that the `yield` in a thunk is always
         ## a `maybe`, which also needs to be unwrapped.
-        ifIs { eq(yieldDef, {}) }
+        ifIs { Cmp.eq(yieldDef, {}) }
             { mainThunk::yield::value }
             {
                 ## There was a yield def. Add the yield def to the thunk,
@@ -2035,7 +2035,7 @@ def parSwitchCase = {:
     {
         def sz = firstKeys.get_size().add(optDefault.get_size())
             .add(lastKeys.get_size());
-        ne(sz, 0)
+        Cmp.ne(sz, 0)
     }
 
     {
@@ -2115,7 +2115,7 @@ def parSwitchExpression = {:
             ifIs { case::default } { finishCode(case) }
         };
 
-        ifIs { gt(optDefault.get_size(), 1) }
+        ifIs { Cmp.gt(optDefault.get_size(), 1) }
             { die("Multiple default cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to
@@ -2140,7 +2140,7 @@ def parSwitchExpression = {:
 
         ## If there's a yield def, then wrap `ifCall` in a thunk-call.
         ## If not, then `ifCall` is the result.
-        ifIs { eq(yieldDef, {}) }
+        ifIs { Cmp.eq(yieldDef, {}) }
             { ifCall }
             {
                 def outerClosure = makeFullClosure(@{

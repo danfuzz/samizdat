@@ -223,7 +223,7 @@ def OPEN_CLOSE_MAP = {
 ## token, an `interpolatedString`, or an `error`.
 fn processStringParts(parts) {
     ## Handle the empty string as a special case.
-    ifIs { eq(parts, []) }
+    ifIs { Cmp.eq(parts, []) }
         { return @string{value: ""} };
 
     ## Coalesce adjacent literal strings in `parts`. The result is an
@@ -239,7 +239,7 @@ fn processStringParts(parts) {
                     { return part }
             };
 
-        ifIs { eq(elems, []) }
+        ifIs { Cmp.eq(elems, []) }
             {
                 ## First element. No possibility to coalesce, so special-case
                 ## it.
@@ -266,7 +266,7 @@ fn processStringParts(parts) {
     };
 
     ## Check for a simple result.
-    ifIs { eq(elems.get_size(), 1) }
+    ifIs { Cmp.eq(elems.get_size(), 1) }
         {
             ifValue { String.accepts(elems*) }
                 { elem ->

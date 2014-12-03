@@ -17,7 +17,7 @@
 fn checkPath(path) {
     ifNot { String.accepts(path) }
         { die("Invalid non-string path.") };
-    ifIs { eq(path, "") }
+    ifIs { Cmp.eq(path, "") }
         { die("Invalid empty path.") };
 };
 
@@ -31,8 +31,8 @@ export fn fixPath(path, basePaths*) {
     checkPath(path);
 
     return ifValueOr
-        { ifIs { eq(path.get(0), "/") } { path } }
-        { ifIs { eq(basePaths, []) } { path } }
+        { ifIs { Cmp.eq(path.get(0), "/") } { path } }
+        { ifIs { Cmp.eq(basePaths, []) } { path } }
         { fixPath(basePaths*).cat("/", path) }
 };
 
@@ -49,8 +49,8 @@ export fn get_directory(path) {
             at := at.sub(1);
 
             def ch = path.get(at);
-            ifIs { ne(ch, "/") } { yield /out };
-            ifIs { eq(at, 0) } { return "/" };
+            ifIs { Cmp.ne(ch, "/") } { yield /out };
+            ifIs { Cmp.eq(at, 0) } { return "/" };
         }
     }();
 
@@ -59,13 +59,13 @@ export fn get_directory(path) {
     ## the next-final slash is at the start of the path, then the result is
     ## `"/"`.
     loop {
-        ifIs { eq(at, 0) } { return "." };
+        ifIs { Cmp.eq(at, 0) } { return "." };
         at := at.sub(1);
 
         def ch = path.get(at);
-        ifIs { eq(ch, "/") }
+        ifIs { Cmp.eq(ch, "/") }
             {
-                ifIs { eq(at, 0) } { return "/" };
+                ifIs { Cmp.eq(at, 0) } { return "/" };
                 return path.sliceExclusive(0, at)
             };
     }
@@ -84,8 +84,8 @@ export fn get_file(path) {
             at := at.sub(1);
 
             def ch = path.get(at);
-            ifIs { ne(ch, "/") } { yield /out };
-            ifIs { eq(at, 0) } { return "/" };
+            ifIs { Cmp.ne(ch, "/") } { yield /out };
+            ifIs { Cmp.eq(at, 0) } { return "/" };
         }
     }();
 
@@ -95,13 +95,13 @@ export fn get_file(path) {
     ## then that means there was no slash, making the result be the entire
     ## `path` minus any path-final slashes.
     loop {
-        ifIs { eq(at, 0) }
+        ifIs { Cmp.eq(at, 0) }
             { return path.sliceInclusive(0, endAt) };
 
         at := at.sub(1);
 
         def ch = path.get(at);
-        ifIs { eq(ch, "/") }
+        ifIs { Cmp.eq(ch, "/") }
             {
                 at := at.add(1);
                 return path.sliceInclusive(at, endAt)

@@ -55,12 +55,12 @@ fn safeIndexForNames(baseStr, names*) {
                 ## Can't possibly be a prefix, so no conflict.
                 yield /next
             };
-        ifIs { eq(baseStr, nameStr) } { yield /next -1 };
-        ifIs { eq(baseStr, nameStr.sliceExclusive(0, baseSz)) }
+        ifIs { Cmp.eq(baseStr, nameStr) } { yield /next -1 };
+        ifIs { Cmp.eq(baseStr, nameStr.sliceExclusive(0, baseSz)) }
             { yield? /next intOrVoid(nameStr.sliceInclusive(baseSz)) }
     };
 
-    return ifIs { eq(indexes, []) }
+    return ifIs { Cmp.eq(indexes, []) }
         { -1 }
         { maxOf(indexes*).add(1) }
 };
@@ -151,7 +151,7 @@ fn safeIndex(node, baseStr) {
 ## Makes a variable name by combining `baseStr` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
 export fn makeVarName(baseStr, index) {
-    return ifIs { eq(index, -1) }
+    return ifIs { Cmp.eq(index, -1) }
         { cast(Symbol, baseStr) }
         { cast(Symbol, baseStr.cat($Format::int(index))) }
 };

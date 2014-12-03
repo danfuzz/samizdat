@@ -27,12 +27,12 @@ export class ParaGenerator
     ## Documented in spec.
     class.new(generators*) {
         ## Return the `nullGenerator` if we weren't passed any arguments.
-        ifIs { eq(generators, []) }
+        ifIs { Cmp.eq(generators, []) }
             { return nullGenerator };
 
         ## Return a `ListWrapGenerator` if we were only passed one argument.
         ## This saves some overhead.
-        ifIs { eq(generators.get_size(), 1) }
+        ifIs { Cmp.eq(generators.get_size(), 1) }
             { return ListWrapGenerator.new(generators*) };
 
         return this.(NEW)(@{generators})
