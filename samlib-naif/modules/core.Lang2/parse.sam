@@ -1120,7 +1120,7 @@ parPexBlock := {:
 
 ## For unary operators, map of token types to function name variable
 ## references.
-def UNARY_OPERATORS = {
+def UNARY_OPERATORS = @{
     @"-":   SYMS::neg,
     @"#":   SYMS::get_size,
     @"^":   SYMS::reverse,
@@ -1129,7 +1129,7 @@ def UNARY_OPERATORS = {
 
 ## For binary operators, map of token types to function name variable
 ## references.
-def BINARY_OPERATORS = {
+def BINARY_OPERATORS = @{
     @"+":    SYMS::add,
     @"-":    SYMS::sub,
     @"*":    SYMS::mul,
@@ -1137,23 +1137,23 @@ def BINARY_OPERATORS = {
     @"%":    SYMS::mod,
     @"//":   SYMS::divEu,
     @"%%":   SYMS::modEu,
-    @"==":   SYMS::perEq,
-    @"!=":   REFS::perNe,
-    @"<":    REFS::perLt,
-    @">":    REFS::perGt,
-    @"<=":   REFS::perLe,
-    @">=":   REFS::perGe,
+    @"==":   CLASS_METHODS::Cmp_perEq,
+    @"!=":   CLASS_METHODS::Cmp_perNe,
+    @"<":    CLASS_METHODS::Cmp_perLt,
+    @">":    CLASS_METHODS::Cmp_perGt,
+    @"<=":   CLASS_METHODS::Cmp_perLe,
+    @">=":   CLASS_METHODS::Cmp_perGe,
     @"&&&":  SYMS::and,
     @"|||":  SYMS::or,
     @"^^^":  SYMS::xor,
     @"<<<":  SYMS::shl,
     @">>>":  SYMS::shr,
-    @"\\==": REFS::eq,
-    @"\\!=": REFS::ne,
-    @"\\<":  REFS::lt,
-    @"\\>":  REFS::gt,
-    @"\\<=": REFS::le,
-    @"\\>=": REFS::ge
+    @"\\==": CLASS_METHODS::Cmp_eq,
+    @"\\!=": CLASS_METHODS::Cmp_ne,
+    @"\\<":  CLASS_METHODS::Cmp_lt,
+    @"\\>":  CLASS_METHODS::Cmp_gt,
+    @"\\<=": CLASS_METHODS::Cmp_le,
+    @"\\>=": CLASS_METHODS::Cmp_ge
 };
 
 ## Helper for parsing binary operator expressions, which puts together
