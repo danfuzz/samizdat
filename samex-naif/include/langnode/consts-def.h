@@ -75,6 +75,7 @@ DEF_SYMBOL(lvalue,                "lvalue");
 DEF_SYMBOL(mapping,               "mapping");
 DEF_SYMBOL(maybe,                 "maybe");
 DEF_SYMBOL(maybeValue,            "maybeValue");
+DEF_SYMBOL(methodId,              "methodId");
 DEF_SYMBOL(module,                "module");
 DEF_SYMBOL(name,                  "name");
 DEF_SYMBOL(noYield,               "noYield");

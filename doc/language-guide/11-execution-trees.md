@@ -518,3 +518,12 @@ Used as an argument to `makeMapExpression` (never directly executed).
 This represents one mapping inside a map expression. Elements of `keys`
 are treated with respect to interpolation just like arguments in a
 `call` node.
+
+#### `methodId` &mdash; `@methodId{class?: expression, name: expression}`
+
+* `class` (optional) &mdash; Node that must evaluate to a class.
+* `name` &mdash; Node that must evaluate to a symbol.
+
+Used as an argument to `makeFunCall` (never directly executed). This
+represents a class or instance method, so that functions and methods can
+be treated more uniformly in cases where it's useful.
