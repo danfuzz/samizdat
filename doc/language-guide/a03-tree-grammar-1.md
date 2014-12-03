@@ -899,7 +899,7 @@ def parProgram = {:
         (
             ## There was at least one import, so there needs to be at least
             ## one semicolon between the final import and first statement.
-            { ne(imports, []) }
+            { Cmp.ne(imports, []) }
             @";"+
         |
             @";"*
@@ -1003,8 +1003,8 @@ def parPexSetString = {:
             def endChar = end::value;
 
             ## Reject non-single-character strings.
-            ifIs { ne(1, startChar.get_size()) } { yield /out };
-            ifIs { ne(1, endChar.get_size()) } { yield /out };
+            ifIs { Cmp.ne(1, startChar.get_size()) } { yield /out };
+            ifIs { Cmp.ne(1, endChar.get_size()) } { yield /out };
 
             yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
         }

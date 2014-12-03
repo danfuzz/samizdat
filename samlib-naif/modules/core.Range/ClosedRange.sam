@@ -38,7 +38,7 @@ export class ClosedRange
         ifNot { Int.accepts(size) }
             { die("`size` must be an int.") };
 
-        def nonnegSize = ifValueOr { ge(size, 0) } { 0 };
+        def nonnegSize = ifValueOr { Cmp.ge(size, 0) } { 0 };
 
         return this.(NEW)(@{converter, increment, value, size: nonnegSize})
     };

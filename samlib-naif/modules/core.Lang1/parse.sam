@@ -688,7 +688,7 @@ def parProgram = PegMain.newSequence(
         PegSequence.new(
             PegChoice.new(
                 PegSequence.new(
-                    PegCode.new { imports -> ne(imports, []) },
+                    PegCode.new { imports -> Cmp.ne(imports, []) },
                     PegRepeat.newPlus(PegSet.new(@";"))),
                 PegRepeat.newStar(PegSet.new(@";"))),
             parProgramStatement,
@@ -770,8 +770,8 @@ def parPexSetString = PegMain.newSequence(
                 def endChar = end::value;
 
                 ## Reject non-single-character strings.
-                ifIs { ne(1, startChar.get_size()) } { yield /out };
-                ifIs { ne(1, endChar.get_size()) } { yield /out };
+                ifIs { Cmp.ne(1, startChar.get_size()) } { yield /out };
+                ifIs { Cmp.ne(1, endChar.get_size()) } { yield /out };
 
                 yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
             }),
