@@ -20,6 +20,59 @@ already of class `cls`. If so, it returns `this`; if not, it returns `void`.
 **Note:** This method is used by the global functions `cast()` and
 `maybeCast()` as part of the more general casting mechanism.
 
+#### `.crossEq(other) -> . | void`
+
+Performs a class-specific equality comparison of the two given
+values, using the "cross-class ordering" order. When called by the system,
+the two values are guaranteed to have the same direct class; however, it is
+possible to call this function directly, so implementations must check to see
+if `other` has the same class as `this`. If a client calls with
+different-class values, it is a fatal error (terminating the runtime).
+
+The return value is either `this` (or `other` really) if the two values
+are in fact identical, or `void` if they are not.
+
+Each class specifies its own total-order equality check. See specific classes
+for details. Records compare their values for equality by comparing payload
+values.
+
+**Note:** In order for the system to operate consistently, `.crossEq()` must
+always behave consistently with `.crossOrder()`, in that for a given pair of
+values, `.crossEq()` must indicate equality if and only if `.crossOrder()`
+would return `@same`. `.crossEq()` exists at all because it is often possible
+to determine equality much quicker than determining order.
+
+**Note:** This is the method which underlies the implementation
+of all cross-class equality comparison functions.
+
+#### `.crossOrder(other) -> symbol | void`
+
+Returns the class-specific order of the two given values, using the
+"cross-class ordering" order. When called by the system, the two values are
+guaranteed to have the same direct class; however, it is possible to call this
+function directly, so implementations must check to see if `other` has the
+same class as `this`. If a client calls with different-class values, it is a
+fatal error (terminating the runtime).
+
+The return value is one of `@less`, `@same`, or `@more` indicating how the two
+values order with respect to each other:
+
+* `@less` &mdash; The first value orders before the second value.
+
+* `@same` &mdash; The two values are identical in terms of ordering.
+
+* `@more` &mdash; The first value orders after the second value.
+
+If two values have no defined order, this returns void.
+
+Each class specifies its own total-order ordering. See specific classes for
+details.
+
+The default implementation of this method uses `eq()` to check for sameness.
+It returns `@same` if `eq()` returns non-void, or void if not.
+
+**Note:** This is the method which underlies the implementation
+of all cross-class ordering functions.
 
 #### `.debugString() -> string`
 
@@ -81,60 +134,6 @@ The default implementation calls through to the global function `order`
 
 **Note:** This is the method which underlies the implementation
 of all per-class ordering functions.
-
-#### `.crossEq(other) -> . | void`
-
-Performs a class-specific equality comparison of the two given
-values, using the "total value ordering" order. When called by the system,
-the two values are guaranteed to have the same direct class; however, it is
-possible to call this function directly, so implementations must check to see
-if `other` has the same class as `this`. If a client calls with
-different-class values, it is a fatal error (terminating the runtime).
-
-The return value is either `this` (or `other` really) if the two values
-are in fact identical, or `void` if they are not.
-
-Each class specifies its own total-order equality check. See specific classes
-for details. Records compare their values for equality by comparing payload
-values.
-
-**Note:** In order for the system to operate consistently, `crossEq` must
-always behave consistently with `crossOrder`, in that for a given pair of
-values, `crossEq` must indicate equality if and only if `crossOrder` would
-return `@same`. `crossEq` exists at all because it is often possible to
-determine equality much quicker than determining order.
-
-**Note:** This is the method which underlies the implementation
-of all cross-class equality comparison functions.
-
-#### `.crossOrder(other) -> symbol | void`
-
-Returns the class-specific order of the two given values, using the "total
-value ordering" order. When called by the system, the two values are
-guaranteed to have the same direct class; however, it is possible to call this
-function directly, so implementations must check to see if `other` has the
-same class as `this`. If a client calls with different-class values, it is a
-fatal error (terminating the runtime).
-
-The return value is one of `@less`, `@same`, or `@more` indicating how the two
-values order with respect to each other:
-
-* `@less` &mdash; The first value orders before the second value.
-
-* `@same` &mdash; The two values are identical in terms of ordering.
-
-* `@more` &mdash; The first value orders after the second value.
-
-If two values have no defined order, this returns void.
-
-Each class specifies its own total-order ordering. See specific classes for
-details.
-
-The default implementation of this method uses `eq()` to check for sameness.
-It returns `@same` if `eq()` returns non-void, or void if not.
-
-**Note:** This is the method which underlies the implementation
-of all cross-class ordering functions.
 
 
 <br><br>

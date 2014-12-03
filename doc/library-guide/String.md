@@ -46,14 +46,6 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.perEq(other) -> string | void`
-
-Default implementation.
-
-#### `.perOrder(other) -> symbol`
-
-Default implementation.
-
 #### `.crossEq(other) -> string | void`
 
 Compares two strings. Two strings are equal if they have equal characters in
@@ -64,6 +56,14 @@ identical orders.
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
+
+#### `.perEq(other) -> string | void`
+
+Default implementation.
+
+#### `.perOrder(other) -> symbol`
+
+Default implementation.
 
 
 <br><br>

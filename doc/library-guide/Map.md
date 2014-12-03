@@ -81,14 +81,6 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.perEq(other) -> map | void`
-
-Default implementation.
-
-#### `.perOrder(other) -> symbol`
-
-Default implementation.
-
 #### `.crossEq(other) -> map | void`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
@@ -99,6 +91,16 @@ Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal
 key lists, ordering is by comparing corresponding lists of values, in
 key order.
+
+
+#### `.perEq(other) -> map | void`
+
+Default implementation.
+
+#### `.perOrder(other) -> symbol`
+
+Default implementation.
+
 
 <br><br>
 ### Method Definitions: One-Offs

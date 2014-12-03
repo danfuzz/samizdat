@@ -28,8 +28,21 @@ Returns a new unlisted symbol whose name is the same as `this`'s. This
 *always* returns a fresh symbol. (That is, if given an unlisted symbol,
 this method does *not* just return `this`.)
 
+
 <br><br>
 ### Method Definitions: `Value` protocol
+
+#### `.crossEq(other) -> builtin | void`
+
+Returns `this` if `other` is a reference to the same symbol, or void if
+not.
+
+#### `.crossOrder(other) -> symbol | void`
+
+Orders symbols by internedness (primary) and name (secondary), with
+interned symbols getting ordered *before* unlisted symbols. Two
+different unlisted symbols with the same name are considered unordered
+(but not equal).
 
 #### `.debugString() -> string`
 
@@ -48,15 +61,3 @@ Default implementation.
 #### `.perOrder(other) -> symbol | void`
 
 Default implementation.
-
-#### `.crossEq(other) -> builtin | void`
-
-Returns `this` if `other` is a reference to the same symbol, or void if
-not.
-
-#### `.crossOrder(other) -> symbol | void`
-
-Orders symbols by internedness (primary) and name (secondary), with
-interned symbols getting ordered *before* unlisted symbols. Two
-different unlisted symbols with the same name are considered unordered
-(but not equal).
