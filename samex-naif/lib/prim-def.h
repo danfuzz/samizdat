@@ -17,6 +17,7 @@ PRIM_DEF(Bool,                    CLS_Bool);
 PRIM_DEF(Box,                     CLS_Box);
 PRIM_DEF(Cell,                    CLS_Cell);
 PRIM_DEF(Class,                   CLS_Class);
+PRIM_DEF(Cmp,                     CLS_Cmp);
 PRIM_DEF(Core,                    CLS_Core);
 PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(Lazy,                    CLS_Lazy);

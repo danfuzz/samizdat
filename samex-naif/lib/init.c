@@ -9,6 +9,7 @@
 #include "type/Box.h"
 #include "type/Builtin.h"
 #include "type/Class.h"
+#include "type/Cmp.h"
 #include "type/Core.h"
 #include "type/Generator.h"
 #include "type/Int.h"

@@ -19,6 +19,7 @@ export
     Box,
     Cell,
     Class,
+    Cmp,
     Core,
     Int,
     Lazy,

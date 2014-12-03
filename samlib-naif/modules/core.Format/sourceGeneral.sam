@@ -38,6 +38,7 @@ def SPECIAL_VALUES = {
     (Box):         "Box",
     (Cell):        "Cell",
     (Class):       "Class",
+    (Cmp):         "Cmp",
     (Core):        "Core",
     (Int):         "Int",
     (Lazy):        "Lazy",

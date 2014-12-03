@@ -163,12 +163,15 @@ MOD_INIT(Value) {
 
     // Initializing `Value` also initializes the rest of the core classes.
     // This also gets all the protocols indirectly via their implementors.
+
     MOD_USE_NEXT(Class);
     MOD_USE_NEXT(Symbol);
     MOD_USE_NEXT(SymbolTable);
     MOD_USE_NEXT(Record);
+
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Box);
+    MOD_USE_NEXT(Cmp);
     MOD_USE_NEXT(Int);
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(String);

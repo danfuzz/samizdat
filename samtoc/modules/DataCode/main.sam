@@ -22,6 +22,7 @@ def SPECIAL_VALUES = {
     (Box):         CodeString.new("CLS_Box"),
     (Cell):        CodeString.new("CLS_Cell"),
     (Class):       CodeString.new("CLS_Class"),
+    (Cmp):         CodeString.new("CLS_Cmp"),
     (Core):        CodeString.new("CLS_Core"),
     (Int):         CodeString.new("CLS_Int"),
     (Lazy):        CodeString.new("CLS_Lazy"),
