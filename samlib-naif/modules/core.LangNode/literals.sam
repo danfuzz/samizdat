@@ -78,6 +78,21 @@ def VALUES = {
     SymbolTable
 };
 
+## Class methods.
+def RAW_CLASS_METHODS = [
+    @{class: Cmp, name: @eq},
+    @{class: Cmp, name: @ge},
+    @{class: Cmp, name: @gt},
+    @{class: Cmp, name: @le},
+    @{class: Cmp, name: @lt},
+    @{class: Cmp, name: @ne},
+    @{class: Cmp, name: @perEq},
+    @{class: Cmp, name: @perGe},
+    @{class: Cmp, name: @perGt},
+    @{class: Cmp, name: @perLe},
+    @{class: Cmp, name: @perLt},
+    @{class: Cmp, name: @perNe}
+];
 
 ##
 ## Exported Definitions
@@ -96,6 +111,18 @@ export fn makeLiteral(value) {
 
 ## Note: The following constants need to be defined *after* the function
 ## `makeLiteral()` gets defined, as these use that.
+
+## Documented in spec.
+export def CLASS_METHODS = @{}.cat(
+    (RAW_CLASS_METHODS.collect { cn ->
+        def cls = cn::class;
+        def name = cn::name;
+        def clsLit = makeLiteral(cls);
+        def nameLit = makeLiteral(name);
+        def refKey = cls.get_name().cat(@"_", name);
+        @{(refKey): @methodId{class: clsLit, name: nameLit}}
+    })*
+);
 
 ## Documented in spec.
 export def LITS = @{}.cat(

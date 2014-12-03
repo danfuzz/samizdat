@@ -18,6 +18,16 @@ as when used here it is only the resolved metainformation that gets used.
 <br><br>
 ### Constnants
 
+#### `CLASS_METHODS`
+
+This is a table from class method names to `@methodId` nodes that refer to
+those methods, for all the class methods needed when parsing the language.
+
+Each key is a symbol of the form `@Class_name`. For example, `@Cmp_eq` maps to
+a reference to the class method `Cmp.eq()`.
+
+For specific details on which names are mapped, refer to the source.
+
 #### `KEYWORDS`
 
 This is a table from symbol names of keywords in the language to the result
@@ -39,11 +49,11 @@ This is a table from variable and module-scoped names to execution nodes that
 refer to those variables and names, for all the references needed when
 parsing the language.
 
-Regular variable references are bound from their string name. For example,
-`"ifIs"` maps to a regular variable reference of the name `ifIs`.
+Regular variable references are bound from their symbol name. For example,
+`@ifIs` maps to a regular variable reference of the name `ifIs`.
 
-Module-scoped names are bound from a string of the form `Module_name`. For
-example, `"Format_usual"` maps to a reference to `$Format::usual`.
+Module-scoped names are bound from a symbol of the form `@Module_name`. For
+example, `@Format_usual` maps to a reference to `$Format::usual`.
 
 For specific details on which names are mapped, refer to the source.
 
