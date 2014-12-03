@@ -18,13 +18,17 @@ as when used here it is only the resolved metainformation that gets used.
 <br><br>
 ### Constnants
 
-#### `CLASS_METHODS`
+#### `METHODS`
 
-This is a table from class method names to `@methodId` nodes that refer to
-those methods, for all the class methods needed when parsing the language.
+This is a table from class and instance method names to `@methodId` nodes that
+refer to those methods, for all the method references needed when parsing the
+language.
 
-Each key is a symbol of the form `@Class_name`. For example, `@Cmp_eq` maps to
-a reference to the class method `Cmp.eq()`.
+Each class method key is a symbol of the form `@Class_name`. For example,
+`@Cmp_eq` maps to a reference to the class method `Cmp.eq()`.
+
+Each instance method key is just the name as a symbol. For example,
+`@and` maps to a reference to the instance method `.and()`.
 
 For specific details on which names are mapped, refer to the source.
 

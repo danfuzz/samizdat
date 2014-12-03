@@ -79,7 +79,7 @@ def VALUES = {
 };
 
 ## Class methods.
-def RAW_CLASS_METHODS = [
+def CLASS_METHODS = [
     @{class: Cmp, name: @eq},
     @{class: Cmp, name: @ge},
     @{class: Cmp, name: @gt},
@@ -92,6 +92,26 @@ def RAW_CLASS_METHODS = [
     @{class: Cmp, name: @perLe},
     @{class: Cmp, name: @perLt},
     @{class: Cmp, name: @perNe}
+];
+
+## Class methods.
+def INSTANCE_METHODS = [
+    @add,
+    @and,
+    @div,
+    @divEu,
+    @get_size,
+    @mod,
+    @modEu,
+    @mul,
+    @neg,
+    @not,
+    @or,
+    @reverse,
+    @shl,
+    @shr,
+    @sub,
+    @xor
 ];
 
 ##
@@ -113,14 +133,18 @@ export fn makeLiteral(value) {
 ## `makeLiteral()` gets defined, as these use that.
 
 ## Documented in spec.
-export def CLASS_METHODS = @{}.cat(
-    (RAW_CLASS_METHODS.collect { cn ->
+export def METHODS = @{}.cat(
+    (CLASS_METHODS.collect { cn ->
         def cls = cn::class;
         def name = cn::name;
-        def clsLit = makeLiteral(cls);
-        def nameLit = makeLiteral(name);
         def refKey = cls.get_name().cat(@"_", name);
-        @{(refKey): @methodId{class: clsLit, name: nameLit}}
+        @{(refKey): @methodId{
+            class: makeLiteral(cls),
+            name:  makeLiteral(name)}}
+    })*,
+
+    (INSTANCE_METHODS.collect { name ->
+        @{(name): @methodId{name: makeLiteral(name)}}
     })*
 );
 
