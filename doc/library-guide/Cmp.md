@@ -27,7 +27,8 @@ the semantics of per-class comparison are only meant to be useful and
 meaningful within the context of the given first argument. So, for example,
 it is valid to have comparisons work with second arguments of a different
 class (e.g. comparing an int and a float), and it preferable to have
-sensible per-class semantics over a fully-defined order.
+sensible per-class semantics over a fully-defined order. It is also valid
+for a per-class comparison to be asymmetric, when that makes sense.
 
 
 <br><br>
