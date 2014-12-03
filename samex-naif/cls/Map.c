@@ -579,7 +579,7 @@ METH_IMPL_1(Map, nextValue, box) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Map, totalEq, other) {
+METH_IMPL_1(Map, crossEq, other) {
     assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
     MapInfo *info1 = getInfo(ths);
     MapInfo *info2 = getInfo(other);
@@ -605,7 +605,7 @@ METH_IMPL_1(Map, totalEq, other) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Map, totalOrder, other) {
+METH_IMPL_1(Map, crossOrder, other) {
     assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
     MapInfo *info1 = getInfo(ths);
     MapInfo *info2 = getInfo(other);
@@ -675,8 +675,8 @@ MOD_INIT(Map) {
             METH_BIND(Map, get_value),
             METH_BIND(Map, keyList),
             METH_BIND(Map, nextValue),
-            METH_BIND(Map, totalEq),
-            METH_BIND(Map, totalOrder),
+            METH_BIND(Map, crossEq),
+            METH_BIND(Map, crossOrder),
             METH_BIND(Map, valueList)));
 
     EMPTY_MAP = datImmortalize(allocMap(0));

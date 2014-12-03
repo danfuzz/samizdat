@@ -227,7 +227,7 @@ METH_IMPL_1(Record, hasName, name) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Record, totalEq, other) {
+METH_IMPL_1(Record, crossEq, other) {
     assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 
     RecordInfo *info1 = getInfo(ths);
@@ -241,7 +241,7 @@ METH_IMPL_1(Record, totalEq, other) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Record, totalOrder, other) {
+METH_IMPL_1(Record, crossOrder, other) {
     assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
 
     RecordInfo *info1 = getInfo(ths);
@@ -271,8 +271,8 @@ MOD_INIT(Record) {
             METH_BIND(Record, get_data),
             METH_BIND(Record, get_name),
             METH_BIND(Record, hasName),
-            METH_BIND(Record, totalEq),
-            METH_BIND(Record, totalOrder)));
+            METH_BIND(Record, crossEq),
+            METH_BIND(Record, crossOrder)));
 }
 
 // Documented in header.

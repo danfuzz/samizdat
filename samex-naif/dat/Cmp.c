@@ -19,7 +19,7 @@ zvalue cmpEq(zvalue value, zvalue other) {
     } else if (value == other) {
         return value;
     } else if (haveSameClass(value, other)) {
-        return (METH_CALL(value, totalEq, other) == NULL) ? NULL : value;
+        return (METH_CALL(value, crossEq, other) == NULL) ? NULL : value;
     } else {
         return NULL;
     }
@@ -43,7 +43,7 @@ zvalue cmpOrder(zvalue value, zvalue other) {
     } else if (value == other) {
         return SYM(same);
     } else if (haveSameClass(value, other)) {
-        return METH_CALL(value, totalOrder, other);
+        return METH_CALL(value, crossOrder, other);
     } else {
         return METH_CALL(classOf(value), perOrder, classOf(other));
     }

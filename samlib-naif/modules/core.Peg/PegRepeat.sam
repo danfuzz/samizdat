@@ -60,7 +60,7 @@ export class PegRepeat
         def maxCheck = ifValue { this.(ACCESS)(@maxSize) }
             { maxSize ->
                 {
-                    ifIs { results.get_size().totalEq(maxSize) }
+                    ifIs { results.get_size().crossEq(maxSize) }
                         {
                             ## We parsed the max repeat size. Return it.
                             return remainingState.addContext(results)

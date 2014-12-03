@@ -40,8 +40,8 @@ two given values are identical. Otherwise returns void.
 
 This works by first checking the classes of the two values. If they are
 different, this returns void immediately. Otherwise, this calls
-`value.totalEq(other)`. In the latter case, this method doesn't "trust" a
-non-void return value of `.totalEq()` and always returns the given `value`
+`value.crossEq(other)`. In the latter case, this method doesn't "trust" a
+non-void return value of `.crossEq()` and always returns the given `value`
 argument, per se, to represent logical-true.
 
 **Syntax Note:** Used in the translation of `expression \== expression` forms.
@@ -106,7 +106,7 @@ values order with respect to each other.
 
 This works by first checking the classes of the two values. If they are
 different, this returns a value based on the per-class order of the classes.
-Otherwise, this calls `value.totalOrder(other)` to determine the result.
+Otherwise, this calls `value.crossOrder(other)` to determine the result.
 
 **Note:** This is the method which underlies the implementation
 of all cross-class ordering methods.

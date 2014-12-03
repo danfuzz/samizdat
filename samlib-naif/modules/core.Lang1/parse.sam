@@ -224,7 +224,7 @@ def parList = PegMain.newSequence(
     parUnadornedList,
     PegSet.new(@"]"),
     PegCode.new { ., expressions, . ->
-        ifIs { expressions.totalEq([]) }
+        ifIs { expressions.crossEq([]) }
             { LITS::EMPTY_LIST }
             {
                 def result = makeCallGeneral(
@@ -254,7 +254,7 @@ def parBasicClosure = PegMain.newSequence(
 def parNullaryClosure = PegMain.newSequence(
     parFullClosure,
     PegCode.new { c ->
-        ifNot { c::formals.totalEq([]) }
+        ifNot { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -263,7 +263,7 @@ def parNullaryClosure = PegMain.newSequence(
 def parBasicNullaryClosure = PegMain.newSequence(
     parBasicClosure,
     PegCode.new { c ->
-        ifNot { c::formals.totalEq([]) }
+        ifNot { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     });

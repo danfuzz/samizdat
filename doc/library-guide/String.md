@@ -54,12 +54,12 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> string | void`
+#### `.crossEq(other) -> string | void`
 
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering

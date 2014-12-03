@@ -410,7 +410,7 @@ METH_IMPL_1_2(List, sliceInclusive, start, end) {
 }
 
 // Documented in spec.
-METH_IMPL_1(List, totalEq, other) {
+METH_IMPL_1(List, crossEq, other) {
     assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
     ListInfo *info1 = getInfo(ths);
     ListInfo *info2 = getInfo(other);
@@ -431,7 +431,7 @@ METH_IMPL_1(List, totalEq, other) {
 }
 
 // Documented in spec.
-METH_IMPL_1(List, totalOrder, other) {
+METH_IMPL_1(List, crossOrder, other) {
     assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
     ListInfo *info1 = getInfo(ths);
     ListInfo *info2 = getInfo(other);
@@ -479,8 +479,8 @@ MOD_INIT(List) {
             METH_BIND(List, reverse),
             METH_BIND(List, sliceExclusive),
             METH_BIND(List, sliceInclusive),
-            METH_BIND(List, totalEq),
-            METH_BIND(List, totalOrder),
+            METH_BIND(List, crossEq),
+            METH_BIND(List, crossOrder),
             METH_BIND(List, valueList),
             SYM(get),          FUN_Sequence_get,
             SYM(keyList),      FUN_Sequence_keyList,

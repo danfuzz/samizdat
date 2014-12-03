@@ -139,13 +139,13 @@ METH_IMPL_0(Int, debugString) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Int, totalEq, other) {
+METH_IMPL_1(Int, crossEq, other) {
     // Note: `other` not guaranteed to be an `Int`.
     return (zintValue(ths) == zintFromInt(other)) ? ths : NULL;
 }
 
 // Documented in spec.
-METH_IMPL_1(Int, totalOrder, other) {
+METH_IMPL_1(Int, crossOrder, other) {
     zint int1 = zintValue(ths);
     zint int2 = zintFromInt(other);  // Note: not guaranteed to be an `Int`.
 
@@ -184,8 +184,8 @@ MOD_INIT(Int) {
             METH_BIND(Int, sign),
             METH_BIND(Int, sub),
             METH_BIND(Int, xor),
-            METH_BIND(Int, totalEq),
-            METH_BIND(Int, totalOrder)));
+            METH_BIND(Int, crossEq),
+            METH_BIND(Int, crossOrder)));
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = datImmortalize(intFrom(i + DAT_SMALL_INT_MIN));

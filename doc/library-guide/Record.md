@@ -90,12 +90,12 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> record | void`
+#### `.crossEq(other) -> record | void`
 
 Compares two records. Two records are equal if they have equal names and
 equal data payloads.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares two records for order. Records order by name as the major order
 and data payload as minor order.

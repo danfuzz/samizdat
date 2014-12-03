@@ -606,13 +606,13 @@ METH_IMPL_1_2(String, sliceInclusive, start, end) {
 }
 
 // Documented in spec.
-METH_IMPL_1(String, totalEq, other) {
+METH_IMPL_1(String, crossEq, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     return uncheckedEq(ths, other) ? ths : NULL;
 }
 
 // Documented in spec.
-METH_IMPL_1(String, totalOrder, other) {
+METH_IMPL_1(String, crossOrder, other) {
     assertString(other);  // Note: Not guaranteed to be a `String`.
     return symbolFromZorder(uncheckedZorder(ths, other));
 }
@@ -654,8 +654,8 @@ MOD_INIT(String) {
             METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),
-            METH_BIND(String, totalEq),
-            METH_BIND(String, totalOrder),
+            METH_BIND(String, crossEq),
+            METH_BIND(String, crossOrder),
             METH_BIND(String, valueList),
             SYM(get),          FUN_Sequence_get,
             SYM(keyList),      FUN_Sequence_keyList,

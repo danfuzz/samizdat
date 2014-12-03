@@ -179,14 +179,14 @@ METH_IMPL_0(Bool, toLogic) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Bool, totalEq, other) {
+METH_IMPL_1(Bool, crossEq, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
     return (bool1 == bool2) ? ths : NULL;
 }
 
 // Documented in spec.
-METH_IMPL_1(Bool, totalOrder, other) {
+METH_IMPL_1(Bool, crossOrder, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
 
@@ -226,8 +226,8 @@ MOD_INIT(Bool) {
             METH_BIND(Bool, shr),
             METH_BIND(Bool, xor),
             METH_BIND(Bool, toLogic),
-            METH_BIND(Bool, totalEq),
-            METH_BIND(Bool, totalOrder)));
+            METH_BIND(Bool, crossEq),
+            METH_BIND(Bool, crossOrder)));
 
     BOOL_FALSE = datImmortalize(boolFrom(false));
     BOOL_TRUE = datImmortalize(boolFrom(true));

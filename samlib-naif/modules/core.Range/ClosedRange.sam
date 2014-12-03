@@ -45,14 +45,14 @@ export class ClosedRange
 
     ## Documented in spec.
     class.newExclusive(firstValue, limit, optIncrement?) {
-        ## `totalEq` ensures that `firstValue` and `limit` have the same class.
-        def isEmpty = firstValue.totalEq(limit)?;
+        ## `crossEq` ensures that `firstValue` and `limit` have the same class.
+        def isEmpty = firstValue.crossEq(limit)?;
         def firstInt = cast(Int, firstValue);
         def limitInt = cast(Int, limit);
         def increment = ifValueOr { optIncrement* } { 1 };
 
-        ## `totalEq` ensures that `increment` is an int.
-        ifIs { increment.totalEq(0) }
+        ## `crossEq` ensures that `increment` is an int.
+        ifIs { increment.crossEq(0) }
             {
                 return ifIs { isEmpty* }
                     { this.new(0, 0, 0) }
@@ -73,10 +73,10 @@ export class ClosedRange
         def increment = ifValueOr { optIncrement* } { 1 };
 
         ## This just ensures that `firstValue` and `limit` have the same class.
-        firstValue.totalEq(limit);
+        firstValue.crossEq(limit);
 
-        ## `totalEq` ensures that `increment` is an int.
-        ifIs { increment.totalEq(0) }
+        ## `crossEq` ensures that `increment` is an int.
+        ifIs { increment.crossEq(0) }
             { return this.new(firstValue, 1, 0) };
 
         def firstInt = cast(Int, firstValue);
@@ -108,7 +108,7 @@ export class ClosedRange
     .nextValue(box) {
         def size = this.(ACCESS)(@size);
 
-        return? ifNot { size.totalEq(0) }
+        return? ifNot { size.crossEq(0) }
             {
                 def value = this.(ACCESS)(@value);
                 box* := this.(ACCESS)(@converter)(value);

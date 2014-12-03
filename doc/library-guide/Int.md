@@ -15,11 +15,11 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> int | void`
+#### `.crossEq(other) -> int | void`
 
 Compares the integer values of two ints.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares the integer values of two ints, ordering by value in the usual
 manner.

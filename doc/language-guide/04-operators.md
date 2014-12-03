@@ -401,8 +401,8 @@ order.
 
 These expressions correspond to calls to the library functions
 `eq` `ne` `lt` `gt` `le` and `ge` (with the obvious mapping of operator
-to function), which bottom out in calls to the methods `totalEq`
-or `totalOrder`. See the definition of those functions for more details.
+to function), which bottom out in calls to the methods `crossEq`
+or `crossOrder`. See the definition of those functions for more details.
 
 **Note:** This can sometimes have surprising results, e.g. when comparing
 ints and floating point numbers.

@@ -337,13 +337,13 @@ METH_IMPL_0(Symbol, toUnlisted) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Symbol, totalEq, other) {
+METH_IMPL_1(Symbol, crossEq, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
     return uncheckedEq(ths, other) ? ths : NULL;
 }
 
 // Documented in spec.
-METH_IMPL_1(Symbol, totalOrder, other) {
+METH_IMPL_1(Symbol, crossOrder, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
 
     if (ths == other) {
@@ -382,8 +382,8 @@ void bindMethodsForSymbol(void) {
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, isInterned),
             METH_BIND(Symbol, toUnlisted),
-            METH_BIND(Symbol, totalEq),
-            METH_BIND(Symbol, totalOrder)));
+            METH_BIND(Symbol, crossEq),
+            METH_BIND(Symbol, crossOrder)));
 }
 
 /** Initializes the module. */

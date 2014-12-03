@@ -58,12 +58,12 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> box | void`
+#### `.crossEq(other) -> box | void`
 
 Performs an identity comparison. No two different boxes are ever considered
 equal.
 
-#### `.totalOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> symbol | void`
 
 Performs an identity comparison. No two different boxes are ever considered
 equal, and two different boxes have no defined order.

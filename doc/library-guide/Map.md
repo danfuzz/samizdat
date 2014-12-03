@@ -89,11 +89,11 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> map | void`
+#### `.crossEq(other) -> map | void`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal

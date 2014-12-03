@@ -23,16 +23,16 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> null | void`
+#### `.crossEq(other) -> null | void`
 
 Compares two `Null` values. This is only logical-true if the two given
 values are both `null` per se. That is, this function returns `null` if
-called as `null.totalEq(null)` and will terminate with an error in
+called as `null.crossEq(null)` and will terminate with an error in
 all other cases.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares the given `Null` values for order. As there is only one instance
 of `Null`, this will only ever return `@same` when called appropriately. That
-is, this function returns `@same` if called as `null.totalOrder(null)` and
+is, this function returns `@same` if called as `null.crossOrder(null)` and
 will terminate with an error in all other cases.

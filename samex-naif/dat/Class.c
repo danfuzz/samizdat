@@ -391,20 +391,20 @@ METH_IMPL_1(Class, perOrder, other) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Class, totalEq, other) {
+METH_IMPL_1(Class, crossEq, other) {
     assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
     return classEqUnchecked(ths, other) ? ths : NULL;
 }
 
 // Documented in spec.
-METH_IMPL_1(Class, totalOrder, other) {
+METH_IMPL_1(Class, crossOrder, other) {
     if (ths == other) {
         // Easy case to avoid decomposition and detailed tests.
         return SYM(same);
     }
 
     if (!haveSameClass(ths, other)) {
-        die("Improper call to `totalOrder`: different concrete classes");
+        die("Improper call to `crossOrder`: different concrete classes");
     }
 
     // We should only be able to make it here if given two instances of
@@ -523,8 +523,8 @@ void bindMethodsForClass(void) {
             METH_BIND(Class, get_name),
             METH_BIND(Class, get_parent),
             METH_BIND(Class, perOrder),
-            METH_BIND(Class, totalEq),
-            METH_BIND(Class, totalOrder)));
+            METH_BIND(Class, crossEq),
+            METH_BIND(Class, crossOrder)));
 
     // `Metaclass` binds no methods itself. TODO: It probably wants at least
     // a couple.

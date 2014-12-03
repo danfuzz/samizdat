@@ -419,7 +419,7 @@ METH_IMPL_0(SymbolTable, get_size) {
 }
 
 // Documented in spec.
-METH_IMPL_1(SymbolTable, totalEq, other) {
+METH_IMPL_1(SymbolTable, crossEq, other) {
     if (ths == other) {
         return ths;
     }
@@ -455,7 +455,7 @@ METH_IMPL_1(SymbolTable, totalEq, other) {
 }
 
 // Documented in spec.
-METH_IMPL_1(SymbolTable, totalOrder, other) {
+METH_IMPL_1(SymbolTable, crossOrder, other) {
     if (ths == other) {
         return SYM(same);
     }
@@ -490,7 +490,7 @@ METH_IMPL_1(SymbolTable, totalOrder, other) {
         zvalue key1 = array1[i].key;
         zvalue key2 = array2[i].key;
         if (key1 != key2) {
-            return METH_CALL(key1, totalOrder, key2);
+            return METH_CALL(key1, crossOrder, key2);
         }
     }
 
@@ -522,8 +522,8 @@ void bindMethodsForSymbolTable(void) {
             METH_BIND(SymbolTable, gcMark),
             METH_BIND(SymbolTable, get),
             METH_BIND(SymbolTable, get_size),
-            METH_BIND(SymbolTable, totalEq),
-            METH_BIND(SymbolTable, totalOrder)));
+            METH_BIND(SymbolTable, crossEq),
+            METH_BIND(SymbolTable, crossOrder)));
 
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance(0));
 }

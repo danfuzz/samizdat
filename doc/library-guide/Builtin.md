@@ -23,12 +23,12 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> builtin | void`
+#### `.crossEq(other) -> builtin | void`
 
 Performs an identity comparison. Two builtins are only equal if they
 refer to the exact same functionality.
 
-#### `.totalOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> symbol | void`
 
 Performs an identity comparison. Builtins do not have a defined total
 order.

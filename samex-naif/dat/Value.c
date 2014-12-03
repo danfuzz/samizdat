@@ -83,20 +83,20 @@ METH_IMPL_1(Value, perOrder, other) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Value, totalEq, other) {
+METH_IMPL_1(Value, crossEq, other) {
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        die("`totalEq` called with incompatible arguments.");
+        die("`crossEq` called with incompatible arguments.");
     }
 
     return (ths == other) ? ths : NULL;
 }
 
 // Documented in spec.
-METH_IMPL_1(Value, totalOrder, other) {
+METH_IMPL_1(Value, crossOrder, other) {
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        die("`totalOrder` called with incompatible arguments.");
+        die("`crossOrder` called with incompatible arguments.");
     }
 
     return cmpEq(ths, other) ? SYM(same) : NULL;
@@ -112,8 +112,8 @@ void bindMethodsForValue(void) {
             METH_BIND(Value, debugSymbol),
             METH_BIND(Value, perEq),
             METH_BIND(Value, perOrder),
-            METH_BIND(Value, totalEq),
-            METH_BIND(Value, totalOrder)));
+            METH_BIND(Value, crossEq),
+            METH_BIND(Value, crossOrder)));
 }
 
 /** Initializes the module. */

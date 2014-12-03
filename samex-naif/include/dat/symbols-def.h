@@ -51,6 +51,8 @@ DEF_SYMBOL(castFrom);
 DEF_SYMBOL(castToward);
 DEF_SYMBOL(cat);
 DEF_SYMBOL(collect);
+DEF_SYMBOL(crossEq);
+DEF_SYMBOL(crossOrder);
 DEF_SYMBOL(debugString);
 DEF_SYMBOL(debugSymbol);
 DEF_SYMBOL(del);
@@ -109,8 +111,6 @@ DEF_SYMBOL(sub);
 DEF_SYMBOL(subclass);
 DEF_SYMBOL(toLogic);
 DEF_SYMBOL(toUnlisted);
-DEF_SYMBOL(totalEq);
-DEF_SYMBOL(totalOrder);
 DEF_SYMBOL(valueList);
 DEF_SYMBOL(xor);
 

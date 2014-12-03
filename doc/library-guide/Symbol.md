@@ -49,12 +49,12 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> builtin | void`
+#### `.crossEq(other) -> builtin | void`
 
 Returns `this` if `other` is a reference to the same symbol, or void if
 not.
 
-#### `.totalOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> symbol | void`
 
 Orders symbols by internedness (primary) and name (secondary), with
 interned symbols getting ordered *before* unlisted symbols. Two

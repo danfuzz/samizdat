@@ -283,7 +283,7 @@ def parList = {:
     expressions = parUnadornedList
     @"]"
     {
-        ifIs { expressions.totalEq([]) }
+        ifIs { expressions.crossEq([]) }
             { LITS::EMPTY_LIST }
             {
                 def result = makeCallGeneral(
@@ -329,7 +329,7 @@ def parNullaryClosure = {:
     c = parFullClosure
 
     {
-        ifNot { c::formals.totalEq([]) }
+        ifNot { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -341,7 +341,7 @@ def parBasicNullaryClosure = {:
     c = parBasicClosure
 
     {
-        ifNot { c::formals.totalEq([]) }
+        ifNot { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }

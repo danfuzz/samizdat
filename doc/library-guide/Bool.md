@@ -53,12 +53,12 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> bool | void`
+#### `.crossEq(other) -> bool | void`
 
 Compares two boolean values. This is only logical-true if the two given
 values are the same.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares the given boolean values, ordering `false` before `true`.
 
