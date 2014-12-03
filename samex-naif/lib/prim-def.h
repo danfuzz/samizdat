@@ -43,7 +43,6 @@ PRIM_DEF(voidResult,              THE_VOID_RESULT);
 PRIM_FUNC(cast,                   2, 2);
 PRIM_FUNC(classOf,                1, 1);
 PRIM_FUNC(die,                    0, -1);
-PRIM_FUNC(eq,                     2, 2);
 PRIM_FUNC(ifIs,                   2, 3);
 PRIM_FUNC(ifNot,                  2, 2);
 PRIM_FUNC(ifSwitch,               2, 3);
@@ -55,7 +54,6 @@ PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(maybeCast,              2, 2);
 PRIM_FUNC(maybeValue,             1, 1);
 PRIM_FUNC(note,                   0, -1);
-PRIM_FUNC(order,                  2, 2);
 
 // Primitive functions: intended for modularization
 PRIM_DEF(Generator_stdCollect,    FUN_Generator_stdCollect);

@@ -39,7 +39,6 @@ export
     cast,
     classOf,
     die,
-    eq,
     ifIs,
     ifNot,
     ifSwitch,
@@ -52,5 +51,4 @@ export
     maybeValue,
     note,
     nullBox,
-    order,
     voidResult;

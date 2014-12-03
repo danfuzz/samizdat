@@ -6,7 +6,7 @@ Map
 
 A `Map` is a kind of `Collection`. It represents a set of mappings from
 keys to values, where the keys are ordered by the total order of values
-as defined by the global function `order()`.
+as defined by the class method `Cmp.order()`.
 
 <br><br>
 ### Class Method Definitions

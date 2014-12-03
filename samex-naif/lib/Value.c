@@ -57,14 +57,6 @@ FUN_IMPL_DECL(cast) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(eq) {
-    zvalue value = args.elems[0];
-    zvalue other = args.elems[1];
-
-    return cmpEq(value, other);
-}
-
-// Documented in spec.
 FUN_IMPL_DECL(classOf) {
     return classOf(args.elems[0]);
 }
@@ -75,12 +67,4 @@ FUN_IMPL_DECL(maybeCast) {
     zvalue value = args.elems[1];
 
     return doCast(cls, value);
-}
-
-// Documented in spec.
-FUN_IMPL_DECL(order) {
-    zvalue value = args.elems[0];
-    zvalue other = args.elems[1];
-
-    return cmpOrder(value, other);
 }
