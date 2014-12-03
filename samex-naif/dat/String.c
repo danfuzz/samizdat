@@ -401,6 +401,18 @@ METH_IMPL_0_1(String, collect, function) {
 }
 
 // Documented in spec.
+METH_IMPL_1(String, crossEq, other) {
+    assertString(other);  // Note: Not guaranteed to be a `String`.
+    return uncheckedEq(ths, other) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(String, crossOrder, other) {
+    assertString(other);  // Note: Not guaranteed to be a `String`.
+    return symbolFromZorder(uncheckedZorder(ths, other));
+}
+
+// Documented in spec.
 METH_IMPL_rest(String, del, ns) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -606,18 +618,6 @@ METH_IMPL_1_2(String, sliceInclusive, start, end) {
 }
 
 // Documented in spec.
-METH_IMPL_1(String, crossEq, other) {
-    assertString(other);  // Note: Not guaranteed to be a `String`.
-    return uncheckedEq(ths, other) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_1(String, crossOrder, other) {
-    assertString(other);  // Note: Not guaranteed to be a `String`.
-    return symbolFromZorder(uncheckedZorder(ths, other));
-}
-
-// Documented in spec.
 METH_IMPL_0(String, valueList) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -642,6 +642,8 @@ MOD_INIT(String) {
             METH_BIND(String, cat),
             METH_BIND(String, castToward),
             METH_BIND(String, collect),
+            METH_BIND(String, crossEq),
+            METH_BIND(String, crossOrder),
             METH_BIND(String, debugString),
             METH_BIND(String, del),
             METH_BIND(String, fetch),
@@ -654,8 +656,6 @@ MOD_INIT(String) {
             METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),
-            METH_BIND(String, crossEq),
-            METH_BIND(String, crossOrder),
             METH_BIND(String, valueList),
             SYM(get),          FUN_Sequence_get,
             SYM(keyList),      FUN_Sequence_keyList,

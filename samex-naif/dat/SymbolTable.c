@@ -350,75 +350,6 @@ METH_IMPL_rest(SymbolTable, cat, args) {
 }
 
 // Documented in spec.
-METH_IMPL_rest(SymbolTable, del, keys) {
-    SymbolTableInfo *info = getInfo(ths);
-    zint arraySize = info->arraySize;
-    zmapping array[arraySize];
-    bool any = false;
-
-    if ((keys.size == 0) || (info->size == 0)) {
-        // Easy outs: Not actually deleting anything, and/or starting out
-        // with the empty symbol table.
-        return ths;
-    }
-
-    // Make a local copy of the original mappings.
-    utilCpy(zmapping, array, info->array, arraySize);
-
-    // Null out the `key` for any of the given `keys`.
-    for (zint i = 0; i < keys.size; i++) {
-        zint index = infoFind(info, keys.elems[i]);
-        if (index >= 0) {
-            any = true;
-            array[index].key = NULL;
-        }
-    }
-
-    if (! any) {
-        // None of `keys` were in `ths`.
-        return ths;
-    }
-
-    // Compact away the holes.
-    zint at = 0;
-    for (zint i = 0; i < arraySize; i++) {
-        if (array[i].key != NULL) {
-            if (i != at) {
-                array[at] = array[i];
-            }
-            at++;
-        }
-    }
-
-    // Construct a new instance with the remaining elements. This call also
-    // will also return `EMPTY_SYMBOL_TABLE` when appropriate.
-    return symtabFromZassoc((zassoc) {at, array});
-}
-
-// Documented in header.
-METH_IMPL_0(SymbolTable, gcMark) {
-    SymbolTableInfo *info = getInfo(ths);
-    zint arraySize = info->arraySize;
-
-    for (zint i = 0; i < arraySize; i++) {
-        datMark(info->array[i].key);
-        datMark(info->array[i].value);
-    }
-
-    return NULL;
-}
-
-// Documented in spec.
-METH_IMPL_1(SymbolTable, get, key) {
-    return symtabGetUnchecked(ths, key);
-}
-
-// Documented in spec.
-METH_IMPL_0(SymbolTable, get_size) {
-    return intFromZint(getInfo(ths)->size);
-}
-
-// Documented in spec.
 METH_IMPL_1(SymbolTable, crossEq, other) {
     if (ths == other) {
         return ths;
@@ -510,6 +441,75 @@ METH_IMPL_1(SymbolTable, crossOrder, other) {
     return SYM(same);
 }
 
+// Documented in spec.
+METH_IMPL_rest(SymbolTable, del, keys) {
+    SymbolTableInfo *info = getInfo(ths);
+    zint arraySize = info->arraySize;
+    zmapping array[arraySize];
+    bool any = false;
+
+    if ((keys.size == 0) || (info->size == 0)) {
+        // Easy outs: Not actually deleting anything, and/or starting out
+        // with the empty symbol table.
+        return ths;
+    }
+
+    // Make a local copy of the original mappings.
+    utilCpy(zmapping, array, info->array, arraySize);
+
+    // Null out the `key` for any of the given `keys`.
+    for (zint i = 0; i < keys.size; i++) {
+        zint index = infoFind(info, keys.elems[i]);
+        if (index >= 0) {
+            any = true;
+            array[index].key = NULL;
+        }
+    }
+
+    if (! any) {
+        // None of `keys` were in `ths`.
+        return ths;
+    }
+
+    // Compact away the holes.
+    zint at = 0;
+    for (zint i = 0; i < arraySize; i++) {
+        if (array[i].key != NULL) {
+            if (i != at) {
+                array[at] = array[i];
+            }
+            at++;
+        }
+    }
+
+    // Construct a new instance with the remaining elements. This call also
+    // will also return `EMPTY_SYMBOL_TABLE` when appropriate.
+    return symtabFromZassoc((zassoc) {at, array});
+}
+
+// Documented in header.
+METH_IMPL_0(SymbolTable, gcMark) {
+    SymbolTableInfo *info = getInfo(ths);
+    zint arraySize = info->arraySize;
+
+    for (zint i = 0; i < arraySize; i++) {
+        datMark(info->array[i].key);
+        datMark(info->array[i].value);
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(SymbolTable, get, key) {
+    return symtabGetUnchecked(ths, key);
+}
+
+// Documented in spec.
+METH_IMPL_0(SymbolTable, get_size) {
+    return intFromZint(getInfo(ths)->size);
+}
+
 // Documented in header.
 void bindMethodsForSymbolTable(void) {
     classBindMethods(CLS_SymbolTable,
@@ -518,12 +518,12 @@ void bindMethodsForSymbolTable(void) {
             CMETH_BIND(SymbolTable, singleValue)),
         METH_TABLE(
             METH_BIND(SymbolTable, cat),
+            METH_BIND(SymbolTable, crossEq),
+            METH_BIND(SymbolTable, crossOrder),
             METH_BIND(SymbolTable, del),
             METH_BIND(SymbolTable, gcMark),
             METH_BIND(SymbolTable, get),
-            METH_BIND(SymbolTable, get_size),
-            METH_BIND(SymbolTable, crossEq),
-            METH_BIND(SymbolTable, crossOrder)));
+            METH_BIND(SymbolTable, get_size)));
 
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance(0));
 }

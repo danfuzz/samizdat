@@ -131,14 +131,6 @@ BINARY_IMPL(sub,   zintSub);
 BINARY_IMPL(xor,   zintXor);
 
 // Documented in spec.
-METH_IMPL_0(Int, debugString) {
-    char arr[22];  // Big enough for the longest possible result.
-
-    snprintf(arr, sizeof(arr), "%lld", zintValue(ths));
-    return stringFromUtf8(-1, arr);
-}
-
-// Documented in spec.
 METH_IMPL_1(Int, crossEq, other) {
     // Note: `other` not guaranteed to be an `Int`.
     return (zintValue(ths) == zintFromInt(other)) ? ths : NULL;
@@ -158,6 +150,14 @@ METH_IMPL_1(Int, crossOrder, other) {
     }
 }
 
+// Documented in spec.
+METH_IMPL_0(Int, debugString) {
+    char arr[22];  // Big enough for the longest possible result.
+
+    snprintf(arr, sizeof(arr), "%lld", zintValue(ths));
+    return stringFromUtf8(-1, arr);
+}
+
 /** Initializes the module. */
 MOD_INIT(Int) {
     MOD_USE(Core);
@@ -170,6 +170,8 @@ MOD_INIT(Int) {
             METH_BIND(Int, and),
             METH_BIND(Int, bit),
             METH_BIND(Int, bitSize),
+            METH_BIND(Int, crossEq),
+            METH_BIND(Int, crossOrder),
             METH_BIND(Int, debugString),
             METH_BIND(Int, div),
             METH_BIND(Int, divEu),
@@ -183,9 +185,7 @@ MOD_INIT(Int) {
             METH_BIND(Int, shr),
             METH_BIND(Int, sign),
             METH_BIND(Int, sub),
-            METH_BIND(Int, xor),
-            METH_BIND(Int, crossEq),
-            METH_BIND(Int, crossOrder)));
+            METH_BIND(Int, xor)));
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = datImmortalize(intFrom(i + DAT_SMALL_INT_MIN));

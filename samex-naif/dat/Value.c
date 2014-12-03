@@ -42,6 +42,26 @@ METH_IMPL_1(Value, castToward, cls) {
 }
 
 // Documented in spec.
+METH_IMPL_1(Value, crossEq, other) {
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
+        die("`crossEq` called with incompatible arguments.");
+    }
+
+    return (ths == other) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(Value, crossOrder, other) {
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
+        die("`crossOrder` called with incompatible arguments.");
+    }
+
+    return cmpEq(ths, other) ? SYM(same) : NULL;
+}
+
+// Documented in spec.
 METH_IMPL_0(Value, debugString) {
     zvalue cls = classOf(ths);
     zvalue name = METH_CALL(ths, debugSymbol);
@@ -82,38 +102,18 @@ METH_IMPL_1(Value, perOrder, other) {
     return cmpOrder(ths, other);
 }
 
-// Documented in spec.
-METH_IMPL_1(Value, crossEq, other) {
-    // Note: `other` not guaranteed to have the same class as `ths`.
-    if (!haveSameClass(ths, other)) {
-        die("`crossEq` called with incompatible arguments.");
-    }
-
-    return (ths == other) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_1(Value, crossOrder, other) {
-    // Note: `other` not guaranteed to have the same class as `ths`.
-    if (!haveSameClass(ths, other)) {
-        die("`crossOrder` called with incompatible arguments.");
-    }
-
-    return cmpEq(ths, other) ? SYM(same) : NULL;
-}
-
 // Documented in header.
 void bindMethodsForValue(void) {
     classBindMethods(CLS_Value,
         NULL,
         METH_TABLE(
             METH_BIND(Value, castToward),
+            METH_BIND(Value, crossEq),
+            METH_BIND(Value, crossOrder),
             METH_BIND(Value, debugString),
             METH_BIND(Value, debugSymbol),
             METH_BIND(Value, perEq),
-            METH_BIND(Value, perOrder),
-            METH_BIND(Value, crossEq),
-            METH_BIND(Value, crossOrder)));
+            METH_BIND(Value, perOrder)));
 }
 
 /** Initializes the module. */

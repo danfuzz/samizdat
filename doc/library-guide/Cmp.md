@@ -4,7 +4,7 @@ Samizdat Layer 0: Core Library
 Cmp
 ---
 
-`Cmp` is a utility class (and uninstantiable repository for class methods),
+`Cmp` is a utility class (an uninstantiable repository for class methods),
 which implements all the standard comparison methods.
 
 Comparison methods come in two flavors, cross-class and per-class.

@@ -225,6 +225,50 @@ METH_IMPL_0_1(List, collect, function) {
 }
 
 // Documented in spec.
+METH_IMPL_1(List, crossEq, other) {
+    assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
+    ListInfo *info1 = getInfo(ths);
+    ListInfo *info2 = getInfo(other);
+    zarray arr1 = info1->a;
+    zarray arr2 = info2->a;
+
+    if (arr1.size != arr2.size) {
+        return NULL;
+    }
+
+    for (zint i = 0; i < arr1.size; i++) {
+        if (!cmpEq(arr1.elems[i], arr2.elems[i])) {
+            return NULL;
+        }
+    }
+
+    return ths;
+}
+
+// Documented in spec.
+METH_IMPL_1(List, crossOrder, other) {
+    assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
+    ListInfo *info1 = getInfo(ths);
+    ListInfo *info2 = getInfo(other);
+    zarray arr1 = info1->a;
+    zarray arr2 = info2->a;
+    zint size = (arr1.size < arr2.size) ? arr1.size : arr2.size;
+
+    for (zint i = 0; i < size; i++) {
+        zorder result = cm_order(arr1.elems[i], arr2.elems[i]);
+        if (result != ZSAME) {
+            return symbolFromZorder(result);
+        }
+    }
+
+    if (arr1.size == arr2.size) {
+        return SYM(same);
+    }
+
+    return (arr1.size < arr2.size) ? SYM(less): SYM(more);
+}
+
+// Documented in spec.
 METH_IMPL_rest(List, del, ns) {
     ListInfo *info = getInfo(ths);
     zarray arr = info->a;
@@ -410,50 +454,6 @@ METH_IMPL_1_2(List, sliceInclusive, start, end) {
 }
 
 // Documented in spec.
-METH_IMPL_1(List, crossEq, other) {
-    assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
-    ListInfo *info1 = getInfo(ths);
-    ListInfo *info2 = getInfo(other);
-    zarray arr1 = info1->a;
-    zarray arr2 = info2->a;
-
-    if (arr1.size != arr2.size) {
-        return NULL;
-    }
-
-    for (zint i = 0; i < arr1.size; i++) {
-        if (!cmpEq(arr1.elems[i], arr2.elems[i])) {
-            return NULL;
-        }
-    }
-
-    return ths;
-}
-
-// Documented in spec.
-METH_IMPL_1(List, crossOrder, other) {
-    assertHasClass(other, CLS_List);  // Note: Not guaranteed to be a `List`.
-    ListInfo *info1 = getInfo(ths);
-    ListInfo *info2 = getInfo(other);
-    zarray arr1 = info1->a;
-    zarray arr2 = info2->a;
-    zint size = (arr1.size < arr2.size) ? arr1.size : arr2.size;
-
-    for (zint i = 0; i < size; i++) {
-        zorder result = cm_order(arr1.elems[i], arr2.elems[i]);
-        if (result != ZSAME) {
-            return symbolFromZorder(result);
-        }
-    }
-
-    if (arr1.size == arr2.size) {
-        return SYM(same);
-    }
-
-    return (arr1.size < arr2.size) ? SYM(less): SYM(more);
-}
-
-// Documented in spec.
 METH_IMPL_0(List, valueList) {
     return ths;
 }
@@ -468,6 +468,8 @@ MOD_INIT(List) {
         METH_TABLE(
             METH_BIND(List, cat),
             METH_BIND(List, collect),
+            METH_BIND(List, crossEq),
+            METH_BIND(List, crossOrder),
             METH_BIND(List, del),
             METH_BIND(List, fetch),
             METH_BIND(List, forEach),
@@ -479,8 +481,6 @@ MOD_INIT(List) {
             METH_BIND(List, reverse),
             METH_BIND(List, sliceExclusive),
             METH_BIND(List, sliceInclusive),
-            METH_BIND(List, crossEq),
-            METH_BIND(List, crossOrder),
             METH_BIND(List, valueList),
             SYM(get),          FUN_Sequence_get,
             SYM(keyList),      FUN_Sequence_keyList,

@@ -172,6 +172,34 @@ METH_IMPL_rest(Record, cat, args) {
 }
 
 // Documented in spec.
+METH_IMPL_1(Record, crossEq, other) {
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
+
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
+
+    if (info1->nameIndex != info2->nameIndex) {
+        return NULL;
+    } else {
+        return cmpEq(info1->data, info2->data);
+    }
+}
+
+// Documented in spec.
+METH_IMPL_1(Record, crossOrder, other) {
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
+
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
+
+    if (info1->nameIndex != info2->nameIndex) {
+        return cmpOrder(info1->name, info2->name);
+    }
+
+    return cmpOrder(info1->data, info2->data);
+}
+
+// Documented in spec.
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
@@ -226,34 +254,6 @@ METH_IMPL_1(Record, hasName, name) {
     return symbolEq(getInfo(ths)->name, name) ? ths : NULL;
 }
 
-// Documented in spec.
-METH_IMPL_1(Record, crossEq, other) {
-    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
-
-    RecordInfo *info1 = getInfo(ths);
-    RecordInfo *info2 = getInfo(other);
-
-    if (info1->nameIndex != info2->nameIndex) {
-        return NULL;
-    } else {
-        return cmpEq(info1->data, info2->data);
-    }
-}
-
-// Documented in spec.
-METH_IMPL_1(Record, crossOrder, other) {
-    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
-
-    RecordInfo *info1 = getInfo(ths);
-    RecordInfo *info2 = getInfo(other);
-
-    if (info1->nameIndex != info2->nameIndex) {
-        return cmpOrder(info1->name, info2->name);
-    }
-
-    return cmpOrder(info1->data, info2->data);
-}
-
 /** Initializes the module. */
 MOD_INIT(Record) {
     MOD_USE(Core);
@@ -264,15 +264,15 @@ MOD_INIT(Record) {
         METH_TABLE(
             METH_BIND(Record, castToward),
             METH_BIND(Record, cat),
+            METH_BIND(Record, crossEq),
+            METH_BIND(Record, crossOrder),
             METH_BIND(Record, debugString),
             METH_BIND(Record, del),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
             METH_BIND(Record, get_data),
             METH_BIND(Record, get_name),
-            METH_BIND(Record, hasName),
-            METH_BIND(Record, crossEq),
-            METH_BIND(Record, crossOrder)));
+            METH_BIND(Record, hasName)));
 }
 
 // Documented in header.
