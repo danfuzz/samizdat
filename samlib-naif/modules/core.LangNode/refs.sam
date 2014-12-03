@@ -16,9 +16,6 @@ import ./literals :: SYMS, makeLiteral;
 def NAMES = [
     @break,
     @continue,
-    @eq,
-    @ge,
-    @gt,
     @ifIs,
     @ifNot,
     @ifSwitch,
@@ -26,18 +23,10 @@ def NAMES = [
     @ifValueAnd,
     @ifValueAndElse,
     @ifValueOr,
-    @le,
     @loadModule,
     @loadResource,
     @loop,
-    @lt,
     @maybeValue,
-    @ne,
-    @perGe,
-    @perGt,
-    @perLe,
-    @perLt,
-    @perNe,
     @return
 ];
 
