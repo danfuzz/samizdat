@@ -1118,36 +1118,34 @@ parPexBlock := {:
 ## Layer 2 Definitions and Rules
 ##
 
-## For unary operators, map of token types to function name variable
-## references.
+## For unary operators, map of token types to method references.
 def UNARY_OPERATORS = @{
-    @"-":   SYMS::neg,
-    @"#":   SYMS::get_size,
-    @"^":   SYMS::reverse,
-    @"!!!": SYMS::not
+    @"-":   METHODS::neg,
+    @"#":   METHODS::get_size,
+    @"^":   METHODS::reverse,
+    @"!!!": METHODS::not
 };
 
-## For binary operators, map of token types to function name variable
-## references.
+## For binary operators, map of token types to method references.
 def BINARY_OPERATORS = @{
-    @"+":    SYMS::add,
-    @"-":    SYMS::sub,
-    @"*":    SYMS::mul,
-    @"/":    SYMS::div,
-    @"%":    SYMS::mod,
-    @"//":   SYMS::divEu,
-    @"%%":   SYMS::modEu,
+    @"+":    METHODS::add,
+    @"-":    METHODS::sub,
+    @"*":    METHODS::mul,
+    @"/":    METHODS::div,
+    @"%":    METHODS::mod,
+    @"//":   METHODS::divEu,
+    @"%%":   METHODS::modEu,
     @"==":   METHODS::Cmp_perEq,
     @"!=":   METHODS::Cmp_perNe,
     @"<":    METHODS::Cmp_perLt,
     @">":    METHODS::Cmp_perGt,
     @"<=":   METHODS::Cmp_perLe,
     @">=":   METHODS::Cmp_perGe,
-    @"&&&":  SYMS::and,
-    @"|||":  SYMS::or,
-    @"^^^":  SYMS::xor,
-    @"<<<":  SYMS::shl,
-    @">>>":  SYMS::shr,
+    @"&&&":  METHODS::and,
+    @"|||":  METHODS::or,
+    @"^^^":  METHODS::xor,
+    @"<<<":  METHODS::shl,
+    @">>>":  METHODS::shr,
     @"\\==": METHODS::Cmp_eq,
     @"\\!=": METHODS::Cmp_ne,
     @"\\<":  METHODS::Cmp_lt,
@@ -1497,8 +1495,8 @@ parTerm2 := {:
 parPrefixOperator2 := {:
     operator = [@"-" @"#" @"^" @"!!!"]
     {
-        def name = UNARY_OPERATORS.get(operator.get_name());
-        { node -> makeCall(node, name) }
+        def func = UNARY_OPERATORS.get(operator.get_name());
+        { node -> makeFunCall(func, node) }
     }
 |
     ## This one is specially converted, since it's a control construct,
