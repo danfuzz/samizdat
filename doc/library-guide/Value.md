@@ -169,38 +169,3 @@ If this call results in a value of an appropriate class, then that value is
 then returned.
 
 If not, this function returns void.
-
-#### `totalGe(value, other) -> logic`
-
-Class-specific total-order comparison, which calls `value.totalOrder(other)` to
-determine result. Returns `value` if it is considered greater than or equal
-to `other`. It is a fatal error (terminating the runtime) if the two
-arguments are of different classes.
-
-#### `totalGt(value, other) -> logic`
-
-Class-specific total-order comparison, which calls `value.totalOrder(other)` to
-determine result. Returns `value` if it is considered greater than `other`.
-It is a fatal error (terminating the runtime) if the two arguments are of
-different classes.
-
-#### `totalLe(value, other) -> logic`
-
-Class-specific total-order comparison, which calls `value.totalOrder(other)` to
-determine result. Returns `value` if it is considered less than or equal
-to `other`. It is a fatal error (terminating the runtime) if the two
-arguments are of different classes.
-
-#### `totalLt(value, other) -> logic`
-
-Class-specific total-order comparison, which calls `value.totalOrder(other)` to
-determine result. Returns `value` if it is considered less than `other`.
-It is a fatal error (terminating the runtime) if the two arguments are of
-different classes.
-
-#### `totalNe(value, other) -> logic`
-
-Class-specific total-order comparison, which calls `value.totalEq(other)` to
-determine result. Returns `value` if it is *not* considered equal to `other`.
-It is a fatal error (terminating the runtime) if the two arguments are of
-different classes.
