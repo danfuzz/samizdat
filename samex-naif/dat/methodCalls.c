@@ -65,7 +65,7 @@ zorder cm_order(zvalue x, zvalue other) {
     // This frame usage avoids having the `zvalue` result of the call pollute
     // the stack.
     zstackPointer save = datFrameStart();
-    zvalue result = valOrder(x, other);
+    zvalue result = cmpOrder(x, other);
 
     if (result == NULL) {
         die("Attempt to order unordered values.");

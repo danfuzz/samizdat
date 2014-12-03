@@ -82,5 +82,5 @@ FUN_IMPL_DECL(order) {
     zvalue value = args.elems[0];
     zvalue other = args.elems[1];
 
-    return valOrder(value, other);
+    return cmpOrder(value, other);
 }

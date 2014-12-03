@@ -79,7 +79,7 @@ METH_IMPL_1(Value, perEq, other) {
 
 // Documented in spec.
 METH_IMPL_1(Value, perOrder, other) {
-    return valOrder(ths, other);
+    return cmpOrder(ths, other);
 }
 
 // Documented in spec.

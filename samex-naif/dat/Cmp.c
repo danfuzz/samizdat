@@ -37,9 +37,9 @@ bool cmpEqNullOk(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-zvalue valOrder(zvalue value, zvalue other) {
+zvalue cmpOrder(zvalue value, zvalue other) {
     if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `valOrder`.");
+        die("Shouldn't happen: NULL argument passed to `cmpOrder`.");
     } else if (value == other) {
         return SYM(same);
     } else if (haveSameClass(value, other)) {
@@ -64,7 +64,7 @@ CMETH_IMPL_2(Cmp, ge, value, other) {
     if (value == other) {
         return value;
     } else {
-        zvalue order = valOrder(value, other);
+        zvalue order = cmpOrder(value, other);
         return ((order != NULL) && (zorderFromSymbol(order) != ZLESS))
             ? value : NULL;
     }
@@ -75,7 +75,7 @@ CMETH_IMPL_2(Cmp, gt, value, other) {
     if (value == other) {
         return NULL;
     } else {
-        zvalue order = valOrder(value, other);
+        zvalue order = cmpOrder(value, other);
         return ((order != NULL) && (zorderFromSymbol(order) == ZMORE))
             ? value : NULL;
     }
@@ -86,7 +86,7 @@ CMETH_IMPL_2(Cmp, le, value, other) {
     if (value == other) {
         return value;
     } else {
-        zvalue order = valOrder(value, other);
+        zvalue order = cmpOrder(value, other);
         return ((order != NULL) && (zorderFromSymbol(order) != ZMORE))
             ? value : NULL;
     }
@@ -97,7 +97,7 @@ CMETH_IMPL_2(Cmp, lt, value, other) {
     if (value == other) {
         return NULL;
     } else {
-        zvalue order = valOrder(value, other);
+        zvalue order = cmpOrder(value, other);
         return ((order != NULL) && (zorderFromSymbol(order) == ZLESS))
             ? value : NULL;
     }
@@ -110,7 +110,7 @@ CMETH_IMPL_2(Cmp, ne, value, other) {
 
 // Documented in spec.
 CMETH_IMPL_2(Cmp, order, value, other) {
-    return valOrder(value, other);
+    return cmpOrder(value, other);
 }
 
 // Documented in spec.

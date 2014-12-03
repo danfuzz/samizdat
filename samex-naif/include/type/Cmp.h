@@ -32,6 +32,6 @@ bool cmpEqNullOk(zvalue value, zvalue other);
  * Performs the equivalent of `Cmp.order()`. **Note:** It is invalid to pass
  * `NULL` to this function.
  */
-zvalue valOrder(zvalue value, zvalue other);
+zvalue cmpOrder(zvalue value, zvalue other);
 
 #endif

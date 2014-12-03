@@ -248,10 +248,10 @@ METH_IMPL_1(Record, totalOrder, other) {
     RecordInfo *info2 = getInfo(other);
 
     if (info1->nameIndex != info2->nameIndex) {
-        return valOrder(info1->name, info2->name);
+        return cmpOrder(info1->name, info2->name);
     }
 
-    return valOrder(info1->data, info2->data);
+    return cmpOrder(info1->data, info2->data);
 }
 
 /** Initializes the module. */
