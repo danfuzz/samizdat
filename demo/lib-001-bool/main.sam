@@ -17,7 +17,7 @@
 fn expect(name, result, func) {
     ifValue { func() }
         { got ->
-            ifNot { eq(got, result) }
+            ifNot { Cmp.eq(got, result) }
                 {
                     note("Unexpected result: ", $Format::source(got));
                     die("For: ", name);
@@ -47,10 +47,10 @@ note("Booleans");
 note($Format::source(false));
 note($Format::source(true));
 
-expect("eq 1", true, { eq(true, true) });
-expect("eq 2", false, { eq(false, false) });
-expectVoid("eq 3", { eq(true, false) });
-expectVoid("eq 4", { eq(false, true) });
+expect("eq 1", true, { Cmp.eq(true, true) });
+expect("eq 2", false, { Cmp.eq(false, false) });
+expectVoid("eq 3", { Cmp.eq(true, false) });
+expectVoid("eq 4", { Cmp.eq(false, true) });
 
 expect("and 1", false, { false.and(false) });
 expect("and 2", false, { false.and(true) });

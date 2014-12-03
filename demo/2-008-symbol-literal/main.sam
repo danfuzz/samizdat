@@ -26,12 +26,12 @@ msg(@"foo");
 msg(@"++ blort ++");
 msg(@anon.toUnlisted());
 
-ifNot { eq(@foo, @"foo") }
+ifNot { Cmp.eq(@foo, @"foo") }
     { die("Expected same!") };
 
 def anon = @foo.toUnlisted();
-ifIs { eq(@foo, anon) }
+ifIs { Cmp.eq(@foo, anon) }
     { die("Expected interned and unlisted to be different!") };
 
-ifIs { eq(anon, anon.toUnlisted()) }
+ifIs { Cmp.eq(anon, anon.toUnlisted()) }
     { die("Expected unlisted and unlisted to be different!") };

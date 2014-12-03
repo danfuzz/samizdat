@@ -15,7 +15,7 @@
 fn expect(name, result, func) {
     ifValue { func() }
         { got ->
-            ifNot { eq(got, result) }
+            ifNot { Cmp.eq(got, result) }
                 {
                     note("Unexpected result: ", $Format::source(got));
                     die("For: ", name);
@@ -38,7 +38,7 @@ fn expectVoid(name, func) {
 
 ## Checks an expected equality.
 fn expectEq(name, v1, v2) {
-    ifNot { eq(v1, v2) }
+    ifNot { Cmp.eq(v1, v2) }
         {
             note("Unexpected: ", $Format::source(v1), " != ",
                 $Format::source(v2));
@@ -48,7 +48,7 @@ fn expectEq(name, v1, v2) {
 
 ## Checks an expected inequality.
 fn expectNe(name, v1, v2) {
-    ifNot { ne(v1, v2) }
+    ifNot { Cmp.ne(v1, v2) }
         {
             note("Unexpected: ", $Format::source(v1), " == ",
                 $Format::source(v2));

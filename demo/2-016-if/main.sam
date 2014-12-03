@@ -195,17 +195,17 @@ if (def x = returnVoid()) {
 var wantVoid = (
     if /out (true) { "x" }
 )?;
-if (!eq(wantVoid, [])) { die("Bad void 1.") };
+if (!Cmp.eq(wantVoid, [])) { die("Bad void 1.") };
 
 wantVoid := (
     if /out (returnVoid()) { "x" }
     else { "y" }
 )?;
-if (!eq(wantVoid, [])) { die("Bad void 2.") };
+if (!Cmp.eq(wantVoid, [])) { die("Bad void 2.") };
 
 wantVoid := (
     if /out (returnVoid()) { "x" }
     else if (returnVoid()) { "y" }
     else { "z" }
 )?;
-if (!eq(wantVoid, [])) { die("Bad void 3.") };
+if (!Cmp.eq(wantVoid, [])) { die("Bad void 3.") };

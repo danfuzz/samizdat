@@ -17,7 +17,7 @@
 fn expect(name, result, func) {
     ifValue { func() }
         { got ->
-            ifNot { eq(got, result) }
+            ifNot { Cmp.eq(got, result) }
                 {
                     note("Unexpected result: ", $Format::source(got));
                     die("For: ", name);
@@ -45,7 +45,7 @@ fn expectVoid(name, func) {
 
 note("Classes");
 
-expect("eq 1", Value, { eq(Value, Value) });
+expect("eq 1", Value, { Cmp.eq(Value, Value) });
 
 expect("get_name 1", @Value,  { Value.get_name() });
 expect("get_name 2", @String, { String.get_name() });

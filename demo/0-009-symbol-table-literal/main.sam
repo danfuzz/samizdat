@@ -28,8 +28,8 @@ msg(@{});
 msg(@{a: 10});
 msg(@{a: 10, b:20});
 
-ifNot { eq(@{}, @{}) }
+ifNot { Cmp.eq(@{}, @{}) }
     { die("Expected same emptiness!") };
 
-ifNot { eq(@{foo: "bar"}, @{foo: "bar"}) }
+ifNot { Cmp.eq(@{foo: "bar"}, @{foo: "bar"}) }
     { die("Expected same!") };
