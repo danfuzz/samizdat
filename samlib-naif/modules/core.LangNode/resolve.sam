@@ -115,7 +115,7 @@ export fn withResolvedImports(node, resolveFn) {
 
         def resolved = resolveImport(defNode, resolveFn);
 
-        yield ifIs { eq(exported, true) }
+        yield ifIs { Cmp.eq(exported, true) }
             { makeExport(resolved) }
             { resolved }
     };
