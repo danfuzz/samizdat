@@ -13,9 +13,9 @@
 //
 
 // Documented in header.
-zvalue valEq(zvalue value, zvalue other) {
+zvalue cmpEq(zvalue value, zvalue other) {
     if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `valEq`.");
+        die("Shouldn't happen: NULL argument passed to `cmpEq`.");
     } else if (value == other) {
         return value;
     } else if (haveSameClass(value, other)) {
@@ -26,13 +26,13 @@ zvalue valEq(zvalue value, zvalue other) {
 }
 
 // Documented in header.
-bool valEqNullOk(zvalue value, zvalue other) {
+bool cmpEqNullOk(zvalue value, zvalue other) {
     if (value == other) {
         return true;
     } else if ((value == NULL) || (other == NULL)) {
         return false;
     } else {
-        return valEq(value, other) != NULL;
+        return cmpEq(value, other) != NULL;
     }
 }
 
@@ -56,7 +56,7 @@ zvalue valOrder(zvalue value, zvalue other) {
 
 // Documented in spec.
 CMETH_IMPL_2(Cmp, eq, value, other) {
-    return valEq(value, other);
+    return cmpEq(value, other);
 }
 
 // Documented in spec.
@@ -105,7 +105,7 @@ CMETH_IMPL_2(Cmp, lt, value, other) {
 
 // Documented in spec.
 CMETH_IMPL_2(Cmp, ne, value, other) {
-    return (valEq(value, other) == NULL) ? value : NULL;
+    return (cmpEq(value, other) == NULL) ? value : NULL;
 }
 
 // Documented in spec.

@@ -61,7 +61,7 @@ FUN_IMPL_DECL(eq) {
     zvalue value = args.elems[0];
     zvalue other = args.elems[1];
 
-    return valEq(value, other);
+    return cmpEq(value, other);
 }
 
 // Documented in spec.

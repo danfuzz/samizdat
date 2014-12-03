@@ -58,7 +58,7 @@ zvalue eval(zvalue env) {
   if (GLOBALS == NULL) {
     GLOBALS = env;
     initLiterals(env);
-  } else if (!valEq(GLOBALS, env)) {
+  } else if (!cmpEq(GLOBALS, env)) {
     die("Cannot re-eval with different global environment.");
   }
 

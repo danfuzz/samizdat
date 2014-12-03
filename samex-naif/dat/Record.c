@@ -146,7 +146,7 @@ CMETH_IMPL_1_2(Record, new, name, data) {
 
 // Documented in spec.
 METH_IMPL_1(Record, castToward, cls) {
-    if (valEq(cls, CLS_SymbolTable)) {
+    if (cmpEq(cls, CLS_SymbolTable)) {
         return getInfo(ths)->data;
     } else if (classAccepts(cls, ths)) {
         return ths;
@@ -175,7 +175,7 @@ METH_IMPL_rest(Record, cat, args) {
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
-    if (valEq(info->data, EMPTY_SYMBOL_TABLE)) {
+    if (cmpEq(info->data, EMPTY_SYMBOL_TABLE)) {
         return cm_cat(
             METH_CALL(info->name, debugString),
             stringFromUtf8(-1, "{}"));
@@ -236,7 +236,7 @@ METH_IMPL_1(Record, totalEq, other) {
     if (info1->nameIndex != info2->nameIndex) {
         return NULL;
     } else {
-        return valEq(info1->data, info2->data);
+        return cmpEq(info1->data, info2->data);
     }
 }
 

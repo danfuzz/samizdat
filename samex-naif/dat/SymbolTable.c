@@ -446,7 +446,7 @@ METH_IMPL_1(SymbolTable, totalEq, other) {
         zvalue value1 = info->array[i].value;
         zvalue value2 = cm_get(other, key1);
 
-        if (!valEqNullOk(value1, value2)) {
+        if (!cmpEqNullOk(value1, value2)) {
             return NULL;
         }
     }

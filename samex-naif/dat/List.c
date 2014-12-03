@@ -422,7 +422,7 @@ METH_IMPL_1(List, totalEq, other) {
     }
 
     for (zint i = 0; i < arr1.size; i++) {
-        if (!valEq(arr1.elems[i], arr2.elems[i])) {
+        if (!cmpEq(arr1.elems[i], arr2.elems[i])) {
             return NULL;
         }
     }

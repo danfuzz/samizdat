@@ -305,7 +305,7 @@ zstring zstringFromString(zvalue string) {
 CMETH_IMPL_1(String, castFrom, value) {
     zvalue cls = classOf(value);
 
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         zint n = zintFromInt(value);
         zchar result;
 
@@ -314,7 +314,7 @@ CMETH_IMPL_1(String, castFrom, value) {
         } else {
             return stringFromZchar(result);
         }
-    } else if (valEq(cls, CLS_Symbol)) {
+    } else if (cmpEq(cls, CLS_Symbol)) {
         return stringFromZstring(zstringFromSymbol(value));
     } else if (classAccepts(thsClass, value)) {
         return value;
@@ -327,11 +327,11 @@ CMETH_IMPL_1(String, castFrom, value) {
 METH_IMPL_1(String, castToward, cls) {
     StringInfo *info = getInfo(ths);
 
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         if (info->s.size == 1) {
             return intFromZint(zcharFromString(ths));
         }
-    } else if (valEq(cls, CLS_Symbol)) {
+    } else if (cmpEq(cls, CLS_Symbol)) {
         return symbolFromZstring(info->s);
     } else if (classAccepts(cls, ths)) {
         return ths;

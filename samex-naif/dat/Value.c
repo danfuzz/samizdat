@@ -74,7 +74,7 @@ METH_IMPL_0(Value, debugSymbol) {
 
 // Documented in spec.
 METH_IMPL_1(Value, perEq, other) {
-    return valEq(ths, other);
+    return cmpEq(ths, other);
 }
 
 // Documented in spec.
@@ -99,7 +99,7 @@ METH_IMPL_1(Value, totalOrder, other) {
         die("`totalOrder` called with incompatible arguments.");
     }
 
-    return valEq(ths, other) ? SYM(same) : NULL;
+    return cmpEq(ths, other) ? SYM(same) : NULL;
 }
 
 // Documented in header.

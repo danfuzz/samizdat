@@ -209,7 +209,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < size; i++) {
-        if (valEq(mappings[i].key, mappings[at - 1].key)) {
+        if (cmpEq(mappings[i].key, mappings[at - 1].key)) {
             at--;
         }
 
@@ -247,9 +247,9 @@ zassoc zassocFromMap(zvalue map) {
 CMETH_IMPL_1(Map, castFrom, value) {
     zvalue cls = classOf(value);
 
-    if (valEq(cls, CLS_SymbolTable)) {
+    if (cmpEq(cls, CLS_SymbolTable)) {
         // Do nothing here; fall through the `if` to the conversion below.
-    } else if (valEq(cls, CLS_Record)) {
+    } else if (cmpEq(cls, CLS_Record)) {
         value = get_data(value);
         // ...and fall through to the conversion below.
     } else if (classAccepts(thsClass, value)) {
@@ -305,7 +305,7 @@ CMETH_IMPL_1_rest(Map, singleValue, first, args) {
 METH_IMPL_1(Map, castToward, cls) {
     MapInfo *info = getInfo(ths);
 
-    if (valEq(cls, CLS_SymbolTable)) {
+    if (cmpEq(cls, CLS_SymbolTable)) {
         zint size = info->size;
         return symtabFromZassoc((zassoc) {info->size, info->elems});
     } else if (classAccepts(cls, ths)) {
@@ -596,7 +596,7 @@ METH_IMPL_1(Map, totalEq, other) {
     for (zint i = 0; i < size1; i++) {
         zmapping *e1 = &elems1[i];
         zmapping *e2 = &elems2[i];
-        if (!(valEq(e1->key, e2->key) && valEq(e1->value, e2->value))) {
+        if (!(cmpEq(e1->key, e2->key) && cmpEq(e1->value, e2->value))) {
             return NULL;
         }
     }

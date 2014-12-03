@@ -66,7 +66,7 @@ zbool zboolFromBool(zvalue boolval) {
 CMETH_IMPL_1(Bool, castFrom, value) {
     zvalue cls = classOf(value);
 
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         zint n = zintFromInt(value);
         switch (n) {
             case 0: return BOOL_FALSE;
@@ -111,7 +111,7 @@ METH_IMPL_0(Bool, bitSize) {
 
 // Documented in spec.
 METH_IMPL_1(Bool, castToward, cls) {
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         return intFromZint(zboolValue(ths));
     } else if (classAccepts(cls, ths)) {
         return ths;
