@@ -151,51 +151,6 @@ void.
 Returns the class of the given arbitrary `value`. The return value is always
 of class `Class`.
 
-#### `eq(value, other) -> logic`
-
-Checks for equality, using the total order of values. Returns `value` if the
-two given values are identical. Otherwise returns void.
-
-This works by first checking the classes of the two values. If they are
-different, this returns void immediately. Otherwise, this calls `totalEq` on
-the two arguments. In the latter case, this function doesn't "trust" a
-non-void return value of `totalEq` and always returns the given `value`
-argument, per se, to represent logical-true.
-
-**Syntax Note:** Used in the translation of `expression \== expression` forms.
-
-#### `ge(value, other) -> logic`
-
-Checks for a greater-than-or-equal relationship, using the total order of
-values. Returns `value` if the first value orders after the second or is
-identical to it. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \>= expression` forms.
-
-#### `gt(value, other) -> logic`
-
-Checks for a greater-than relationship, using the total order of values.
-Returns `value` if the first value orders after the second. Otherwise
-returns void.
-
-**Syntax Note:** Used in the translation of `expression \> expression` forms.
-
-#### `le(value, other) -> logic`
-
-Checks for a less-than-or-equal relationship, using the total order of values.
-Returns `value` if the first value orders before the second or is identical
-to it. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \<= expression` forms.
-
-#### `lt(value, other) -> logic`
-
-Checks for a less-than relationship, using the total order of values.
-Returns `value` if the first value orders before the second. Otherwise
-returns void.
-
-**Syntax Note:** Used in the translation of `expression \< expression` forms.
-
 #### `maybeCast(cls, value) -> . | void`
 
 "Soft" cast operation. This attempts to cast (convert in a maximally
@@ -214,65 +169,6 @@ If this call results in a value of an appropriate class, then that value is
 then returned.
 
 If not, this function returns void.
-
-#### `ne(value, other) -> logic`
-
-Checks for inequality, using the total order of values. Returns `value` if
-the two given values are not identical. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \!= expression` forms.
-
-#### `order(value, other) -> int`
-
-Returns the order of the two given values, using the total order of values.
-
-The return value is one of `@less` `@same` `@more` indicating how the two
-values order with respect to each other, just like `perOrder` and
-`totalOrder`.
-
-This function works by calling `perOrder` on the classes of the two arguments
-if they are different, or by calling `totalOrder` on the arguments themselves
-if they both have the same class.
-
-**Note:** This is the function which underlies the implementation
-of all cross-class ordering functions.
-
-#### `perGe(value, other) -> logic`
-
-Per-class comparison, which calls `value.perOrder(other)` to
-determine result. Returns `value` if it is considered greater than or equal
-to `other`.
-
-**Syntax Note:** Used in the translation of `expression >= expression` forms.
-
-#### `perGt(value, other) -> logic`
-
-Per-class comparison, which calls `value.perOrder(other)` to
-determine result. Returns `value` if it is considered greater than `other`.
-
-**Syntax Note:** Used in the translation of `expression > expression` forms.
-
-#### `perLe(value, other) -> logic`
-
-Per-class comparison, which calls `value.perOrder(other)` to
-determine result. Returns `value` if it is considered less than or equal
-to `other`.
-
-**Syntax Note:** Used in the translation of `expression <= expression` forms.
-
-#### `perLt(value, other) -> logic`
-
-Per-class comparison, which calls `value.perOrder(other)` to
-determine result. Returns `value` if it is considered less than `other`.
-
-**Syntax Note:** Used in the translation of `expression < expression` forms.
-
-#### `perNe(value, other) -> logic`
-
-Per-class comparison, which calls `value.perEq(other)` to
-determine result. Returns `value` if it is *not* considered equal to `other`.
-
-**Syntax Note:** Used in the translation of `expression != expression` forms.
 
 #### `totalGe(value, other) -> logic`
 

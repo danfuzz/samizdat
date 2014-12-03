@@ -71,6 +71,7 @@ will be returned, or one of:
   * [Box](Box.md) (also includes Cell, Lazy, NullBox, Promise, and Result)
   * [Builtin](Builtin.md)
   * [Class](Class.md)
+  * [Cmp](Cmp.md)
   * [Core](Core.md)
   * [Int](Int.md)
   * [List](List.md)
