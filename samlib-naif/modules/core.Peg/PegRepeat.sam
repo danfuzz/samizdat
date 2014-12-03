@@ -83,10 +83,7 @@ export class PegRepeat
                     ## Failed to parse the inner rule. Check for minimum match
                     ## count. Store result and return success if appropriate.
                     return? ifIs
-                        {
-                            totalGe(results.get_size(),
-                                this.(ACCESS)(@minSize))
-                        }
+                        { Cmp.ge(results.get_size(), this.(ACCESS)(@minSize)) }
                         { remainingState.addContext(results) }
                 }
         }
