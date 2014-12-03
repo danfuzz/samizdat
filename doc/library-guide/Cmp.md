@@ -105,7 +105,7 @@ The return value is one of `@less` `@same` `@more` indicating how the two
 values order with respect to each other.
 
 This works by first checking the classes of the two values. If they are
-different, this returns a value based on the order of the classes.
+different, this returns a value based on the per-class order of the classes.
 Otherwise, this calls `value.totalOrder(other)` to determine the result.
 
 **Note:** This is the method which underlies the implementation
