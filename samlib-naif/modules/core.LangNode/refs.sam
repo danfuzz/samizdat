@@ -38,8 +38,7 @@ def NAMES = [
     @perLe,
     @perLt,
     @perNe,
-    @return,
-    @totalNe
+    @return
 ];
 
 ## Module-scoped names.

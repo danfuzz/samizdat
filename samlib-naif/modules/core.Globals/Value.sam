@@ -72,33 +72,3 @@ export fn perNe(value, other) {
     return? ifNot { value.perEq(other) }
         { value }
 };
-
-## Documented in spec.
-export fn totalGe(value, other) {
-    return? ifNot { value.totalOrder(other).perEq(@less) }
-        { value }
-};
-
-## Documented in spec.
-export fn totalGt(value, other) {
-    return? ifIs { value.totalOrder(other).perEq(@more) }
-        { value }
-};
-
-## Documented in spec.
-export fn totalLe(value, other) {
-    return? ifNot { value.totalOrder(other).perEq(@more) }
-        { value }
-};
-
-## Documented in spec.
-export fn totalLt(value, other) {
-    return? ifIs { value.totalOrder(other).perEq(@less) }
-        { value }
-};
-
-## Documented in spec.
-export fn totalNe(value, other) {
-    return? ifNot { value.totalEq(other) }
-        { value }
-};
