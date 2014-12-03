@@ -21,7 +21,7 @@ static zvalue order0(zvalue value, zvalue other) {
     } else if (haveSameClass(value, other)) {
         return METH_CALL(value, totalOrder, other);
     } else {
-        return METH_CALL(classOf(value), totalOrder, classOf(other));
+        return METH_CALL(classOf(value), perOrder, classOf(other));
     }
 }
 
@@ -56,7 +56,7 @@ CMETH_IMPL_2(Cmp, ge, value, other) {
 CMETH_IMPL_2(Cmp, gt, value, other) {
     if (value == other) {
         return NULL;
-    } else if (haveSameClass(value, other)) {
+    } else {
         zvalue order = order0(value, other);
         return ((order != NULL) && (zorderFromSymbol(order) == ZMORE))
             ? value : NULL;
@@ -67,7 +67,7 @@ CMETH_IMPL_2(Cmp, gt, value, other) {
 CMETH_IMPL_2(Cmp, le, value, other) {
     if (value == other) {
         return value;
-    } else if (haveSameClass(value, other)) {
+    } else {
         zvalue order = order0(value, other);
         return ((order != NULL) && (zorderFromSymbol(order) != ZMORE))
             ? value : NULL;
@@ -78,7 +78,7 @@ CMETH_IMPL_2(Cmp, le, value, other) {
 CMETH_IMPL_2(Cmp, lt, value, other) {
     if (value == other) {
         return NULL;
-    } else if (haveSameClass(value, other)) {
+    } else {
         zvalue order = order0(value, other);
         return ((order != NULL) && (zorderFromSymbol(order) == ZLESS))
             ? value : NULL;
