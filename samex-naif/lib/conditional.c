@@ -33,29 +33,6 @@ FUN_IMPL_DECL(ifNot) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(ifSwitch) {
-    zvalue testFunction = args.elems[0];
-    zvalue valueFunctions = args.elems[1];
-    zvalue defaultFunction = (args.size >= 3) ? args.elems[2] : NULL;
-
-    zvalue value = FUN_CALL(testFunction);
-
-    if (value == NULL) {
-        die("Void result from `ifSwitch` call to `testFunction`.");
-    }
-
-    zvalue consequentFunction = cm_get(valueFunctions, value);
-
-    if (consequentFunction != NULL) {
-        return FUN_CALL(consequentFunction, value);
-    }
-
-    return (defaultFunction == NULL)
-        ? NULL
-        : FUN_CALL(defaultFunction, value);
-}
-
-// Documented in spec.
 FUN_IMPL_DECL(ifValue) {
     zvalue result = FUN_CALL(args.elems[0]);
 

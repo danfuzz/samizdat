@@ -42,7 +42,6 @@ export
     die,
     ifIs,
     ifNot,
-    ifSwitch,
     ifValue,
     ifValueAnd,
     ifValueAndElse,

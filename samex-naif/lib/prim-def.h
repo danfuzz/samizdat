@@ -46,7 +46,6 @@ PRIM_FUNC(classOf,                1, 1);
 PRIM_FUNC(die,                    0, -1);
 PRIM_FUNC(ifIs,                   2, 3);
 PRIM_FUNC(ifNot,                  2, 2);
-PRIM_FUNC(ifSwitch,               2, 3);
 PRIM_FUNC(ifValue,                2, 3);
 PRIM_FUNC(ifValueAnd,             1, -1);
 PRIM_FUNC(ifValueAndElse,         3, -1);
