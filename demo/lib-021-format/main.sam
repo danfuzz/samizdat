@@ -84,7 +84,7 @@ expectEq("source 10", "String",          $Format::source(String));
 ## This stringifies differently depending on if we're compiled or not. TODO:
 ## Ultimately these cases should not be distinguishable.
 def funcStr = $Format::source({ xyz() -> 1 });
-ifValueOr
+If.valueOr
     { Cmp.eq(funcStr, "@<Builtin xyz>") }
     { Cmp.eq(funcStr, "@<Closure xyz>") }
     { die("Unexpected function string: ", funcStr) };

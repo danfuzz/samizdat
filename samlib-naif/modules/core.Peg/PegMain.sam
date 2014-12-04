@@ -43,7 +43,7 @@ export class PegMain
     .parse(state) {
         ## The point of this class is to drop the context.
         def origContext = state.get_context();
-        return? ifValue
+        return? If.value
             { state.withContext([]).applyRule(this.(ACCESS)(@rule)) }
             { newState ->
                 newState.withContext([origContext*, newState.get_context()*])
