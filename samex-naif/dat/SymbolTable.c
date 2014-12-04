@@ -293,23 +293,16 @@ CMETH_IMPL_rest(SymbolTable, new, args) {
 }
 
 // Documented in spec.
-CMETH_IMPL_1_rest(SymbolTable, singleValue, first, args) {
-    if (args.size == 0) {
+CMETH_IMPL_rest_1(SymbolTable, singleValue, keys, value) {
+    if (keys.size == 0) {
         return EMPTY_SYMBOL_TABLE;
     }
 
-    // Since the arguments are "stretchy" in the front instead of the usual
-    // rear, we pull out the `value` and manually enter the first key into
-    // the result.
-
-    zvalue value = args.elems[args.size - 1];
-    zvalue result = allocInstance(args.size);
+    zvalue result = allocInstance(keys.size);
     SymbolTableInfo *info = getInfo(result);
 
-    putInto(&result, &info, (zmapping) {first, value});
-
-    for (zint i = 1; i < args.size; i++) {
-        putInto(&result, &info, (zmapping) {args.elems[i - 1], value});
+    for (zint i = 0; i < keys.size; i++) {
+        putInto(&result, &info, (zmapping) {keys.elems[i], value});
     }
 
     return result;

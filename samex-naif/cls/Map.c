@@ -281,24 +281,17 @@ CMETH_IMPL_rest(Map, new, args) {
 }
 
 // Documented in spec.
-CMETH_IMPL_1_rest(Map, singleValue, first, args) {
-    if (args.size == 0) {
+CMETH_IMPL_rest_1(Map, singleValue, keys, value) {
+    if (keys.size == 0) {
         return EMPTY_MAP;
     }
 
-    // The value is passed at the end of the argument list. We pull out the
-    // value here, and manually set up the first mapping.
-
-    zmapping mappings[args.size];
-    zvalue value = args.elems[args.size - 1];
-
-    mappings[0] = (zmapping) {first, value};
-
-    for (zint i = 1; i < args.size; i++) {
-        mappings[i] = (zmapping) {args.elems[i - 1], value};
+    zmapping mappings[keys.size];
+    for (zint i = 0; i < keys.size; i++) {
+        mappings[i] = (zmapping) {keys.elems[i], value};
     }
 
-    return mapFromArray(args.size, mappings);
+    return mapFromArray(keys.size, mappings);
 }
 
 // Documented in spec.
