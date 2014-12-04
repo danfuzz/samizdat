@@ -64,7 +64,7 @@ fn convertPex(node, formals) {
                 def closurePayload = @{node*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
-                If.valueAndElse
+                If.andThenElse
                     { Cmp.eq(fullClosure::statements, []) }
                     { . -> fullClosure::yield.hasName(@literal) }
                     { ., yNode ->

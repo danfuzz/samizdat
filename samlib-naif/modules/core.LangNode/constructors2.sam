@@ -461,7 +461,7 @@ export fn makeMaybeValue(node) {
 
 ## Documented in spec.
 export fn makeRecordExpression(name, data) {
-    return If.valueAndElse
+    return If.andThenElse
         { extractLiteral(name) }
         { . -> extractLiteral(data) }
         { nameValue, dataValue -> makeLiteral(@(nameValue){dataValue*}) }

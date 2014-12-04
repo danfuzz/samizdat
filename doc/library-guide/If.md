@@ -11,6 +11,24 @@ which implements all the standard conditional methods.
 <br><br>
 ### Class Method Definitions
 
+#### `class.andThenElse(functions*, thenFunction, elseFunction) -> . | void`
+
+Primitive logic conditional. This is like `.valueAnd()`, except that the
+function takes two additional arguments at the end of the argument list,
+which are treated specially.
+
+In particular, if all of the initial `functions` return a value, then this
+calls the `thenFunction` (passing it all the results of the `functions`,
+in order) and returns its value. Otherwise &mdash; that is, if any of the
+`functions` returns void &mdash; then this calls the `elseFunction` and
+returns its value.
+
+If no `functions` are passed, then this executes the `thenFunction` and
+not the `elseFunction`: The condition for "then" is that all of the
+`functions` succeed, which is trivially true in this case.
+
+**Syntax Note:** Used in the translation of some multiple-binding `if` forms.
+
 #### `class.cases(testFunction, valueFunctions, optDefaultFunction?) -> . | void`
 
 Case-switched conditional. This calls the given `testFunction` with
@@ -120,24 +138,6 @@ returns void.
 
 **Syntax Note:** Used in the translation of some `&` forms and
 multiple-binding `if` forms.
-
-#### `class.valueAndElse(functions*, thenFunction, elseFunction) -> . | void`
-
-Primitive logic conditional. This is like `.valueAnd()`, except that the
-function takes two additional arguments at the end of the argument list,
-which are treated specially.
-
-In particular, if all of the initial `functions` return a value, then this
-calls the `thenFunction` (passing it all the results of the `functions`,
-in order) and returns its value. Otherwise &mdash; that is, if any of the
-`functions` returns void &mdash; then this calls the `elseFunction` and
-returns its value.
-
-If no `functions` are passed, then this executes the `thenFunction` and
-not the `elseFunction`: The condition for "then" is that all of the
-`functions` succeed, which is trivially true in this case.
-
-**Syntax Note:** Used in the translation of some multiple-binding `if` forms.
 
 #### `class.valueOr(functions*) -> . | void`
 

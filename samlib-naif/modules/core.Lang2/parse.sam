@@ -1864,7 +1864,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (def name1 = expr1, unboundExpr, def name3 = expr3) ... else ...
 ## =>
-## If.valueAndElse
+## If.andThenElse
 ##     { expr1 }
 ##     { name1 -> unboundExpr }
 ##     { name1, . -> expr3 }
@@ -1912,7 +1912,7 @@ def parMultiTest = {:
             ## call.
             { thenThunk, elseThunk? ->
                 def func = If.is { elseThunk* }
-                    { METHODS::If_valueAndElse }
+                    { METHODS::If_andThenElse }
                     { METHODS::If_valueAnd };
                 makeFunCall(func,
                     testThunks*,
@@ -1945,7 +1945,7 @@ def parMultiTest = {:
 ##             If.is { expr2 }
 ##                 { name2 -> thenStat2 }
 ##                 {
-##                     If.valueAndElse
+##                     If.andThenElse
 ##                         { expr3 }
 ##                         { name3 -> expr4 }
 ##                         { name3, name4 -> thenStat34 },
@@ -1960,7 +1960,7 @@ def parMultiTest = {:
 ## * omitting the final `elseStat` if there was no `else` clause.
 ## * `If.is` instead of `If.value` and no then-clause argument declaration for
 ##   any clause where no name binding was present.
-## * `If.valueAnd` or `If.valueAndElse` instead of `If.value` (with incremental
+## * `If.valueAnd` or `If.andThenElse` instead of `If.value` (with incremental
 ##   formals binding) for any clause that uses multiple tests.
 ## * arbitrary nesting of additional clauses.
 def parIfExpression = {:

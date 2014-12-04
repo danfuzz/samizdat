@@ -121,13 +121,13 @@ def v21 = If.valueAnd
     { args* -> $Format::source(args) };
 note(v21);
 
-def v22 = If.valueAndElse
+def v22 = If.andThenElse
     { -> "v" }
     { x -> x.cat("22") }
     { die("No.") };
 note(v22);
 
-def v23 = If.valueAndElse
+def v23 = If.andThenElse
     { -> }
     { die("No.") }
     { "Yes: v23" };

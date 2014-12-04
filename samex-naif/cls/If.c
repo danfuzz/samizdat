@@ -14,6 +14,23 @@
 //
 
 // Documented in spec.
+CMETH_IMPL_rest_2(If, andThenElse, functions, thenFunction, elseFunction) {
+    zvalue results[functions.size];
+
+    for (zint i = 0; i < functions.size; i++) {
+        results[i] =
+            methCall(functions.elems[i], SYM(call), (zarray) {i, results});
+
+        if (results[i] == NULL) {
+            return methCall(elseFunction, SYM(call), EMPTY_ZARRAY);
+        }
+    }
+
+    return
+        methCall(thenFunction, SYM(call), (zarray) {functions.size, results});
+}
+
+// Documented in spec.
 CMETH_IMPL_2_3(If, cases, testFunction, valueFunctions, defaultFunction) {
     zvalue value = FUN_CALL(testFunction);
 
@@ -92,23 +109,6 @@ CMETH_IMPL_rest(If, valueAnd, functions) {
 }
 
 // Documented in spec.
-CMETH_IMPL_rest_2(If, valueAndElse, functions, thenFunction, elseFunction) {
-    zvalue results[functions.size];
-
-    for (zint i = 0; i < functions.size; i++) {
-        results[i] =
-            methCall(functions.elems[i], SYM(call), (zarray) {i, results});
-
-        if (results[i] == NULL) {
-            return methCall(elseFunction, SYM(call), EMPTY_ZARRAY);
-        }
-    }
-
-    return
-        methCall(thenFunction, SYM(call), (zarray) {functions.size, results});
-}
-
-// Documented in spec.
 CMETH_IMPL_rest(If, valueOr, functions) {
     for (zint i = 0; i < functions.size; i++) {
         zvalue result = FUN_CALL(functions.elems[i]);
@@ -126,13 +126,13 @@ MOD_INIT(If) {
 
     CLS_If = makeCoreClass(SYM(If), CLS_Core,
         METH_TABLE(
+            CMETH_BIND(If, andThenElse),
             CMETH_BIND(If, cases),
             CMETH_BIND(If, is),
             CMETH_BIND(If, maybeValue),
             CMETH_BIND(If, not),
             CMETH_BIND(If, value),
             CMETH_BIND(If, valueAnd),
-            CMETH_BIND(If, valueAndElse),
             CMETH_BIND(If, valueOr)),
         NULL);
 }
