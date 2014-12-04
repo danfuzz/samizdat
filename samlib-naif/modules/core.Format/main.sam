@@ -19,7 +19,7 @@ import ./sourceGeneral :: sourceGeneral;
 
 ## Documented in spec.
 export fn int(value, optBase?) {
-    def base = If.valueOr { optBase* } { 10 };
+    def base = If.or { optBase* } { 10 };
 
     If.is { Cmp.lt(base, 2) }
         { die("Invalid base for int.") };
@@ -69,6 +69,6 @@ def FORMATTERS = {
 ## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 ## is defined in terms of other exported functions.
 export fn formatterFor(formatSpec) {
-    return If.valueOr { FORMATTERS.get(cast(Symbol, formatSpec)) }
+    return If.or { FORMATTERS.get(cast(Symbol, formatSpec)) }
         { die("Unrecognized format spec: ", source(formatSpec)) }
 };

@@ -31,14 +31,14 @@ export class ClosedRange
         new: NEW {
     ## Documented in spec.
     class.new(firstValue, size, optIncrement?) {
-        def increment = If.valueOr { optIncrement* } { 1 };
+        def increment = If.or { optIncrement* } { 1 };
         def converter = converterFor(classOf(firstValue));
         def value = cast(Int, firstValue);
 
         If.not { Int.accepts(size) }
             { die("`size` must be an int.") };
 
-        def nonnegSize = If.valueOr { Cmp.ge(size, 0) } { 0 };
+        def nonnegSize = If.or { Cmp.ge(size, 0) } { 0 };
 
         return this.(NEW)(@{converter, increment, value, size: nonnegSize})
     };
@@ -49,7 +49,7 @@ export class ClosedRange
         def isEmpty = firstValue.crossEq(limit)?;
         def firstInt = cast(Int, firstValue);
         def limitInt = cast(Int, limit);
-        def increment = If.valueOr { optIncrement* } { 1 };
+        def increment = If.or { optIncrement* } { 1 };
 
         ## `crossEq` ensures that `increment` is an int.
         If.is { increment.crossEq(0) }
@@ -70,7 +70,7 @@ export class ClosedRange
 
     ## Documented in spec.
     class.newInclusive(firstValue, limit, optIncrement?) {
-        def increment = If.valueOr { optIncrement* } { 1 };
+        def increment = If.or { optIncrement* } { 1 };
 
         ## This just ensures that `firstValue` and `limit` have the same class.
         firstValue.crossEq(limit);

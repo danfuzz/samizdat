@@ -96,6 +96,18 @@ CMETH_IMPL_2(If, not, testFunction, notFunction) {
 }
 
 // Documented in spec.
+CMETH_IMPL_rest(If, or, functions) {
+    for (zint i = 0; i < functions.size; i++) {
+        zvalue result = FUN_CALL(functions.elems[i]);
+        if (result != NULL) {
+            return result;
+        }
+    }
+
+    return NULL;
+}
+
+// Documented in spec.
 CMETH_IMPL_2_3(If, value, testFunction, valueFunction, voidFunction) {
     zvalue result = FUN_CALL(testFunction);
 
@@ -106,18 +118,6 @@ CMETH_IMPL_2_3(If, value, testFunction, valueFunction, voidFunction) {
     } else {
         return NULL;
     }
-}
-
-// Documented in spec.
-CMETH_IMPL_rest(If, valueOr, functions) {
-    for (zint i = 0; i < functions.size; i++) {
-        zvalue result = FUN_CALL(functions.elems[i]);
-        if (result != NULL) {
-            return result;
-        }
-    }
-
-    return NULL;
 }
 
 /** Initializes the module. */
@@ -132,8 +132,8 @@ MOD_INIT(If) {
             CMETH_BIND(If, is),
             CMETH_BIND(If, maybeValue),
             CMETH_BIND(If, not),
-            CMETH_BIND(If, value),
-            CMETH_BIND(If, valueOr)),
+            CMETH_BIND(If, or),
+            CMETH_BIND(If, value)),
         NULL);
 }
 

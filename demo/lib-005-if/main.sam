@@ -69,18 +69,18 @@ def v10 = If.not { -> }
     { "Yes: v10" };
 note(v10);
 
-def v11 = If.maybeValue { If.valueOr() };
+def v11 = If.maybeValue { If.or() };
 note($Format::source(v11));  ## Should be `[]`.
 
-def v12 = If.valueOr { "Yes: v12" };
+def v12 = If.or { "Yes: v12" };
 note(v12);
 
-def v13 = If.valueOr
+def v13 = If.or
     { "Yes: v13" }
     { die("No.") };
 note(v13);
 
-def v14 = If.valueOr
+def v14 = If.or
     { -> }
     { "Yes: v14" };
 note(v14);

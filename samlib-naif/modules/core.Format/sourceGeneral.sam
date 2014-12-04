@@ -71,7 +71,7 @@ fn nameString(prefix, name) {
     If.is { isIdentifier(name) }
         { return prefix.cat(nameString) };
 
-    def finalPrefix = If.valueOr { Cmp.ne(prefix, "") } { "\\" };
+    def finalPrefix = If.or { Cmp.ne(prefix, "") } { "\\" };
     return finalPrefix.cat(sourceGeneral(nameString, true))
 };
 
@@ -166,7 +166,7 @@ fn Value_source(value, adorn) {
 ## Common code for the two `source*` variants, which takes an
 ## `adorn` flag.
 export fn sourceGeneral(value, adorn) {
-    return If.valueOr
+    return If.or
         { SPECIAL_VALUES.get(value) }
         {
             If.cases({ classOf(value) },

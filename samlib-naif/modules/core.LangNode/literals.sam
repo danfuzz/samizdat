@@ -82,8 +82,8 @@ def CLASS_METHODS = [
     @{class: If,  name: @is},
     @{class: If,  name: @maybeValue},
     @{class: If,  name: @not},
-    @{class: If,  name: @value},
-    @{class: If,  name: @valueOr}
+    @{class: If,  name: @or},
+    @{class: If,  name: @value}
 ];
 
 ## Class methods.

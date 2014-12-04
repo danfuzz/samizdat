@@ -127,7 +127,7 @@ fn checkExternalSource(source) {
     If.not { source.hasName(@external) }
         { return };
 
-    def name = If.valueOr { source::name }
+    def name = If.or { source::name }
         { die("Invalid external source: no `name`") };
 
     If.not { String.accepts(name) }
@@ -179,7 +179,7 @@ fn checkInternalSource(source) {
     If.not { source.hasName(@internal) }
         { return };
 
-    def name = If.valueOr { source::name }
+    def name = If.or { source::name }
         { die("Invalid internal source: no `name`") };
 
     If.not { String.accepts(name) }
@@ -227,7 +227,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
         };
 
     loadedBox* := {(loadedBox*)*, (source): @loading};
-    def result = If.valueOr { resolveFn() } { @notFound };
+    def result = If.or { resolveFn() } { @notFound };
     loadedBox* := {(loadedBox*)*, (source): result};
 
     return? If.not { Cmp.eq(result, @notFound) }
@@ -253,7 +253,7 @@ fn loadGlobals(loader) {
 ## Given source text, returns a parsed tree form, using the given `loader`
 ## to find the apprpriate parser and to do any required module resolution.
 fn treeFromText(loader, text) {
-    def languageName = If.valueOr { $Lang0::languageOf(text) }
+    def languageName = If.or { $Lang0::languageOf(text) }
         { DEFAULT_LANGUAGE };
     def lang = loadModule(loader, @external{name: languageName});
 
@@ -278,7 +278,7 @@ export fn loadModule(loader, source) {
 
 ## Documented in spec.
 export fn loadResource(loader, source, format) {
-    return If.valueOr { loader.readResource(source, format) }
+    return If.or { loader.readResource(source, format) }
         { die("Resource not found: ", sourceString(source)) }
 };
 
@@ -389,7 +389,7 @@ export class ExternalLoader
             };
 
         fn externalResolve() {
-            return? If.valueOr
+            return? If.or
                 { doExternalResolve(this, source) }
                 { data::nextLoader.resolve(source) }
         };
@@ -424,7 +424,7 @@ fn doInternalResolve(loader, source) {
     If.is { Cmp.eq($Io0::fileType(binPath), @file) }
         {
             def func = $Code::evalBinary(data::globals, binPath);
-            return If.valueOr { func() }
+            return If.or { func() }
                 { die("No result from binary module: ", sourcePath) }
         };
 
@@ -435,7 +435,7 @@ fn doInternalResolve(loader, source) {
             def tree = treeFromText(loader, text);
             def func = $Code::eval(data::globals, tree);
 
-            return If.valueOr { func() }
+            return If.or { func() }
                 { die("No result from module: ", sourcePath) }
         };
 
@@ -609,9 +609,9 @@ fn runBinaryFile(path, loader, args) {
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
     def mainLoader = InternalLoader.new(libraryPath, primitiveGlobals, null);
-    def mainModule = If.valueOr { resolveMain(mainLoader) }
+    def mainModule = If.or { resolveMain(mainLoader) }
         { die("No core library `main` module found.") };
-    def mainFunction = If.valueOr { mainModule::exports::main }
+    def mainFunction = If.or { mainModule::exports::main }
         { die("No `main` export from core library's `main`.") };
 
     return mainFunction(libraryPath, primitiveGlobals)
@@ -621,9 +621,9 @@ export fn main(libraryPath, primitiveGlobals) {
 export fn run(path, loader, args*) {
     def globals = loadGlobals(loader);
     def mainLoader = InternalLoader.new(path, globals, loader);
-    def mainModule = If.valueOr { resolveMain(mainLoader) }
+    def mainModule = If.or { resolveMain(mainLoader) }
         { die("No `main` module found on path: ", path) };
-    def mainFunction = If.valueOr { mainModule::exports::main }
+    def mainFunction = If.or { mainModule::exports::main }
         { die("No `main` export from module's `main`.") };
 
     return? mainFunction(args*)

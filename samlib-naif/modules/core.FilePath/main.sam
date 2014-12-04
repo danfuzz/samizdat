@@ -30,7 +30,7 @@ fn checkPath(path) {
 export fn fixPath(path, basePaths*) {
     checkPath(path);
 
-    return If.valueOr
+    return If.or
         { If.is { Cmp.eq(path.get(0), "/") } { path } }
         { If.is { Cmp.eq(basePaths, []) } { path } }
         { fixPath(basePaths*).cat("/", path) }

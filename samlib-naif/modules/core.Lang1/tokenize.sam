@@ -98,7 +98,7 @@ def tokIdentifier = PegMain.newSequence(
     PegRepeat.newStar(PegSet.newChars(IDENTIFIER_CHARS)),
     PegCode.new { one, rest ->
         def name = symbolFromTokenList([one, rest*]);
-        If.valueOr { KEYWORDS.get(name) }
+        If.or { KEYWORDS.get(name) }
             { @identifier{value: name} }
     });
 

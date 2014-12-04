@@ -118,6 +118,18 @@ omitted.
 
 **Syntax Note:** Used in the translation of `do` and `!expression` forms.
 
+#### `class.or(functions*) -> . | void`
+
+Primitive logic conditional. This calls each of the given `functions` in
+order with no arguments, until one of them returns non-void. When a non-void
+result is obtained, this function returns that value. Otherwise (that is,
+if all the `functions` returned void) this function returns void.
+
+This function is meant as the primitive that higher-layer logical-or
+expressions bottom out into, hence the name.
+
+**Syntax Note:** Used in the translation of `expression | expression` forms.
+
 #### `class.value(testFunction, valueFunction, voidFunction?) -> . | void`
 
 Primitive logic conditional. This calls the given `testFunction` with no
@@ -138,15 +150,3 @@ this function calls the consequent function with an argument, whereas
 
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
-
-#### `class.valueOr(functions*) -> . | void`
-
-Primitive logic conditional. This calls each of the given `functions` in
-order with no arguments, until one of them returns non-void. When a non-void
-result is obtained, this function returns that value. Otherwise (that is,
-if all the `functions` returned void) this function returns void.
-
-This function is meant as the primitive that higher-layer logical-or
-expressions bottom out into, hence the name.
-
-**Syntax Note:** Used in the translation of `expression | expression` forms.

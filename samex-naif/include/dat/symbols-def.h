@@ -118,7 +118,6 @@ DEF_SYMBOL(toLogic);
 DEF_SYMBOL(toUnlisted);
 DEF_SYMBOL(value);
 DEF_SYMBOL(valueList);
-DEF_SYMBOL(valueOr);
 DEF_SYMBOL(xor);
 
 

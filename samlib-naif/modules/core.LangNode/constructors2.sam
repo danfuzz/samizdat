@@ -28,7 +28,7 @@ def CLASS_ATTRIBUTES = @{
 ## yield definition name. Just returns the `yield` directly in
 ## non-`nonlocalExit` cases.
 fn expandYield(node) {
-    def yieldNode = If.valueOr { node::yield } { return };
+    def yieldNode = If.or { node::yield } { return };
 
     If.not { yieldNode.hasName(@nonlocalExit) } { return yieldNode };
 
@@ -45,7 +45,7 @@ fn expandYield(node) {
         { ., target, yieldDef -> Cmp.eq(target::name, yieldDef) }
         { ., ., ., . -> return value };
 
-    def exitCall = If.valueOr
+    def exitCall = If.or
         { If.is { value.hasName(@void) } { makeFunCall(function) } }
         {
             If.is { value.hasName(@maybe) }
@@ -296,10 +296,10 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(base) {
-    def formals = If.valueOr { base::formals } { [] };
-    var statements = If.valueOr { base::statements } { [] };
+    def formals = If.or { base::formals } { [] };
+    var statements = If.or { base::statements } { [] };
 
-    def yieldNode = If.valueOr
+    def yieldNode = If.or
         { expandYield(base) }
         { If.is { base::yieldDef } { @void{} } }
         { If.is { Cmp.eq(statements, []) } { @void{} } }
@@ -394,7 +394,7 @@ export fn makeInfoTable(node) {
 
     ## Adds or revises an element in the `imports` map.
     fn addToImports(source, names) {
-        def orig = If.valueOr { imports.get(source) } { {} };
+        def orig = If.or { imports.get(source) } { {} };
         def revised = {orig*, names*: Value};
         imports := {imports*, (source): revised};
     };
@@ -402,7 +402,7 @@ export fn makeInfoTable(node) {
     ## Adds or revises an element in the `resources` map.
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
-        def orig = If.valueOr { resources.get(source) } { [] };
+        def orig = If.or { resources.get(source) } { [] };
         def revised = {orig*: null, (format): null}.keyList();
         resources := {resources*, (source): revised};
     };
@@ -413,7 +413,7 @@ export fn makeInfoTable(node) {
             { addToImports(s::source, [@module]) };
         If.is { s.hasName(@importModuleSelection) }
             {
-                def names = If.valueOr { s::select }
+                def names = If.or { s::select }
                     {
                         die("Cannot call `makeInfoTable` on ",
                             "unresolved import.")
@@ -454,7 +454,7 @@ export fn makeMapExpression(mappings*) {
 
 ## Documented in spec.
 export fn makeMaybeValue(node) {
-    return If.valueOr
+    return If.or
         { node::box }
         { makeFunCall(METHODS::If_maybeValue, makeThunk(node)) }
 };
@@ -494,7 +494,7 @@ export fn withDynamicImports(node) {
         };
 
     def converted = rawStatements.collect { s /out ->
-        If.valueOr
+        If.or
             { s.hasName(@importModule) }
             { s.hasName(@importModuleSelection) }
             { s.hasName(@importResource) }
@@ -578,7 +578,7 @@ export fn withoutTops(node) {
                 def origBox = defNode::box;
                 If.is { Cmp.eq(origBox, @lazy) }
                     { die("Bad `box` for `top` variable.") };
-                def box = If.valueOr { Cmp.ne(origBox, @result) } { @promise };
+                def box = If.or { Cmp.ne(origBox, @result) } { @promise };
                 makeVarDef(defNode::name, box)
             }
     };

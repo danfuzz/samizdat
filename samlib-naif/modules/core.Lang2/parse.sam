@@ -1307,7 +1307,7 @@ def parInterpolatedString = {:
                         }
                         { REFS::Format_usual };
 
-                    def call = If.valueOr
+                    def call = If.or
                         { $Peg::apply(parStringInterpolation, tokens) }
                         { die("Invalid syntax in string interpolation.") };
 
@@ -1816,14 +1816,14 @@ def parLogicAndExpression = {:
 ## ```
 ## =>
 ## ```
-## If.valueOr { expr1 } { expr2 } { expr3 }
+## If.or { expr1 } { expr2 } { expr3 }
 ## ```
 def parLogicOrExpression = {:
     one = parLogicAndExpression
 
     (
         rest = (@"|" parLogicAndExpression)+
-        { makeFunCallThunks(METHODS::If_valueOr, one, rest*) }
+        { makeFunCallThunks(METHODS::If_or, one, rest*) }
     |
         ## It's not actually a logical-or expression.
         { one }

@@ -13,7 +13,7 @@ import ./literals :: SYMS, makeLiteral;
 
 ## Documented in spec.
 export fn makeApply(target, name, optValues?) {
-    def values = If.valueOr { optValues* } { @void{} };
+    def values = If.or { optValues* } { @void{} };
     return @apply{target, name, values}
 };
 
@@ -88,13 +88,13 @@ export fn makeNoYield(value) {
 
 ## Documented in spec.
 export fn makeNonlocalExit(function, optValue?) {
-    def value = If.valueOr { optValue* } { @void{} };
+    def value = If.or { optValue* } { @void{} };
     return @nonlocalExit{function, value}
 };
 
 ## Documented in spec.
 export fn makeVarDef(name, box, optValue?) {
-    def value = If.valueOr { optValue* } { @void{} };
+    def value = If.or { optValue* } { @void{} };
     return @varDef{name, box, value}
 };
 
