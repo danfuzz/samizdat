@@ -1229,7 +1229,7 @@ fn makeCompareCalls(firstEx, opExList) {
                 makeFullClosure(@{
                     statements: [makeVarDef(rightName, @result, opEx::expr)],
                     yield: makeMaybe(
-                        makeFunCall(REFS::ifIs,
+                        makeFunCall(METHODS::If_is,
                             makeThunk(
                                 makeFunCall(resolvedOp, leftRef, rightRef)),
                             transform(rightRef, rest*)))
@@ -1502,7 +1502,7 @@ parPrefixOperator2 := {:
     ## This one is specially converted, since it's a control construct,
     ## not just a simple function application.
     @"!"
-    { { node -> makeFunCallThunks(REFS::ifNot, node, LITS::true) } }
+    { { node -> makeFunCallThunks(METHODS::If_not, node, LITS::true) } }
 :};
 
 ## Parses an index expression (inside a collection indexing postfix form).
@@ -1780,9 +1780,9 @@ def parLogicAndExpression = {:
             def resultThunk = makeThunk(last);
 
             ifIs { Cmp.eq(formal, {}) }
-                { makeFunCall(REFS::ifIs, testThunk, resultThunk) }
+                { makeFunCall(METHODS::If_is, testThunk, resultThunk) }
                 {
-                    makeFunCall(REFS::ifValue,
+                    makeFunCall(METHODS::If_value,
                         testThunk,
                         withFormals(resultThunk, [formal]))
                 }
@@ -1801,7 +1801,7 @@ def parLogicAndExpression = {:
                     };
 
             ## Construct the overall `ifValueAnd` call.
-            makeFunCall(REFS::ifValueAnd,
+            makeFunCall(METHODS::If_valueAnd,
                 testThunks*,
                 withFormals(makeThunk(last), formals))
         }
@@ -1823,7 +1823,7 @@ def parLogicOrExpression = {:
 
     (
         rest = (@"|" parLogicAndExpression)+
-        { makeFunCallThunks(REFS::ifValueOr, one, rest*) }
+        { makeFunCallThunks(METHODS::If_valueOr, one, rest*) }
     |
         ## It's not actually a logical-or expression.
         { one }
@@ -1884,11 +1884,11 @@ def parMultiTest = {:
             { thenThunk, elseThunk? ->
                 ifIs { Cmp.eq(formal, {}) }
                     {
-                        makeFunCall(REFS::ifIs,
+                        makeFunCall(METHODS::If_is,
                             testThunk, thenThunk, elseThunk*)
                     }
                     {
-                        makeFunCall(REFS::ifValue,
+                        makeFunCall(METHODS::If_value,
                             testThunk,
                             withFormals(thenThunk, [formal]),
                             elseThunk*)
@@ -1911,8 +1911,8 @@ def parMultiTest = {:
             ## Result function which constructs the overall `ifValueAnd*` call.
             { thenThunk, elseThunk? ->
                 def func = ifIs { elseThunk* }
-                    { REFS::ifValueAndElse }
-                    { REFS::ifValueAnd };
+                    { METHODS::If_valueAndElse }
+                    { METHODS::If_valueAnd };
                 makeFunCall(func,
                     testThunks*,
                     withFormals(thenThunk, formals),
@@ -2237,7 +2237,7 @@ def parDoExpression = {:
     condition = (
         @while
         ex = parParenExpression
-        { makeFunCallThunks(REFS::ifNot, ex, makeNonlocalExit(REFS::break)) }
+        { makeFunCallThunks(METHODS::If_not, ex, makeNonlocalExit(REFS::break)) }
     )?
 
     {

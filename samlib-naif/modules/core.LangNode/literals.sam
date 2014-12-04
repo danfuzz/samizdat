@@ -76,7 +76,13 @@ def CLASS_METHODS = [
     @{class: Cmp, name: @perLe},
     @{class: Cmp, name: @perLt},
     @{class: Cmp, name: @perNe},
-    @{class: If,  name: @cases}
+    @{class: If,  name: @cases},
+    @{class: If,  name: @is},
+    @{class: If,  name: @not},
+    @{class: If,  name: @value},
+    @{class: If,  name: @valueAnd},
+    @{class: If,  name: @valueAndElse},
+    @{class: If,  name: @valueOr}
 ];
 
 ## Class methods.
