@@ -20,7 +20,7 @@ become bound as both class and instance methods:
 <br><br>
 ### Class Method Definitions
 
-#### `subclass(name, config, classMethods?, instanceMethods?) -> class`
+#### `class.subclass(name, config, classMethods?, instanceMethods?) -> class`
 
 Makes a new object class with the given `name` and `secrets`. `name` must
 be a symbol. `config` must be a symbol table that maps any of `access` and
