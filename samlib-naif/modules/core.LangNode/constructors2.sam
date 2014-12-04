@@ -256,7 +256,7 @@ export fn makeClassDef(name, attributes, methods) {
 
 ## Documented in spec.
 export fn makeDynamicImport(node) {
-    return ifSwitch(
+    return If.cases(
         { node.get_name() },
         @{
             @importModule: { . ->

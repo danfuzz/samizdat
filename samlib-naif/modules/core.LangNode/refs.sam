@@ -18,7 +18,6 @@ def NAMES = [
     @continue,
     @ifIs,
     @ifNot,
-    @ifSwitch,
     @ifValue,
     @ifValueAnd,
     @ifValueAndElse,

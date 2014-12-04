@@ -44,7 +44,7 @@ fn sourceString(source) {
 
 ## Documented in spec.
 export fn resolveImport(node, resolveFn) {
-    return ifSwitch(
+    return If.cases(
         { node.get_name() },
         @{
             @importModule: { . ->

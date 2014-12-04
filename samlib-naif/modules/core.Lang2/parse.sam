@@ -2056,7 +2056,7 @@ def parSwitchCase = {:
 ## =>
 ## ```
 ## { /out ->
-##     ifSwitch(
+##     If.cases(
 ##         { testExpr },
 ##         {
 ##             (ex1): { name /out -> s1a; s1b },
@@ -2131,7 +2131,7 @@ def parSwitchExpression = {:
                 makeCall(makeCallGeneral(LITS::List, SYMS::new, caseClauses*),
                     SYMS::reverse)));
 
-        def ifCall = makeFunCall(REFS::ifSwitch,
+        def ifCall = makeFunCall(METHODS::If_cases,
             testClause::testThunk,
             caseMap,
             optDefault*);

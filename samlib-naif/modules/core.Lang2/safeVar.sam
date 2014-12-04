@@ -74,7 +74,7 @@ fn safeIndexForNodes(baseStr, nodes*) {
 ## Returns a safe (unused) index for the given `baseStr` variable name, with
 ## regard to the contents of `node`.
 fn safeIndex(node, baseStr) {
-    return ifSwitch(
+    return If.cases(
         { node.get_name() },
         @{
             @apply: { . ->

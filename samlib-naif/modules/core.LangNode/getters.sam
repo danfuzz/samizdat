@@ -36,7 +36,7 @@ fn splitAtChar(s, ch) {
 
 ## Documented in spec.
 export fn get_baseName(source) {
-    return ifSwitch(
+    return If.cases(
         { source.get_name() },
         @{
             @external: { . ->
@@ -55,7 +55,7 @@ export fn get_baseName(source) {
 
 ## Documented in spec.
 export fn get_definedNames(node) {
-    return ifSwitch(
+    return If.cases(
         { node.get_name() },
         @{
             @export: { . ->

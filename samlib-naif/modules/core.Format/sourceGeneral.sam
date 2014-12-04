@@ -169,7 +169,7 @@ export fn sourceGeneral(value, adorn) {
     return ifValueOr
         { SPECIAL_VALUES.get(value) }
         {
-            ifSwitch({ classOf(value) },
+            If.cases({ classOf(value) },
                 {
                     (Class):       { . -> Class_source(value, adorn)       },
                     (Int):         { . -> Int_source(value, adorn)         },
