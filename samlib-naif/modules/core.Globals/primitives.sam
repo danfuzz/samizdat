@@ -42,7 +42,6 @@ export
     die,
     loop,
     maybeCast,
-    maybeValue,
     note,
     nullBox,
     voidResult;
