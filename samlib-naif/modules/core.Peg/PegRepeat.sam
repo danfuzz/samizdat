@@ -23,7 +23,7 @@ export class PegRepeat
         new: NEW {
     ## Documented in spec.
     class.new(rule, minSize, optMaxSize?) {
-        def maxMap = ifValue { optMaxSize* }
+        def maxMap = If.value { optMaxSize* }
             { sz ->
                 If.is { Cmp.lt(sz, minSize) }
                     { die("Invalid repeat spec: maxSize < minSize") };
@@ -57,7 +57,7 @@ export class PegRepeat
         var remainingState = state;
         var results = [];
 
-        def maxCheck = ifValue { this.(ACCESS)(@maxSize) }
+        def maxCheck = If.value { this.(ACCESS)(@maxSize) }
             { maxSize ->
                 {
                     If.is { results.get_size().crossEq(maxSize) }
@@ -70,7 +70,7 @@ export class PegRepeat
             { {->} };
 
         loop {
-            ifValue { remainingState.applyRule(rule) }
+            If.value { remainingState.applyRule(rule) }
                 { newState ->
                     ## Successfully parsed the inner rule. Extract the result,
                     ## and reset the context.

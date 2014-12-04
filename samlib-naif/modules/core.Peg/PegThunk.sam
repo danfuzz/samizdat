@@ -28,7 +28,7 @@ export class PegThunk
 
     ## Documented in spec.
     .parse(state) {
-        return? ifValue { this.(ACCESS)(@function)(state.get_context()*) }
+        return? If.value { this.(ACCESS)(@function)(state.get_context()*) }
             { thunkResult -> state.applyRule(thunkResult) }
     };
 };

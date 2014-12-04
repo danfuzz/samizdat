@@ -28,7 +28,7 @@ export class PegCode
 
     ## Documented in spec.
     .parse(state) {
-        return? ifValue { this.(ACCESS)(@function)(state.get_context()*) }
+        return? If.value { this.(ACCESS)(@function)(state.get_context()*) }
             { result -> state.addContext(result) }
     };
 };

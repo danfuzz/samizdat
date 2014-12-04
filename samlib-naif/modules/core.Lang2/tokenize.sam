@@ -268,7 +268,7 @@ fn processStringParts(parts) {
     ## Check for a simple result.
     If.is { Cmp.eq(elems.get_size(), 1) }
         {
-            ifValue { String.accepts(elems*) }
+            If.value { String.accepts(elems*) }
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.

@@ -30,7 +30,7 @@ fn msgAll(header, origGen) {
     { /done ->
         loop {
             def result;
-            ifValue { gen.nextValue(result?) }
+            If.value { gen.nextValue(result?) }
                 { nextGen ->
                     msg(result);
                     gen := nextGen

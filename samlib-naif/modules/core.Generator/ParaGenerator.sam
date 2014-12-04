@@ -64,7 +64,7 @@ export class ParaGenerator
 
         def nexts = subGens.collect
             { gen ->
-                ifValue { gen.nextValue(result?) }
+                If.value { gen.nextValue(result?) }
                     { nextGen ->
                         yields := [yields*, result];
                         nextGen

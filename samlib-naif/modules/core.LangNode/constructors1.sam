@@ -53,7 +53,7 @@ export fn makeFunCall(function, values*) {
         {
             ## It's a method call of some sort.
             def name = function::name;
-            return ifValue { function::class }
+            return If.value { function::class }
                 { cls ->
                     ## It binds `class`, so it's a class method.
                     makeCall(cls, name, values*)
@@ -135,7 +135,7 @@ export fn withName(node, name) {
 
 ## Documented in spec.
 export fn withYieldDef(node, name) {
-    def newBindings = ifValue { node::yieldDef }
+    def newBindings = If.value { node::yieldDef }
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.

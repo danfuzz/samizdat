@@ -26,7 +26,7 @@ def y = { arg /outx ->
 note(y);
 
 def z = { /stuff ->
-    ifValue { "also" }
+    If.value { "also" }
         { value -> yield /stuff value }
 }();
 

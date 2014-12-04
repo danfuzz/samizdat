@@ -15,7 +15,7 @@
 
 ## Prints box info.
 fn msg(box) {
-    def str = ifValue { box.fetch() }
+    def str = If.value { box.fetch() }
         { value -> $Format::source(value) }
         { "(void)" };
 
@@ -24,7 +24,7 @@ fn msg(box) {
 
 ## Prints box info using interpolation.
 fn msgInterp(box) {
-    def str = ifValue { box* }
+    def str = If.value { box* }
         { value -> $Format::source(value) }
         { "(void)" };
 

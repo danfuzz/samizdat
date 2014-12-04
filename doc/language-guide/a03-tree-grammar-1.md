@@ -1080,15 +1080,15 @@ def parPexItem = {:
     {
         var pex = base;
 
-        ifValue { optRepeat* }
+        If.value { optRepeat* }
             { repeat ->
                 pex := @(PEX_TYPES.get(repeat.get_name())){pex}
             };
-        ifValue { optLookahead* }
+        If.value { optLookahead* }
             { lookahead ->
                 pex := @(PEX_TYPES.get(lookahead.get_name())){pex}
             };
-        ifValue { optName* }
+        If.value { optName* }
             { name ->
                 pex := @varDef{name, value: pex}
             };

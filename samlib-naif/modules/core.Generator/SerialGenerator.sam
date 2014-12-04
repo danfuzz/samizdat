@@ -60,7 +60,7 @@ export class SerialGenerator
 
     ## Documented in spec.
     .nextValue(box) {
-        return? ifValue { this.(ACCESS)(@first).nextValue(box) }
+        return? If.value { this.(ACCESS)(@first).nextValue(box) }
             { nextGen -> this.(NEW)(@{this.(ACCESS)()*, first: nextGen}) }
             {
                 ## First generator was voided.

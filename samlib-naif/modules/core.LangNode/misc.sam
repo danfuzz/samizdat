@@ -56,7 +56,7 @@ export fn formalsMaxArgs(formals) {
     var maxArgs = 0;
 
     formals.forEach { f ->
-        ifValue { f::repeat }
+        If.value { f::repeat }
             { rep ->
                 If.is { Cmp.eq(rep, @"*") } { return -1 };
                 If.is { Cmp.eq(rep, @"+") } { return -1 };
@@ -72,7 +72,7 @@ export fn formalsMinArgs(formals) {
     var minArgs = 0;
 
     formals.forEach { f /next ->
-        ifValue { f::repeat }
+        If.value { f::repeat }
             { rep ->
                 If.is { Cmp.eq(rep, @"?") } { yield /next };
                 If.is { Cmp.eq(rep, @"*") } { yield /next };

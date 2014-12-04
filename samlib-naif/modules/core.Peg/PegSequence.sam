@@ -69,7 +69,7 @@ export class PegSequence
         var remainingState = state;
 
         this.(ACCESS)(@rules).forEach { rule ->
-            ifValue { remainingState.applyRule(rule) }
+            If.value { remainingState.applyRule(rule) }
                 { newState -> remainingState := newState }
                 {
                     ## Propagate the failure.

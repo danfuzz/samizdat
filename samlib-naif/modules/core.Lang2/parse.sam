@@ -1074,15 +1074,15 @@ def parPexItem = {:
     {
         var pex = base;
 
-        ifValue { optRepeat* }
+        If.value { optRepeat* }
             { repeat ->
                 pex := @(PEX_TYPES.get(repeat.get_name())){pex}
             };
-        ifValue { optLookahead* }
+        If.value { optLookahead* }
             { lookahead ->
                 pex := @(PEX_TYPES.get(lookahead.get_name())){pex}
             };
-        ifValue { optName* }
+        If.value { optName* }
             { name ->
                 pex := @varDef{name, value: pex}
             };
@@ -1300,7 +1300,7 @@ def parInterpolatedString = {:
                 {
                     def tokens = elem::tokens;
 
-                    def formatter = ifValue { elem::format }
+                    def formatter = If.value { elem::format }
                         { format ->
                             makeFunCall(REFS::Format_formatterFor,
                                 makeLiteral(format))
@@ -1447,7 +1447,7 @@ def parRangeBody = {:
                     firstValue, optLimit*, optIncrement*)
             }
             {
-                ifValue { optLimit* }
+                If.value { optLimit* }
                     { limit ->
                         makeCall(
                             REFS::Range_ClosedRange, SYMS::newInclusive,
@@ -1740,7 +1740,7 @@ def parLogicAndClause = {:
 ## ```
 ## (def var1 = expr1) & expr2
 ## =>
-## ifValue { expr1 } { var1 -> expr2 }
+## If.value { expr1 } { var1 -> expr2 }
 ## ```
 ##
 ## ```
@@ -2105,7 +2105,7 @@ def parSwitchExpression = {:
         ## more info.
         fn finishCode(case) {
             var fullCode = withFormals(case::code, [testClause::formal]);
-            ifValue { yieldDef::yieldDef }
+            If.value { yieldDef::yieldDef }
                 { y -> fullCode := withYieldDefIfAbsent(fullCode, y) };
             return makeFullClosure(fullCode)
         };

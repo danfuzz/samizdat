@@ -164,7 +164,7 @@ fn makeMapLikeExpression(mappings, classLit, emptyLit) {
 
 ## Documented in spec.
 export fn makeAssignmentIfPossible(target, value) {
-    return? ifValue { target::lvalue }
+    return? If.value { target::lvalue }
         { lvalue -> lvalue(value) }
 };
 
@@ -197,7 +197,7 @@ export fn makeCallGeneral(target, name, values*) {
     };
 
     values.forEach { actual ->
-        ifValue { actual::interpolate }
+        If.value { actual::interpolate }
             { node ->
                 addPendingToCooked();
                 addToCooked(makeCall(node, SYMS::collect))
@@ -239,9 +239,9 @@ export fn makeClassDef(name, attributes, methods) {
             { die("Invalid attribute: ", cast(String, key)) }
     };
 
-    def accessSecret = (ifValue { attribMap.get(@access) }
+    def accessSecret = (If.value { attribMap.get(@access) }
         { value -> @mapping{keys: [SYMS::access], value} })?;
-    def newSecret = (ifValue { attribMap.get(@new) }
+    def newSecret = (If.value { attribMap.get(@new) }
         { value -> @mapping{keys: [SYMS::new], value} })?;
     def config = makeSymbolTableExpression(accessSecret*, newSecret*);
 
@@ -338,7 +338,7 @@ export fn makeFunCallThunks(function, values*) {
 export fn makeImport(baseData) {
     var data = baseData;  ## Modified in some cases below.
 
-    ifValue { data::select }
+    If.value { data::select }
         { select ->
             ## It's a module binding selection.
 
@@ -379,7 +379,7 @@ export fn makeImport(baseData) {
 
 ## Documented in spec.
 export fn makeInfoTable(node) {
-    ifValue { node::info }
+    If.value { node::info }
         { info -> return info };
 
     def statements = node::statements;

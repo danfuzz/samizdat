@@ -80,7 +80,7 @@ fn keyString(key) {
     If.is { Symbol.accepts(key) }
         { return nameString("", key) };
 
-    ifValue { SPECIAL_VALUES.get(key) }
+    If.value { SPECIAL_VALUES.get(key) }
         { string -> return "(".cat(string, ")") };
 
     return sourceGeneral(key, true)
@@ -152,7 +152,7 @@ fn SymbolTable_source(value, adorn) {
 
 ## Stringifies an opaque core value.
 fn Value_source(value, adorn) {
-    def nameStr = ifValue { value.debugSymbol() }
+    def nameStr = If.value { value.debugSymbol() }
         { name -> " ".cat(keyString(name)) }
         { "" };
 

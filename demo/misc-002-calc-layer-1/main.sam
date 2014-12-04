@@ -64,7 +64,7 @@ fn applyShuntingYard(initialValue, opValues) {
         var ops = origOps;
         var values = origValues;
         loop { /next ->
-            ifValue { ops.reverseNth(0) }
+            If.value { ops.reverseNth(0) }
                 { lastOp ->
                     If.is { Cmp.ge(lastOp::precedence, precedence) }
                         {

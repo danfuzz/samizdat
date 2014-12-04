@@ -15,7 +15,7 @@
 
 ## Checks an expected result.
 fn expect(name, result, func) {
-    ifValue { func() }
+    If.value { func() }
         { got ->
             If.not { Cmp.eq(got, result) }
                 {
@@ -31,7 +31,7 @@ fn expect(name, result, func) {
 
 ## Checks an expected void result.
 fn expectVoid(name, func) {
-    ifValue { func() }
+    If.value { func() }
         { got ->
             note("Unexpected non-void result: ", $Format::source(got));
             die("For: ", name)

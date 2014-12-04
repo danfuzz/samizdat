@@ -16,7 +16,7 @@ import ./constructors1 :: makeExport;
 ## Calls the given `resolveFn` on the indicated `source`. Complains if the
 ## result is void. If the result is non-void, validate that it is a `@module`.
 fn resolveAndCheck(resolveFn, source) {
-    return ifValue { resolveFn(source) }
+    return If.value { resolveFn(source) }
         { result ->
             If.not { result.hasName(@module) }
                 { die("Invalid resolution result (not a `@module`)") };
@@ -63,7 +63,7 @@ export fn resolveImport(node, resolveFn) {
                 def info = If.valueOr { resolved::info } { {} };
                 def exports = If.valueOr { info::exports } { {} };
 
-                ifValue { node::select }
+                If.value { node::select }
                     { select ->
                         ## Explicit selection, so no need to return a modified
                         ## result. Just validate that all selected names are

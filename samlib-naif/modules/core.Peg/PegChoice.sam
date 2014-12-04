@@ -40,7 +40,7 @@ export class PegChoice
     ## Documented in spec.
     .parse(state) {
         this.(ACCESS)(@rules).forEach { rule ->
-            ifValue { state.applyRule(rule) }
+            If.value { state.applyRule(rule) }
                 { newState -> return newState }
         };
 

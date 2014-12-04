@@ -45,7 +45,7 @@ fn hexStringChar(ch) {
 ## Helper for stringifying strings: Returns the converted form of the
 ## given character.
 export fn stringChar(ch) {
-    ifValue { SPECIAL_CHARS.get(ch) }
+    If.value { SPECIAL_CHARS.get(ch) }
         { special ->
             If.is { Cmp.eq(special, "x") }
                 { return hexStringChar(ch) }

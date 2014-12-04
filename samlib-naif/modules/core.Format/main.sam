@@ -37,21 +37,21 @@ export fn intHex(arg) {
 
 ## Documented in spec.
 export fn source(value?) {
-    return ifValue { value* }
+    return If.value { value* }
         { value -> sourceGeneral(value, true) }
         { "void" }
 };
 
 ## Documented in spec.
 export fn sourceUnadorned(value?) {
-    return ifValue { value* }
+    return If.value { value* }
         { value -> sourceGeneral(value, false) }
         { "void" }
 };
 
 ## Documented in spec.
 export fn usual(value?) {
-    return ifValue { value* }
+    return If.value { value* }
         { value -> humanString(value) }
         { "" }
 };

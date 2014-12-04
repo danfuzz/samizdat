@@ -69,7 +69,7 @@ export fn get_definedNames(node) {
                             "import.")
                     };
 
-                ifValue { node::prefix }
+                If.value { node::prefix }
                     { prefix -> select.collect { name -> prefix.cat(name) } }
                     { select }
             },

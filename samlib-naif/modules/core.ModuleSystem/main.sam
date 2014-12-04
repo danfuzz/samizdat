@@ -216,7 +216,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     ## The loaded map maps paths to `@loading` for a load-in-progress,
     ## `@notFound` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
-    ifValue { (loadedBox*).get(source) }
+    If.value { (loadedBox*).get(source) }
         { found ->
             If.is { found.hasName(@module) }
                 { return found };
@@ -271,7 +271,7 @@ fn treeFromText(loader, text) {
 
 ## Documented in spec.
 export fn loadModule(loader, source) {
-    return ifValue { loader.resolve(source) }
+    return If.value { loader.resolve(source) }
         { resolved -> resolved::exports }
         { die("Module not found: ", sourceString(source)) }
 };
@@ -517,7 +517,7 @@ export class InternalLoader
 
         def fullPath = data::basePath.cat(source::name);
 
-        return ifValue { INTERNAL_READERS.get(format) }
+        return If.value { INTERNAL_READERS.get(format) }
             { reader -> reader(fullPath) }
             { die("Unsupported resource format: ", format) }
     };
@@ -575,7 +575,7 @@ fn runProgram(programFunc, args) {
 
     If.is { result.hasName(@module) }
         {
-            ifValue { result::exports::main }
+            If.value { result::exports::main }
                 { main -> return? main(args*) }
         };
 
