@@ -49,7 +49,7 @@ export fn makeExportSelection(names+) {
 
 ## Documented in spec.
 export fn makeFunCall(function, values*) {
-    return ifIs { function.hasName(@methodId) }
+    return If.is { function.hasName(@methodId) }
         {
             ## It's a method call of some sort.
             def name = function::name;
@@ -148,7 +148,7 @@ export fn withYieldDef(node, name) {
 
 ## Documented in spec.
 export fn withYieldDefIfAbsent(node, name) {
-    return ifIs { node::yieldDef }
+    return If.is { node::yieldDef }
         { node }
         { withYieldDef(node, name) }
 };

@@ -17,7 +17,7 @@ import ./BasicState :: *;
 
 ## Documented in spec.
 export fn apply(rule, input) {
-    def tokens = ifIs { String.accepts(input) }
+    def tokens = If.is { String.accepts(input) }
         {
             ## This converts generated characters into tokens with the
             ## characters as the record name.

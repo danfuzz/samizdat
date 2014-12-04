@@ -21,10 +21,10 @@ import ./sourceGeneral :: sourceGeneral;
 export fn int(value, optBase?) {
     def base = ifValueOr { optBase* } { 10 };
 
-    ifIs { Cmp.lt(base, 2) }
+    If.is { Cmp.lt(base, 2) }
         { die("Invalid base for int.") };
 
-    ifIs { Cmp.gt(base, 36) }
+    If.is { Cmp.gt(base, 36) }
         { die("Invalid base for int.") };
 
     return intWithBase(value, base)

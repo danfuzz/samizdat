@@ -101,7 +101,7 @@ fn convertPex(node, formals) {
             @sequence: { . ->
                 ## Extract the formals out of any `varDef` nodes.
                 def newFormals = node::pexes.collect { pex ->
-                    ifIs { pex.hasName(@varDef) }
+                    If.is { pex.hasName(@varDef) }
                         { @formal{name: pex::name} }
                         { @formal{} }
                 };
@@ -111,7 +111,7 @@ fn convertPex(node, formals) {
                 def convertedPexes =
                     collectAll(RANGE_0_ETC, node::pexes)
                         { n, pex ->
-                            def subPex = ifIs { pex.hasName(@varDef) }
+                            def subPex = If.is { pex.hasName(@varDef) }
                                 { pex::value }
                                 { pex };
                             convertPex(subPex,
@@ -235,7 +235,7 @@ fn convertPexIn(node) {
 export fn simplify(expressionNode, resolveFn) {
     def converted = convertPexIn(expressionNode);
 
-    return ifIs { converted.hasName(@closure) }
+    return If.is { converted.hasName(@closure) }
         { withModuleDefs(withResolvedImports(converted, resolveFn)) }
         { converted }
 };

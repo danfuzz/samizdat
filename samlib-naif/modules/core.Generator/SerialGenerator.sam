@@ -25,12 +25,12 @@ export class SerialGenerator
         new: NEW {
     class.new(generators*) {
         ## Return the `nullGenerator` if we weren't passed any arguments.
-        ifIs { Cmp.eq(generators, []) }
+        If.is { Cmp.eq(generators, []) }
             { return nullGenerator };
 
         ## Return the argument directly if we were only passed one.
         ## This saves some gratuitous call wrapping / double yields.
-        ifIs { Cmp.eq(generators.get_size(), 1) }
+        If.is { Cmp.eq(generators.get_size(), 1) }
             { return generators* };
 
         return this.(NEW)(@{

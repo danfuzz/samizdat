@@ -46,7 +46,7 @@ func3("hello");
 ## Self-recursion.
 fn func4(x) {
     print("func3", x);
-    ifIs { Cmp.lt(x, 5) }
+    If.is { Cmp.lt(x, 5) }
         {
             func4(x.add(1));
             return "func4"
@@ -58,7 +58,7 @@ note(func4(1));
 ## Mutual recursion.
 fn recFunc1(x) {
     print("recFunc1", x);
-    ifIs { Cmp.lt(x, 5) }
+    If.is { Cmp.lt(x, 5) }
         { recFunc2(x.add(1)) };
 
     return "recFunc1"
@@ -66,7 +66,7 @@ fn recFunc1(x) {
 
 fn recFunc2(x) {
     print("recFunc2", x);
-    ifIs { Cmp.lt(x, 5) }
+    If.is { Cmp.lt(x, 5) }
         { recFunc1(x.add(1)) };
 };
 

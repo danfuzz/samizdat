@@ -17,7 +17,7 @@
 fn expect(name, result, func) {
     ifValue { func() }
         { got ->
-            ifNot { Cmp.eq(got, result) }
+            If.not { Cmp.eq(got, result) }
                 {
                     note("Unexpected result: ", $Format::source(got));
                     die("For: ", name);

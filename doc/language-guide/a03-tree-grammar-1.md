@@ -124,7 +124,7 @@ def parIdentifierSymbol = {:
     token = .
     {
         def name = token.get_name();
-        ifIs { KEYWORDS.get(name) }
+        If.is { KEYWORDS.get(name) }
             { makeLiteral(name) }
     }
 :};
@@ -283,7 +283,7 @@ def parList = {:
     expressions = parUnadornedList
     @"]"
     {
-        ifIs { expressions.crossEq([]) }
+        If.is { expressions.crossEq([]) }
             { LITS::EMPTY_LIST }
             {
                 def result = makeCallGeneral(
@@ -291,7 +291,7 @@ def parList = {:
                 ## If we end up with an `apply` node, then its `value` is
                 ## going to be a list-yielding expression, in which case we
                 ## can return that directly.
-                ifIs { result.hasName(@apply) }
+                If.is { result.hasName(@apply) }
                     { result::values }
                     { result }
             }
@@ -329,7 +329,7 @@ def parNullaryClosure = {:
     c = parFullClosure
 
     {
-        ifNot { c::formals.crossEq([]) }
+        If.not { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -341,7 +341,7 @@ def parBasicNullaryClosure = {:
     c = parBasicClosure
 
     {
-        ifNot { c::formals.crossEq([]) }
+        If.not { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -511,13 +511,13 @@ def parYieldOrNonlocal = {:
     ## operator. Otherwise, it's optional.
     value = (
         v = parExpression
-        { ifIs { optQuest* } { makeMaybe(v) } { v } }
+        { If.is { optQuest* } { makeMaybe(v) } { v } }
     |
-        { ifNot { optQuest* } { @void{} } }
+        { If.not { optQuest* } { @void{} } }
     )
 
     {
-        ifIs { name.hasName(@yield) }
+        If.is { name.hasName(@yield) }
             { value }
             { makeNonlocalExit(name, value) }
     }
@@ -812,7 +812,7 @@ def parImportStatement = {:
 
     {
         def data = {nameOrPrefix*, format*, select*, source};
-        ifIs { optExport* }
+        If.is { optExport* }
             { makeExport(makeImport(data)) }
             { makeImport(data) }
     }
@@ -1003,8 +1003,8 @@ def parPexSetString = {:
             def endChar = end::value;
 
             ## Reject non-single-character strings.
-            ifIs { Cmp.ne(1, startChar.get_size()) } { yield /out };
-            ifIs { Cmp.ne(1, endChar.get_size()) } { yield /out };
+            If.is { Cmp.ne(1, startChar.get_size()) } { yield /out };
+            If.is { Cmp.ne(1, endChar.get_size()) } { yield /out };
 
             yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
         }

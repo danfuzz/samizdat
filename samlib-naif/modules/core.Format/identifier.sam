@@ -23,19 +23,19 @@ def IDENTIFIER_CHARS = {
 ## Checks to see if the given value is a symbol with the form of an
 ## in-language identifier. Returns the given `symbol` if so.
 export fn isIdentifier(symbol) {
-    ifNot { Symbol.accepts(symbol) }
+    If.not { Symbol.accepts(symbol) }
         { return };
 
     def string = cast(String, symbol);
 
-    ifIs { Cmp.eq(string, "") }
+    If.is { Cmp.eq(string, "") }
         { return };
 
-    ifNot { IDENTIFIER_STARTS.get(string.nth(0)) }
+    If.not { IDENTIFIER_STARTS.get(string.nth(0)) }
         { return };
 
     string.forEach { ch ->
-        ifNot { IDENTIFIER_CHARS.get(ch) }
+        If.not { IDENTIFIER_CHARS.get(ch) }
             { return }
     };
 

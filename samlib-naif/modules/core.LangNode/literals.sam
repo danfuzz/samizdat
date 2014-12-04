@@ -111,7 +111,7 @@ def INSTANCE_METHODS = [
 
 ## Documented in spec.
 export fn extractLiteral(node) {
-    return? ifIs { node.hasName(@literal) }
+    return? If.is { node.hasName(@literal) }
         { node::value }
 };
 

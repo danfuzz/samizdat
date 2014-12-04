@@ -87,7 +87,7 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
 msgAll("FilterGenerator (square even numbers)",
     FilterGenerator.new([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
-            ifIs { Cmp.eq(value.mod(2), 0) }
+            If.is { Cmp.eq(value.mod(2), 0) }
                 { value.mul(value) }
         });
 
@@ -95,7 +95,7 @@ note("forEachAll (one generator)");
 var pumped = forEachAll([1, 2, 3, 4])
     { value ->
         note("    Yay ", $Format::source(value));
-        ifIs { Cmp.le(value, 3) }
+        If.is { Cmp.le(value, 3) }
             { value.add(100) }
     };
 note("Got: ", $Format::source(pumped), "\n");
@@ -104,7 +104,7 @@ note("forEachAll (two generators)");
 pumped := forEachAll("abcdefg", [1, 2, 3, 4])
     { ch, value ->
         note("    Yay ", ch, " ", $Format::source(value));
-        ifIs { Cmp.eq(value, 3) }
+        If.is { Cmp.eq(value, 3) }
             { value.add(100) }
     };
 note("Got: ", $Format::source(pumped), "\n");

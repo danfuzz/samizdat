@@ -30,7 +30,7 @@ def CLASS_ATTRIBUTES = @{
 fn expandYield(node) {
     def yieldNode = ifValueOr { node::yield } { return };
 
-    ifNot { yieldNode.hasName(@nonlocalExit) } { return yieldNode };
+    If.not { yieldNode.hasName(@nonlocalExit) } { return yieldNode };
 
     def function = yieldNode::function;
     def value = yieldNode::value;
@@ -46,9 +46,9 @@ fn expandYield(node) {
         { ., ., ., . -> return value };
 
     def exitCall = ifValueOr
-        { ifIs { value.hasName(@void) } { makeFunCall(function) } }
+        { If.is { value.hasName(@void) } { makeFunCall(function) } }
         {
-            ifIs { value.hasName(@maybe) }
+            If.is { value.hasName(@maybe) }
                 {
                     makeFunCallGeneral(function,
                         makeInterpolate(makeMaybeValue(value::value)))
@@ -65,7 +65,7 @@ fn expandYield(node) {
 fn extractMethods(allMethods, scope) {
     ## Get all the methods of the appropriate scope.
     def selectedMethods = allMethods.collect
-        { one -> ifIs { one.hasName(scope) } { one } };
+        { one -> If.is { one.hasName(scope) } { one } };
 
     ## This is a set-like map of method names, used to detect duplicates.
     var names = @{};
@@ -75,7 +75,7 @@ fn extractMethods(allMethods, scope) {
     ## constructor.
     def pairs = selectedMethods.collect { one ->
         def name = one::name;
-        ifIs { names.get(name) }
+        If.is { names.get(name) }
             { die("Duplicate method: ", cast(String, name)) };
         names := @{names*, (name): true};
         [makeLiteral(name), @closure{one*}]
@@ -88,7 +88,7 @@ fn extractMethods(allMethods, scope) {
 ## is parameterized on the "empty" value and the two required constructor
 ## functions.
 fn makeMapLikeExpression(mappings, classLit, emptyLit) {
-    ifIs { Cmp.eq(mappings, []) }
+    If.is { Cmp.eq(mappings, []) }
         {
             ## No mappings. Easy out.
             return emptyLit
@@ -105,7 +105,7 @@ fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     };
 
     fn addSingleToCat() {
-        ifIs { Cmp.ne(singleArgs, []) }
+        If.is { Cmp.ne(singleArgs, []) }
             {
                 addToCat(makeCall(classLit, SYMS::new, singleArgs*));
                 singleArgs := []
@@ -113,23 +113,23 @@ fn makeMapLikeExpression(mappings, classLit, emptyLit) {
     };
 
     mappings.forEach { one ->
-        ifIs { one.hasName(@mapping) }
+        If.is { one.hasName(@mapping) }
             {
                 def keys = one::keys;
                 def value = one::value;
                 var handled = false;
 
-                ifIs { Cmp.eq(keys.get_size(), 1) }
+                If.is { Cmp.eq(keys.get_size(), 1) }
                     {
                         def key = keys*;
-                        ifNot { key::interpolate }
+                        If.not { key::interpolate }
                             {
                                 singleArgs := [singleArgs*, key, value];
                                 handled := true
                             }
                     };
 
-                ifIs { Cmp.eq(handled, false) }
+                If.is { Cmp.eq(handled, false) }
                     {
                         addSingleToCat();
                         addToCat(makeCallGeneral(classLit, SYMS::singleValue,
@@ -142,7 +142,7 @@ fn makeMapLikeExpression(mappings, classLit, emptyLit) {
             }
     };
 
-    ifIs { Cmp.eq(catArgs, []) }
+    If.is { Cmp.eq(catArgs, []) }
         {
             ## There were no "must be `cat`ed" mappings.
             addSingleToCat();
@@ -170,7 +170,7 @@ export fn makeAssignmentIfPossible(target, value) {
 
 ## Documented in spec.
 export fn makeCallGeneral(target, name, values*) {
-    ifIs { Cmp.eq(values, []) }
+    If.is { Cmp.eq(values, []) }
         {
             ## No values. Easy out.
             return makeApply(target, name)
@@ -189,7 +189,7 @@ export fn makeCallGeneral(target, name, values*) {
     };
 
     fn addPendingToCooked() {
-        ifIs { Cmp.ne(pending, []) }
+        If.is { Cmp.ne(pending, []) }
             {
                 addToCooked(makeCall(LITS::List, SYMS::new, pending*));
                 pending := [];
@@ -205,7 +205,7 @@ export fn makeCallGeneral(target, name, values*) {
             { pending := [pending*, actual] }
     };
 
-    ifIs { Cmp.eq(cookedValues, []) }
+    If.is { Cmp.eq(cookedValues, []) }
         {
             ## There were no interpolated arguments.
             return makeCall(target, name, values*)
@@ -215,7 +215,7 @@ export fn makeCallGeneral(target, name, values*) {
 
     addPendingToCooked();
 
-    return ifIs { cookedValues.nth(1) }
+    return If.is { cookedValues.nth(1) }
         {
             ## More than one actual. Use `cat`.
             makeApply(target, name,
@@ -231,11 +231,11 @@ export fn makeCallGeneral(target, name, values*) {
 export fn makeClassDef(name, attributes, methods) {
     def attribMap = {}.cat(attributes*);
 
-    ifNot { Cmp.eq(attributes.get_size(), attribMap.get_size()) }
+    If.not { Cmp.eq(attributes.get_size(), attribMap.get_size()) }
         { die("Duplicate attribute.") };
 
     attribMap.keyList().forEach { key ->
-        ifNot { CLASS_ATTRIBUTES.get(key) }
+        If.not { CLASS_ATTRIBUTES.get(key) }
             { die("Invalid attribute: ", cast(String, key)) }
     };
 
@@ -301,14 +301,14 @@ export fn makeFullClosure(base) {
 
     def yieldNode = ifValueOr
         { expandYield(base) }
-        { ifIs { base::yieldDef } { @void{} } }
-        { ifIs { Cmp.eq(statements, []) } { @void{} } }
+        { If.is { base::yieldDef } { @void{} } }
+        { If.is { Cmp.eq(statements, []) } { @void{} } }
         {
             def lastStat = statements.reverseNth(0);
-            ifIs { isExpression(lastStat) }
+            If.is { isExpression(lastStat) }
                 {
                     statements := statements.sliceExclusive(0);
-                    ifIs { canYieldVoid(lastStat) }
+                    If.is { canYieldVoid(lastStat) }
                         { makeMaybe(lastStat) }
                         { lastStat }
                 }
@@ -342,12 +342,12 @@ export fn makeImport(baseData) {
         { select ->
             ## It's a module binding selection.
 
-            ifIs { data::name }
+            If.is { data::name }
                 { die("Import selection name must be a prefix.") };
-            ifIs { data::format }
+            If.is { data::format }
                 { die("Cannot import selection of resource.") };
 
-            ifIs { Cmp.eq(select, @"*") }
+            If.is { Cmp.eq(select, @"*") }
                 {
                     ## It's a wildcard import.
                     data := data.del(@select);
@@ -356,7 +356,7 @@ export fn makeImport(baseData) {
             return @importModuleSelection{data*}
         };
 
-    ifNot { data::name }
+    If.not { data::name }
         {
             ## No `name` provided, so figure out a default one.
             data := @{
@@ -365,10 +365,10 @@ export fn makeImport(baseData) {
             }
         };
 
-    ifIs { data::format }
+    If.is { data::format }
         {
             ## It's a resource.
-            ifIs { data::source.hasName(@external) }
+            If.is { data::source.hasName(@external) }
                 { die("Cannot import external resource.") };
             return @importResource{data*}
         };
@@ -409,9 +409,9 @@ export fn makeInfoTable(node) {
 
     ## Handles any `import*` node type. Ignores other types.
     fn handleImport(s) {
-        ifIs { s.hasName(@importModule) }
+        If.is { s.hasName(@importModule) }
             { addToImports(s::source, [@module]) };
-        ifIs { s.hasName(@importModuleSelection) }
+        If.is { s.hasName(@importModuleSelection) }
             {
                 def names = ifValueOr { s::select }
                     {
@@ -420,14 +420,14 @@ export fn makeInfoTable(node) {
                     };
                 addToImports(s::source, names)
             };
-        ifIs { s.hasName(@importResource) }
+        If.is { s.hasName(@importResource) }
             { addToResources(s::source, s::format) };
     };
 
     statements.forEach { s ->
-        ifIs { s.hasName(@exportSelection) }
+        If.is { s.hasName(@exportSelection) }
             { addToExports(s::select) };
-        ifIs { s.hasName(@export) }
+        If.is { s.hasName(@export) }
             {
                 addToExports(get_definedNames(s));
                 handleImport(s::value)
@@ -477,7 +477,7 @@ export fn makeSymbolTableExpression(mappings*) {
 
 ## Documented in spec.
 export fn makeThunk(expression) {
-    def yieldNode = ifIs { isExpression(expression) }
+    def yieldNode = If.is { isExpression(expression) }
         { makeMaybe(expression) }
         { expression };
     return makeFullClosure(@{yield: yieldNode})
@@ -487,7 +487,7 @@ export fn makeThunk(expression) {
 export fn withDynamicImports(node) {
     def rawStatements = node::statements;
 
-    ifIs { Cmp.eq(rawStatements, []) }
+    If.is { Cmp.eq(rawStatements, []) }
         {
             ## Nothing to convert. Easy out!
             return node
@@ -512,7 +512,7 @@ export fn withDynamicImports(node) {
 
 ## Documented in spec.
 export fn withModuleDefs(node) {
-    ifNot { Cmp.eq(node::yield, @void{}) }
+    If.not { Cmp.eq(node::yield, @void{}) }
         { die("Invalid node for `withModuleDefs` (has non-void `yield`).") };
 
     ## This is the metainformation of the module. In addition to being
@@ -526,10 +526,10 @@ export fn withModuleDefs(node) {
     ## This is a one-for-one list of replacements for the original
     ## `statements`.
     def statements = rawStatements.collect { s /out ->
-        ifIs { s.hasName(@exportSelection) }
+        If.is { s.hasName(@exportSelection) }
             { yield /out };
 
-        yield ifIs { s.hasName(@export) }
+        yield If.is { s.hasName(@export) }
             { s::value }
             { s }
     };
@@ -541,7 +541,7 @@ export fn withModuleDefs(node) {
         [makeLiteral(name), makeVarFetch(name)]
     };
 
-    def yieldExports = ifIs { Cmp.eq(exportValues, []) }
+    def yieldExports = If.is { Cmp.eq(exportValues, []) }
         { LITS::EMPTY_SYMBOL_TABLE }
         { makeCall(LITS::SymbolTable, SYMS::new, [].cat(exportValues*)*) };
     def yieldInfo = makeLiteral(info);
@@ -569,14 +569,14 @@ export fn withoutTops(node) {
 
     ## This is a collation of all the forward declarations.
     def tops = rawStatements.collect { s ->
-        def defNode = ifIs { s.hasName(@export) }
+        def defNode = If.is { s.hasName(@export) }
             { s::value }
             { s };
 
-        ifIs { defNode::top }
+        If.is { defNode::top }
             {
                 def origBox = defNode::box;
-                ifIs { Cmp.eq(origBox, @lazy) }
+                If.is { Cmp.eq(origBox, @lazy) }
                     { die("Bad `box` for `top` variable.") };
                 def box = ifValueOr { Cmp.ne(origBox, @result) } { @promise };
                 makeVarDef(defNode::name, box)
@@ -585,28 +585,28 @@ export fn withoutTops(node) {
 
     ## These are the one-for-one replacements for the original `statements`.
     def mains = rawStatements.collect { s ->
-        def defNode = ifIs { s.hasName(@export) }
+        def defNode = If.is { s.hasName(@export) }
             { s::value }
             { s };
 
-        ifIs { defNode::top }
+        If.is { defNode::top }
             { makeVarStore(defNode::name, defNode::value) }
             { s }
     };
 
     ## This lists all the exported variables that were transformed above.
     def exports = rawStatements.collect { s /out ->
-        ifNot { s.hasName(@export) }
+        If.not { s.hasName(@export) }
             { yield /out };
 
         def defNode = s::value;
-        ifNot { defNode::top }
+        If.not { defNode::top }
             { yield /out };
 
         yield defNode::name
     };
 
-    def optSelection = ifIs { Cmp.eq(exports, []) }
+    def optSelection = If.is { Cmp.eq(exports, []) }
         { [] }
         { [makeExportSelection(exports*)] };
 

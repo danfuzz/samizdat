@@ -25,9 +25,9 @@ export class RepeatGenerator
         new: NEW {
     ## Documented in spec.
     class.new(size, optValue?) {
-        ifIs { Cmp.perLe(size, 0) }
+        If.is { Cmp.perLe(size, 0) }
             {
-                ifIs { Cmp.perLt(size, 0) }
+                If.is { Cmp.perLt(size, 0) }
                     { die("Invalid negative size for RepeatGenerator.") };
                 return nullGenerator
             };
@@ -58,7 +58,7 @@ export class RepeatGenerator
     .nextValue(box) {
         def size = this.(ACCESS)(@size);
 
-        return? ifIs { Cmp.perGt(size, 0) }
+        return? If.is { Cmp.perGt(size, 0) }
             {
                 def value = this.(ACCESS)(@value);
                 box* := value;

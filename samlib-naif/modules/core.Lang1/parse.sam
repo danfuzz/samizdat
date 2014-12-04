@@ -94,7 +94,7 @@ def parIdentifierSymbol = PegMain.newChoice(
         any,
         PegCode.new { token ->
             def name = token.get_name();
-            ifIs { KEYWORDS.get(name) }
+            If.is { KEYWORDS.get(name) }
                 { makeLiteral(name) }
         }));
 
@@ -224,7 +224,7 @@ def parList = PegMain.newSequence(
     parUnadornedList,
     PegSet.new(@"]"),
     PegCode.new { ., expressions, . ->
-        ifIs { expressions.crossEq([]) }
+        If.is { expressions.crossEq([]) }
             { LITS::EMPTY_LIST }
             {
                 def result = makeCallGeneral(
@@ -232,7 +232,7 @@ def parList = PegMain.newSequence(
                 ## If we end up with an `apply` node, then its `values` is
                 ## going to be a list-yielding expression, in which case we
                 ## can return that directly.
-                ifIs { result.hasName(@apply) }
+                If.is { result.hasName(@apply) }
                     { result::values }
                     { result }
             }
@@ -254,7 +254,7 @@ def parBasicClosure = PegMain.newSequence(
 def parNullaryClosure = PegMain.newSequence(
     parFullClosure,
     PegCode.new { c ->
-        ifNot { c::formals.crossEq([]) }
+        If.not { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -263,7 +263,7 @@ def parNullaryClosure = PegMain.newSequence(
 def parBasicNullaryClosure = PegMain.newSequence(
     parBasicClosure,
     PegCode.new { c ->
-        ifNot { c::formals.crossEq([]) }
+        If.not { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     });
@@ -378,13 +378,13 @@ def parYieldOrNonlocal = PegMain.newSequence(
         PegSequence.new(
             parExpression,
             PegCode.new { ., optQuest, ., v ->
-                ifIs { optQuest* } { makeMaybe(v) } { v }
+                If.is { optQuest* } { makeMaybe(v) } { v }
             }),
         PegCode.new { ., optQuest, . ->
-            ifNot { optQuest* } { @void{} }
+            If.not { optQuest* } { @void{} }
         }),
     PegCode.new { ., ., name, value ->
-        ifIs { name.hasName(@yield) }
+        If.is { name.hasName(@yield) }
             { value }
             { makeNonlocalExit(name, value) }
     });
@@ -617,7 +617,7 @@ def parImportStatement = PegMain.newSequence(
     parImportSelect,
     PegCode.new { optExport, ., nameOrPrefix, format, source, select ->
         def data = @{nameOrPrefix*, format*, select*, source};
-        ifIs { optExport* }
+        If.is { optExport* }
             { makeExport(makeImport(data)) }
             { makeImport(data) }
     });
@@ -770,8 +770,8 @@ def parPexSetString = PegMain.newSequence(
                 def endChar = end::value;
 
                 ## Reject non-single-character strings.
-                ifIs { Cmp.ne(1, startChar.get_size()) } { yield /out };
-                ifIs { Cmp.ne(1, endChar.get_size()) } { yield /out };
+                If.is { Cmp.ne(1, startChar.get_size()) } { yield /out };
+                If.is { Cmp.ne(1, endChar.get_size()) } { yield /out };
 
                 yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
             }),
@@ -893,7 +893,7 @@ parOpExpression := parUnaryExpression;
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { String.accepts(expression) }
+    def tokens = If.is { String.accepts(expression) }
         { tokenize(expression) }
         { expression };
 
@@ -902,7 +902,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { String.accepts(program) }
+    def tokens = If.is { String.accepts(program) }
         { tokenize(program) }
         { program };
 

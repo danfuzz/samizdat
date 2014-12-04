@@ -18,7 +18,7 @@ fn intBody(value, base) {
     var v = value;
 
     loop {
-        ifIs { Cmp.perEq(v, 0) }
+        If.is { Cmp.perEq(v, 0) }
             { return text };
 
         def digit = DIGIT_CHARS.nth(v.mod(base));

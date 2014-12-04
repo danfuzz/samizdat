@@ -20,7 +20,7 @@ fn splitAtChar(s, ch) {
     };
 
     s.forEach { one ->
-        ifIs { Cmp.eq(one, ch) }
+        If.is { Cmp.eq(one, ch) }
             { addCurrentToResult() }
             { current := current.cat(one) }
     };

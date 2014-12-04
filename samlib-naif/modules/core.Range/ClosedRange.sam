@@ -35,7 +35,7 @@ export class ClosedRange
         def converter = converterFor(classOf(firstValue));
         def value = cast(Int, firstValue);
 
-        ifNot { Int.accepts(size) }
+        If.not { Int.accepts(size) }
             { die("`size` must be an int.") };
 
         def nonnegSize = ifValueOr { Cmp.ge(size, 0) } { 0 };
@@ -52,9 +52,9 @@ export class ClosedRange
         def increment = ifValueOr { optIncrement* } { 1 };
 
         ## `crossEq` ensures that `increment` is an int.
-        ifIs { increment.crossEq(0) }
+        If.is { increment.crossEq(0) }
             {
-                return ifIs { isEmpty* }
+                return If.is { isEmpty* }
                     { this.new(0, 0, 0) }
                     { this.new(firstValue, 1, 0) }
             };
@@ -76,7 +76,7 @@ export class ClosedRange
         firstValue.crossEq(limit);
 
         ## `crossEq` ensures that `increment` is an int.
-        ifIs { increment.crossEq(0) }
+        If.is { increment.crossEq(0) }
             { return this.new(firstValue, 1, 0) };
 
         def firstInt = cast(Int, firstValue);
@@ -108,7 +108,7 @@ export class ClosedRange
     .nextValue(box) {
         def size = this.(ACCESS)(@size);
 
-        return? ifNot { size.crossEq(0) }
+        return? If.not { size.crossEq(0) }
             {
                 def value = this.(ACCESS)(@value);
                 box* := this.(ACCESS)(@converter)(value);
