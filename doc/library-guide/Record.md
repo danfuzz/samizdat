@@ -82,6 +82,16 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
+#### `.crossEq(other) -> record | void`
+
+Compares two records. Two records are equal if they have equal names and
+equal data payloads.
+
+#### `.crossOrder(other) -> symbol`
+
+Compares two records for order. Records order by name as the major order
+and data payload as minor order.
+
 #### `.perEq(other) -> record | void`
 
 Default implementation.
@@ -89,13 +99,3 @@ Default implementation.
 #### `.perOrder(other) -> symbol`
 
 Default implementation.
-
-#### `.totalEq(other) -> record | void`
-
-Compares two records. Two records are equal if they have equal names and
-equal data payloads.
-
-#### `.totalOrder(other) -> symbol`
-
-Compares two records for order. Records order by name as the major order
-and data payload as minor order.

@@ -25,7 +25,7 @@ export class PegSet
         new: NEW {
     ## Documented in spec.
     class.new(names*) {
-        ifIs { eq(names, []) }
+        ifIs { Cmp.eq(names, []) }
             {
                 ## Trivial case: Empty set, so it can never succeed in
                 ## matching.

@@ -88,20 +88,21 @@ void, then this function immediately returns void.
 **Syntax Note:** Used in the translation of some `&` forms and
 multiple-binding `if` forms.
 
-#### `ifValueAndElse(functions*, thenFunction, elseFunction) -> . | void`
+#### `ifValueAndElse(functions+, thenFunction, elseFunction) -> . | void`
 
 Primitive logic conditional. This is like `ifValueAnd`, except that the
-function must accept at least two arguments, and the final two arguments
-are treated specially.
+function takes two additional arguments at the end of the argument list,
+which are treated specially.
 
-In particular, if all of the `functions` return a value, then this calls
-the `thenFunction` and returns its value. Otherwise &mdash; that is, if
-any of the `functions` returns void &mdash; then this calls the
-`elseFunction` and returns its value.
+In particular, if all of the initial `functions` return a value, then this
+calls the `thenFunction` (passing it all the results of the `functions`,
+in order) and returns its value. Otherwise &mdash; that is, if any of the
+`functions` returns void &mdash; then this calls the `elseFunction` and
+returns its value.
 
 **Syntax Note:** Used in the translation of some multiple-binding `if` forms.
 
-#### `ifValueOr(functions+) -> . | void`
+#### `ifValueOr(functions*) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions` in
 order with no arguments, until one of them returns non-void. When a non-void

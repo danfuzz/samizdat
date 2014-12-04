@@ -86,13 +86,13 @@ fn fileNameSuffix(path) {
 
     path.forEach
         { ch ->
-            ifIs { eq(ch, "/") }
+            ifIs { Cmp.eq(ch, "/") }
                 {
                     ## New path component.
                     gotDot := 0;
                 }
                 {
-                    ifIs { eq(ch, ".") }
+                    ifIs { Cmp.eq(ch, ".") }
                         {
                             gotDot := 1;
                             result := "";
@@ -101,16 +101,16 @@ fn fileNameSuffix(path) {
                 }
         };
 
-    return ifIs { eq(gotDot, 0) }
+    return ifIs { Cmp.eq(gotDot, 0) }
         { "" }
         { result }
 };
 
 ## Helper for `checkExternalSource`: Validates a character pair.
 fn checkExternalSourcePair(lastCh, ch) {
-    ifIs { eq(ch, ".") }
+    ifIs { Cmp.eq(ch, ".") }
         {
-            ifIs { eq(lastCh, ".") }
+            ifIs { Cmp.eq(lastCh, ".") }
                 { die("Invalid external source: empty component") };
             return
         };
@@ -132,7 +132,7 @@ fn checkExternalSource(source) {
 
     ifNot { String.accepts(name) }
         { die("Invalid external source: `name` not a string") };
-    ifIs { eq(name, "") }
+    ifIs { Cmp.eq(name, "") }
         { die("Invalid external source: empty `name`") };
 
     var lastCh = ".";  ## Init to `"."` to make the first check work out.
@@ -149,20 +149,20 @@ fn checkExternalSource(source) {
 
 ## Helper for `checkInternalSource`: Validates a character pair.
 fn checkInternalSourcePair(lastCh, ch) {
-    ifIs { eq(ch, "/") }
+    ifIs { Cmp.eq(ch, "/") }
         {
-            ifIs { eq(lastCh, "/") }
+            ifIs { Cmp.eq(lastCh, "/") }
                 { die("Invalid internal source: empty component") };
-            ifIs { eq(lastCh, ".") }
+            ifIs { Cmp.eq(lastCh, ".") }
                 { die("Invalid internal source: empty suffix") };
             return
         };
 
-    ifIs { eq(ch, ".") }
+    ifIs { Cmp.eq(ch, ".") }
         {
-            ifIs { eq(lastCh, "/") }
+            ifIs { Cmp.eq(lastCh, "/") }
                 { die("Invalid internal source: component-initial dot") };
-            ifIs { eq(lastCh, ".") }
+            ifIs { Cmp.eq(lastCh, ".") }
                 { die("Invalid internal source: double dot") };
             return
         };
@@ -184,7 +184,7 @@ fn checkInternalSource(source) {
 
     ifNot { String.accepts(name) }
         { die("Invalid internal source: `name` not a string") };
-    ifIs { eq(name, "") }
+    ifIs { Cmp.eq(name, "") }
         { die("Invalid internal source: empty `name`") };
 
     var lastCh = "/";  ## Init to `"/"` to make the first check work out.
@@ -202,11 +202,11 @@ fn checkInternalSource(source) {
 ## Validates an absolute file path string. It must be a string and start with
 ## `"/"`.
 fn checkAbsolutePath(path) {
-    ifIs { eq(path, "") }
+    ifIs { Cmp.eq(path, "") }
         { die("Invalid file path: empty string") };
     ifNot { String.accepts(path) }
         { die("Invalid file path: not a string") };
-    ifNot { eq(path.get(0), "/") }
+    ifNot { Cmp.eq(path.get(0), "/") }
         { die("Invalid file path: not absolute") }
 };
 
@@ -220,9 +220,9 @@ fn resolveHelper(loadedBox, source, resolveFn) {
         { found ->
             ifIs { found.hasName(@module) }
                 { return found };
-            ifIs { eq(found, @notFound) }
+            ifIs { Cmp.eq(found, @notFound) }
                 { return };
-            ifIs { eq(found, @loading) }
+            ifIs { Cmp.eq(found, @loading) }
                 { die("Module load loop: ", sourceString(source)) };
         };
 
@@ -230,7 +230,7 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     def result = ifValueOr { resolveFn() } { @notFound };
     loadedBox* := {(loadedBox*)*, (source): result};
 
-    return? ifNot { eq(result, @notFound) }
+    return? ifNot { Cmp.eq(result, @notFound) }
         { result }
 };
 
@@ -308,7 +308,7 @@ def nullLoader = NullLoader.(NEW)();
 ## Helper to "massage" `null` into `nullLoader` and pass everything
 ## else through as-is.
 fn fixNullLoader(loader) {
-    return ifIs { eq(loader, null) }
+    return ifIs { Cmp.eq(loader, null) }
         { nullLoader }
         { loader }
 };
@@ -329,7 +329,7 @@ fn doExternalResolve(loader, source) {
     def data = loader.(ACCESS)();
     def modulePath = data::basePath.cat(source::name);
 
-    return? ifIs { eq($Io0::fileType(modulePath), @directory) }
+    return? ifIs { Cmp.eq($Io0::fileType(modulePath), @directory) }
         {
             note("    ", sourceString(source));
 
@@ -351,12 +351,12 @@ export class ExternalLoader
 
         ## Check for existence and directoriness.
         def pathType = $Io0::fileType(path);
-        ifIs { eq(pathType, @absent) }
+        ifIs { Cmp.eq(pathType, @absent) }
             {
                 ## No such file or directory.
                 return fixNullLoader(nextLoader)
             };
-        ifNot { eq(pathType, @directory) }
+        ifNot { Cmp.eq(pathType, @directory) }
             {
                 die("Module loader path exists but is not a directory: ",
                     path)
@@ -421,7 +421,7 @@ fn doInternalResolve(loader, source) {
     def pathPrefix = data::basePath.cat(source::name);
     def binPath = pathPrefix.cat(".samb");
 
-    ifIs { eq($Io0::fileType(binPath), @file) }
+    ifIs { Cmp.eq($Io0::fileType(binPath), @file) }
         {
             def func = $Code::evalBinary(data::globals, binPath);
             return ifValueOr { func() }
@@ -429,7 +429,7 @@ fn doInternalResolve(loader, source) {
         };
 
     def sourcePath = pathPrefix.cat(".sam");
-    ifIs { eq($Io0::fileType(sourcePath), @file) }
+    ifIs { Cmp.eq($Io0::fileType(sourcePath), @file) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
             def tree = treeFromText(loader, text);
@@ -450,7 +450,7 @@ fn readResource_type(fullPath) {
 
 ## `readResource` implementation for format `utf8`.
 fn readResource_utf8(fullPath) {
-    ifNot { eq($Io0::fileType(fullPath), @file) }
+    ifNot { Cmp.eq($Io0::fileType(fullPath), @file) }
         { die("Missing resource: ", fullPath) };
 
     return $Io0::readFileUtf8(fullPath)
@@ -568,7 +568,7 @@ fn makeFileGlobals(loader) {
 fn runProgram(programFunc, args) {
     def optResult = programFunc()?;
 
-    ifIs { eq(optResult, []) }
+    ifIs { Cmp.eq(optResult, []) }
         { return };
 
     def result = optResult*;
@@ -633,10 +633,10 @@ export fn run(path, loader, args*) {
 export fn runFile(path, loader, args*) {
     def suffix = fileNameSuffix(path);
 
-    ifIs { eq(suffix, "sam") }
+    ifIs { Cmp.eq(suffix, "sam") }
         { return? runTextFile(path, loader, args) };
 
-    ifIs { eq(suffix, "samb") }
+    ifIs { Cmp.eq(suffix, "samb") }
         { return? runBinaryFile(path, loader, args) };
 
     die("Unknown file name suffix: ", suffix)

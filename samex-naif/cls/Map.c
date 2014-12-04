@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "type/Box.h"
+#include "type/Cmp.h"
 #include "type/Generator.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -208,7 +209,7 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < size; i++) {
-        if (valEq(mappings[i].key, mappings[at - 1].key)) {
+        if (cmpEq(mappings[i].key, mappings[at - 1].key)) {
             at--;
         }
 
@@ -246,9 +247,9 @@ zassoc zassocFromMap(zvalue map) {
 CMETH_IMPL_1(Map, castFrom, value) {
     zvalue cls = classOf(value);
 
-    if (valEq(cls, CLS_SymbolTable)) {
+    if (cmpEq(cls, CLS_SymbolTable)) {
         // Do nothing here; fall through the `if` to the conversion below.
-    } else if (valEq(cls, CLS_Record)) {
+    } else if (cmpEq(cls, CLS_Record)) {
         value = get_data(value);
         // ...and fall through to the conversion below.
     } else if (classAccepts(thsClass, value)) {
@@ -304,7 +305,7 @@ CMETH_IMPL_1_rest(Map, singleValue, first, args) {
 METH_IMPL_1(Map, castToward, cls) {
     MapInfo *info = getInfo(ths);
 
-    if (valEq(cls, CLS_SymbolTable)) {
+    if (cmpEq(cls, CLS_SymbolTable)) {
         zint size = info->size;
         return symtabFromZassoc((zassoc) {info->size, info->elems});
     } else if (classAccepts(cls, ths)) {
@@ -397,6 +398,66 @@ METH_IMPL_0_1(Map, collect, function) {
     }
 
     return listFromZarray((zarray) {at, result});
+}
+
+// Documented in spec.
+METH_IMPL_1(Map, crossEq, other) {
+    assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
+    MapInfo *info1 = getInfo(ths);
+    MapInfo *info2 = getInfo(other);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+
+    if (size1 != size2) {
+        return NULL;
+    }
+
+    zmapping *elems1 = info1->elems;
+    zmapping *elems2 = info2->elems;
+
+    for (zint i = 0; i < size1; i++) {
+        zmapping *e1 = &elems1[i];
+        zmapping *e2 = &elems2[i];
+        if (!(cmpEq(e1->key, e2->key) && cmpEq(e1->value, e2->value))) {
+            return NULL;
+        }
+    }
+
+    return ths;
+}
+
+// Documented in spec.
+METH_IMPL_1(Map, crossOrder, other) {
+    assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
+    MapInfo *info1 = getInfo(ths);
+    MapInfo *info2 = getInfo(other);
+    zmapping *e1 = info1->elems;
+    zmapping *e2 = info2->elems;
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+    zint size = (size1 < size2) ? size1 : size2;
+
+    for (zint i = 0; i < size; i++) {
+        zorder result = cm_order(e1[i].key, e2[i].key);
+        if (result != ZSAME) {
+            return symbolFromZorder(result);
+        }
+    }
+
+    if (size1 < size2) {
+        return SYM(less);
+    } else if (size1 > size2) {
+        return SYM(more);
+    }
+
+    for (zint i = 0; i < size; i++) {
+        zorder result = cm_order(e1[i].value, e2[i].value);
+        if (result != ZSAME) {
+            return symbolFromZorder(result);
+        }
+    }
+
+    return SYM(same);
 }
 
 // Documented in spec.
@@ -578,66 +639,6 @@ METH_IMPL_1(Map, nextValue, box) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Map, totalEq, other) {
-    assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
-    MapInfo *info1 = getInfo(ths);
-    MapInfo *info2 = getInfo(other);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-
-    if (size1 != size2) {
-        return NULL;
-    }
-
-    zmapping *elems1 = info1->elems;
-    zmapping *elems2 = info2->elems;
-
-    for (zint i = 0; i < size1; i++) {
-        zmapping *e1 = &elems1[i];
-        zmapping *e2 = &elems2[i];
-        if (!(valEq(e1->key, e2->key) && valEq(e1->value, e2->value))) {
-            return NULL;
-        }
-    }
-
-    return ths;
-}
-
-// Documented in spec.
-METH_IMPL_1(Map, totalOrder, other) {
-    assertHasClass(other, CLS_Map);  // Note: Not guaranteed to be a `Map`.
-    MapInfo *info1 = getInfo(ths);
-    MapInfo *info2 = getInfo(other);
-    zmapping *e1 = info1->elems;
-    zmapping *e2 = info2->elems;
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-    zint size = (size1 < size2) ? size1 : size2;
-
-    for (zint i = 0; i < size; i++) {
-        zorder result = cm_order(e1[i].key, e2[i].key);
-        if (result != ZSAME) {
-            return symbolFromZorder(result);
-        }
-    }
-
-    if (size1 < size2) {
-        return SYM(less);
-    } else if (size1 > size2) {
-        return SYM(more);
-    }
-
-    for (zint i = 0; i < size; i++) {
-        zorder result = cm_order(e1[i].value, e2[i].value);
-        if (result != ZSAME) {
-            return symbolFromZorder(result);
-        }
-    }
-
-    return SYM(same);
-}
-
-// Documented in spec.
 METH_IMPL_0(Map, valueList) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
@@ -664,6 +665,8 @@ MOD_INIT(Map) {
             METH_BIND(Map, castToward),
             METH_BIND(Map, cat),
             METH_BIND(Map, collect),
+            METH_BIND(Map, crossEq),
+            METH_BIND(Map, crossOrder),
             METH_BIND(Map, del),
             METH_BIND(Map, fetch),
             METH_BIND(Map, forEach),
@@ -674,8 +677,6 @@ MOD_INIT(Map) {
             METH_BIND(Map, get_value),
             METH_BIND(Map, keyList),
             METH_BIND(Map, nextValue),
-            METH_BIND(Map, totalEq),
-            METH_BIND(Map, totalOrder),
             METH_BIND(Map, valueList)));
 
     EMPTY_MAP = datImmortalize(allocMap(0));

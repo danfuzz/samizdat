@@ -47,18 +47,18 @@ fn hexStringChar(ch) {
 export fn stringChar(ch) {
     ifValue { SPECIAL_CHARS.get(ch) }
         { special ->
-            ifIs { eq(special, "x") }
+            ifIs { Cmp.eq(special, "x") }
                 { return hexStringChar(ch) }
                 { return special }
         };
 
-    ifIs { lt(ch, CHAR_SURROGATE_START) }
+    ifIs { Cmp.lt(ch, CHAR_SURROGATE_START) }
         { return ch };
 
-    ifIs { le(ch, CHAR_SURROGATE_END) }
+    ifIs { Cmp.le(ch, CHAR_SURROGATE_END) }
         { return hexStringChar(ch) };
 
-    return ifIs { le(ch, CHAR_UNICODE_END) }
+    return ifIs { Cmp.le(ch, CHAR_UNICODE_END) }
         { ch }
         { hexStringChar(ch) }
 };

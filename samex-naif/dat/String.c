@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "type/Box.h"
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/String.h"
@@ -304,7 +305,7 @@ zstring zstringFromString(zvalue string) {
 CMETH_IMPL_1(String, castFrom, value) {
     zvalue cls = classOf(value);
 
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         zint n = zintFromInt(value);
         zchar result;
 
@@ -313,7 +314,7 @@ CMETH_IMPL_1(String, castFrom, value) {
         } else {
             return stringFromZchar(result);
         }
-    } else if (valEq(cls, CLS_Symbol)) {
+    } else if (cmpEq(cls, CLS_Symbol)) {
         return stringFromZstring(zstringFromSymbol(value));
     } else if (classAccepts(thsClass, value)) {
         return value;
@@ -326,11 +327,11 @@ CMETH_IMPL_1(String, castFrom, value) {
 METH_IMPL_1(String, castToward, cls) {
     StringInfo *info = getInfo(ths);
 
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         if (info->s.size == 1) {
             return intFromZint(zcharFromString(ths));
         }
-    } else if (valEq(cls, CLS_Symbol)) {
+    } else if (cmpEq(cls, CLS_Symbol)) {
         return symbolFromZstring(info->s);
     } else if (classAccepts(cls, ths)) {
         return ths;
@@ -397,6 +398,18 @@ METH_IMPL_0_1(String, collect, function) {
     zvalue result = listFromZarray((zarray) {at, elems});
     utilFree(elems);
     return result;
+}
+
+// Documented in spec.
+METH_IMPL_1(String, crossEq, other) {
+    assertString(other);  // Note: Not guaranteed to be a `String`.
+    return uncheckedEq(ths, other) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(String, crossOrder, other) {
+    assertString(other);  // Note: Not guaranteed to be a `String`.
+    return symbolFromZorder(uncheckedZorder(ths, other));
 }
 
 // Documented in spec.
@@ -605,18 +618,6 @@ METH_IMPL_1_2(String, sliceInclusive, start, end) {
 }
 
 // Documented in spec.
-METH_IMPL_1(String, totalEq, other) {
-    assertString(other);  // Note: Not guaranteed to be a `String`.
-    return uncheckedEq(ths, other) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_1(String, totalOrder, other) {
-    assertString(other);  // Note: Not guaranteed to be a `String`.
-    return symbolFromZorder(uncheckedZorder(ths, other));
-}
-
-// Documented in spec.
 METH_IMPL_0(String, valueList) {
     StringInfo *info = getInfo(ths);
     zint size = info->s.size;
@@ -641,6 +642,8 @@ MOD_INIT(String) {
             METH_BIND(String, cat),
             METH_BIND(String, castToward),
             METH_BIND(String, collect),
+            METH_BIND(String, crossEq),
+            METH_BIND(String, crossOrder),
             METH_BIND(String, debugString),
             METH_BIND(String, del),
             METH_BIND(String, fetch),
@@ -653,8 +656,6 @@ MOD_INIT(String) {
             METH_BIND(String, reverse),
             METH_BIND(String, sliceExclusive),
             METH_BIND(String, sliceInclusive),
-            METH_BIND(String, totalEq),
-            METH_BIND(String, totalOrder),
             METH_BIND(String, valueList),
             SYM(get),          FUN_Sequence_get,
             SYM(keyList),      FUN_Sequence_keyList,

@@ -22,7 +22,7 @@ extern zvalue EMPTY_STRING;
 
 /**
  * Compares two strings for equality. This is the same as calling
- * `valEq()` on the strings, except that it terminates with an error if
+ * `cmpEq()` on the strings, except that it terminates with an error if
  * either argument is *not* a string, and it doesn't require a fully running
  * system. In particular, it avoids method dispatch.
  */

@@ -310,6 +310,38 @@ METH_IMPL_1(Class, castFrom, value) {
 }
 
 // Documented in spec.
+METH_IMPL_1(Class, crossEq, other) {
+    assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
+    return classEqUnchecked(ths, other) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(Class, crossOrder, other) {
+    if (ths == other) {
+        // Easy case to avoid decomposition and detailed tests.
+        return SYM(same);
+    }
+
+    if (!haveSameClass(ths, other)) {
+        die("Improper call to `crossOrder`: different concrete classes");
+    }
+
+    // We should only be able to make it here if given two instances of
+    // `Metaclass`.
+    assertHasClass(ths, CLS_Metaclass);
+
+    // Sort by name, treating same-name as unordered (but not an error).
+    ClassInfo *info1 = getInfo(ths);
+    ClassInfo *info2 = getInfo(other);
+
+    switch (cm_order(info1->name, info2->name)) {
+        case ZLESS: { return SYM(less); }
+        case ZMORE: { return SYM(more); }
+        case ZSAME: { return NULL;      }
+    }
+}
+
+// Documented in spec.
 METH_IMPL_0(Class, debugString) {
     ClassInfo *info = getInfo(ths);
     zvalue nameString = cm_castFrom(CLS_String, info->name);
@@ -387,38 +419,6 @@ METH_IMPL_1(Class, perOrder, other) {
             }
             return NULL;
         }
-    }
-}
-
-// Documented in spec.
-METH_IMPL_1(Class, totalEq, other) {
-    assertIsClass(other);  // Note: Not guaranteed to be a `Class`.
-    return classEqUnchecked(ths, other) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_1(Class, totalOrder, other) {
-    if (ths == other) {
-        // Easy case to avoid decomposition and detailed tests.
-        return SYM(same);
-    }
-
-    if (!haveSameClass(ths, other)) {
-        die("Improper call to `totalOrder`: different concrete classes");
-    }
-
-    // We should only be able to make it here if given two instances of
-    // `Metaclass`.
-    assertHasClass(ths, CLS_Metaclass);
-
-    // Sort by name, treating same-name as unordered (but not an error).
-    ClassInfo *info1 = getInfo(ths);
-    ClassInfo *info2 = getInfo(other);
-
-    switch (cm_order(info1->name, info2->name)) {
-        case ZLESS: { return SYM(less); }
-        case ZMORE: { return SYM(more); }
-        case ZSAME: { return NULL;      }
     }
 }
 
@@ -517,14 +517,14 @@ void bindMethodsForClass(void) {
         METH_TABLE(
             METH_BIND(Class, accepts),
             METH_BIND(Class, castFrom),
+            METH_BIND(Class, crossEq),
+            METH_BIND(Class, crossOrder),
             METH_BIND(Class, debugString),
             METH_BIND(Class, debugSymbol),
             METH_BIND(Class, gcMark),
             METH_BIND(Class, get_name),
             METH_BIND(Class, get_parent),
-            METH_BIND(Class, perOrder),
-            METH_BIND(Class, totalEq),
-            METH_BIND(Class, totalOrder)));
+            METH_BIND(Class, perOrder)));
 
     // `Metaclass` binds no methods itself. TODO: It probably wants at least
     // a couple.

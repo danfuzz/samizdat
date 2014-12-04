@@ -25,9 +25,9 @@ export class PegRepeat
     class.new(rule, minSize, optMaxSize?) {
         def maxMap = ifValue { optMaxSize* }
             { sz ->
-                ifIs { lt(sz, minSize) }
+                ifIs { Cmp.lt(sz, minSize) }
                     { die("Invalid repeat spec: maxSize < minSize") };
-                ifIs { lt(sz, 1) }
+                ifIs { Cmp.lt(sz, 1) }
                     { die("Invalid repeat spec: maxSize < 1") };
                 @{maxSize: sz}
             }
@@ -60,7 +60,7 @@ export class PegRepeat
         def maxCheck = ifValue { this.(ACCESS)(@maxSize) }
             { maxSize ->
                 {
-                    ifIs { results.get_size().totalEq(maxSize) }
+                    ifIs { results.get_size().crossEq(maxSize) }
                         {
                             ## We parsed the max repeat size. Return it.
                             return remainingState.addContext(results)
@@ -83,10 +83,7 @@ export class PegRepeat
                     ## Failed to parse the inner rule. Check for minimum match
                     ## count. Store result and return success if appropriate.
                     return? ifIs
-                        {
-                            totalGe(results.get_size(),
-                                this.(ACCESS)(@minSize))
-                        }
+                        { Cmp.ge(results.get_size(), this.(ACCESS)(@minSize)) }
                         { remainingState.addContext(results) }
                 }
         }

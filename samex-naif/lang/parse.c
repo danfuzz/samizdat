@@ -5,6 +5,7 @@
 #include "langnode.h"
 #include "type/Bool.h"
 #include "type/Class.h"
+#include "type/Cmp.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Null.h"
@@ -567,7 +568,7 @@ DEF_PARSE(list) {
 
     zvalue result = makeCallGeneral(LITS(List), SYMS(new), expressions);
 
-    if (valEq(get_name(result), SYM(apply))) {
+    if (cmpEq(get_name(result), SYM(apply))) {
         return cm_get(result, SYM(values));
     } else {
         return result;
@@ -609,7 +610,7 @@ DEF_PARSE(nullaryClosure) {
     zvalue c = PARSE_OR_REJECT(fullClosure);
 
     zvalue formals = cm_get(c, SYM(formals));
-    if (!valEq(formals, EMPTY_LIST)) {
+    if (!cmpEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
 
@@ -623,7 +624,7 @@ DEF_PARSE(basicNullaryClosure) {
     zvalue c = PARSE_OR_REJECT(basicClosure);
 
     zvalue formals = cm_get(c, SYM(formals));
-    if (!valEq(formals, EMPTY_LIST)) {
+    if (!cmpEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
 
@@ -835,7 +836,7 @@ DEF_PARSE(yieldOrNonlocal) {
         value = TOK_void;
     }
 
-    return valEq(name, TOK_yield) ? value : makeNonlocalExit(name, value);
+    return cmpEq(name, TOK_yield) ? value : makeNonlocalExit(name, value);
 }
 
 // Documented in spec.

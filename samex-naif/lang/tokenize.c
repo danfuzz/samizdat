@@ -4,6 +4,7 @@
 
 #include "langnode.h"
 #include "util.h"
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/String.h"
@@ -183,23 +184,23 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue name = symbolFromZstring(s);
 
     switch (chars[0]) {
-        case 'b': { if (valEq(name, SYM(break)))    return TOK_break;    break; }
-        case 'd': { if (valEq(name, SYM(def)))      return TOK_def;      break; }
-        case 'e': { if (valEq(name, SYM(export)))   return TOK_export;   break; }
-        case 'i': { if (valEq(name, SYM(import)))   return TOK_import;   break; }
-        case 'n': { if (valEq(name, SYM(null)))     return TOK_null;     break; }
-        case 'r': { if (valEq(name, SYM(return)))   return TOK_return;   break; }
-        case 't': { if (valEq(name, SYM(ztrue)))    return TOK_ztrue;    break; }
-        case 'v': { if (valEq(name, SYM(var)))      return TOK_var;      break; }
-        case 'y': { if (valEq(name, SYM(yield)))    return TOK_yield;    break; }
+        case 'b': { if (cmpEq(name, SYM(break)))    return TOK_break;    break; }
+        case 'd': { if (cmpEq(name, SYM(def)))      return TOK_def;      break; }
+        case 'e': { if (cmpEq(name, SYM(export)))   return TOK_export;   break; }
+        case 'i': { if (cmpEq(name, SYM(import)))   return TOK_import;   break; }
+        case 'n': { if (cmpEq(name, SYM(null)))     return TOK_null;     break; }
+        case 'r': { if (cmpEq(name, SYM(return)))   return TOK_return;   break; }
+        case 't': { if (cmpEq(name, SYM(ztrue)))    return TOK_ztrue;    break; }
+        case 'v': { if (cmpEq(name, SYM(var)))      return TOK_var;      break; }
+        case 'y': { if (cmpEq(name, SYM(yield)))    return TOK_yield;    break; }
         case 'c': {
-                    if (valEq(name, SYM(class)))    return TOK_class;
-                    if (valEq(name, SYM(continue))) return TOK_continue;
+                    if (cmpEq(name, SYM(class)))    return TOK_class;
+                    if (cmpEq(name, SYM(continue))) return TOK_continue;
                     break;
         }
         case 'f': {
-                    if (valEq(name, SYM(zfalse)))   return TOK_zfalse;
-                    if (valEq(name, SYM(fn)))       return TOK_fn;
+                    if (cmpEq(name, SYM(zfalse)))   return TOK_zfalse;
+                    if (cmpEq(name, SYM(fn)))       return TOK_fn;
                     break;
         }
     }
@@ -419,7 +420,7 @@ zvalue langLanguageOf0(zvalue string) {
 
     if ((result != NULL)
         && nodeRecTypeIs(result, NODE_directive)
-        && valEq(cm_get(result, SYM(name)), SYM(language))) {
+        && cmpEq(cm_get(result, SYM(name)), SYM(language))) {
         return cm_get(result, SYM(value));
     }
 

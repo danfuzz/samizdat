@@ -50,6 +50,16 @@ is an instance of `Result`.
 <br><br>
 ### Method Definitions: `Value` protocol
 
+#### `.crossEq(other) -> box | void`
+
+Performs an identity comparison. No two different boxes are ever considered
+equal.
+
+#### `.crossOrder(other) -> symbol | void`
+
+Performs an identity comparison. No two different boxes are ever considered
+equal, and two different boxes have no defined order.
+
 #### `.perEq(other) -> box | void`
 
 Default implementation.
@@ -57,16 +67,6 @@ Default implementation.
 #### `.perOrder(other) -> symbol | void`
 
 Default implementation.
-
-#### `.totalEq(other) -> box | void`
-
-Performs an identity comparison. No two different boxes are ever considered
-equal.
-
-#### `.totalOrder(other) -> symbol | void`
-
-Performs an identity comparison. No two different boxes are ever considered
-equal, and two different boxes have no defined order.
 
 
 <br><br>

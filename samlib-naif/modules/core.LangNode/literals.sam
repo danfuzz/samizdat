@@ -12,24 +12,15 @@
 ## Literal symbols.
 def SYMBOLS = [
     @access,
-    @add,
-    @and,
     @call,
     @cat,
     @collect,
-    @div,
-    @divEu,
     @exclusive,
     @exports,
     @fromLogic,
     @get,
-    @get_size,
     @inclusive,
     @info,
-    @mod,
-    @modEu,
-    @mul,
-    @neg,
     @new,
     @newExclusive,
     @newInclusive,
@@ -38,24 +29,17 @@ def SYMBOLS = [
     @newSequence,
     @newStar,
     @newString,
-    @not,
-    @or,
-    @perEq,
     @reverse,
     @reverseNth,
     @set,
-    @shl,
     @singleValue,
     @sliceExclusive,
     @sliceGeneral,
     @sliceInclusive,
-    @shr,
-    @sub,
     @subclass,
     @toLogic,
     @toUnlisted,
-    @value,
-    @xor
+    @value
 ];
 
 ## Literal values.
@@ -78,6 +62,41 @@ def VALUES = {
     SymbolTable
 };
 
+## Class methods.
+def CLASS_METHODS = [
+    @{class: Cmp, name: @eq},
+    @{class: Cmp, name: @ge},
+    @{class: Cmp, name: @gt},
+    @{class: Cmp, name: @le},
+    @{class: Cmp, name: @lt},
+    @{class: Cmp, name: @ne},
+    @{class: Cmp, name: @perEq},
+    @{class: Cmp, name: @perGe},
+    @{class: Cmp, name: @perGt},
+    @{class: Cmp, name: @perLe},
+    @{class: Cmp, name: @perLt},
+    @{class: Cmp, name: @perNe}
+];
+
+## Class methods.
+def INSTANCE_METHODS = [
+    @add,
+    @and,
+    @div,
+    @divEu,
+    @get_size,
+    @mod,
+    @modEu,
+    @mul,
+    @neg,
+    @not,
+    @or,
+    @reverse,
+    @shl,
+    @shr,
+    @sub,
+    @xor
+];
 
 ##
 ## Exported Definitions
@@ -96,6 +115,22 @@ export fn makeLiteral(value) {
 
 ## Note: The following constants need to be defined *after* the function
 ## `makeLiteral()` gets defined, as these use that.
+
+## Documented in spec.
+export def METHODS = @{}.cat(
+    (CLASS_METHODS.collect { cn ->
+        def cls = cn::class;
+        def name = cn::name;
+        def refKey = cls.get_name().cat(@"_", name);
+        @{(refKey): @methodId{
+            class: makeLiteral(cls),
+            name:  makeLiteral(name)}}
+    })*,
+
+    (INSTANCE_METHODS.collect { name ->
+        @{(name): @methodId{name: makeLiteral(name)}}
+    })*
+);
 
 ## Documented in spec.
 export def LITS = @{}.cat(

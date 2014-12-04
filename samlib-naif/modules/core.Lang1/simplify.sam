@@ -65,7 +65,7 @@ fn convertPex(node, formals) {
                 def fullClosure = makeFullClosure(closurePayload);
 
                 ifValueAndElse
-                    { eq(fullClosure::statements, []) }
+                    { Cmp.eq(fullClosure::statements, []) }
                     { . -> fullClosure::yield.hasName(@literal) }
                     { ., yNode ->
                         makeCall(REFS::Peg_PegResult, SYMS::new, yNode)

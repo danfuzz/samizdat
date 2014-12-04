@@ -13,24 +13,49 @@
 ## Private Definitions
 ##
 
-## Print the given test results.
-fn test(nameOrFunc, v1, v2) {
-    def caller = ifIs { Symbol.accepts(nameOrFunc) }
-        { { v1.(nameOrFunc)(v2) } }
-        { { nameOrFunc(v1, v2) } };
+## Checks an expected result.
+fn expect(name, result, func) {
+    ifValue { func() }
+        { got ->
+            ifNot { Cmp.eq(got, result) }
+                {
+                    note("Unexpected result: ", $Format::source(got));
+                    die("For: ", name);
+                }
+        }
+        {
+            note("Unexpected void result.");
+            die("For: ", name);
+        }
+};
 
-    def result = ifValue { caller() }
-        { v -> $Format::source(v) }
-        { "(void)" };
+## Checks an expected void result.
+fn expectVoid(name, func) {
+    ifValue { func() }
+        { got ->
+            note("Unexpected non-void result: ", $Format::source(got));
+            die("For: ", name)
+        }
+};
 
-    note(
-        cast(String, nameOrFunc.debugSymbol()),
-        "(",
-        $Format::source(v1),
-        ", ",
-        $Format::source(v2),
-        ") => ",
-        result);
+## Checks an expected equality.
+fn expectEq(name, v1, v2) {
+    ifNot { Cmp.eq(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " != ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
+};
+
+## Checks an expected inequality.
+fn expectNe(name, v1, v2) {
+    ifNot { Cmp.ne(v1, v2) }
+        {
+            note("Unexpected: ", $Format::source(v1), " == ",
+                $Format::source(v2));
+            die("For: ", name)
+        }
 };
 
 
@@ -38,26 +63,77 @@ fn test(nameOrFunc, v1, v2) {
 ## Main Tests
 ##
 
-test(@perEq, 10, 10);
-test(@perEq, 10, 20);
-test(@perOrder, 10, 10);
-test(@perOrder, 10, 20);
-test(@perOrder, 20, 10);
+note("Comparisons");
 
-## Note: The `total*` methods are unitype (that is, both arguments must match
-## the dispatch class). It's the non-method `eq` and `order` which can deal
-## with two different-typed arguments.
-test(@totalEq, 10, 10);
-test(@totalEq, 10, 20);
-test(@totalOrder, 10, 10);
-test(@totalOrder, 10, 20);
-test(@totalOrder, 20, 10);
+## These are just testing the method calls inside the `expect*` functions.
+expectEq("expect 1", 1, 1);
+expectEq("expect 2", @foo, @foo);
+expectNe("expect 3", 1, 2);
+expectNe("expect 4", 1, @foo);
 
-test(eq, 10, 10);
-test(eq, 10, 20);
-test(eq, 10, "blort");
-test(order, 10, 10);
-test(order, 10, 20);
-test(order, 20, 10);
-test(order, 10, "blort");
-test(order, "blort", 10);
+expectEq("eq 1", "x", Cmp.eq("x", "x"));
+expectEq("eq 2", @blort, Cmp.eq(@blort, @blort));
+expectVoid("eq 3", { Cmp.eq(1, 2) });
+expectVoid("eq 4", { Cmp.eq(1, @foo) });
+
+expectEq("ne 1", "x", Cmp.ne("x", "y"));
+expectEq("ne 2", 2, Cmp.ne(2, "z"));
+expectVoid("ne 3", { Cmp.ne(1, 1) });
+expectVoid("ne 4", { Cmp.ne(@foo, @foo) });
+
+expectEq("ge 1", "z", Cmp.ge("z", "a"));
+expectEq("ge 2", 2, Cmp.ge(2, false));
+expectEq("ge 3", @blort, Cmp.ge(@blort, @blort));
+expectVoid("ge 4", { Cmp.ge(1, 2) });
+expectVoid("ge 5", { Cmp.ge(1, @foo) });
+
+expectEq("gt 1", "z", Cmp.gt("z", "a"));
+expectEq("gt 2", 2, Cmp.gt(2, false));
+expectVoid("gt 3", { Cmp.gt(1, 1) });
+expectVoid("gt 4", { Cmp.gt(1, @foo) });
+
+expectEq("le 1", "a", Cmp.le("a", "z"));
+expectEq("le 2", false, Cmp.le(false, 2));
+expectEq("le 3", @blort, Cmp.le(@blort, @blort));
+expectVoid("le 4", { Cmp.le(2, 1) });
+expectVoid("le 5", { Cmp.le(@foo, 3) });
+
+expectEq("lt 1", "a", Cmp.lt("a", "z"));
+expectEq("lt 2", false, Cmp.lt(false, 2));
+expectVoid("lt 3", { Cmp.lt(1, 1) });
+expectVoid("lt 4", { Cmp.lt(@foo, 1) });
+
+expectEq("perEq 1", "x", Cmp.perEq("x", "x"));
+expectEq("perEq 2", @blort, Cmp.perEq(@blort, @blort));
+expectVoid("perEq 3", { Cmp.perEq(1, 2) });
+
+expectEq("perNe 1", "x", Cmp.perNe("x", "y"));
+expectVoid("perNe 2", { Cmp.perNe(1, 1) });
+
+expectEq("perGe 1", "z", Cmp.perGe("z", "a"));
+expectEq("perGe 3", @blort, Cmp.perGe(@blort, @blort));
+expectVoid("perGe 3", { Cmp.perGe(1, 2) });
+
+expectEq("perGt 1", "z", Cmp.perGt("z", "a"));
+expectVoid("perGt 2", { Cmp.perGt(1, 1) });
+
+expectEq("perLe 1", "a", Cmp.perLe("a", "z"));
+expectEq("perLe 2", @blort, Cmp.perLe(@blort, @blort));
+expectVoid("perLe 3", { Cmp.perLe(2, 1) });
+
+expectEq("perLt 1", "a", Cmp.perLt("a", "z"));
+expectVoid("perLt 3", { Cmp.perLt(1, 1) });
+
+expectEq("order 1",  @same, Cmp.order(1, 1));
+expectEq("order 2",  @same, Cmp.order(@frotz, @frotz));
+expectEq("order 3",  @same, Cmp.order("x", "x"));
+expectEq("order 4",  @less, Cmp.order(10, 11));
+expectEq("order 5",  @less, Cmp.order(@frotz, @ztrof));
+expectEq("order 6",  @less, Cmp.order("xxx", "xxz"));
+expectEq("order 7",  @less, Cmp.order(false, "x"));
+expectEq("order 8",  @more, Cmp.order(1000, 1));
+expectEq("order 9",  @more, Cmp.order(@frotz, @fizmo));
+expectEq("order 10", @more, Cmp.order("xx", "x"));
+expectEq("order 11", @more, Cmp.order("xx", 10));
+
+note("All good.");

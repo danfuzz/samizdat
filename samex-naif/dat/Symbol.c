@@ -313,37 +313,13 @@ METH_IMPL_rest(Symbol, cat, args) {
 }
 
 // Documented in spec.
-METH_IMPL_0(Symbol, debugString) {
-    SymbolInfo *info = getInfo(ths);
-    const char *prefix = info->interned ? "@" : "@+";
-
-    return cm_cat(stringFromUtf8(-1, prefix), cm_castFrom(CLS_String, ths));
-}
-
-// Documented in spec.
-METH_IMPL_0(Symbol, debugSymbol) {
-    return ths;
-}
-
-// Documented in spec.
-METH_IMPL_0(Symbol, isInterned) {
-    return (getInfo(ths)->interned) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_0(Symbol, toUnlisted) {
-    SymbolInfo *info = getInfo(ths);
-    return makeSymbol0(info->s, false);
-}
-
-// Documented in spec.
-METH_IMPL_1(Symbol, totalEq, other) {
+METH_IMPL_1(Symbol, crossEq, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
     return uncheckedEq(ths, other) ? ths : NULL;
 }
 
 // Documented in spec.
-METH_IMPL_1(Symbol, totalOrder, other) {
+METH_IMPL_1(Symbol, crossOrder, other) {
     assertHasClass(other, CLS_Symbol);  // Not guaranteed to be a `Symbol`.
 
     if (ths == other) {
@@ -372,18 +348,42 @@ METH_IMPL_1(Symbol, totalOrder, other) {
     }
 }
 
+// Documented in spec.
+METH_IMPL_0(Symbol, debugString) {
+    SymbolInfo *info = getInfo(ths);
+    const char *prefix = info->interned ? "@" : "@+";
+
+    return cm_cat(stringFromUtf8(-1, prefix), cm_castFrom(CLS_String, ths));
+}
+
+// Documented in spec.
+METH_IMPL_0(Symbol, debugSymbol) {
+    return ths;
+}
+
+// Documented in spec.
+METH_IMPL_0(Symbol, isInterned) {
+    return (getInfo(ths)->interned) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_0(Symbol, toUnlisted) {
+    SymbolInfo *info = getInfo(ths);
+    return makeSymbol0(info->s, false);
+}
+
 // Documented in header.
 void bindMethodsForSymbol(void) {
     classBindMethods(CLS_Symbol,
         NULL,
         METH_TABLE(
             METH_BIND(Symbol, cat),
+            METH_BIND(Symbol, crossEq),
+            METH_BIND(Symbol, crossOrder),
             METH_BIND(Symbol, debugString),
             METH_BIND(Symbol, debugSymbol),
             METH_BIND(Symbol, isInterned),
-            METH_BIND(Symbol, toUnlisted),
-            METH_BIND(Symbol, totalEq),
-            METH_BIND(Symbol, totalOrder)));
+            METH_BIND(Symbol, toUnlisted)));
 }
 
 /** Initializes the module. */

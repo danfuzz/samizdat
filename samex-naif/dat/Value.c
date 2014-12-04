@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Value.h"
@@ -30,48 +31,6 @@ void datNonVoidError(void) {
 // This provides the non-inline version of this function.
 extern void *datPayload(zvalue value);
 
-// Documented in header.
-zvalue valEq(zvalue value, zvalue other) {
-    if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `valEq`.");
-    } else if (value == other) {
-        return value;
-    } else if (haveSameClass(value, other)) {
-        return (METH_CALL(value, totalEq, other) != NULL) ? value : NULL;
-    } else {
-        return NULL;
-    }
-}
-
-// Documented in header.
-bool valEqNullOk(zvalue value, zvalue other) {
-    if (value == other) {
-        return true;
-    } else if ((value == NULL) || (other == NULL)) {
-        return false;
-    } else {
-        return valEq(value, other) != NULL;
-    }
-}
-
-// Documented in header.
-zvalue valOrder(zvalue value, zvalue other) {
-    if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `valOrder`.");
-    } else if (value == other) {
-        return SYM(same);
-    }
-
-    zvalue valueCls = classOf(value);
-    zvalue otherCls = classOf(other);
-
-    if (valueCls == otherCls) {
-        return METH_CALL(value, totalOrder, other);
-    } else {
-        return METH_CALL(valueCls, perOrder, otherCls);
-    }
-}
-
 
 //
 // Class Definition
@@ -80,6 +39,26 @@ zvalue valOrder(zvalue value, zvalue other) {
 // Documented in spec.
 METH_IMPL_1(Value, castToward, cls) {
     return classAccepts(cls, ths) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(Value, crossEq, other) {
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
+        die("`crossEq` called with incompatible arguments.");
+    }
+
+    return (ths == other) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(Value, crossOrder, other) {
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
+        die("`crossOrder` called with incompatible arguments.");
+    }
+
+    return cmpEq(ths, other) ? SYM(same) : NULL;
 }
 
 // Documented in spec.
@@ -115,32 +94,12 @@ METH_IMPL_0(Value, debugSymbol) {
 
 // Documented in spec.
 METH_IMPL_1(Value, perEq, other) {
-    return valEq(ths, other);
+    return cmpEq(ths, other);
 }
 
 // Documented in spec.
 METH_IMPL_1(Value, perOrder, other) {
-    return valOrder(ths, other);
-}
-
-// Documented in spec.
-METH_IMPL_1(Value, totalEq, other) {
-    // Note: `other` not guaranteed to have the same class as `ths`.
-    if (!haveSameClass(ths, other)) {
-        die("`totalEq` called with incompatible arguments.");
-    }
-
-    return (ths == other) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_1(Value, totalOrder, other) {
-    // Note: `other` not guaranteed to have the same class as `ths`.
-    if (!haveSameClass(ths, other)) {
-        die("`totalOrder` called with incompatible arguments.");
-    }
-
-    return valEq(ths, other) ? SYM(same) : NULL;
+    return cmpOrder(ths, other);
 }
 
 // Documented in header.
@@ -149,12 +108,12 @@ void bindMethodsForValue(void) {
         NULL,
         METH_TABLE(
             METH_BIND(Value, castToward),
+            METH_BIND(Value, crossEq),
+            METH_BIND(Value, crossOrder),
             METH_BIND(Value, debugString),
             METH_BIND(Value, debugSymbol),
             METH_BIND(Value, perEq),
-            METH_BIND(Value, perOrder),
-            METH_BIND(Value, totalEq),
-            METH_BIND(Value, totalOrder)));
+            METH_BIND(Value, perOrder)));
 }
 
 /** Initializes the module. */
@@ -163,12 +122,15 @@ MOD_INIT(Value) {
 
     // Initializing `Value` also initializes the rest of the core classes.
     // This also gets all the protocols indirectly via their implementors.
+
     MOD_USE_NEXT(Class);
     MOD_USE_NEXT(Symbol);
     MOD_USE_NEXT(SymbolTable);
     MOD_USE_NEXT(Record);
+
     MOD_USE_NEXT(Builtin);
     MOD_USE_NEXT(Box);
+    MOD_USE_NEXT(Cmp);
     MOD_USE_NEXT(Int);
     MOD_USE_NEXT(List);
     MOD_USE_NEXT(String);

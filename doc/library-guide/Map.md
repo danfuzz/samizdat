@@ -6,7 +6,7 @@ Map
 
 A `Map` is a kind of `Collection`. It represents a set of mappings from
 keys to values, where the keys are ordered by the total order of values
-as defined by the global function `order()`.
+as defined by the class method `Cmp.order()`.
 
 <br><br>
 ### Class Method Definitions
@@ -81,6 +81,18 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
+#### `.crossEq(other) -> map | void`
+
+Compares two maps. Two maps are equal if they have equal sets of mappings.
+
+#### `.crossOrder(other) -> symbol`
+
+Compares two maps for order. Maps order primarily by ordered lists of
+keys, with the same rules as list comparison. Given two maps with equal
+key lists, ordering is by comparing corresponding lists of values, in
+key order.
+
+
 #### `.perEq(other) -> map | void`
 
 Default implementation.
@@ -89,16 +101,6 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> map | void`
-
-Compares two maps. Two maps are equal if they have equal sets of mappings.
-
-#### `.totalOrder(other) -> symbol`
-
-Compares two maps for order. Maps order primarily by ordered lists of
-keys, with the same rules as list comparison. Given two maps with equal
-key lists, ordering is by comparing corresponding lists of values, in
-key order.
 
 <br><br>
 ### Method Definitions: One-Offs

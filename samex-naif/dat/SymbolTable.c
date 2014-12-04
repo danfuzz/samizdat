@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "type/Builtin.h"
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
@@ -349,6 +350,98 @@ METH_IMPL_rest(SymbolTable, cat, args) {
 }
 
 // Documented in spec.
+METH_IMPL_1(SymbolTable, crossEq, other) {
+    if (ths == other) {
+        return ths;
+    }
+
+    // Note: `other` not guaranteed to be a `SymbolTable`.
+    assertHasClass(other, CLS_SymbolTable);
+    SymbolTableInfo *info = getInfo(ths);
+
+    if (info->size != getInfo(other)->size) {
+        return NULL;
+    }
+
+    // Go through each key in `ths`, looking it up in `other`. The two are
+    // only equal if every key is found and bound to an equal value.
+
+    zint arraySize = info->arraySize;
+    for (zint i = 0; i < arraySize; i++) {
+        zvalue key1 = info->array[i].key;
+
+        if (key1 == NULL) {
+            continue;
+        }
+
+        zvalue value1 = info->array[i].value;
+        zvalue value2 = cm_get(other, key1);
+
+        if (!cmpEqNullOk(value1, value2)) {
+            return NULL;
+        }
+    }
+
+    return ths;
+}
+
+// Documented in spec.
+METH_IMPL_1(SymbolTable, crossOrder, other) {
+    if (ths == other) {
+        return SYM(same);
+    }
+
+    // Note: `other` not guaranteed to be a `SymbolTable`.
+    assertHasClass(other, CLS_SymbolTable);
+    SymbolTableInfo *info1 = getInfo(ths);
+    SymbolTableInfo *info2 = getInfo(other);
+    zint size = info1->size;
+
+    // Major order: Size.
+
+    if (size < info2->size) {
+        return SYM(less);
+    } else if (size > info2->size) {
+        return SYM(more);
+    }
+
+    // Next order: sorted key lists. In this case, we take both arrays of
+    // mappings and sort them. If the key lists are equal, we'll then
+    // reuse the array for comparing values.
+
+    zmapping array1[info1->arraySize];
+    zmapping array2[info2->arraySize];
+
+    utilCpy(zmapping, array1, info1->array, info1->arraySize);
+    utilCpy(zmapping, array2, info2->array, info2->arraySize);
+    qsort(array1, info1->arraySize, sizeof(zmapping), compareMappings);
+    qsort(array2, info2->arraySize, sizeof(zmapping), compareMappings);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue key1 = array1[i].key;
+        zvalue key2 = array2[i].key;
+        if (key1 != key2) {
+            return METH_CALL(key1, crossOrder, key2);
+        }
+    }
+
+    // Last order: corresponding values.
+
+    for (zint i = 0; i < size; i++) {
+        zvalue value1 = array1[i].value;
+        zvalue value2 = array2[i].value;
+        zorder order = cm_order(value1, value2);
+        if (order != ZSAME) {
+            return symbolFromZorder(order);
+        }
+    }
+
+    // They're equal!
+
+    return SYM(same);
+}
+
+// Documented in spec.
 METH_IMPL_rest(SymbolTable, del, keys) {
     SymbolTableInfo *info = getInfo(ths);
     zint arraySize = info->arraySize;
@@ -417,98 +510,6 @@ METH_IMPL_0(SymbolTable, get_size) {
     return intFromZint(getInfo(ths)->size);
 }
 
-// Documented in spec.
-METH_IMPL_1(SymbolTable, totalEq, other) {
-    if (ths == other) {
-        return ths;
-    }
-
-    // Note: `other` not guaranteed to be a `SymbolTable`.
-    assertHasClass(other, CLS_SymbolTable);
-    SymbolTableInfo *info = getInfo(ths);
-
-    if (info->size != getInfo(other)->size) {
-        return NULL;
-    }
-
-    // Go through each key in `ths`, looking it up in `other`. The two are
-    // only equal if every key is found and bound to an equal value.
-
-    zint arraySize = info->arraySize;
-    for (zint i = 0; i < arraySize; i++) {
-        zvalue key1 = info->array[i].key;
-
-        if (key1 == NULL) {
-            continue;
-        }
-
-        zvalue value1 = info->array[i].value;
-        zvalue value2 = cm_get(other, key1);
-
-        if (!valEqNullOk(value1, value2)) {
-            return NULL;
-        }
-    }
-
-    return ths;
-}
-
-// Documented in spec.
-METH_IMPL_1(SymbolTable, totalOrder, other) {
-    if (ths == other) {
-        return SYM(same);
-    }
-
-    // Note: `other` not guaranteed to be a `SymbolTable`.
-    assertHasClass(other, CLS_SymbolTable);
-    SymbolTableInfo *info1 = getInfo(ths);
-    SymbolTableInfo *info2 = getInfo(other);
-    zint size = info1->size;
-
-    // Major order: Size.
-
-    if (size < info2->size) {
-        return SYM(less);
-    } else if (size > info2->size) {
-        return SYM(more);
-    }
-
-    // Next order: sorted key lists. In this case, we take both arrays of
-    // mappings and sort them. If the key lists are equal, we'll then
-    // reuse the array for comparing values.
-
-    zmapping array1[info1->arraySize];
-    zmapping array2[info2->arraySize];
-
-    utilCpy(zmapping, array1, info1->array, info1->arraySize);
-    utilCpy(zmapping, array2, info2->array, info2->arraySize);
-    qsort(array1, info1->arraySize, sizeof(zmapping), compareMappings);
-    qsort(array2, info2->arraySize, sizeof(zmapping), compareMappings);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue key1 = array1[i].key;
-        zvalue key2 = array2[i].key;
-        if (key1 != key2) {
-            return METH_CALL(key1, totalOrder, key2);
-        }
-    }
-
-    // Last order: corresponding values.
-
-    for (zint i = 0; i < size; i++) {
-        zvalue value1 = array1[i].value;
-        zvalue value2 = array2[i].value;
-        zorder order = cm_order(value1, value2);
-        if (order != ZSAME) {
-            return symbolFromZorder(order);
-        }
-    }
-
-    // They're equal!
-
-    return SYM(same);
-}
-
 // Documented in header.
 void bindMethodsForSymbolTable(void) {
     classBindMethods(CLS_SymbolTable,
@@ -517,12 +518,12 @@ void bindMethodsForSymbolTable(void) {
             CMETH_BIND(SymbolTable, singleValue)),
         METH_TABLE(
             METH_BIND(SymbolTable, cat),
+            METH_BIND(SymbolTable, crossEq),
+            METH_BIND(SymbolTable, crossOrder),
             METH_BIND(SymbolTable, del),
             METH_BIND(SymbolTable, gcMark),
             METH_BIND(SymbolTable, get),
-            METH_BIND(SymbolTable, get_size),
-            METH_BIND(SymbolTable, totalEq),
-            METH_BIND(SymbolTable, totalOrder)));
+            METH_BIND(SymbolTable, get_size)));
 
     EMPTY_SYMBOL_TABLE = datImmortalize(allocInstance(0));
 }

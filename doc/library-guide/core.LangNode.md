@@ -18,6 +18,20 @@ as when used here it is only the resolved metainformation that gets used.
 <br><br>
 ### Constnants
 
+#### `METHODS`
+
+This is a table from class and instance method names to `@methodId` nodes that
+refer to those methods, for all the method references needed when parsing the
+language.
+
+Each class method key is a symbol of the form `@Class_name`. For example,
+`@Cmp_eq` maps to a reference to the class method `Cmp.eq()`.
+
+Each instance method key is just the name as a symbol. For example,
+`@and` maps to a reference to the instance method `.and()`.
+
+For specific details on which names are mapped, refer to the source.
+
 #### `KEYWORDS`
 
 This is a table from symbol names of keywords in the language to the result
@@ -39,11 +53,11 @@ This is a table from variable and module-scoped names to execution nodes that
 refer to those variables and names, for all the references needed when
 parsing the language.
 
-Regular variable references are bound from their string name. For example,
-`"ifIs"` maps to a regular variable reference of the name `ifIs`.
+Regular variable references are bound from their symbol name. For example,
+`@ifIs` maps to a regular variable reference of the name `ifIs`.
 
-Module-scoped names are bound from a string of the form `Module_name`. For
-example, `"Format_usual"` maps to a reference to `$Format::usual`.
+Module-scoped names are bound from a symbol of the form `@Module_name`. For
+example, `@Format_usual` maps to a reference to `$Format::usual`.
 
 For specific details on which names are mapped, refer to the source.
 
@@ -239,7 +253,11 @@ order.
 The result is a `call` node with `function` as the target and literal
 `@call` as the name.
 
-As a special case, if `function` is actually a `@literal` node, then it
+As a special case, if `function` is actually a `@methodId` node, then that
+node is "deconstructed" into either a class or instance method call.
+
+(TODO: Remove this!) As a special case, if `function` is actually a
+`@literal` node, then it
 is assumed to be a symbol and the result of this call is equivalent to
 `makeCall(values[0], function, values[1..]*)`.
 

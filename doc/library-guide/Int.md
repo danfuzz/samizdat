@@ -7,6 +7,15 @@ Int
 <br><br>
 ### Method Definitions: `Value` protocol
 
+#### `.crossEq(other) -> int | void`
+
+Compares the integer values of two ints.
+
+#### `.crossOrder(other) -> symbol`
+
+Compares the integer values of two ints, ordering by value in the usual
+manner.
+
 #### `.perEq(other) -> int | void`
 
 Default implementation.
@@ -14,15 +23,6 @@ Default implementation.
 #### `.perOrder(other) -> symbol`
 
 Default implementation.
-
-#### `.totalEq(other) -> int | void`
-
-Compares the integer values of two ints.
-
-#### `.totalOrder(other) -> symbol`
-
-Compares the integer values of two ints, ordering by value in the usual
-manner.
 
 
 <br><br>

@@ -2,7 +2,7 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include "type/Value.h"
+#include "type/Cmp.h"
 
 #include "impl.h"
 #include "util.h"
@@ -57,14 +57,6 @@ FUN_IMPL_DECL(cast) {
 }
 
 // Documented in spec.
-FUN_IMPL_DECL(eq) {
-    zvalue value = args.elems[0];
-    zvalue other = args.elems[1];
-
-    return valEq(value, other);
-}
-
-// Documented in spec.
 FUN_IMPL_DECL(classOf) {
     return classOf(args.elems[0]);
 }
@@ -75,12 +67,4 @@ FUN_IMPL_DECL(maybeCast) {
     zvalue value = args.elems[1];
 
     return doCast(cls, value);
-}
-
-// Documented in spec.
-FUN_IMPL_DECL(order) {
-    zvalue value = args.elems[0];
-    zvalue other = args.elems[1];
-
-    return valOrder(value, other);
 }

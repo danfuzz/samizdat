@@ -21,8 +21,8 @@ fn intOrVoid(string) {
     var value = 0;
 
     string.forEach { ch ->
-        ifIs { perLt(ch, "0") } { return };
-        ifIs { perGt(ch, "9") } { return };
+        ifIs { Cmp.perLt(ch, "0") } { return };
+        ifIs { Cmp.perGt(ch, "9") } { return };
         def digit = cast(Int, ch).sub(CHAR_0);
         value := value.mul(10).add(digit);
     };
@@ -36,7 +36,7 @@ fn maxOf(values*) {
     var max = -1;
 
     values.forEach { v ->
-        ifIs { perGt(v, max) }
+        ifIs { Cmp.perGt(v, max) }
             { max := v }
     };
 
@@ -50,17 +50,17 @@ fn safeIndexForNames(baseStr, names*) {
 
     def indexes = names.collect { name /next ->
         def nameStr = cast(String, name);
-        ifIs { perLt(nameStr.get_size(), baseSz) }
+        ifIs { Cmp.perLt(nameStr.get_size(), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
                 yield /next
             };
-        ifIs { eq(baseStr, nameStr) } { yield /next -1 };
-        ifIs { eq(baseStr, nameStr.sliceExclusive(0, baseSz)) }
+        ifIs { Cmp.eq(baseStr, nameStr) } { yield /next -1 };
+        ifIs { Cmp.eq(baseStr, nameStr.sliceExclusive(0, baseSz)) }
             { yield? /next intOrVoid(nameStr.sliceInclusive(baseSz)) }
     };
 
-    return ifIs { eq(indexes, []) }
+    return ifIs { Cmp.eq(indexes, []) }
         { -1 }
         { maxOf(indexes*).add(1) }
 };
@@ -151,7 +151,7 @@ fn safeIndex(node, baseStr) {
 ## Makes a variable name by combining `baseStr` with `index`. Handles the case
 ## where `index` is `-1` consistently with the other functions exported here.
 export fn makeVarName(baseStr, index) {
-    return ifIs { eq(index, -1) }
+    return ifIs { Cmp.eq(index, -1) }
         { cast(Symbol, baseStr) }
         { cast(Symbol, baseStr.cat($Format::int(index))) }
 };

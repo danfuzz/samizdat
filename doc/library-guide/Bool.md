@@ -41,6 +41,15 @@ This class knows how to cast as follows:
 * `Int` &mdash; Returns `0` given `false`, or `true` given `1`.
 * `Value` &mdash; Returns `this`.
 
+#### `.crossEq(other) -> bool | void`
+
+Compares two boolean values. This is only logical-true if the two given
+values are the same.
+
+#### `.crossOrder(other) -> symbol`
+
+Compares the given boolean values, ordering `false` before `true`.
+
 #### `.debugString() -> string`
 
 Returns `"true"` or `"false'`, in the reasonably expected cases.
@@ -52,15 +61,6 @@ Default implementation.
 #### `.perOrder(other) -> symbol`
 
 Default implementation.
-
-#### `.totalEq(other) -> bool | void`
-
-Compares two boolean values. This is only logical-true if the two given
-values are the same.
-
-#### `.totalOrder(other) -> symbol`
-
-Compares the given boolean values, ordering `false` before `true`.
 
 
 <br><br>

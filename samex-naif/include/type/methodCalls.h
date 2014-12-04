@@ -104,7 +104,7 @@ zvalue cm_newBox0(zvalue cls, zvalue value);
 zvalue cm_nth(zvalue x, zint index);
 
 /**
- * Calls `x.valOrder(other)`, except that the return value is of type
+ * Calls `x.cmpOrder(other)`, except that the return value is of type
  * `zorder`, and this reports a fatal error if given incomparable values.
  *
  * **Note:** The constants `{ ZLESS, ZSAME, ZMORE }` can be used when looking

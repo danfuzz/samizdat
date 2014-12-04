@@ -15,7 +15,7 @@ import ./string :: stringChar;
 
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    return ifIs { eq(adorn, true) }
+    return ifIs { Cmp.eq(adorn, true) }
         { before.cat(value, after) }
         { value }
 };
@@ -25,7 +25,7 @@ fn adornIf(adorn, before, value, after) {
 ## removes that prefix from the first element. As a special case, this returns
 ## `""` if given `[]` for `elems`.
 fn collectionBody(elems) {
-    ifIs { eq(elems, []) }
+    ifIs { Cmp.eq(elems, []) }
         { return "" };
 
     def one = elems.nth(0).sliceInclusive(2);
@@ -38,6 +38,7 @@ def SPECIAL_VALUES = {
     (Box):         "Box",
     (Cell):        "Cell",
     (Class):       "Class",
+    (Cmp):         "Cmp",
     (Core):        "Core",
     (Int):         "Int",
     (Lazy):        "Lazy",
@@ -69,7 +70,7 @@ fn nameString(prefix, name) {
     ifIs { isIdentifier(name) }
         { return prefix.cat(nameString) };
 
-    def finalPrefix = ifValueOr { ne(prefix, "") } { "\\" };
+    def finalPrefix = ifValueOr { Cmp.ne(prefix, "") } { "\\" };
     return finalPrefix.cat(sourceGeneral(nameString, true))
 };
 
@@ -133,7 +134,7 @@ fn String_source(value, adorn) {
 
 ## Stringifies a symbol.
 fn Symbol_source(value, adorn) {
-    ifIs { eq(adorn, false) }
+    ifIs { Cmp.eq(adorn, false) }
         { return sourceGeneral(cast(String, value), false) };
 
     def prefix = ifIs { value.isInterned() } { "@" } { "@+" };

@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/Record.h"
 #include "type/SymbolTable.h"
@@ -145,7 +146,7 @@ CMETH_IMPL_1_2(Record, new, name, data) {
 
 // Documented in spec.
 METH_IMPL_1(Record, castToward, cls) {
-    if (valEq(cls, CLS_SymbolTable)) {
+    if (cmpEq(cls, CLS_SymbolTable)) {
         return getInfo(ths)->data;
     } else if (classAccepts(cls, ths)) {
         return ths;
@@ -171,10 +172,38 @@ METH_IMPL_rest(Record, cat, args) {
 }
 
 // Documented in spec.
+METH_IMPL_1(Record, crossEq, other) {
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
+
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
+
+    if (info1->nameIndex != info2->nameIndex) {
+        return NULL;
+    } else {
+        return cmpEq(info1->data, info2->data);
+    }
+}
+
+// Documented in spec.
+METH_IMPL_1(Record, crossOrder, other) {
+    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
+
+    RecordInfo *info1 = getInfo(ths);
+    RecordInfo *info2 = getInfo(other);
+
+    if (info1->nameIndex != info2->nameIndex) {
+        return cmpOrder(info1->name, info2->name);
+    }
+
+    return cmpOrder(info1->data, info2->data);
+}
+
+// Documented in spec.
 METH_IMPL_0(Record, debugString) {
     RecordInfo *info = getInfo(ths);
 
-    if (valEq(info->data, EMPTY_SYMBOL_TABLE)) {
+    if (cmpEq(info->data, EMPTY_SYMBOL_TABLE)) {
         return cm_cat(
             METH_CALL(info->name, debugString),
             stringFromUtf8(-1, "{}"));
@@ -225,34 +254,6 @@ METH_IMPL_1(Record, hasName, name) {
     return symbolEq(getInfo(ths)->name, name) ? ths : NULL;
 }
 
-// Documented in spec.
-METH_IMPL_1(Record, totalEq, other) {
-    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
-
-    RecordInfo *info1 = getInfo(ths);
-    RecordInfo *info2 = getInfo(other);
-
-    if (info1->nameIndex != info2->nameIndex) {
-        return NULL;
-    } else {
-        return valEq(info1->data, info2->data);
-    }
-}
-
-// Documented in spec.
-METH_IMPL_1(Record, totalOrder, other) {
-    assertHasClass(other, CLS_Record);  // Note: Might not be a `Record`.
-
-    RecordInfo *info1 = getInfo(ths);
-    RecordInfo *info2 = getInfo(other);
-
-    if (info1->nameIndex != info2->nameIndex) {
-        return valOrder(info1->name, info2->name);
-    }
-
-    return valOrder(info1->data, info2->data);
-}
-
 /** Initializes the module. */
 MOD_INIT(Record) {
     MOD_USE(Core);
@@ -263,15 +264,15 @@ MOD_INIT(Record) {
         METH_TABLE(
             METH_BIND(Record, castToward),
             METH_BIND(Record, cat),
+            METH_BIND(Record, crossEq),
+            METH_BIND(Record, crossOrder),
             METH_BIND(Record, debugString),
             METH_BIND(Record, del),
             METH_BIND(Record, gcMark),
             METH_BIND(Record, get),
             METH_BIND(Record, get_data),
             METH_BIND(Record, get_name),
-            METH_BIND(Record, hasName),
-            METH_BIND(Record, totalEq),
-            METH_BIND(Record, totalOrder)));
+            METH_BIND(Record, hasName)));
 }
 
 // Documented in header.

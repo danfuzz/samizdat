@@ -45,6 +45,15 @@ of `this`), or void if not.
 <br><br>
 ### Method Definitions: `Value` protocol
 
+#### `.crossEq(other) -> class | void`
+
+Compares two classes. Two different classes are never equal.
+
+#### `.crossOrder(other) -> symbol | void`
+
+This is identical to `.perEq()`, except it first asserts that `other` has the
+same direct class as `this` (which in practice is only true of metaclasses).
+
 #### `.perEq(other) -> class | void`
 
 Default implementation.
@@ -66,18 +75,9 @@ This last bit means it is okay to use any mix of classes as the keys in a map,
 the same name. This restriction is in place because there is no consistent and
 stable way to order such classes.
 
-**Note:** This method intentionally differs from `.totalEq()` in that
+**Note:** This method intentionally differs from `.crossEq()` in that
 it will provide an order for most pairs of classes in practice, even when
 their direct (concrete) classes differ. This is done as a way to make the
 fact that regular classes each have a unique direct metaclass easy to ignore
 in most code, since most of the time that arrangement either doesn't matter
 or would cause trouble if not ignored.
-
-#### `.totalEq(other) -> class | void`
-
-Compares two classes. Two different classes are never equal.
-
-#### `.totalOrder(other) -> symbol | void`
-
-This is identical to `.perEq()`, except it first asserts that `other` has the
-same direct class as `this` (which in practice is only true of metaclasses).

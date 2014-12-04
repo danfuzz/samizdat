@@ -4,6 +4,7 @@
 
 #include "type/Bool.h"
 #include "type/Class.h"
+#include "type/Cmp.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
@@ -71,7 +72,7 @@ static zvalue expandYield(zvalue node) {
     if (     nodeRecTypeIs(function, NODE_fetch)
           && nodeRecTypeIs(functionTarget, NODE_varRef)
           && (yieldDef != NULL)
-          && valEq(cm_get(functionTarget, SYM(name)), yieldDef)) {
+          && cmpEq(cm_get(functionTarget, SYM(name)), yieldDef)) {
         return value;
     }
 
@@ -107,7 +108,7 @@ static zvalue extractMethods(zvalue allMethods, zvalue scope) {
         zvalue one = methArr.elems[i];
         zvalue name = cm_get(one, SYM(name));
 
-        if (!valEq(scope, get_name(one))) {
+        if (!cmpEq(scope, get_name(one))) {
             continue;
         } else if (cm_get(names, name)) {
             die("Duplicate method: %s", cm_debugString(name));
@@ -283,7 +284,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     zvalue keys = METH_CALL(attribMap, keyList);
     for (zint i = 0; i < attribSize; i++) {
         zvalue one = cm_nth(keys, i);
-        if (!(valEq(one, SYM(access)) || valEq(one, SYM(new)))) {
+        if (!(cmpEq(one, SYM(access)) || cmpEq(one, SYM(new)))) {
             die("Invalid attribute: %s", cm_debugString(one));
         }
     }
@@ -425,7 +426,7 @@ zvalue makeImport(zvalue baseData) {
             die("Cannot import selection of resource.");
         }
 
-        if (valEq(select, SYM(CH_STAR))) {
+        if (cmpEq(select, SYM(CH_STAR))) {
             // It's a wildcard import.
             data = METH_CALL(data, del, SYM(select));
         }
@@ -591,7 +592,7 @@ zvalue makeThunk(zvalue expression) {
 
 // Documented in spec.
 zvalue withModuleDefs(zvalue node) {
-    if (!valEqNullOk(cm_get(node, SYM(yield)), TOK_void)) {
+    if (!cmpEqNullOk(cm_get(node, SYM(yield)), TOK_void)) {
         die("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 

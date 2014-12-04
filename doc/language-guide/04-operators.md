@@ -368,41 +368,19 @@ result from a chained comparison is the second-from-last value. E.g.,
 
 #### Per-class comparison &mdash; `== != < > <= >=`
 
-These are the per-class comparison operators. Every class can define arbitrary
-comparison functions, and these operators are how to invoke those
-functions. The general contract is that evaluating these operators results
-in the left-hand value if the ordering is satisfied (true), or void if not.
-If the left-hand and right-hand sides are not comparable, then the contract
-is to cause a terminal error (rather than returning void). If the left-hand
-and right-hand sides *are* comparable but yet unordered, the contract is
-to return void.
+These are the per-class comparison operators. Use of these operators
+corresponds to calls to the `Cmp` class methods `.perEq()`, `.perNe()`,
+`.perLt()`, `.perGt()`, `.perLe()`, and `.perGe()` (with the obvious mapping
+of operator to method), which bottom out in calls to the methods `.perEq()`
+or `.perOrder()`. See the documentation of `Cmp` for more details.
 
-Unlike the total order, the comparisons defined by these functions are not
-required to be consistent; for example, a class corresponding to IEEE754
-floating point values would define both `1.0 < NaN` and `NaN < 1.0` to
-be false. Also, unlike the analogous total order functions, these functions
-are allowed to accept arguments of differing classes.
+#### Cross-classr comparison &mdash; `\== \!= \< \> \<= \>=`
 
-These expressions correspond to making functions calls to one of the
-functions `perEq` `perGe` `perGt` `perLe` `perLt` or `perNe`, with the
-left-hand and right-hand sides as arguments, in that order,
-with the usual correspondence between the operators and those names.
-
-Of these functions, `perEq` is a symbol, and the rest are defined as
-regular functions in terms of `perEq` and another symbol, `perOrder`.
-The default implementations of those methods is to call through to
-the functions `eq` and `order` (respectively).
-
-#### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
-
-These are total-order comparison operators. There is a defined total order of
-data values within Samizdat, and these operators' results are based on that
-order.
-
-These expressions correspond to calls to the library functions
-`eq` `ne` `lt` `gt` `le` and `ge` (with the obvious mapping of operator
-to function), which bottom out in calls to the methods `totalEq`
-or `totalOrder`. See the definition of those functions for more details.
+These are cross-class comparison operators. Use of these operators
+corresponds to calls to the `Cmp` class methods `.eq()`, `.ne()`, `.lt()`,
+`.gt()`, `.le()`, and `.ge()` (with the obvious mapping of operator to
+method), which bottom out in calls to the methods `.crossEq()`
+or `.crossOrder()`. See the documentation of `Cmp` for more details.
 
 **Note:** This can sometimes have surprising results, e.g. when comparing
 ints and floating point numbers.

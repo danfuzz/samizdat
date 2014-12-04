@@ -38,12 +38,12 @@ Default implementation.
 
 Default implementation.
 
-#### `.totalEq(other) -> list | void`
+#### `.crossEq(other) -> list | void`
 
 Compares two lists. Two lists are equal if they have equal elements in
 identical orders.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares two lists for order. Lists order by pairwise corresponding-element
 comparison, with a strict prefix always ordering before its longer brethren.

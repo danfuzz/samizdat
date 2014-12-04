@@ -29,11 +29,11 @@ export class PegLookaheadFailure
     ## Documented in spec.
     class.new(rule) {
         ## Optimiziation: Representation of `!.`.
-        ifIs { eq(rule, any) }
+        ifIs { Cmp.eq(rule, any) }
             { return eof };
 
         ## Optimization: Representation of `!()`.
-        ifIs { eq(rule, empty) }
+        ifIs { Cmp.eq(rule, empty) }
             { return fail };
 
         ## The general case.

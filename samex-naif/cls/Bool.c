@@ -3,6 +3,7 @@
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #include "type/Bool.h"
+#include "type/Cmp.h"
 #include "type/Core.h"
 #include "type/Int.h"
 #include "type/define.h"
@@ -65,7 +66,7 @@ zbool zboolFromBool(zvalue boolval) {
 CMETH_IMPL_1(Bool, castFrom, value) {
     zvalue cls = classOf(value);
 
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         zint n = zintFromInt(value);
         switch (n) {
             case 0: return BOOL_FALSE;
@@ -110,13 +111,34 @@ METH_IMPL_0(Bool, bitSize) {
 
 // Documented in spec.
 METH_IMPL_1(Bool, castToward, cls) {
-    if (valEq(cls, CLS_Int)) {
+    if (cmpEq(cls, CLS_Int)) {
         return intFromZint(zboolValue(ths));
     } else if (classAccepts(cls, ths)) {
         return ths;
     }
 
     return NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(Bool, crossEq, other) {
+    zbool bool1 = zboolValue(ths);
+    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
+    return (bool1 == bool2) ? ths : NULL;
+}
+
+// Documented in spec.
+METH_IMPL_1(Bool, crossOrder, other) {
+    zbool bool1 = zboolValue(ths);
+    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
+
+    if (bool1 == bool2) {
+        return SYM(same);
+    } else if (bool1) {
+        return SYM(more);
+    } else {
+        return SYM(less);
+    }
 }
 
 // Documented in spec.
@@ -178,27 +200,6 @@ METH_IMPL_0(Bool, toLogic) {
 }
 
 // Documented in spec.
-METH_IMPL_1(Bool, totalEq, other) {
-    zbool bool1 = zboolValue(ths);
-    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
-    return (bool1 == bool2) ? ths : NULL;
-}
-
-// Documented in spec.
-METH_IMPL_1(Bool, totalOrder, other) {
-    zbool bool1 = zboolValue(ths);
-    zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
-
-    if (bool1 == bool2) {
-        return SYM(same);
-    } else if (bool1) {
-        return SYM(more);
-    } else {
-        return SYM(less);
-    }
-}
-
-// Documented in spec.
 METH_IMPL_1(Bool, xor, other) {
     zbool bool1 = zboolValue(ths);
     zbool bool2 = zboolFromBool(other);  // Not guaranteed to be a `Bool`.
@@ -218,15 +219,15 @@ MOD_INIT(Bool) {
             METH_BIND(Bool, bit),
             METH_BIND(Bool, bitSize),
             METH_BIND(Bool, castToward),
+            METH_BIND(Bool, crossEq),
+            METH_BIND(Bool, crossOrder),
             METH_BIND(Bool, debugString),
             METH_BIND(Bool, not),
             METH_BIND(Bool, or),
             METH_BIND(Bool, shl),
             METH_BIND(Bool, shr),
             METH_BIND(Bool, xor),
-            METH_BIND(Bool, toLogic),
-            METH_BIND(Bool, totalEq),
-            METH_BIND(Bool, totalOrder)));
+            METH_BIND(Bool, toLogic)));
 
     BOOL_FALSE = datImmortalize(boolFrom(false));
     BOOL_TRUE = datImmortalize(boolFrom(true));

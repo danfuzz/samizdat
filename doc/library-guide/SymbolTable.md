@@ -37,20 +37,12 @@ representable in real Samizdat syntax.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.perEq(other) -> symbolTable | void`
-
-Default implementation.
-
-#### `.perOrder(other) -> symbol`
-
-Default implementation.
-
-#### `.totalEq(other) -> symbolTable | void`
+#### `.crossEq(other) -> symbolTable | void`
 
 Compares two symbol tables. Two symbol tables are equal if they have
 equal sets of mappings.
 
-#### `.totalOrder(other) -> symbol`
+#### `.crossOrder(other) -> symbol`
 
 Compares two symbol tables for order. The size of the table is the major
 order (smaller is earlier). After that, the keys are compared as sorted
@@ -60,6 +52,14 @@ lists. After that, corresponding values are compared in sorted-key order.
 same name are not considered ordered with respect to each other, it is
 possible for two symbol tables to also be unordered with respect to each
 other.
+
+#### `.perEq(other) -> symbolTable | void`
+
+Default implementation.
+
+#### `.perOrder(other) -> symbol`
+
+Default implementation.
 
 
 <br><br>

@@ -58,8 +58,8 @@ export fn formalsMaxArgs(formals) {
     formals.forEach { f ->
         ifValue { f::repeat }
             { rep ->
-                ifIs { eq(rep, @"*") } { return -1 };
-                ifIs { eq(rep, @"+") } { return -1 };
+                ifIs { Cmp.eq(rep, @"*") } { return -1 };
+                ifIs { Cmp.eq(rep, @"+") } { return -1 };
             };
         maxArgs := maxArgs.add(1)
     };
@@ -74,8 +74,8 @@ export fn formalsMinArgs(formals) {
     formals.forEach { f /next ->
         ifValue { f::repeat }
             { rep ->
-                ifIs { eq(rep, @"?") } { yield /next };
-                ifIs { eq(rep, @"*") } { yield /next };
+                ifIs { Cmp.eq(rep, @"?") } { yield /next };
+                ifIs { Cmp.eq(rep, @"*") } { yield /next };
             };
         minArgs := minArgs.add(1)
     };
@@ -89,7 +89,7 @@ export fn intFromDigits(base, digits) {
 
     digits.forEach { digit ->
         def value = intFromDigitToken(digit);
-        ifIs { perNe(value, -1) }
+        ifIs { Cmp.ne(value, -1) }
             { result := result.mul(base).add(value) }
     };
 

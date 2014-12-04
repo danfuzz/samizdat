@@ -27,11 +27,11 @@ export class PegSequence
     ## Documented in spec.
     class.new(rules*) {
         ## Trivial case: No rules. Return the empty rule.
-        ifIs { eq(rules, []) }
+        ifIs { Cmp.eq(rules, []) }
             { return empty };
 
         ## Trivial case: One rule. Return that rule directly.
-        ifIs { eq(rules.get_size(), 1) }
+        ifIs { Cmp.eq(rules.get_size(), 1) }
             { return rules* };
 
         ## The general case.
@@ -44,11 +44,11 @@ export class PegSequence
 
         ## Trivial case: Empty string. Return an always-successful yield of
         ## `@""`.
-        ifIs { eq(string, "") }
+        ifIs { Cmp.eq(string, "") }
             { return PegResult.new(@""{}) };
 
         ## Trivial case: One-char string. Return a simple one-char rule.
-        ifIs { eq(string.get_size(), 1) }
+        ifIs { Cmp.eq(string.get_size(), 1) }
             { return PegSet.new(resultType) };
 
         ## This is implemented as, in effect, `(@"1" @"2" ... { string })`,

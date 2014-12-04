@@ -28,7 +28,7 @@ export fn isIdentifier(symbol) {
 
     def string = cast(String, symbol);
 
-    ifIs { eq(string, "") }
+    ifIs { Cmp.eq(string, "") }
         { return };
 
     ifNot { IDENTIFIER_STARTS.get(string.nth(0)) }
