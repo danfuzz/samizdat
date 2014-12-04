@@ -75,7 +75,15 @@ def CLASS_METHODS = [
     @{class: Cmp, name: @perGt},
     @{class: Cmp, name: @perLe},
     @{class: Cmp, name: @perLt},
-    @{class: Cmp, name: @perNe}
+    @{class: Cmp, name: @perNe},
+    @{class: If,  name: @and},
+    @{class: If,  name: @andThenElse},
+    @{class: If,  name: @cases},
+    @{class: If,  name: @is},
+    @{class: If,  name: @maybeValue},
+    @{class: If,  name: @not},
+    @{class: If,  name: @or},
+    @{class: If,  name: @value}
 ];
 
 ## Class methods.
@@ -104,7 +112,7 @@ def INSTANCE_METHODS = [
 
 ## Documented in spec.
 export fn extractLiteral(node) {
-    return? ifIs { node.hasName(@literal) }
+    return? If.is { node.hasName(@literal) }
         { node::value }
 };
 

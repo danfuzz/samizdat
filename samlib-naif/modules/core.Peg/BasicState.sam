@@ -47,7 +47,7 @@ export class BasicState
     ## Documented in spec.
     .shiftInput() {
         def result;
-        return? ifValue { this.(ACCESS)(@input).nextValue(result?) }
+        return? If.value { this.(ACCESS)(@input).nextValue(result?) }
             { input ->
                 this.(NEW)(@{
                     input,

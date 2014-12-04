@@ -55,7 +55,7 @@ fn namer(value) {
 note("No default...");
 note(noDefault(1));
 
-ifIs { noDefault(2) }
+If.is { noDefault(2) }
     { die("Bad void.") };
 
 note("\nPower...");
@@ -70,7 +70,7 @@ note(powerName(7));
 note(powerName(8));
 note(powerName("blort"));
 
-ifIs { powerName(99) }
+If.is { powerName(99) }
     { die("Bad void.") };
 
 note("\nInterpolate...");

@@ -47,7 +47,7 @@ fn intFromDigitToken(ch) {
 
 ## Documented in spec.
 export fn canYieldVoid(node) {
-    return? ifIs { VOIDING_TYPES.get(node.get_name()) }
+    return? If.is { VOIDING_TYPES.get(node.get_name()) }
         { node }
 };
 
@@ -56,10 +56,10 @@ export fn formalsMaxArgs(formals) {
     var maxArgs = 0;
 
     formals.forEach { f ->
-        ifValue { f::repeat }
+        If.value { f::repeat }
             { rep ->
-                ifIs { Cmp.eq(rep, @"*") } { return -1 };
-                ifIs { Cmp.eq(rep, @"+") } { return -1 };
+                If.is { Cmp.eq(rep, @"*") } { return -1 };
+                If.is { Cmp.eq(rep, @"+") } { return -1 };
             };
         maxArgs := maxArgs.add(1)
     };
@@ -72,10 +72,10 @@ export fn formalsMinArgs(formals) {
     var minArgs = 0;
 
     formals.forEach { f /next ->
-        ifValue { f::repeat }
+        If.value { f::repeat }
             { rep ->
-                ifIs { Cmp.eq(rep, @"?") } { yield /next };
-                ifIs { Cmp.eq(rep, @"*") } { yield /next };
+                If.is { Cmp.eq(rep, @"?") } { yield /next };
+                If.is { Cmp.eq(rep, @"*") } { yield /next };
             };
         minArgs := minArgs.add(1)
     };
@@ -89,7 +89,7 @@ export fn intFromDigits(base, digits) {
 
     digits.forEach { digit ->
         def value = intFromDigitToken(digit);
-        ifIs { Cmp.ne(value, -1) }
+        If.is { Cmp.ne(value, -1) }
             { result := result.mul(base).add(value) }
     };
 
@@ -98,6 +98,6 @@ export fn intFromDigits(base, digits) {
 
 ## Documented in spec.
 export fn isExpression(node) {
-    return? ifIs { EXPRESSION_TYPES.get(node.get_name()) }
+    return? If.is { EXPRESSION_TYPES.get(node.get_name()) }
         { node }
 };

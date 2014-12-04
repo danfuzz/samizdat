@@ -15,7 +15,7 @@ import ./string :: stringChar;
 
 ## Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    return ifIs { Cmp.eq(adorn, true) }
+    return If.is { Cmp.eq(adorn, true) }
         { before.cat(value, after) }
         { value }
 };
@@ -25,7 +25,7 @@ fn adornIf(adorn, before, value, after) {
 ## removes that prefix from the first element. As a special case, this returns
 ## `""` if given `[]` for `elems`.
 fn collectionBody(elems) {
-    ifIs { Cmp.eq(elems, []) }
+    If.is { Cmp.eq(elems, []) }
         { return "" };
 
     def one = elems.nth(0).sliceInclusive(2);
@@ -40,6 +40,7 @@ def SPECIAL_VALUES = {
     (Class):       "Class",
     (Cmp):         "Cmp",
     (Core):        "Core",
+    (If):          "If",
     (Int):         "Int",
     (Lazy):        "Lazy",
     (List):        "List",
@@ -67,19 +68,19 @@ def SPECIAL_VALUES = {
 fn nameString(prefix, name) {
     def nameString = cast(String, name);
 
-    ifIs { isIdentifier(name) }
+    If.is { isIdentifier(name) }
         { return prefix.cat(nameString) };
 
-    def finalPrefix = ifValueOr { Cmp.ne(prefix, "") } { "\\" };
+    def finalPrefix = If.or { Cmp.ne(prefix, "") } { "\\" };
     return finalPrefix.cat(sourceGeneral(nameString, true))
 };
 
 ## Stringifies a map key.
 fn keyString(key) {
-    ifIs { Symbol.accepts(key) }
+    If.is { Symbol.accepts(key) }
         { return nameString("", key) };
 
-    ifValue { SPECIAL_VALUES.get(key) }
+    If.value { SPECIAL_VALUES.get(key) }
         { string -> return "(".cat(string, ")") };
 
     return sourceGeneral(key, true)
@@ -134,10 +135,10 @@ fn String_source(value, adorn) {
 
 ## Stringifies a symbol.
 fn Symbol_source(value, adorn) {
-    ifIs { Cmp.eq(adorn, false) }
+    If.is { Cmp.eq(adorn, false) }
         { return sourceGeneral(cast(String, value), false) };
 
-    def prefix = ifIs { value.isInterned() } { "@" } { "@+" };
+    def prefix = If.is { value.isInterned() } { "@" } { "@+" };
     return nameString(prefix, value);
 };
 
@@ -151,7 +152,7 @@ fn SymbolTable_source(value, adorn) {
 
 ## Stringifies an opaque core value.
 fn Value_source(value, adorn) {
-    def nameStr = ifValue { value.debugSymbol() }
+    def nameStr = If.value { value.debugSymbol() }
         { name -> " ".cat(keyString(name)) }
         { "" };
 
@@ -165,10 +166,10 @@ fn Value_source(value, adorn) {
 ## Common code for the two `source*` variants, which takes an
 ## `adorn` flag.
 export fn sourceGeneral(value, adorn) {
-    return ifValueOr
+    return If.or
         { SPECIAL_VALUES.get(value) }
         {
-            ifSwitch({ classOf(value) },
+            If.cases({ classOf(value) },
                 {
                     (Class):       { . -> Class_source(value, adorn)       },
                     (Int):         { . -> Int_source(value, adorn)         },

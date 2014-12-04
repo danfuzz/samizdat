@@ -30,7 +30,7 @@ export class CacheState
     class.fullNew(input, context) {
         def shifted {
             def result;
-            ifValue { input.nextValue(result?) }
+            If.value { input.nextValue(result?) }
                 { newInput -> this.fullNew(newInput, [context*, result]) }
         };
 

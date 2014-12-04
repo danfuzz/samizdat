@@ -16,9 +16,9 @@ import ./constructors1 :: makeExport;
 ## Calls the given `resolveFn` on the indicated `source`. Complains if the
 ## result is void. If the result is non-void, validate that it is a `@module`.
 fn resolveAndCheck(resolveFn, source) {
-    return ifValue { resolveFn(source) }
+    return If.value { resolveFn(source) }
         { result ->
-            ifNot { result.hasName(@module) }
+            If.not { result.hasName(@module) }
                 { die("Invalid resolution result (not a `@module`)") };
             result
         }
@@ -29,9 +29,9 @@ fn resolveAndCheck(resolveFn, source) {
 ## intentionally more verbose than the equivalent (internal) function
 ## in `core.ModuleSystem`.
 fn sourceString(source) {
-    ifIs { source.hasName(@internal) }
+    If.is { source.hasName(@internal) }
         { return "internal ./".cat(source::name) };
-    ifIs { source.hasName(@external) }
+    If.is { source.hasName(@external) }
         { return "external ".cat(source::name) };
 
     return "weird source ".cat($Format::source(source))
@@ -44,7 +44,7 @@ fn sourceString(source) {
 
 ## Documented in spec.
 export fn resolveImport(node, resolveFn) {
-    return ifSwitch(
+    return If.cases(
         { node.get_name() },
         @{
             @importModule: { . ->
@@ -60,16 +60,16 @@ export fn resolveImport(node, resolveFn) {
 
                 ## Get the `info::exports` out of the resolved result. Default
                 ## to `{}` if not present.
-                def info = ifValueOr { resolved::info } { {} };
-                def exports = ifValueOr { info::exports } { {} };
+                def info = If.or { resolved::info } { {} };
+                def exports = If.or { info::exports } { {} };
 
-                ifValue { node::select }
+                If.value { node::select }
                     { select ->
                         ## Explicit selection, so no need to return a modified
                         ## result. Just validate that all selected names are
                         ## available for import.
                         select.collect { one ->
-                            ifNot { exports.get(one) }
+                            If.not { exports.get(one) }
                                 {
                                     die("Could not resolve import: ",
                                         sourceString(node::source), " :: ",
@@ -98,13 +98,13 @@ export fn withResolvedImports(node, resolveFn) {
     def converted = node::statements.collect { s /out ->
         var exported = false;
         var defNode = s;
-        ifIs { s.hasName(@export) }
+        If.is { s.hasName(@export) }
             {
                 exported := true;
                 defNode := s::value
             };
 
-        ifValueOr
+        If.or
             { defNode.hasName(@importModule) }
             { defNode.hasName(@importModuleSelection) }
             { defNode.hasName(@importResource) }
@@ -115,7 +115,7 @@ export fn withResolvedImports(node, resolveFn) {
 
         def resolved = resolveImport(defNode, resolveFn);
 
-        yield ifIs { Cmp.eq(exported, true) }
+        yield If.is { Cmp.eq(exported, true) }
             { makeExport(resolved) }
             { resolved }
     };

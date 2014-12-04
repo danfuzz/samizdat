@@ -13,7 +13,7 @@ import ./sourceGeneral :: sourceGeneral;
 
 ## Function for producing a human-oriented string of the argument.
 export fn humanString(value) {
-    return ifSwitch(
+    return If.cases(
         { classOf(value) },
         {
             (List): { . ->

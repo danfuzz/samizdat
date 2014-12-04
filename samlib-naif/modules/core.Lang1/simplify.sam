@@ -43,7 +43,7 @@ fn withFinalBindings(orig, more) {
 
 ## Expands the given pex node into an expression node.
 fn convertPex(node, formals) {
-    return ifSwitch(
+    return If.cases(
         { node.get_name() },
         @{
             @any: { . ->
@@ -64,7 +64,7 @@ fn convertPex(node, formals) {
                 def closurePayload = @{node*, formals};
                 def fullClosure = makeFullClosure(closurePayload);
 
-                ifValueAndElse
+                If.andThenElse
                     { Cmp.eq(fullClosure::statements, []) }
                     { . -> fullClosure::yield.hasName(@literal) }
                     { ., yNode ->
@@ -101,7 +101,7 @@ fn convertPex(node, formals) {
             @sequence: { . ->
                 ## Extract the formals out of any `varDef` nodes.
                 def newFormals = node::pexes.collect { pex ->
-                    ifIs { pex.hasName(@varDef) }
+                    If.is { pex.hasName(@varDef) }
                         { @formal{name: pex::name} }
                         { @formal{} }
                 };
@@ -111,7 +111,7 @@ fn convertPex(node, formals) {
                 def convertedPexes =
                     collectAll(RANGE_0_ETC, node::pexes)
                         { n, pex ->
-                            def subPex = ifIs { pex.hasName(@varDef) }
+                            def subPex = If.is { pex.hasName(@varDef) }
                                 { pex::value }
                                 { pex };
                             convertPex(subPex,
@@ -168,7 +168,7 @@ fn convertPex(node, formals) {
 ## Converts a layer 1 expression or statement node into an equivalent layer
 ## 0 node.
 fn convertPexIn(node) {
-    return ifSwitch(
+    return If.cases(
         { node.get_name() },
         @{
             @apply: { . ->
@@ -235,7 +235,7 @@ fn convertPexIn(node) {
 export fn simplify(expressionNode, resolveFn) {
     def converted = convertPexIn(expressionNode);
 
-    return ifIs { converted.hasName(@closure) }
+    return If.is { converted.hasName(@closure) }
         { withModuleDefs(withResolvedImports(converted, resolveFn)) }
         { converted }
 };

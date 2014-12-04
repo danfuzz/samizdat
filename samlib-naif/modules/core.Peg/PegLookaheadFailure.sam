@@ -29,11 +29,11 @@ export class PegLookaheadFailure
     ## Documented in spec.
     class.new(rule) {
         ## Optimiziation: Representation of `!.`.
-        ifIs { Cmp.eq(rule, any) }
+        If.is { Cmp.eq(rule, any) }
             { return eof };
 
         ## Optimization: Representation of `!()`.
-        ifIs { Cmp.eq(rule, empty) }
+        If.is { Cmp.eq(rule, empty) }
             { return fail };
 
         ## The general case.
@@ -42,7 +42,7 @@ export class PegLookaheadFailure
 
     ## Documented in spec.
     .parse(state) {
-        return? ifNot { state.applyRule(this.(ACCESS)(@rule)) }
+        return? If.not { state.applyRule(this.(ACCESS)(@rule)) }
             { state.addContext(null) }
     };
 };

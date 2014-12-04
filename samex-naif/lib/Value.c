@@ -62,6 +62,16 @@ FUN_IMPL_DECL(classOf) {
 }
 
 // Documented in spec.
+FUN_IMPL_DECL(loop) {
+    zvalue function = args.elems[0];
+    for (;;) {
+        zstackPointer save = datFrameStart();
+        FUN_CALL(function);
+        datFrameReturn(save, NULL);
+    }
+}
+
+// Documented in spec.
 FUN_IMPL_DECL(maybeCast) {
     zvalue cls = args.elems[0];
     zvalue value = args.elems[1];

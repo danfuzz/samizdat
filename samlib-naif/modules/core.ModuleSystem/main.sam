@@ -86,13 +86,13 @@ fn fileNameSuffix(path) {
 
     path.forEach
         { ch ->
-            ifIs { Cmp.eq(ch, "/") }
+            If.is { Cmp.eq(ch, "/") }
                 {
                     ## New path component.
                     gotDot := 0;
                 }
                 {
-                    ifIs { Cmp.eq(ch, ".") }
+                    If.is { Cmp.eq(ch, ".") }
                         {
                             gotDot := 1;
                             result := "";
@@ -101,21 +101,21 @@ fn fileNameSuffix(path) {
                 }
         };
 
-    return ifIs { Cmp.eq(gotDot, 0) }
+    return If.is { Cmp.eq(gotDot, 0) }
         { "" }
         { result }
 };
 
 ## Helper for `checkExternalSource`: Validates a character pair.
 fn checkExternalSourcePair(lastCh, ch) {
-    ifIs { Cmp.eq(ch, ".") }
+    If.is { Cmp.eq(ch, ".") }
         {
-            ifIs { Cmp.eq(lastCh, ".") }
+            If.is { Cmp.eq(lastCh, ".") }
                 { die("Invalid external source: empty component") };
             return
         };
 
-    ifNot { VALID_COMPONENT_CHARS.get(ch) }
+    If.not { VALID_COMPONENT_CHARS.get(ch) }
         { die("Invalid external source: bad character \"", ch, "\"") }
 };
 
@@ -124,15 +124,15 @@ fn checkExternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@external` but is improperly-formed, this dies
 ## with an error.
 fn checkExternalSource(source) {
-    ifNot { source.hasName(@external) }
+    If.not { source.hasName(@external) }
         { return };
 
-    def name = ifValueOr { source::name }
+    def name = If.or { source::name }
         { die("Invalid external source: no `name`") };
 
-    ifNot { String.accepts(name) }
+    If.not { String.accepts(name) }
         { die("Invalid external source: `name` not a string") };
-    ifIs { Cmp.eq(name, "") }
+    If.is { Cmp.eq(name, "") }
         { die("Invalid external source: empty `name`") };
 
     var lastCh = ".";  ## Init to `"."` to make the first check work out.
@@ -149,25 +149,25 @@ fn checkExternalSource(source) {
 
 ## Helper for `checkInternalSource`: Validates a character pair.
 fn checkInternalSourcePair(lastCh, ch) {
-    ifIs { Cmp.eq(ch, "/") }
+    If.is { Cmp.eq(ch, "/") }
         {
-            ifIs { Cmp.eq(lastCh, "/") }
+            If.is { Cmp.eq(lastCh, "/") }
                 { die("Invalid internal source: empty component") };
-            ifIs { Cmp.eq(lastCh, ".") }
+            If.is { Cmp.eq(lastCh, ".") }
                 { die("Invalid internal source: empty suffix") };
             return
         };
 
-    ifIs { Cmp.eq(ch, ".") }
+    If.is { Cmp.eq(ch, ".") }
         {
-            ifIs { Cmp.eq(lastCh, "/") }
+            If.is { Cmp.eq(lastCh, "/") }
                 { die("Invalid internal source: component-initial dot") };
-            ifIs { Cmp.eq(lastCh, ".") }
+            If.is { Cmp.eq(lastCh, ".") }
                 { die("Invalid internal source: double dot") };
             return
         };
 
-    ifNot { VALID_COMPONENT_CHARS.get(ch) }
+    If.not { VALID_COMPONENT_CHARS.get(ch) }
         { die("Invalid internal source: bad character \"", ch, "\"") }
 };
 
@@ -176,15 +176,15 @@ fn checkInternalSourcePair(lastCh, ch) {
 ## If `source` is marked `@internal` but is improperly-formed, this dies
 ## with an error.
 fn checkInternalSource(source) {
-    ifNot { source.hasName(@internal) }
+    If.not { source.hasName(@internal) }
         { return };
 
-    def name = ifValueOr { source::name }
+    def name = If.or { source::name }
         { die("Invalid internal source: no `name`") };
 
-    ifNot { String.accepts(name) }
+    If.not { String.accepts(name) }
         { die("Invalid internal source: `name` not a string") };
-    ifIs { Cmp.eq(name, "") }
+    If.is { Cmp.eq(name, "") }
         { die("Invalid internal source: empty `name`") };
 
     var lastCh = "/";  ## Init to `"/"` to make the first check work out.
@@ -202,11 +202,11 @@ fn checkInternalSource(source) {
 ## Validates an absolute file path string. It must be a string and start with
 ## `"/"`.
 fn checkAbsolutePath(path) {
-    ifIs { Cmp.eq(path, "") }
+    If.is { Cmp.eq(path, "") }
         { die("Invalid file path: empty string") };
-    ifNot { String.accepts(path) }
+    If.not { String.accepts(path) }
         { die("Invalid file path: not a string") };
-    ifNot { Cmp.eq(path.get(0), "/") }
+    If.not { Cmp.eq(path.get(0), "/") }
         { die("Invalid file path: not absolute") }
 };
 
@@ -216,29 +216,29 @@ fn resolveHelper(loadedBox, source, resolveFn) {
     ## The loaded map maps paths to `@loading` for a load-in-progress,
     ## `@notFound` for a known-missing module, and to a `@module` for
     ## a successfully-loaded result.
-    ifValue { (loadedBox*).get(source) }
+    If.value { (loadedBox*).get(source) }
         { found ->
-            ifIs { found.hasName(@module) }
+            If.is { found.hasName(@module) }
                 { return found };
-            ifIs { Cmp.eq(found, @notFound) }
+            If.is { Cmp.eq(found, @notFound) }
                 { return };
-            ifIs { Cmp.eq(found, @loading) }
+            If.is { Cmp.eq(found, @loading) }
                 { die("Module load loop: ", sourceString(source)) };
         };
 
     loadedBox* := {(loadedBox*)*, (source): @loading};
-    def result = ifValueOr { resolveFn() } { @notFound };
+    def result = If.or { resolveFn() } { @notFound };
     loadedBox* := {(loadedBox*)*, (source): result};
 
-    return? ifNot { Cmp.eq(result, @notFound) }
+    return? If.not { Cmp.eq(result, @notFound) }
         { result }
 };
 
 ## Returns a human-oriented string name for a source.
 fn sourceString(source) {
-    ifIs { source.hasName(@internal) }
+    If.is { source.hasName(@internal) }
         { return "./".cat(source::name) };
-    ifIs { source.hasName(@external) }
+    If.is { source.hasName(@external) }
         { return source::name };
 
     die("Bad module / resource `source`.")
@@ -253,7 +253,7 @@ fn loadGlobals(loader) {
 ## Given source text, returns a parsed tree form, using the given `loader`
 ## to find the apprpriate parser and to do any required module resolution.
 fn treeFromText(loader, text) {
-    def languageName = ifValueOr { $Lang0::languageOf(text) }
+    def languageName = If.or { $Lang0::languageOf(text) }
         { DEFAULT_LANGUAGE };
     def lang = loadModule(loader, @external{name: languageName});
 
@@ -271,14 +271,14 @@ fn treeFromText(loader, text) {
 
 ## Documented in spec.
 export fn loadModule(loader, source) {
-    return ifValue { loader.resolve(source) }
+    return If.value { loader.resolve(source) }
         { resolved -> resolved::exports }
         { die("Module not found: ", sourceString(source)) }
 };
 
 ## Documented in spec.
 export fn loadResource(loader, source, format) {
-    return ifValueOr { loader.readResource(source, format) }
+    return If.or { loader.readResource(source, format) }
         { die("Resource not found: ", sourceString(source)) }
 };
 
@@ -297,7 +297,7 @@ class NullLoader
 
     ## Documented in spec.
     .resolve(source) {
-        return? ifIs { checkExternalSource(source) }
+        return? If.is { checkExternalSource(source) }
             { BOOTSTRAP_MODULES.get(source) }
     };
 };
@@ -308,7 +308,7 @@ def nullLoader = NullLoader.(NEW)();
 ## Helper to "massage" `null` into `nullLoader` and pass everything
 ## else through as-is.
 fn fixNullLoader(loader) {
-    return ifIs { Cmp.eq(loader, null) }
+    return If.is { Cmp.eq(loader, null) }
         { nullLoader }
         { loader }
 };
@@ -329,7 +329,7 @@ fn doExternalResolve(loader, source) {
     def data = loader.(ACCESS)();
     def modulePath = data::basePath.cat(source::name);
 
-    return? ifIs { Cmp.eq($Io0::fileType(modulePath), @directory) }
+    return? If.is { Cmp.eq($Io0::fileType(modulePath), @directory) }
         {
             note("    ", sourceString(source));
 
@@ -351,12 +351,12 @@ export class ExternalLoader
 
         ## Check for existence and directoriness.
         def pathType = $Io0::fileType(path);
-        ifIs { Cmp.eq(pathType, @absent) }
+        If.is { Cmp.eq(pathType, @absent) }
             {
                 ## No such file or directory.
                 return fixNullLoader(nextLoader)
             };
-        ifNot { Cmp.eq(pathType, @directory) }
+        If.not { Cmp.eq(pathType, @directory) }
             {
                 die("Module loader path exists but is not a directory: ",
                     path)
@@ -382,14 +382,14 @@ export class ExternalLoader
     .resolve(source) {
         def data = this.(ACCESS)();
 
-        ifNot { checkExternalSource(source) }
+        If.not { checkExternalSource(source) }
             {
                 ## Not an external source, so punt to the next loader.
                 return? data::nextLoader.resolve(source)
             };
 
         fn externalResolve() {
-            return? ifValueOr
+            return? If.or
                 { doExternalResolve(this, source) }
                 { data::nextLoader.resolve(source) }
         };
@@ -421,21 +421,21 @@ fn doInternalResolve(loader, source) {
     def pathPrefix = data::basePath.cat(source::name);
     def binPath = pathPrefix.cat(".samb");
 
-    ifIs { Cmp.eq($Io0::fileType(binPath), @file) }
+    If.is { Cmp.eq($Io0::fileType(binPath), @file) }
         {
             def func = $Code::evalBinary(data::globals, binPath);
-            return ifValueOr { func() }
+            return If.or { func() }
                 { die("No result from binary module: ", sourcePath) }
         };
 
     def sourcePath = pathPrefix.cat(".sam");
-    ifIs { Cmp.eq($Io0::fileType(sourcePath), @file) }
+    If.is { Cmp.eq($Io0::fileType(sourcePath), @file) }
         {
             def text = $Io0::readFileUtf8(sourcePath);
             def tree = treeFromText(loader, text);
             def func = $Code::eval(data::globals, tree);
 
-            return ifValueOr { func() }
+            return If.or { func() }
                 { die("No result from module: ", sourcePath) }
         };
 
@@ -450,7 +450,7 @@ fn readResource_type(fullPath) {
 
 ## `readResource` implementation for format `utf8`.
 fn readResource_utf8(fullPath) {
-    ifNot { Cmp.eq($Io0::fileType(fullPath), @file) }
+    If.not { Cmp.eq($Io0::fileType(fullPath), @file) }
         { die("Missing resource: ", fullPath) };
 
     return $Io0::readFileUtf8(fullPath)
@@ -509,7 +509,7 @@ export class InternalLoader
     .readResource(source, format) {
         def data = this.(ACCESS)();
 
-        ifNot { checkInternalSource(source) }
+        If.not { checkInternalSource(source) }
             {
                 ## Not an internal source, so punt to the next loader.
                 return? data::nextLoader.readResource(source, format)
@@ -517,7 +517,7 @@ export class InternalLoader
 
         def fullPath = data::basePath.cat(source::name);
 
-        return ifValue { INTERNAL_READERS.get(format) }
+        return If.value { INTERNAL_READERS.get(format) }
             { reader -> reader(fullPath) }
             { die("Unsupported resource format: ", format) }
     };
@@ -526,7 +526,7 @@ export class InternalLoader
     .resolve(source) {
         def data = this.(ACCESS)();
 
-        ifNot { checkInternalSource(source) }
+        If.not { checkInternalSource(source) }
             {
                 ## Not an internal source, so punt to the next loader.
                 return? data::nextLoader.resolve(source)
@@ -568,14 +568,14 @@ fn makeFileGlobals(loader) {
 fn runProgram(programFunc, args) {
     def optResult = programFunc()?;
 
-    ifIs { Cmp.eq(optResult, []) }
+    If.is { Cmp.eq(optResult, []) }
         { return };
 
     def result = optResult*;
 
-    ifIs { result.hasName(@module) }
+    If.is { result.hasName(@module) }
         {
-            ifValue { result::exports::main }
+            If.value { result::exports::main }
                 { main -> return? main(args*) }
         };
 
@@ -609,9 +609,9 @@ fn runBinaryFile(path, loader, args) {
 export fn main(libraryPath, primitiveGlobals) {
     note("\nLoading core library `main`...");
     def mainLoader = InternalLoader.new(libraryPath, primitiveGlobals, null);
-    def mainModule = ifValueOr { resolveMain(mainLoader) }
+    def mainModule = If.or { resolveMain(mainLoader) }
         { die("No core library `main` module found.") };
-    def mainFunction = ifValueOr { mainModule::exports::main }
+    def mainFunction = If.or { mainModule::exports::main }
         { die("No `main` export from core library's `main`.") };
 
     return mainFunction(libraryPath, primitiveGlobals)
@@ -621,9 +621,9 @@ export fn main(libraryPath, primitiveGlobals) {
 export fn run(path, loader, args*) {
     def globals = loadGlobals(loader);
     def mainLoader = InternalLoader.new(path, globals, loader);
-    def mainModule = ifValueOr { resolveMain(mainLoader) }
+    def mainModule = If.or { resolveMain(mainLoader) }
         { die("No `main` module found on path: ", path) };
-    def mainFunction = ifValueOr { mainModule::exports::main }
+    def mainFunction = If.or { mainModule::exports::main }
         { die("No `main` export from module's `main`.") };
 
     return? mainFunction(args*)
@@ -633,10 +633,10 @@ export fn run(path, loader, args*) {
 export fn runFile(path, loader, args*) {
     def suffix = fileNameSuffix(path);
 
-    ifIs { Cmp.eq(suffix, "sam") }
+    If.is { Cmp.eq(suffix, "sam") }
         { return? runTextFile(path, loader, args) };
 
-    ifIs { Cmp.eq(suffix, "samb") }
+    If.is { Cmp.eq(suffix, "samb") }
         { return? runBinaryFile(path, loader, args) };
 
     die("Unknown file name suffix: ", suffix)

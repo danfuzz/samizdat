@@ -120,7 +120,7 @@ def parIdentifierSymbol = {:
     token = .
     {
         def name = token.get_name();
-        ifIs { KEYWORDS.get(name) }
+        If.is { KEYWORDS.get(name) }
             { makeLiteral(name) }
     }
 :};
@@ -276,7 +276,7 @@ def parList = {:
     expressions = parUnadornedList
     @"]"
     {
-        ifIs { expressions.crossEq([]) }
+        If.is { expressions.crossEq([]) }
             { LITS::EMPTY_LIST }
             {
                 def result = makeCallGeneral(
@@ -284,7 +284,7 @@ def parList = {:
                 ## If we end up with an `apply` node, then its `value` is
                 ## going to be a list-yielding expression, in which case we
                 ## can return that directly.
-                ifIs { result.hasName(@apply) }
+                If.is { result.hasName(@apply) }
                     { result::values }
                     { result }
             }
@@ -322,7 +322,7 @@ def parNullaryClosure = {:
     c = parFullClosure
 
     {
-        ifNot { c::formals.crossEq([]) }
+        If.not { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -334,7 +334,7 @@ def parBasicNullaryClosure = {:
     c = parBasicClosure
 
     {
-        ifNot { c::formals.crossEq([]) }
+        If.not { c::formals.crossEq([]) }
             { die("Invalid formal argument in code block.") };
         c
     }
@@ -504,13 +504,13 @@ def parYieldOrNonlocal = {:
     ## operator. Otherwise, it's optional.
     value = (
         v = parExpression
-        { ifIs { optQuest* } { makeMaybe(v) } { v } }
+        { If.is { optQuest* } { makeMaybe(v) } { v } }
     |
-        { ifNot { optQuest* } { @void{} } }
+        { If.not { optQuest* } { @void{} } }
     )
 
     {
-        ifIs { name.hasName(@yield) }
+        If.is { name.hasName(@yield) }
             { value }
             { makeNonlocalExit(name, value) }
     }
@@ -806,7 +806,7 @@ def parImportStatement = {:
 
     {
         def data = @{nameOrPrefix*, format*, select*, source};
-        ifIs { optExport* }
+        If.is { optExport* }
             { makeExport(makeImport(data)) }
             { makeImport(data) }
     }
@@ -997,8 +997,8 @@ def parPexSetString = {:
             def endChar = end::value;
 
             ## Reject non-single-character strings.
-            ifIs { Cmp.ne(1, startChar.get_size()) } { yield /out };
-            ifIs { Cmp.ne(1, endChar.get_size()) } { yield /out };
+            If.is { Cmp.ne(1, startChar.get_size()) } { yield /out };
+            If.is { Cmp.ne(1, endChar.get_size()) } { yield /out };
 
             yield "".cat(ClosedRange.newInclusive(startChar, endChar)*)
         }
@@ -1074,15 +1074,15 @@ def parPexItem = {:
     {
         var pex = base;
 
-        ifValue { optRepeat* }
+        If.value { optRepeat* }
             { repeat ->
                 pex := @(PEX_TYPES.get(repeat.get_name())){pex}
             };
-        ifValue { optLookahead* }
+        If.value { optLookahead* }
             { lookahead ->
                 pex := @(PEX_TYPES.get(lookahead.get_name())){pex}
             };
-        ifValue { optName* }
+        If.value { optName* }
             { name ->
                 pex := @varDef{name, value: pex}
             };
@@ -1173,7 +1173,7 @@ fn makeBinaryCalls(firstEx, opExList) {
 ## called to do the work). For more operators, the transformation is a bit
 ## less straightforward, so as to enable the specified chained comparison
 ## behavior. This is done by turning the entire expression into a thunk-call
-## of a nested `ifIs ...` calls, with local variable bindings for every term
+## of a nested `If.is ...` calls, with local variable bindings for every term
 ## to be tested other than the final one. For example:
 ##
 ## ```
@@ -1184,10 +1184,10 @@ fn makeBinaryCalls(firstEx, opExList) {
 ## {
 ##     def v1 = x;
 ##     def v2 = y;
-##     ifIs { Cmp.perLt(v1, v2) }
+##     If.is { Cmp.perLt(v1, v2) }
 ##         {
 ##             def v3 = z;
-##             ifIs { Cmp.perLe(v2, v3) }
+##             If.is { Cmp.perLe(v2, v3) }
 ##                 { Cmp.perEq(v3, q) }
 ##         }
 ## }()
@@ -1199,7 +1199,7 @@ fn makeCompareCalls(firstEx, opExList) {
     ## variable name generation.
     def baseResult = makeBinaryCalls(firstEx, opExList);
 
-    ifIs { Cmp.le(opExList.get_size(), 1) }
+    If.is { Cmp.le(opExList.get_size(), 1) }
         {
             ## Trivial case of zero or one operator. Just use the result of
             ## the call to `makeBinaryCalls`.
@@ -1221,7 +1221,7 @@ fn makeCompareCalls(firstEx, opExList) {
     fn transform(leftRef, opEx, rest*) {
         def resolvedOp = BINARY_OPERATORS.get(opEx::op.get_name());
 
-        return ifIs { Cmp.eq(rest, []) }
+        return If.is { Cmp.eq(rest, []) }
             { makeThunk(makeFunCall(resolvedOp, leftRef, opEx::expr)) }
             {
                 def rightName = nextName();
@@ -1229,7 +1229,7 @@ fn makeCompareCalls(firstEx, opExList) {
                 makeFullClosure(@{
                     statements: [makeVarDef(rightName, @result, opEx::expr)],
                     yield: makeMaybe(
-                        makeFunCall(REFS::ifIs,
+                        makeFunCall(METHODS::If_is,
                             makeThunk(
                                 makeFunCall(resolvedOp, leftRef, rightRef)),
                             transform(rightRef, rest*)))
@@ -1295,19 +1295,19 @@ def parInterpolatedString = {:
         ## This includes recursive parser calls to convert list forms
         ## into appropriate node types.
         def elems = token::value.collect { elem ->
-            ifIs { String.accepts(elem) }
+            If.is { String.accepts(elem) }
                 { makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
 
-                    def formatter = ifValue { elem::format }
+                    def formatter = If.value { elem::format }
                         { format ->
                             makeFunCall(REFS::Format_formatterFor,
                                 makeLiteral(format))
                         }
                         { REFS::Format_usual };
 
-                    def call = ifValueOr
+                    def call = If.or
                         { $Peg::apply(parStringInterpolation, tokens) }
                         { die("Invalid syntax in string interpolation.") };
 
@@ -1432,7 +1432,7 @@ def parRangeBody = {:
     |
         ## The limit is mandatory for exclusive ranges.
         {
-            ifIs { op.hasName(@"..") }
+            If.is { op.hasName(@"..") }
                 { [] }
         }
     )
@@ -1440,14 +1440,14 @@ def parRangeBody = {:
     optIncrement = (@by parExpression)?
 
     {
-        ifIs { op.hasName(@"..!") }
+        If.is { op.hasName(@"..!") }
             {
                 makeCall(
                     REFS::Range_ClosedRange, SYMS::newExclusive,
                     firstValue, optLimit*, optIncrement*)
             }
             {
-                ifValue { optLimit* }
+                If.value { optLimit* }
                     { limit ->
                         makeCall(
                             REFS::Range_ClosedRange, SYMS::newInclusive,
@@ -1476,7 +1476,7 @@ def parRangeExpression = {:
 
     {
         ## The test here is to prevent open ranges from being allowed.
-        ifNot { Cmp.eq(body::target, REFS::Range_OpenRange) }
+        If.not { Cmp.eq(body::target, REFS::Range_OpenRange) }
             { makeCallGeneral(LITS::List, SYMS::new, makeInterpolate(body)) }
     }
 :};
@@ -1502,7 +1502,7 @@ parPrefixOperator2 := {:
     ## This one is specially converted, since it's a control construct,
     ## not just a simple function application.
     @"!"
-    { { node -> makeFunCallThunks(REFS::ifNot, node, LITS::true) } }
+    { { node -> makeFunCallThunks(METHODS::If_not, node, LITS::true) } }
 :};
 
 ## Parses an index expression (inside a collection indexing postfix form).
@@ -1546,7 +1546,7 @@ def parIndexPostfix = {:
             )
 
             {
-                def name = ifIs { op.hasName(@"..") }
+                def name = If.is { op.hasName(@"..") }
                     { SYMS::sliceInclusive }
                     { SYMS::sliceExclusive };
                 def startNode = start::value;
@@ -1557,7 +1557,7 @@ def parIndexPostfix = {:
             ## At least one of start or end is `fromEnd`, so we have to
             ## use a `.sliceGeneral()` method call.
             {
-                def style = ifIs { op.hasName(@"..") }
+                def style = If.is { op.hasName(@"..") }
                     { SYMS::inclusive }
                     { SYMS::exclusive };
 
@@ -1568,7 +1568,7 @@ def parIndexPostfix = {:
                             SYMS::value, start::value));
 
                 def optEndNode = (
-                    ifNot { Cmp.eq(end, INDEX_AT_END_0) }
+                    If.not { Cmp.eq(end, INDEX_AT_END_0) }
                         {
                             makeCall(LITS::Record, SYMS::new,
                                 makeLiteral(end::origin),
@@ -1734,27 +1734,27 @@ def parLogicAndClause = {:
 ## ```
 ## expr1 & expr2
 ## =>
-## ifIs { expr1 } { expr2 }
+## If.is { expr1 } { expr2 }
 ## ```
 ##
 ## ```
 ## (def var1 = expr1) & expr2
 ## =>
-## ifValue { expr1 } { var1 -> expr2 }
+## If.value { expr1 } { var1 -> expr2 }
 ## ```
 ##
 ## ```
 ## (def var1 = expr1) & expr2 & (def var3 = expr3) & expr4
 ## =>
-## ifValueAnd
+## If.and
 ##     { expr1 }
 ##     { var1 -> expr2 }
 ##     { var1, . -> expr3 }
 ##     { var1, ., var3 -> expr4 }
 ## ```
 ##
-## That is, a single `ifIs` or `ifValue` call if there's only one `&`, or an
-## `ifValueAnd` call if there is a chain of three or more clauses.
+## That is, a single `If.is` or `If.value` call if there's only one `&`, or an
+## `If.and` call if there is a chain of three or more clauses.
 def parLogicAndExpression = {:
     ## This is done with the `*` on the list head (that is, most-then-last
     ## instead of the more usual arrangement of first-then-rest), since the
@@ -1779,10 +1779,10 @@ def parLogicAndExpression = {:
             def testThunk = clause::testThunk;
             def resultThunk = makeThunk(last);
 
-            ifIs { Cmp.eq(formal, {}) }
-                { makeFunCall(REFS::ifIs, testThunk, resultThunk) }
+            If.is { Cmp.eq(formal, {}) }
+                { makeFunCall(METHODS::If_is, testThunk, resultThunk) }
                 {
-                    makeFunCall(REFS::ifValue,
+                    makeFunCall(METHODS::If_value,
                         testThunk,
                         withFormals(resultThunk, [formal]))
                 }
@@ -1800,8 +1800,8 @@ def parLogicAndExpression = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Construct the overall `ifValueAnd` call.
-            makeFunCall(REFS::ifValueAnd,
+            ## Construct the overall `If.and` call.
+            makeFunCall(METHODS::If_and,
                 testThunks*,
                 withFormals(makeThunk(last), formals))
         }
@@ -1816,14 +1816,14 @@ def parLogicAndExpression = {:
 ## ```
 ## =>
 ## ```
-## ifValueOr { expr1 } { expr2 } { expr3 }
+## If.or { expr1 } { expr2 } { expr3 }
 ## ```
 def parLogicOrExpression = {:
     one = parLogicAndExpression
 
     (
         rest = (@"|" parLogicAndExpression)+
-        { makeFunCallThunks(REFS::ifValueOr, one, rest*) }
+        { makeFunCallThunks(METHODS::If_or, one, rest*) }
     |
         ## It's not actually a logical-or expression.
         { one }
@@ -1838,7 +1838,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (nonBoundExpr)
 ## =>
-## ifIs { nonBoundExpr }
+## If.is { nonBoundExpr }
 ##     { ... then ... }
 ##     { ... else ... }
 ## ```
@@ -1846,7 +1846,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (def name = boundExpr)
 ## =>
-## ifValue { boundExpr }
+## If.value { boundExpr }
 ##     { name -> ... then ... }
 ##     { ... else ... }
 ## ```
@@ -1854,7 +1854,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (def name1 = expr1, unboundExpr, def name3 = expr3)  ## no else
 ## =>
-## ifValueAnd
+## If.and
 ##     { expr1 }
 ##     { name1 -> unboundExpr }
 ##     { name1, . -> expr3 }
@@ -1864,7 +1864,7 @@ def parLogicOrExpression = {:
 ## ```
 ## (def name1 = expr1, unboundExpr, def name3 = expr3) ... else ...
 ## =>
-## ifValueAndElse
+## If.andThenElse
 ##     { expr1 }
 ##     { name1 -> unboundExpr }
 ##     { name1, . -> expr3 }
@@ -1875,20 +1875,20 @@ def parMultiTest = {:
     clauses = parParenTestClauseList
 
     (
-        ## Single test. Will translate as either `ifValue` or `ifIs`.
+        ## Single test. Will translate as either `If.value` or `If.is`.
         { Cmp.eq(clauses.get_size(), 1) }
         {
             def clause = clauses*;
             def formal = clause::formal;
             def testThunk = clause::testThunk;
             { thenThunk, elseThunk? ->
-                ifIs { Cmp.eq(formal, {}) }
+                If.is { Cmp.eq(formal, {}) }
                     {
-                        makeFunCall(REFS::ifIs,
+                        makeFunCall(METHODS::If_is,
                             testThunk, thenThunk, elseThunk*)
                     }
                     {
-                        makeFunCall(REFS::ifValue,
+                        makeFunCall(METHODS::If_value,
                             testThunk,
                             withFormals(thenThunk, [formal]),
                             elseThunk*)
@@ -1908,11 +1908,12 @@ def parMultiTest = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Result function which constructs the overall `ifValueAnd*` call.
+            ## Result function which constructs the overall `If.and*`
+            ## call.
             { thenThunk, elseThunk? ->
-                def func = ifIs { elseThunk* }
-                    { REFS::ifValueAndElse }
-                    { REFS::ifValueAnd };
+                def func = If.is { elseThunk* }
+                    { METHODS::If_andThenElse }
+                    { METHODS::If_and };
                 makeFunCall(func,
                     testThunks*,
                     withFormals(thenThunk, formals),
@@ -1938,13 +1939,13 @@ def parMultiTest = {:
 ## =>
 ## ```
 ## { /out ->
-##     ifValue { expr1 }
+##     If.value { expr1 }
 ##         { name1 -> thenStat1 }
 ##         {
-##             ifIs { expr2 }
+##             If.is { expr2 }
 ##                 { name2 -> thenStat2 }
 ##                 {
-##                     ifValueAndElse
+##                     If.andThenElse
 ##                         { expr3 }
 ##                         { name3 -> expr4 }
 ##                         { name3, name4 -> thenStat34 },
@@ -1957,9 +1958,9 @@ def parMultiTest = {:
 ## with:
 ## * the outer thunk-call omitted if there was no yield definition.
 ## * omitting the final `elseStat` if there was no `else` clause.
-## * `ifIs` instead of `ifValue` and no then-clause argument declaration for
+## * `If.is` instead of `If.value` and no then-clause argument declaration for
 ##   any clause where no name binding was present.
-## * `ifValueAnd` or `ifValueAndElse` instead of `ifValue` (with incremental
+## * `If.and` or `If.andThenElse` instead of `If.value` (with incremental
 ##   formals binding) for any clause that uses multiple tests.
 ## * arbitrary nesting of additional clauses.
 def parIfExpression = {:
@@ -2010,7 +2011,7 @@ def parIfExpression = {:
         ## unwrap it into a straight call, depending on if the original `if`
         ## has a yield def or not. Note that the `yield` in a thunk is always
         ## a `maybe`, which also needs to be unwrapped.
-        ifIs { Cmp.eq(yieldDef, {}) }
+        If.is { Cmp.eq(yieldDef, {}) }
             { mainThunk::yield::value }
             {
                 ## There was a yield def. Add the yield def to the thunk,
@@ -2038,7 +2039,7 @@ def parSwitchCase = {:
 
     {
         def base = {code, keys: [firstKeys*, lastKeys*]};
-        ifIs { optDefault* }
+        If.is { optDefault* }
             { {base*, default: true} }
             { base }
     }
@@ -2056,7 +2057,7 @@ def parSwitchCase = {:
 ## =>
 ## ```
 ## { /out ->
-##     ifSwitch(
+##     If.cases(
 ##         { testExpr },
 ##         {
 ##             (ex1): { name /out -> s1a; s1b },
@@ -2104,16 +2105,16 @@ def parSwitchExpression = {:
         ## more info.
         fn finishCode(case) {
             var fullCode = withFormals(case::code, [testClause::formal]);
-            ifValue { yieldDef::yieldDef }
+            If.value { yieldDef::yieldDef }
                 { y -> fullCode := withYieldDefIfAbsent(fullCode, y) };
             return makeFullClosure(fullCode)
         };
 
         def optDefault = cases.collect { case ->
-            ifIs { case::default } { finishCode(case) }
+            If.is { case::default } { finishCode(case) }
         };
 
-        ifIs { Cmp.gt(optDefault.get_size(), 1) }
+        If.is { Cmp.gt(optDefault.get_size(), 1) }
             { die("Multiple default cases in switch.") };
 
         ## The `reverse` in the case construction code is done in order to
@@ -2123,7 +2124,7 @@ def parSwitchExpression = {:
         def caseClauses = cases.collect { case ->
             def keys = case::keys;
             def code = finishCode(case);
-            ifIs { List.accepts(keys) }
+            If.is { List.accepts(keys) }
                 { makeCallGeneral(LITS::Map, SYMS::singleValue, keys*, code) }
         };
         def caseMap = makeCallGeneral(LITS::EMPTY_MAP, SYMS::cat,
@@ -2131,14 +2132,14 @@ def parSwitchExpression = {:
                 makeCall(makeCallGeneral(LITS::List, SYMS::new, caseClauses*),
                     SYMS::reverse)));
 
-        def ifCall = makeFunCall(REFS::ifSwitch,
+        def ifCall = makeFunCall(METHODS::If_cases,
             testClause::testThunk,
             caseMap,
             optDefault*);
 
         ## If there's a yield def, then wrap `ifCall` in a thunk-call.
         ## If not, then `ifCall` is the result.
-        ifIs { Cmp.eq(yieldDef, {}) }
+        If.is { Cmp.eq(yieldDef, {}) }
             { ifCall }
             {
                 def outerClosure = makeFullClosure(@{
@@ -2171,7 +2172,7 @@ def parOptBreakDef = {:
 ## { /\"break" ->
 ##     def out = \"break";
 ##     loop { /\"continue" ->
-##         ifValue { test }
+##         If.value { test }
 ##             { name /next -> stat1; stat2 }
 ##             { yield /\"break" }
 ##     }
@@ -2182,8 +2183,8 @@ def parOptBreakDef = {:
 ## * the initial break assignment omitted if there is no yield def.
 ## * the body argument declaration changed to `.` if there is no
 ##   test expression name binding.
-## * `ifIs` instead of `ifValue` if there is no name binding.
-## * `ifValueAnd` instead of `ifValue` if there are multiple tests.
+## * `If.is` instead of `If.value` if there is no name binding.
+## * `If.and` instead of `If.value` if there are multiple tests.
 def parWhileExpression = {:
     @while
     breakDef = parOptBreakDef
@@ -2221,14 +2222,14 @@ def parWhileExpression = {:
 ##     def out = \"break";
 ##     loop { /\"continue" ->
 ##         { /next -> stat1; stat2 }();
-##         ifNot { expr }
+##         If.not { expr }
 ##             { yield /\"break" }
 ##     }
 ## }()
 ## ```
 ##
 ## with the initial break assignment omitted if there is no yield def, and
-## with the `ifNot` statement omitted if there is no `while` at the end
+## with the `If.not` statement omitted if there is no `while` at the end
 ## of the `do`.
 def parDoExpression = {:
     @do
@@ -2237,7 +2238,7 @@ def parDoExpression = {:
     condition = (
         @while
         ex = parParenExpression
-        { makeFunCallThunks(REFS::ifNot, ex, makeNonlocalExit(REFS::break)) }
+        { makeFunCallThunks(METHODS::If_not, ex, makeNonlocalExit(REFS::break)) }
     )?
 
     {
@@ -2322,7 +2323,7 @@ parExpression2 := {:
 
 ## Documented in spec.
 export fn parseExpression(expression) {
-    def tokens = ifIs { String.accepts(expression) }
+    def tokens = If.is { String.accepts(expression) }
         { tokenize(expression) }
         { expression };
 
@@ -2331,7 +2332,7 @@ export fn parseExpression(expression) {
 
 ## Documented in spec.
 export fn parseProgram(program) {
-    def tokens = ifIs { String.accepts(program) }
+    def tokens = If.is { String.accepts(program) }
         { tokenize(program) }
         { program };
 

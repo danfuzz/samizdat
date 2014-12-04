@@ -38,11 +38,11 @@ fn msgTen(header, origGen) {
     { /done ->
         loop {
             count := count.sub(1);
-            ifIs { Cmp.lt(count, 0) }
+            If.is { Cmp.lt(count, 0) }
                 { yield /done };
 
             def result;
-            ifValue { gen.nextValue(result?) }
+            If.value { gen.nextValue(result?) }
                 { nextGen ->
                     msg(result);
                     gen := nextGen

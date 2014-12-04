@@ -22,6 +22,7 @@ DEF_SYMBOL(ClosureNode);
 DEF_SYMBOL(Cmp);
 DEF_SYMBOL(Core);
 DEF_SYMBOL(ExecNode);
+DEF_SYMBOL(If);
 DEF_SYMBOL(Int);
 DEF_SYMBOL(Jump);
 DEF_SYMBOL(Lazy);
@@ -44,9 +45,11 @@ DEF_SYMBOL(abs);
 DEF_SYMBOL(accepts);
 DEF_SYMBOL(add);
 DEF_SYMBOL(and);
+DEF_SYMBOL(andThenElse);
 DEF_SYMBOL(bit);
 DEF_SYMBOL(bitSize);
 DEF_SYMBOL(call);
+DEF_SYMBOL(cases);
 DEF_SYMBOL(castFrom);
 DEF_SYMBOL(castToward);
 DEF_SYMBOL(cat);
@@ -72,10 +75,12 @@ DEF_SYMBOL(get_size);
 DEF_SYMBOL(get_value);
 DEF_SYMBOL(gt);
 DEF_SYMBOL(hasName);
+DEF_SYMBOL(is);
 DEF_SYMBOL(isInterned);
 DEF_SYMBOL(keyList);
 DEF_SYMBOL(le);
 DEF_SYMBOL(lt);
+DEF_SYMBOL(maybeValue);
 DEF_SYMBOL(mod);
 DEF_SYMBOL(modEu);
 DEF_SYMBOL(mul);
@@ -111,6 +116,7 @@ DEF_SYMBOL(sub);
 DEF_SYMBOL(subclass);
 DEF_SYMBOL(toLogic);
 DEF_SYMBOL(toUnlisted);
+DEF_SYMBOL(value);
 DEF_SYMBOL(valueList);
 DEF_SYMBOL(xor);
 
@@ -161,6 +167,3 @@ DEF_SYMBOL(resources);
 
 /** Used as an `*order()` result. */
 DEF_SYMBOL(same);
-
-/** Used as a key in records. */
-DEF_SYMBOL(value);

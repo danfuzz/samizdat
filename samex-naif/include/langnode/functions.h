@@ -77,6 +77,12 @@ zvalue get_definedNames(zvalue node);
 /** Equivalent to `LITS::<name>` in the spec. */
 #define LITS(name) (LIT_##name)
 
+/** Equivalent to `METHODS::<class>_<name>` in the spec. */
+#define METHODS(cls, methodName) \
+    (cm_new_Record(SYM(methodId), \
+        SYM(class), LITS(cls), \
+        SYM(name),  SYMS(methodName)))
+
 /** Equivalent to `SYMS::<name>` in the spec. */
 #define SYMS(name) (makeLiteral(SYM(name)))
 

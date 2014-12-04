@@ -48,7 +48,7 @@ export class ListWrapGenerator
     .nextValue(box) {
         def result;
 
-        return? ifValue { this.(ACCESS)(@generator).nextValue(result?) }
+        return? If.value { this.(ACCESS)(@generator).nextValue(result?) }
             { nextGenerator ->
                 box* := [result];
                 this.(NEW)(@{generator: nextGenerator})

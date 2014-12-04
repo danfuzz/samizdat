@@ -90,7 +90,7 @@ fn yStarCombinator(functions*) {
 ## recursion.
 def countDown = yCombinator { countDown ->
     { n ->
-        ifIs { Cmp.ge(n, 0) }
+        If.is { Cmp.ge(n, 0) }
             { [n, countDown(n.sub(1))*] }
             { [] }
     }
@@ -101,7 +101,7 @@ def countDown = yCombinator { countDown ->
 def countDowns = yStarCombinator
     { f1, f2 ->
         { n ->
-            ifIs { Cmp.gt(n, 0) }
+            If.is { Cmp.gt(n, 0) }
                 { [n, f2(n.sub(1))*] }
                 { [0] }
         }

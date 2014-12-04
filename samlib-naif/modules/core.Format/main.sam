@@ -19,12 +19,12 @@ import ./sourceGeneral :: sourceGeneral;
 
 ## Documented in spec.
 export fn int(value, optBase?) {
-    def base = ifValueOr { optBase* } { 10 };
+    def base = If.or { optBase* } { 10 };
 
-    ifIs { Cmp.lt(base, 2) }
+    If.is { Cmp.lt(base, 2) }
         { die("Invalid base for int.") };
 
-    ifIs { Cmp.gt(base, 36) }
+    If.is { Cmp.gt(base, 36) }
         { die("Invalid base for int.") };
 
     return intWithBase(value, base)
@@ -37,21 +37,21 @@ export fn intHex(arg) {
 
 ## Documented in spec.
 export fn source(value?) {
-    return ifValue { value* }
+    return If.value { value* }
         { value -> sourceGeneral(value, true) }
         { "void" }
 };
 
 ## Documented in spec.
 export fn sourceUnadorned(value?) {
-    return ifValue { value* }
+    return If.value { value* }
         { value -> sourceGeneral(value, false) }
         { "void" }
 };
 
 ## Documented in spec.
 export fn usual(value?) {
-    return ifValue { value* }
+    return If.value { value* }
         { value -> humanString(value) }
         { "" }
 };
@@ -69,6 +69,6 @@ def FORMATTERS = {
 ## This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 ## is defined in terms of other exported functions.
 export fn formatterFor(formatSpec) {
-    return ifValueOr { FORMATTERS.get(cast(Symbol, formatSpec)) }
+    return If.or { FORMATTERS.get(cast(Symbol, formatSpec)) }
         { die("Unrecognized format spec: ", source(formatSpec)) }
 };

@@ -46,11 +46,11 @@ fn yieldArg(a) {
 ## Main Tests
 ##
 
-ifIs(yieldVoid1, bad, good);
-ifIs(yieldVoid2, bad, good);
-ifIs(yieldVoid3, bad, good);
-ifIs(yieldVoid4, bad, good);
+If.is(yieldVoid1, bad, good);
+If.is(yieldVoid2, bad, good);
+If.is(yieldVoid3, bad, good);
+If.is(yieldVoid4, bad, good);
 
-ifValue { yieldArg("woo") }
+If.value { yieldArg("woo") }
     { v -> note(v) }
     { bad() };

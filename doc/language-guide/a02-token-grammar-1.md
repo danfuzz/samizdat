@@ -141,7 +141,7 @@ def tokIdentifier = {:
 
     {
         def name = symbolFromTokenList([one, rest*]);
-        ifValueOr { KEYWORDS.get(name) }
+        If.or { KEYWORDS.get(name) }
             { @identifier{value: name} }
     }
 :};

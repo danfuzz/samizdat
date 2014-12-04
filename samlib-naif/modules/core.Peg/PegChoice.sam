@@ -26,11 +26,11 @@ export class PegChoice
     ## Documented in spec.
     class.new(rules*) {
         ## Trivial case: No rules. Return the failure rule.
-        ifIs { Cmp.eq(rules, []) }
+        If.is { Cmp.eq(rules, []) }
             { return fail };
 
         ## Trivial case: One rule. Return that rule directly.
-        ifIs { Cmp.eq(rules.get_size(), 1) }
+        If.is { Cmp.eq(rules.get_size(), 1) }
             { return rules* };
 
         ## The general case.
@@ -40,7 +40,7 @@ export class PegChoice
     ## Documented in spec.
     .parse(state) {
         this.(ACCESS)(@rules).forEach { rule ->
-            ifValue { state.applyRule(rule) }
+            If.value { state.applyRule(rule) }
                 { newState -> return newState }
         };
 

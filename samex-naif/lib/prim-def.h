@@ -19,6 +19,7 @@ PRIM_DEF(Cell,                    CLS_Cell);
 PRIM_DEF(Class,                   CLS_Class);
 PRIM_DEF(Cmp,                     CLS_Cmp);
 PRIM_DEF(Core,                    CLS_Core);
+PRIM_DEF(If,                      CLS_If);
 PRIM_DEF(Int,                     CLS_Int);
 PRIM_DEF(Lazy,                    CLS_Lazy);
 PRIM_DEF(List,                    CLS_List);
@@ -43,16 +44,8 @@ PRIM_DEF(voidResult,              THE_VOID_RESULT);
 PRIM_FUNC(cast,                   2, 2);
 PRIM_FUNC(classOf,                1, 1);
 PRIM_FUNC(die,                    0, -1);
-PRIM_FUNC(ifIs,                   2, 3);
-PRIM_FUNC(ifNot,                  2, 2);
-PRIM_FUNC(ifSwitch,               2, 3);
-PRIM_FUNC(ifValue,                2, 3);
-PRIM_FUNC(ifValueAnd,             1, -1);
-PRIM_FUNC(ifValueAndElse,         3, -1);
-PRIM_FUNC(ifValueOr,              0, -1);
 PRIM_FUNC(loop,                   1, 1);
 PRIM_FUNC(maybeCast,              2, 2);
-PRIM_FUNC(maybeValue,             1, 1);
 PRIM_FUNC(note,                   0, -1);
 
 // Primitive functions: intended for modularization

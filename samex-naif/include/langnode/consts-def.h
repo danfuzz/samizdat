@@ -74,7 +74,6 @@ DEF_SYMBOL(loadResource,          "loadResource");
 DEF_SYMBOL(lvalue,                "lvalue");
 DEF_SYMBOL(mapping,               "mapping");
 DEF_SYMBOL(maybe,                 "maybe");
-DEF_SYMBOL(maybeValue,            "maybeValue");
 DEF_SYMBOL(methodId,              "methodId");
 DEF_SYMBOL(module,                "module");
 DEF_SYMBOL(name,                  "name");
@@ -104,6 +103,7 @@ DEF_SYMBOL(ztrue,                 "true");   // `z` avoids clash with C.
 
 DEF_TOKEN(call);
 DEF_TOKEN(fetch);
+DEF_TOKEN(maybeValue);
 DEF_TOKEN(repeat);
 DEF_TOKEN(store);
 DEF_TOKEN(value);
@@ -113,6 +113,7 @@ DEF_TOKEN(value);
 DEF_LITERAL(EMPTY_LIST,         EMPTY_LIST);
 DEF_LITERAL(EMPTY_MAP,          EMPTY_MAP);
 DEF_LITERAL(EMPTY_SYMBOL_TABLE, EMPTY_SYMBOL_TABLE);
+DEF_LITERAL(If,                 CLS_If);
 DEF_LITERAL(List,               CLS_List);
 DEF_LITERAL(Map,                CLS_Map);
 DEF_LITERAL(Object,             CLS_Object);

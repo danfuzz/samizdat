@@ -15,9 +15,9 @@
 
 ## Checks an expected result.
 fn expect(name, result, func) {
-    ifValue { func() }
+    If.value { func() }
         { got ->
-            ifNot { Cmp.eq(got, result) }
+            If.not { Cmp.eq(got, result) }
                 {
                     note("Unexpected result: ", $Format::source(got));
                     die("For: ", name);
@@ -31,7 +31,7 @@ fn expect(name, result, func) {
 
 ## Checks an expected void result.
 fn expectVoid(name, func) {
-    ifValue { func() }
+    If.value { func() }
         { got ->
             note("Unexpected non-void result: ", $Format::source(got));
             die("For: ", name)
@@ -40,7 +40,7 @@ fn expectVoid(name, func) {
 
 ## Checks an expected equality.
 fn expectEq(name, v1, v2) {
-    ifNot { Cmp.eq(v1, v2) }
+    If.not { Cmp.eq(v1, v2) }
         {
             note("Unexpected: ", $Format::source(v1), " != ",
                 $Format::source(v2));
@@ -50,7 +50,7 @@ fn expectEq(name, v1, v2) {
 
 ## Checks an expected inequality.
 fn expectNe(name, v1, v2) {
-    ifNot { Cmp.ne(v1, v2) }
+    If.not { Cmp.ne(v1, v2) }
         {
             note("Unexpected: ", $Format::source(v1), " == ",
                 $Format::source(v2));
@@ -78,13 +78,13 @@ expectEq("source 5",  "@blort",          $Format::source(@blort));
 expectEq("source 6",  "\"x\"",           $Format::source("x"));
 expectEq("source 7",  "\"fizmo\\n\"",    $Format::source("fizmo\n"));
 expectEq("source 8",  "123",             $Format::source(123));
-expectEq("source 9",  "@<Builtin ifIs>", $Format::source(ifIs));
+expectEq("source 9",  "@<Builtin cast>", $Format::source(cast));
 expectEq("source 10", "String",          $Format::source(String));
 
 ## This stringifies differently depending on if we're compiled or not. TODO:
 ## Ultimately these cases should not be distinguishable.
 def funcStr = $Format::source({ xyz() -> 1 });
-ifValueOr
+If.or
     { Cmp.eq(funcStr, "@<Builtin xyz>") }
     { Cmp.eq(funcStr, "@<Closure xyz>") }
     { die("Unexpected function string: ", funcStr) };

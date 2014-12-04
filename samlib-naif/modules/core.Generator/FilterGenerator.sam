@@ -61,9 +61,9 @@ export class FilterGenerator
         ## allowed to yield void to indicate a generated value is to
         ## be discarded.
         loop {
-            ifValue { innerGen.nextValue(result?) }
+            If.value { innerGen.nextValue(result?) }
                 { nextGen ->
-                    ifValue { filterFunction(result*) }
+                    If.value { filterFunction(result*) }
                         { value ->
                             box* := value;
                             return this.(NEW)(

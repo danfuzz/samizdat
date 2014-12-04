@@ -26,7 +26,7 @@ fn convertString(x) {
 
 ## Returns a conversion function from int to the given class.
 export fn converterFor(cls) {
-    return ifSwitch(
+    return If.cases(
         { -> cls },
         {
             (Int):    { . -> convertInt },

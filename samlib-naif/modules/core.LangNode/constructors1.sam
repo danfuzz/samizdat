@@ -13,7 +13,7 @@ import ./literals :: SYMS, makeLiteral;
 
 ## Documented in spec.
 export fn makeApply(target, name, optValues?) {
-    def values = ifValueOr { optValues* } { @void{} };
+    def values = If.or { optValues* } { @void{} };
     return @apply{target, name, values}
 };
 
@@ -49,11 +49,11 @@ export fn makeExportSelection(names+) {
 
 ## Documented in spec.
 export fn makeFunCall(function, values*) {
-    return ifIs { function.hasName(@methodId) }
+    return If.is { function.hasName(@methodId) }
         {
             ## It's a method call of some sort.
             def name = function::name;
-            return ifValue { function::class }
+            return If.value { function::class }
                 { cls ->
                     ## It binds `class`, so it's a class method.
                     makeCall(cls, name, values*)
@@ -88,13 +88,13 @@ export fn makeNoYield(value) {
 
 ## Documented in spec.
 export fn makeNonlocalExit(function, optValue?) {
-    def value = ifValueOr { optValue* } { @void{} };
+    def value = If.or { optValue* } { @void{} };
     return @nonlocalExit{function, value}
 };
 
 ## Documented in spec.
 export fn makeVarDef(name, box, optValue?) {
-    def value = ifValueOr { optValue* } { @void{} };
+    def value = If.or { optValue* } { @void{} };
     return @varDef{name, box, value}
 };
 
@@ -135,7 +135,7 @@ export fn withName(node, name) {
 
 ## Documented in spec.
 export fn withYieldDef(node, name) {
-    def newBindings = ifValue { node::yieldDef }
+    def newBindings = If.value { node::yieldDef }
         { origName ->
             ## There's already a `yieldDef`. Prepend a variable definition
             ## statement instead of clobbering the existing binding.
@@ -148,7 +148,7 @@ export fn withYieldDef(node, name) {
 
 ## Documented in spec.
 export fn withYieldDefIfAbsent(node, name) {
-    return ifIs { node::yieldDef }
+    return If.is { node::yieldDef }
         { node }
         { withYieldDef(node, name) }
 };

@@ -41,15 +41,15 @@ fn igram(foo) {
 
     note("igram:");
 
-    ifIs { Cmp.eq(fizmo, "fizmo") }
+    If.is { Cmp.eq(fizmo, "fizmo") }
         { fizmo := "Yes, fizmo." };
 
     note("    ", fizmo);
     fizmo := foo;
 
-    ifIs { Cmp.eq(fizmo, "fizmo") }
+    If.is { Cmp.eq(fizmo, "fizmo") }
         {
-            ifIs { Cmp.eq(fizmo, "fizmo") }
+            If.is { Cmp.eq(fizmo, "fizmo") }
                 { fizmo := "Yes yes, fizmo." }
         };
 
@@ -63,18 +63,18 @@ fn glorf() {
     var x = 0;
     def foo { x := x.add(1) };
 
-    ifNot { Cmp.eq(x, 0) }
+    If.not { Cmp.eq(x, 0) }
         { die("Bad lazy 1.") };
 
     def y = foo;
 
-    ifNot { Cmp.eq(x, 1) }
+    If.not { Cmp.eq(x, 1) }
         { die("Bad lazy 2.") };
-    ifNot { Cmp.eq(y, 1) }
+    If.not { Cmp.eq(y, 1) }
         { die("Bad lazy 3.") };
-    ifNot { Cmp.eq(foo, 1) }
+    If.not { Cmp.eq(foo, 1) }
         { die("Bad lazy 4.") };
-    ifNot { Cmp.eq(x, 1) }
+    If.not { Cmp.eq(x, 1) }
         { die("Bad lazy 5.") };
 
     note("    Yes!");

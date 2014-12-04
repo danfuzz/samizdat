@@ -45,20 +45,20 @@ fn hexStringChar(ch) {
 ## Helper for stringifying strings: Returns the converted form of the
 ## given character.
 export fn stringChar(ch) {
-    ifValue { SPECIAL_CHARS.get(ch) }
+    If.value { SPECIAL_CHARS.get(ch) }
         { special ->
-            ifIs { Cmp.eq(special, "x") }
+            If.is { Cmp.eq(special, "x") }
                 { return hexStringChar(ch) }
                 { return special }
         };
 
-    ifIs { Cmp.lt(ch, CHAR_SURROGATE_START) }
+    If.is { Cmp.lt(ch, CHAR_SURROGATE_START) }
         { return ch };
 
-    ifIs { Cmp.le(ch, CHAR_SURROGATE_END) }
+    If.is { Cmp.le(ch, CHAR_SURROGATE_END) }
         { return hexStringChar(ch) };
 
-    return ifIs { Cmp.le(ch, CHAR_UNICODE_END) }
+    return If.is { Cmp.le(ch, CHAR_UNICODE_END) }
         { ch }
         { hexStringChar(ch) }
 };

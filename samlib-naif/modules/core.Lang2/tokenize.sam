@@ -154,7 +154,7 @@ def tokIdentifier = {:
 
     {
         def name = symbolFromTokenList([one, rest*]);
-        ifValueOr { KEYWORDS.get(name) }
+        If.or { KEYWORDS.get(name) }
             { @identifier{value: name} }
     }
 :};
@@ -223,7 +223,7 @@ def OPEN_CLOSE_MAP = {
 ## token, an `interpolatedString`, or an `error`.
 fn processStringParts(parts) {
     ## Handle the empty string as a special case.
-    ifIs { Cmp.eq(parts, []) }
+    If.is { Cmp.eq(parts, []) }
         { return @string{value: ""} };
 
     ## Coalesce adjacent literal strings in `parts`. The result is an
@@ -233,13 +233,13 @@ fn processStringParts(parts) {
     parts.forEach { part /next ->
         ## If there is an error part (represented as an `@error` token),
         ## return it.
-        ifIs { Record.accepts(part) }
+        If.is { Record.accepts(part) }
             {
-                ifIs { part.hasName(@error) }
+                If.is { part.hasName(@error) }
                     { return part }
             };
 
-        ifIs { Cmp.eq(elems, []) }
+        If.is { Cmp.eq(elems, []) }
             {
                 ## First element. No possibility to coalesce, so special-case
                 ## it.
@@ -247,10 +247,10 @@ fn processStringParts(parts) {
                 yield /next
             };
 
-        ifIs { String.accepts(part) }
+        If.is { String.accepts(part) }
             {
                 def lastElem = elems.reverseNth(0);
-                ifIs { String.accepts(lastElem) }
+                If.is { String.accepts(lastElem) }
                     {
                         ## The last item in `elems` and the current `part`
                         ## are both strings. Combine them.
@@ -266,9 +266,9 @@ fn processStringParts(parts) {
     };
 
     ## Check for a simple result.
-    ifIs { Cmp.eq(elems.get_size(), 1) }
+    If.is { Cmp.eq(elems.get_size(), 1) }
         {
-            ifValue { String.accepts(elems*) }
+            If.value { String.accepts(elems*) }
                 { elem ->
                     ## There's only one element, and it's a string. So,
                     ## we have a simple non-interpolated string. Return it.
@@ -366,7 +366,7 @@ tokStringInterpolation := {:
     close = tokToken
 
     {
-        ifIs { close.hasName(expectClose) }
+        If.is { close.hasName(expectClose) }
             { [open, [].cat(tokens*)*, close] }
     }
 :};

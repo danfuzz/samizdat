@@ -25,7 +25,7 @@ export class PegSetComplement
         new: NEW {
     ## Documented in spec.
     class.new(names*) {
-        ifIs { Cmp.eq(names, []) }
+        If.is { Cmp.eq(names, []) }
             {
                 ## Trivial case: Empty set, so any token will do.
                 return any
@@ -47,10 +47,10 @@ export class PegSetComplement
 
     ## Documented in spec.
     .parse(state) {
-        return? ifValue { state.shiftInput() }
+        return? If.value { state.shiftInput() }
             { newState ->
                 def result = newState.get_context().reverseNth(0);
-                ifNot { this.(ACCESS)(@set).get(result.get_name()) }
+                If.not { this.(ACCESS)(@set).get(result.get_name()) }
                     { newState }
             }
     };

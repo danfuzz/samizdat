@@ -56,21 +56,21 @@ def returnArg3 = { a /out -> yield /out a };
 ## Main Tests
 ##
 
-ifIs(returnVoid1, bad, good);
-ifIs(returnVoid2, bad, good);
-ifIs(returnVoid3, bad, good);
-ifIs(returnVoid4, bad, good);
-ifIs(returnVoid5, bad, good);
-ifIs(returnVoid6, bad, good);
+If.is(returnVoid1, bad, good);
+If.is(returnVoid2, bad, good);
+If.is(returnVoid3, bad, good);
+If.is(returnVoid4, bad, good);
+If.is(returnVoid5, bad, good);
+If.is(returnVoid6, bad, good);
 
-ifValue { returnArg1("woo") }
+If.value { returnArg1("woo") }
     { v -> note(v) }
     { bad() };
 
-ifValue { returnArg2("woo") }
+If.value { returnArg2("woo") }
     { v -> note(v) }
     { bad() };
 
-ifValue { returnArg3("woo") }
+If.value { returnArg3("woo") }
     { v -> note(v) }
     { bad() };
