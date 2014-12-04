@@ -13,19 +13,6 @@
 //
 
 // Documented in spec.
-FUN_IMPL_DECL(ifValue) {
-    zvalue result = FUN_CALL(args.elems[0]);
-
-    if (result != NULL) {
-        return FUN_CALL(args.elems[1], result);
-    } else if (args.size == 3) {
-        return FUN_CALL(args.elems[2]);
-    } else {
-        return NULL;
-    }
-}
-
-// Documented in spec.
 FUN_IMPL_DECL(loop) {
     zvalue function = args.elems[0];
     for (;;) {

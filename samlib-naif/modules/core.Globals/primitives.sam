@@ -40,7 +40,6 @@ export
     cast,
     classOf,
     die,
-    ifValue,
     loop,
     maybeCast,
     maybeValue,
