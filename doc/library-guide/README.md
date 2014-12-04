@@ -73,6 +73,7 @@ will be returned, or one of:
   * [Class](Class.md)
   * [Cmp](Cmp.md)
   * [Core](Core.md)
+  * [If](If.md)
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)
@@ -138,7 +139,6 @@ will be returned, or one of:
 
 * Other
   * [Constants](constants.md)
-  * [Conditionals And Iteration](conditional.md)
   * [Meta-Control](meta-control.md)
 
 - - - - -

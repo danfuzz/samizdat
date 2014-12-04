@@ -1,39 +1,17 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Conditionals And Iteration
---------------------------
+If
+--
+
+`If` is a utility class (an uninstantiable repository for class methods),
+which implements all the standard conditional methods.
+
 
 <br><br>
-### Functions
+### Class Method Definitions
 
-#### `ifIs(testFunction, isFunction, notFunction?) -> . | void`
-
-Primitive logic conditional. This calls the given `testFunction` with no
-arguments, taking note of its return value or lack thereof.
-
-If the function returns a value, then the `isFunction` is called
-with no arguments. If the predicate returns void, then the
-`notFunction` (if any) is called with no arguments.
-
-The return value from this function is whatever was returned by the
-consequent function that was called (including void). If no consequent
-was called, this returns void.
-
-This function is identical to `ifValue`, except that in the value case,
-this function calls the consequent function with no arguments, whereas
-`ifValue` calls it with an argument.
-
-**Syntax Note:** Used in the translation of `if` and `expression & expression`
-forms.
-
-#### `ifNot(testFunction, notFunction) -> . | void`
-
-This is identical to `ifIs`, except that the `isFunction` argument is omitted.
-
-**Syntax Note:** Used in the translation of `do` and `!expression` forms.
-
-#### `ifSwitch(testFunction, valueFunctions, optDefaultFunction?) -> . | void`
+#### `class.cases(testFunction, valueFunctions, optDefaultFunction?) -> . | void`
 
 Case-switched conditional. This calls the given `testFunction` with
 no arguments, taking note of its return value (hereafter, the "test result").
@@ -52,7 +30,61 @@ this function returns void.
 
 **Syntax Note:** Used in the translation of `switch` forms.
 
-#### `ifValue(testFunction, valueFunction, voidFunction?) -> . | void`
+#### `class.is(testFunction, isFunction, notFunction?) -> . | void`
+
+Primitive logic conditional. This calls the given `testFunction` with no
+arguments, taking note of its return value or lack thereof.
+
+If the function returns a value, then the `isFunction` is called
+with no arguments. If the predicate returns void, then the
+`notFunction` (if any) is called with no arguments.
+
+The return value from this function is whatever was returned by the
+consequent function that was called (including void). If no consequent
+was called, this returns void.
+
+This function is identical to `.value()`, except that in the value case,
+this function calls the consequent function with no arguments, whereas
+`.value()` calls it with an argument.
+
+**Syntax Note:** Used in the translation of `if` and `expression & expression`
+forms.
+
+#### `class.maybeValue(function) -> list`
+
+Function call helper, to deal with value-or-void situations. This calls
+`function` with no arguments, wrapping its return value in a list and in
+turn returning that list. That is, if `function` returns `value`, then this
+function returns `[value]` (a single-element list), and if `function` returns
+void, then this function returns `[]` (the empty list).
+
+This method could be implemented as:
+
+```
+class.maybeValue(function) {
+    return (def v = function()) & [v] | []
+}
+```
+
+or more primitively as:
+
+```
+class.maybeValue(function) {
+    return If.value(function, { v -> [v] }, { -> [] })
+}
+```
+
+**Syntax Note:** Used in the translation of string interpolation and
+`expression?` forms.
+
+#### `class.not(testFunction, notFunction) -> . | void`
+
+This is identical to `.is()`, except that the `isFunction` argument is
+omitted.
+
+**Syntax Note:** Used in the translation of `do` and `!expression` forms.
+
+#### `class.value(testFunction, valueFunction, voidFunction?) -> . | void`
 
 Primitive logic conditional. This calls the given `testFunction` with no
 arguments, taking note of its return value or lack thereof.
@@ -66,14 +98,14 @@ The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
-This function is identical to `ifIs`, except that in the value case,
+This function is identical to `.is()`, except that in the value case,
 this function calls the consequent function with an argument, whereas
-`ifIs` calls it with no arguments.
+`.is()` calls it with no arguments.
 
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
 
-#### `ifValueAnd(functions+) -> . | void`
+#### `class.valueAnd(functions+) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions`
 in order, as long as each returns a value (not void). The previous call
@@ -88,9 +120,9 @@ void, then this function immediately returns void.
 **Syntax Note:** Used in the translation of some `&` forms and
 multiple-binding `if` forms.
 
-#### `ifValueAndElse(functions+, thenFunction, elseFunction) -> . | void`
+#### `class.valueAndElse(functions+, thenFunction, elseFunction) -> . | void`
 
-Primitive logic conditional. This is like `ifValueAnd`, except that the
+Primitive logic conditional. This is like `.valueAnd()`, except that the
 function takes two additional arguments at the end of the argument list,
 which are treated specially.
 
@@ -102,7 +134,7 @@ returns its value.
 
 **Syntax Note:** Used in the translation of some multiple-binding `if` forms.
 
-#### `ifValueOr(functions*) -> . | void`
+#### `class.valueOr(functions*) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions` in
 order with no arguments, until one of them returns non-void. When a non-void
@@ -113,39 +145,3 @@ This function is meant as the primitive that higher-layer logical-or
 expressions bottom out into, hence the name.
 
 **Syntax Note:** Used in the translation of `expression | expression` forms.
-
-#### `loop(function) -> void`
-
-Primitive unconditional loop construct. This repeatedly calls the given
-`function` with no arguments.
-
-In order for the loop to terminate, the `function` must use a nonlocal exit.
-
-**Syntax Note:** Used in the translation of `do` and `while` forms.
-
-#### `maybeValue(function) -> list`
-
-Function call helper, to deal with value-or-void situations. This calls
-`function` with no arguments, wrapping its return value in a list and in
-turn returning that list. That is, if `function` returns `value`, then this
-function returns `[value]` (a single-element list), and if `function` returns
-void, then this function returns `[]` (the empty list).
-
-This function could be implemented as:
-
-```
-fn maybeValue(function) {
-    return (def v = function()) & [v] | []
-}
-```
-
-or more primitively as:
-
-```
-fn maybeValue(function) {
-    return ifValue(function, { v -> [v] }, { -> [] })
-}
-```
-
-**Syntax Note:** Used in the translation of string interpolation and
-`expression?` forms.
