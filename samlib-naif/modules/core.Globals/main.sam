@@ -16,12 +16,6 @@
 ## All the early globals. This is evaluated eagerly at load time.
 
 import ./primitives;
-import ./Value;
-
-def EARLY_GLOBALS = @{
-    $primitives*,
-    $Value*
-};
 
 
 ##
@@ -30,7 +24,7 @@ def EARLY_GLOBALS = @{
 
 ## Documented in spec.
 export fn earlyEnvironment() {
-    return EARLY_GLOBALS
+    return $primitives
 };
 
 ## Documented in spec.
@@ -49,7 +43,7 @@ export fn fullEnvironment() {
     def $CommandLine = loadModule(@external{name: "core.CommandLine"});
 
     return @{
-        EARLY_GLOBALS*,
+        $primitives*,
 
         ## Globally-exported modules.
         $Format,
