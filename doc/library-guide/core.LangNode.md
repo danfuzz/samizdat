@@ -54,10 +54,12 @@ refer to those variables and names, for all the references needed when
 parsing the language.
 
 Regular variable references are bound from their symbol name. For example,
-`@ifIs` maps to a regular variable reference of the name `ifIs`.
+`@blort` if bound would map to a regular variable reference of the name
+`blort`.
 
 Module-scoped names are bound from a symbol of the form `@Module_name`. For
-example, `@Format_usual` maps to a reference to `$Format::usual`.
+example, `@Potions_blort` if bound would map to a reference to
+`$Potions::blort`.
 
 For specific details on which names are mapped, refer to the source.
 
