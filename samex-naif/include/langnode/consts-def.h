@@ -113,6 +113,7 @@ DEF_TOKEN(value);
 DEF_LITERAL(EMPTY_LIST,         EMPTY_LIST);
 DEF_LITERAL(EMPTY_MAP,          EMPTY_MAP);
 DEF_LITERAL(EMPTY_SYMBOL_TABLE, EMPTY_SYMBOL_TABLE);
+DEF_LITERAL(If,                 CLS_If);
 DEF_LITERAL(List,               CLS_List);
 DEF_LITERAL(Map,                CLS_Map);
 DEF_LITERAL(Object,             CLS_Object);

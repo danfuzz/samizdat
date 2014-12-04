@@ -558,7 +558,7 @@ zvalue makeMaybeValue(zvalue expression) {
     if (box != NULL) {
         return box;
     } else {
-        return makeFunCall(REFS(maybeValue),
+        return makeFunCall(METHODS(If, maybeValue),
             cm_new_List(makeThunk(expression)));
     }
 }

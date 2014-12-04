@@ -19,7 +19,6 @@ def NAMES = [
     @loadModule,
     @loadResource,
     @loop,
-    @maybeValue,
     @return
 ];
 

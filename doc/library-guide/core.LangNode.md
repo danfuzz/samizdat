@@ -348,7 +348,7 @@ Makes a maybe-value expression for the given `node`. This effectively
 returns a node representing `node?` (for the original `node`).
 
 In the usual case, the result is equivalent to a node for
-`maybeValue { -> node }`. However, if `node` bound `box`, then this simply
+`If.maybeValue { -> node }`. However, if `node` bound `box`, then this simply
 returns the so-bound value. The latter is the case for general variable
 references, where postfix `?` denotes a reference to the varaible's box.
 

@@ -78,6 +78,7 @@ def CLASS_METHODS = [
     @{class: Cmp, name: @perNe},
     @{class: If,  name: @cases},
     @{class: If,  name: @is},
+    @{class: If,  name: @maybeValue},
     @{class: If,  name: @not},
     @{class: If,  name: @value},
     @{class: If,  name: @valueAnd},
