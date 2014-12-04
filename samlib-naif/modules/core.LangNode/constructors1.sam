@@ -49,9 +49,9 @@ export fn makeExportSelection(names+) {
 
 ## Documented in spec.
 export fn makeFunCall(function, values*) {
-    ifIs { function.hasName(@methodId) }
+    return ifIs { function.hasName(@methodId) }
         {
-            ## It is a method call of some sort.
+            ## It's a method call of some sort.
             def name = function::name;
             return ifValue { function::class }
                 { cls ->
@@ -64,16 +64,11 @@ export fn makeFunCall(function, values*) {
                     def rest = values.sliceInclusive(1);
                     makeCall(first, name, rest*)
                 }
-        };
-
-    return ifIs { function.hasName(@literal) }
-        {
-            ## Treat it as a method call.
-            def first = values.nth(0);
-            def rest = values.sliceInclusive(1);
-            makeCall(first, function, rest*)
         }
-        { makeCall(function, SYMS::call, values*) }
+        {
+            ## It's a regular function call.
+            makeCall(function, SYMS::call, values*)
+        }
 };
 
 ## Documented in spec.
