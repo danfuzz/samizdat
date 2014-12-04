@@ -12,6 +12,7 @@
 #include "type/Cmp.h"
 #include "type/Core.h"
 #include "type/Generator.h"
+#include "type/If.h"
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"

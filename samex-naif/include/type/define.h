@@ -20,10 +20,15 @@
 
 //
 // Function implementation declarations. Each of these is identical except
-// for the argument requirements. The names are of the form `...args` or
-// `...minArgs_maxArgs` with `rest` used to indicate an unbounded number of
-// arguments.
+// for the argument requirements. The names are of the form:
 //
+// * `..._count` -- take exactly `count` arguments.
+// * `..._minCount_maxCount` -- take between `minCount` and `maxCount`
+//   arguments.
+// * `..._count_rest` (literal `rest`) -- take at least `count` arguments.
+// * `..._preCount_rest_postCount` (literal `rest`) -- take at least
+//   `preCount + postCount` arguments, with `preCount` at the head and
+//   `postCount` at the end of the `rest` arguments.
 
 /**
  * Calls the constructor for the indicated function, returning an in-model
@@ -95,6 +100,17 @@
             (zarray) {_args.size - 1, &_args.elems[1]}); \
     } \
     static zvalue IMPL_##name(zvalue a0, zarray aRest)
+
+#define FUNC_IMPL_1_rest_2(name, a0, aRest, a1, a2) \
+    static zvalue IMPL_##name(zvalue, zarray, zvalue, zvalue); \
+    FUNC_IMPL_MIN_MAX(name, 3, -1) { \
+        return IMPL_##name( \
+            _args.elems[0], \
+            (zarray) {_args.size - 3, &_args.elems[1]}, \
+            _args.elems[_args.size - 2], \
+            _args.elems[_args.size - 1]); \
+    } \
+    static zvalue IMPL_##name(zvalue a0, zarray aRest, zvalue a1, zvalue a2)
 
 #define FUNC_IMPL_2_3(name, a0, a1, a2) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue); \
@@ -209,8 +225,12 @@
     FUNC_IMPL_2_3(class_##cls##_##name, thsClass, a0, a1)
 #define CMETH_IMPL_1_rest(cls, name, a0, aRest) \
     FUNC_IMPL_2_rest(class_##cls##_##name, ths, a0, aRest)
+#define CMETH_IMPL_2_3(cls, name, a0, a1, a2) \
+    FUNC_IMPL_3_4(class_##cls##_##name, thsClass, a0, a1, a2)
 #define CMETH_IMPL_2_4(cls, name, a0, a1, a2, a3) \
     FUNC_IMPL_3_5(class_##cls##_##name, thsClass, a0, a1, a2, a3)
+#define CMETH_IMPL_rest_2(cls, name, aRest, a0, a1) \
+    FUNC_IMPL_1_rest_2(class_##cls##_##name, thsClass, aRest, a0, a1)
 
 
 //

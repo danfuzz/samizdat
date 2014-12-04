@@ -155,7 +155,7 @@ CMETH_IMPL_2(Cmp, perNe, value, other) {
 
 /** Initializes the module. */
 MOD_INIT(Cmp) {
-    MOD_USE(Value);
+    MOD_USE(Core);
 
     CLS_Cmp = makeCoreClass(SYM(Cmp), CLS_Core,
         METH_TABLE(

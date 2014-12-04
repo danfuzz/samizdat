@@ -21,6 +21,7 @@ export
     Class,
     Cmp,
     Core,
+    If,
     Int,
     Lazy,
     List,
