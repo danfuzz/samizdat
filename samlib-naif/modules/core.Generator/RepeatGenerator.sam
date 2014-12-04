@@ -32,7 +32,7 @@ export class RepeatGenerator
                 return nullGenerator
             };
 
-        def value = ifValueOr { optValue* } { null };
+        def value = If.valueOr { optValue* } { null };
         return this.(NEW)(@{size, value})
     };
 

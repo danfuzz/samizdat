@@ -71,7 +71,7 @@ fn nameString(prefix, name) {
     If.is { isIdentifier(name) }
         { return prefix.cat(nameString) };
 
-    def finalPrefix = ifValueOr { Cmp.ne(prefix, "") } { "\\" };
+    def finalPrefix = If.valueOr { Cmp.ne(prefix, "") } { "\\" };
     return finalPrefix.cat(sourceGeneral(nameString, true))
 };
 

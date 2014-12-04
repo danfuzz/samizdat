@@ -60,8 +60,8 @@ export fn resolveImport(node, resolveFn) {
 
                 ## Get the `info::exports` out of the resolved result. Default
                 ## to `{}` if not present.
-                def info = ifValueOr { resolved::info } { {} };
-                def exports = ifValueOr { info::exports } { {} };
+                def info = If.valueOr { resolved::info } { {} };
+                def exports = If.valueOr { info::exports } { {} };
 
                 ifValue { node::select }
                     { select ->

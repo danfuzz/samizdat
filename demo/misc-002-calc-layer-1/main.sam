@@ -182,7 +182,7 @@ def evalExpressions = {:
 ##
 
 export fn main(selfPath, origArgs*) {
-    def args = ifValueOr { Cmp.ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
+    def args = If.valueOr { Cmp.ne(origArgs, []) } { ["100+7*2-(8000/-10)"] };
     def argsFiltered = args.collect { arg -> arg.cat("\n") };
     def exprString = "".cat(argsFiltered*);
     $Peg::apply(evalExpressions, exprString);

@@ -1816,7 +1816,7 @@ def parLogicAndExpression = {:
 ## ```
 ## =>
 ## ```
-## ifValueOr { expr1 } { expr2 } { expr3 }
+## If.valueOr { expr1 } { expr2 } { expr3 }
 ## ```
 def parLogicOrExpression = {:
     one = parLogicAndExpression

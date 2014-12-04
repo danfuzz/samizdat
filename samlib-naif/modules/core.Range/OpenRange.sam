@@ -30,7 +30,7 @@ export class OpenRange
         new: NEW {
     ## Documented in spec.
     class.new(firstValue, optIncrement?) {
-        def increment = ifValueOr { optIncrement* } { 1 };
+        def increment = If.valueOr { optIncrement* } { 1 };
         def converter = converterFor(classOf(firstValue));
         def value = cast(Int, firstValue);
 

@@ -28,7 +28,7 @@ def CLASS_ATTRIBUTES = @{
 ## yield definition name. Just returns the `yield` directly in
 ## non-`nonlocalExit` cases.
 fn expandYield(node) {
-    def yieldNode = ifValueOr { node::yield } { return };
+    def yieldNode = If.valueOr { node::yield } { return };
 
     If.not { yieldNode.hasName(@nonlocalExit) } { return yieldNode };
 
@@ -296,8 +296,8 @@ export fn makeDynamicImport(node) {
 
 ## Documented in spec.
 export fn makeFullClosure(base) {
-    def formals = ifValueOr { base::formals } { [] };
-    var statements = ifValueOr { base::statements } { [] };
+    def formals = If.valueOr { base::formals } { [] };
+    var statements = If.valueOr { base::statements } { [] };
 
     def yieldNode = ifValueOr
         { expandYield(base) }
@@ -394,7 +394,7 @@ export fn makeInfoTable(node) {
 
     ## Adds or revises an element in the `imports` map.
     fn addToImports(source, names) {
-        def orig = ifValueOr { imports.get(source) } { {} };
+        def orig = If.valueOr { imports.get(source) } { {} };
         def revised = {orig*, names*: Value};
         imports := {imports*, (source): revised};
     };
@@ -402,7 +402,7 @@ export fn makeInfoTable(node) {
     ## Adds or revises an element in the `resources` map.
     fn addToResources(source, format) {
         ## This bounces through a map to uniquify the formats list.
-        def orig = ifValueOr { resources.get(source) } { [] };
+        def orig = If.valueOr { resources.get(source) } { [] };
         def revised = {orig*: null, (format): null}.keyList();
         resources := {resources*, (source): revised};
     };
@@ -413,7 +413,7 @@ export fn makeInfoTable(node) {
             { addToImports(s::source, [@module]) };
         If.is { s.hasName(@importModuleSelection) }
             {
-                def names = ifValueOr { s::select }
+                def names = If.valueOr { s::select }
                     {
                         die("Cannot call `makeInfoTable` on ",
                             "unresolved import.")
@@ -578,7 +578,7 @@ export fn withoutTops(node) {
                 def origBox = defNode::box;
                 If.is { Cmp.eq(origBox, @lazy) }
                     { die("Bad `box` for `top` variable.") };
-                def box = ifValueOr { Cmp.ne(origBox, @result) } { @promise };
+                def box = If.valueOr { Cmp.ne(origBox, @result) } { @promise };
                 makeVarDef(defNode::name, box)
             }
     };

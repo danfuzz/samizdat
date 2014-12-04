@@ -63,7 +63,7 @@ export fn get_definedNames(node) {
             },
 
             @importModuleSelection: { . ->
-                def select = ifValueOr { node::select }
+                def select = If.valueOr { node::select }
                     {
                         die("Cannot call `get_definedNames` on unresolved ",
                             "import.")
