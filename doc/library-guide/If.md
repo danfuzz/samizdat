@@ -105,7 +105,7 @@ this function calls the consequent function with an argument, whereas
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
 
-#### `class.valueAnd(functions+) -> . | void`
+#### `class.valueAnd(functions*) -> . | void`
 
 Primitive logic conditional. This calls each of the given `functions`
 in order, as long as each returns a value (not void). The previous call
@@ -115,12 +115,13 @@ result, the third gets passed the first and second result, and so on.
 
 Should all of the `functions` return a value, then this function returns
 the result of the *last* of `functions`. Should any of the calls return
-void, then this function immediately returns void.
+void, or if no functions are passed at all, then this function immediately
+returns void.
 
 **Syntax Note:** Used in the translation of some `&` forms and
 multiple-binding `if` forms.
 
-#### `class.valueAndElse(functions+, thenFunction, elseFunction) -> . | void`
+#### `class.valueAndElse(functions*, thenFunction, elseFunction) -> . | void`
 
 Primitive logic conditional. This is like `.valueAnd()`, except that the
 function takes two additional arguments at the end of the argument list,
@@ -131,6 +132,10 @@ calls the `thenFunction` (passing it all the results of the `functions`,
 in order) and returns its value. Otherwise &mdash; that is, if any of the
 `functions` returns void &mdash; then this calls the `elseFunction` and
 returns its value.
+
+If no `functions` are passed, then this executes the `thenFunction` and
+not the `elseFunction`: The condition for "then" is that all of the
+`functions` succeed, which is trivially true in this case.
 
 **Syntax Note:** Used in the translation of some multiple-binding `if` forms.
 
