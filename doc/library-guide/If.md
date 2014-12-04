@@ -43,6 +43,9 @@ If no `functions` are passed, then this executes the `thenFunction` and
 not the `elseFunction`: The condition for "then" is that all of the
 `functions` succeed, which is trivially true in this case.
 
+Note that the argument list is "stretchy" in front, which isn't
+representable in real Samizdat syntax.
+
 **Syntax Note:** Used in the translation of some multiple-binding `if` forms.
 
 #### `class.cases(testFunction, valueFunctions, optDefaultFunction?) -> . | void`
