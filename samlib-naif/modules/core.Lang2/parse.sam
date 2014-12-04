@@ -2228,7 +2228,7 @@ def parWhileExpression = {:
 ## ```
 ##
 ## with the initial break assignment omitted if there is no yield def, and
-## with the `ifNot` statement omitted if there is no `while` at the end
+## with the `If.not` statement omitted if there is no `while` at the end
 ## of the `do`.
 def parDoExpression = {:
     @do
