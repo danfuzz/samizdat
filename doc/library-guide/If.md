@@ -11,9 +11,25 @@ which implements all the standard conditional methods.
 <br><br>
 ### Class Method Definitions
 
+#### `class.and(functions*) -> . | void`
+
+Primitive logic conditional. This calls each of the given `functions`
+in order, as long as each returns a value (not void). The previous call
+results are passed as arguments to each subsequent test function. That is,
+the first call gets passed no arguments, the second gets passed the first
+result, the third gets passed the first and second result, and so on.
+
+Should all of the `functions` return a value, then this function returns
+the result of the *last* of `functions`. Should any of the calls return
+void, or if no functions are passed at all, then this function immediately
+returns void.
+
+**Syntax Note:** Used in the translation of some `&` forms and
+multiple-binding `if` forms.
+
 #### `class.andThenElse(functions*, thenFunction, elseFunction) -> . | void`
 
-Primitive logic conditional. This is like `.valueAnd()`, except that the
+Primitive logic conditional. This is like `.and()`, except that the
 function takes two additional arguments at the end of the argument list,
 which are treated specially.
 
@@ -122,22 +138,6 @@ this function calls the consequent function with an argument, whereas
 
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
-
-#### `class.valueAnd(functions*) -> . | void`
-
-Primitive logic conditional. This calls each of the given `functions`
-in order, as long as each returns a value (not void). The previous call
-results are passed as arguments to each subsequent test function. That is,
-the first call gets passed no arguments, the second gets passed the first
-result, the third gets passed the first and second result, and so on.
-
-Should all of the `functions` return a value, then this function returns
-the result of the *last* of `functions`. Should any of the calls return
-void, or if no functions are passed at all, then this function immediately
-returns void.
-
-**Syntax Note:** Used in the translation of some `&` forms and
-multiple-binding `if` forms.
 
 #### `class.valueOr(functions*) -> . | void`
 

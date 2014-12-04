@@ -38,7 +38,7 @@ fn expandYield(node) {
     ## If the exit's `function` is a variable fetch of the same variable as
     ## this node's yield name, then skip the expansion and just return the
     ## exit's `value` directly.
-    If.valueAnd
+    If.and
         { -> function.hasName(@fetch) }
         { . -> function::target.hasName(@varRef) }
         { ., . -> node::yieldDef }
