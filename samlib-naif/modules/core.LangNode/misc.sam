@@ -89,7 +89,7 @@ export fn intFromDigits(base, digits) {
 
     digits.forEach { digit ->
         def value = intFromDigitToken(digit);
-        ifIs { perNe(value, -1) }
+        ifIs { Cmp.ne(value, -1) }
             { result := result.mul(base).add(value) }
     };
 

@@ -21,8 +21,8 @@ fn intOrVoid(string) {
     var value = 0;
 
     string.forEach { ch ->
-        ifIs { perLt(ch, "0") } { return };
-        ifIs { perGt(ch, "9") } { return };
+        ifIs { Cmp.perLt(ch, "0") } { return };
+        ifIs { Cmp.perGt(ch, "9") } { return };
         def digit = cast(Int, ch).sub(CHAR_0);
         value := value.mul(10).add(digit);
     };
@@ -36,7 +36,7 @@ fn maxOf(values*) {
     var max = -1;
 
     values.forEach { v ->
-        ifIs { perGt(v, max) }
+        ifIs { Cmp.perGt(v, max) }
             { max := v }
     };
 
@@ -50,7 +50,7 @@ fn safeIndexForNames(baseStr, names*) {
 
     def indexes = names.collect { name /next ->
         def nameStr = cast(String, name);
-        ifIs { perLt(nameStr.get_size(), baseSz) }
+        ifIs { Cmp.perLt(nameStr.get_size(), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
                 yield /next
