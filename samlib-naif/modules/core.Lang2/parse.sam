@@ -1307,7 +1307,7 @@ def parInterpolatedString = {:
                         }
                         { REFS::Format_usual };
 
-                    def call = ifValueOr
+                    def call = If.valueOr
                         { $Peg::apply(parStringInterpolation, tokens) }
                         { die("Invalid syntax in string interpolation.") };
 

@@ -389,7 +389,7 @@ export class ExternalLoader
             };
 
         fn externalResolve() {
-            return? ifValueOr
+            return? If.valueOr
                 { doExternalResolve(this, source) }
                 { data::nextLoader.resolve(source) }
         };

@@ -166,7 +166,7 @@ fn Value_source(value, adorn) {
 ## Common code for the two `source*` variants, which takes an
 ## `adorn` flag.
 export fn sourceGeneral(value, adorn) {
-    return ifValueOr
+    return If.valueOr
         { SPECIAL_VALUES.get(value) }
         {
             If.cases({ classOf(value) },

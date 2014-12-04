@@ -45,7 +45,7 @@ fn expandYield(node) {
         { ., target, yieldDef -> Cmp.eq(target::name, yieldDef) }
         { ., ., ., . -> return value };
 
-    def exitCall = ifValueOr
+    def exitCall = If.valueOr
         { If.is { value.hasName(@void) } { makeFunCall(function) } }
         {
             If.is { value.hasName(@maybe) }
@@ -299,7 +299,7 @@ export fn makeFullClosure(base) {
     def formals = If.valueOr { base::formals } { [] };
     var statements = If.valueOr { base::statements } { [] };
 
-    def yieldNode = ifValueOr
+    def yieldNode = If.valueOr
         { expandYield(base) }
         { If.is { base::yieldDef } { @void{} } }
         { If.is { Cmp.eq(statements, []) } { @void{} } }
@@ -454,7 +454,7 @@ export fn makeMapExpression(mappings*) {
 
 ## Documented in spec.
 export fn makeMaybeValue(node) {
-    return ifValueOr
+    return If.valueOr
         { node::box }
         { makeFunCall(REFS::maybeValue, makeThunk(node)) }
 };
@@ -494,7 +494,7 @@ export fn withDynamicImports(node) {
         };
 
     def converted = rawStatements.collect { s /out ->
-        ifValueOr
+        If.valueOr
             { s.hasName(@importModule) }
             { s.hasName(@importModuleSelection) }
             { s.hasName(@importResource) }
