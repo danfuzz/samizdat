@@ -214,7 +214,7 @@
 #define METH_IMPL_2(cls, name, a0, a1) FUNC_IMPL_3(cls##_##name, ths, a0, a1)
 #define METH_IMPL_rest(cls, name, aRest) \
     FUNC_IMPL_1_rest(cls##_##name, ths, aRest)
-#define METH_IMPL_0_opt(cls, name, a0)   FUNC_IMPL_1_opt(cls##_##name, ths, a0)
+#define METH_IMPL_0_opt(cls, name, a0) FUNC_IMPL_1_opt(cls##_##name, ths, a0)
 #define METH_IMPL_1_opt(cls, name, a0, a1) \
     FUNC_IMPL_2_opt(cls##_##name, ths, a0, a1)
 #define METH_IMPL_2_opt(cls, name, a0, a1, a2) \
