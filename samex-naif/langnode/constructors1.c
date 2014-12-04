@@ -66,7 +66,7 @@ zvalue makeExportSelection(zvalue names) {
 
 // Documented in spec.
 zvalue makeFunCall(zvalue function, zvalue values) {
-    if (symbolEq(get_name(function), SYM(methodId))) {
+    if (recHasName(function, SYM(methodId))) {
         zvalue name = cm_get(function, SYM(name));
         zvalue cls = cm_get(function, SYM(class));
 
@@ -77,10 +77,6 @@ zvalue makeFunCall(zvalue function, zvalue values) {
             zvalue rest = METH_CALL(values, sliceInclusive, INT_1);
             return makeCall(first, name, rest);
         }
-    } else if (symbolEq(get_name(function), SYM(literal))) {
-        zvalue first = cm_nth(values, 0);
-        zvalue rest = METH_CALL(values, sliceInclusive, INT_1);
-        return makeCall(first, function, rest);
     } else {
         return makeCall(function, SYMS(call), values);
     }
