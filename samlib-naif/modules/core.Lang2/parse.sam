@@ -1746,7 +1746,7 @@ def parLogicAndClause = {:
 ## ```
 ## (def var1 = expr1) & expr2 & (def var3 = expr3) & expr4
 ## =>
-## ifValueAnd
+## If.valueAnd
 ##     { expr1 }
 ##     { var1 -> expr2 }
 ##     { var1, . -> expr3 }
@@ -1800,7 +1800,7 @@ def parLogicAndExpression = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Construct the overall `ifValueAnd` call.
+            ## Construct the overall `If.valueAnd` call.
             makeFunCall(METHODS::If_valueAnd,
                 testThunks*,
                 withFormals(makeThunk(last), formals))
@@ -1908,7 +1908,8 @@ def parMultiTest = {:
                             formals.sliceExclusive(0, index))
                     };
 
-            ## Result function which constructs the overall `ifValueAnd*` call.
+            ## Result function which constructs the overall `If.valueAnd*`
+            ## call.
             { thenThunk, elseThunk? ->
                 def func = If.is { elseThunk* }
                     { METHODS::If_valueAndElse }
