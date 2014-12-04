@@ -378,7 +378,7 @@ METH_IMPL_rest(String, cat, args) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(String, collect, function) {
+METH_IMPL_0_opt(String, collect, function) {
     StringInfo *info = getInfo(ths);
     const zchar *chars = info->s.chars;
     zint size = info->s.size;
@@ -497,7 +497,7 @@ METH_IMPL_0(String, fetch) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(String, forEach, function) {
+METH_IMPL_0_opt(String, forEach, function) {
     StringInfo *info = getInfo(ths);
     zstring s = info->s;
     zvalue result = NULL;
@@ -608,12 +608,12 @@ METH_IMPL_0(String, reverse) {
 }
 
 // Documented in spec.
-METH_IMPL_1_2(String, sliceExclusive, start, end) {
+METH_IMPL_1_opt(String, sliceExclusive, start, end) {
     return doSlice(ths, false, start, end);
 }
 
 // Documented in spec.
-METH_IMPL_1_2(String, sliceInclusive, start, end) {
+METH_IMPL_1_opt(String, sliceInclusive, start, end) {
     return doSlice(ths, true, start, end);
 }
 

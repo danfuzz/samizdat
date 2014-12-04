@@ -23,10 +23,13 @@
 // for the argument requirements. The names are of the form:
 //
 // * `..._count` -- take exactly `count` arguments.
-// * `..._minCount_maxCount` -- take between `minCount` and `maxCount`
-//   arguments.
+// * `..._count_opt` (literal `opt`) -- take at least `count` arguments, and
+//   one optional argument at the end. `_opt` can be repeated for additional
+//   optional arguments.
 // * `..._count_rest` (literal `rest`) -- take at least `count` initial
 //   arguments and an arbitrtary amount of aditional arguments at the end.
+// * `..._rest` (literal `rest`) -- take any number of arguments, including
+//   none. This would be the same as `_0_rest`, if that had been defined.
 // * `..._rest_count` (literal `rest`) -- take at least `count` ending
 //   arguments and an arbitrtary amount of aditional arguments at the head.
 // * `..._preCount_rest_postCount` (literal `rest`) -- take at least
@@ -86,7 +89,7 @@
     } \
     static zvalue IMPL_##name(zarray aRest)
 
-#define FUNC_IMPL_1_2(name, a0, a1) \
+#define FUNC_IMPL_1_opt(name, a0, a1) \
     static zvalue IMPL_##name(zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 1, 2) { \
         return IMPL_##name( \
@@ -125,7 +128,7 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zarray aRest, zvalue a1, zvalue a2)
 
-#define FUNC_IMPL_2_3(name, a0, a1, a2) \
+#define FUNC_IMPL_2_opt(name, a0, a1, a2) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 2, 3) { \
         return IMPL_##name( \
@@ -135,7 +138,7 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2)
 
-#define FUNC_IMPL_2_4(name, a0, a1, a2, a3) \
+#define FUNC_IMPL_2_opt_opt(name, a0, a1, a2, a3) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 2, 4) { \
         return IMPL_##name( \
@@ -156,7 +159,7 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zarray aRest)
 
-#define FUNC_IMPL_3_4(name, a0, a1, a2, a3) \
+#define FUNC_IMPL_3_opt(name, a0, a1, a2, a3) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 3, 4) { \
         return IMPL_##name( \
@@ -167,7 +170,7 @@
     } \
     static zvalue IMPL_##name(zvalue a0, zvalue a1, zvalue a2, zvalue a3)
 
-#define FUNC_IMPL_3_5(name, a0, a1, a2, a3, a4) \
+#define FUNC_IMPL_3_opt_opt(name, a0, a1, a2, a3, a4) \
     static zvalue IMPL_##name(zvalue, zvalue, zvalue, zvalue, zvalue); \
     FUNC_IMPL_MIN_MAX(name, 3, 5) { \
         return IMPL_##name( \
@@ -211,11 +214,11 @@
 #define METH_IMPL_2(cls, name, a0, a1) FUNC_IMPL_3(cls##_##name, ths, a0, a1)
 #define METH_IMPL_rest(cls, name, aRest) \
     FUNC_IMPL_1_rest(cls##_##name, ths, aRest)
-#define METH_IMPL_0_1(cls, name, a0)   FUNC_IMPL_1_2(cls##_##name, ths, a0)
-#define METH_IMPL_1_2(cls, name, a0, a1) \
-    FUNC_IMPL_2_3(cls##_##name, ths, a0, a1)
-#define METH_IMPL_2_3(cls, name, a0, a1, a2) \
-    FUNC_IMPL_3_4(cls##_##name, ths, a0, a1, a2)
+#define METH_IMPL_0_opt(cls, name, a0)   FUNC_IMPL_1_opt(cls##_##name, ths, a0)
+#define METH_IMPL_1_opt(cls, name, a0, a1) \
+    FUNC_IMPL_2_opt(cls##_##name, ths, a0, a1)
+#define METH_IMPL_2_opt(cls, name, a0, a1, a2) \
+    FUNC_IMPL_3_opt(cls##_##name, ths, a0, a1, a2)
 
 // Class method implementation macros. Structure is identical to the instance
 // method macros, above.
@@ -234,16 +237,16 @@
     FUNC_IMPL_1_rest(class_##cls##_##name, thsClass, aRest)
 #define CMETH_IMPL_rest_1(cls, name, aRest, a0) \
     FUNC_IMPL_1_rest_1(class_##cls##_##name, thsClass, aRest, a0)
-#define CMETH_IMPL_0_1(cls, name, a0) \
-    FUNC_IMPL_1_2(class_##cls##_##name, thsClass, a0)
-#define CMETH_IMPL_1_2(cls, name, a0, a1) \
-    FUNC_IMPL_2_3(class_##cls##_##name, thsClass, a0, a1)
+#define CMETH_IMPL_0_opt(cls, name, a0) \
+    FUNC_IMPL_1_opt(class_##cls##_##name, thsClass, a0)
+#define CMETH_IMPL_1_opt(cls, name, a0, a1) \
+    FUNC_IMPL_2_opt(class_##cls##_##name, thsClass, a0, a1)
 #define CMETH_IMPL_1_rest(cls, name, a0, aRest) \
     FUNC_IMPL_2_rest(class_##cls##_##name, ths, a0, aRest)
-#define CMETH_IMPL_2_3(cls, name, a0, a1, a2) \
-    FUNC_IMPL_3_4(class_##cls##_##name, thsClass, a0, a1, a2)
-#define CMETH_IMPL_2_4(cls, name, a0, a1, a2, a3) \
-    FUNC_IMPL_3_5(class_##cls##_##name, thsClass, a0, a1, a2, a3)
+#define CMETH_IMPL_2_opt(cls, name, a0, a1, a2) \
+    FUNC_IMPL_3_opt(class_##cls##_##name, thsClass, a0, a1, a2)
+#define CMETH_IMPL_2_opt_opt(cls, name, a0, a1, a2, a3) \
+    FUNC_IMPL_3_opt_opt(class_##cls##_##name, thsClass, a0, a1, a2, a3)
 #define CMETH_IMPL_rest_2(cls, name, aRest, a0, a1) \
     FUNC_IMPL_1_rest_2(class_##cls##_##name, thsClass, aRest, a0, a1)
 

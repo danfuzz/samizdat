@@ -201,7 +201,7 @@ METH_IMPL_rest(List, cat, args) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(List, collect, function) {
+METH_IMPL_0_opt(List, collect, function) {
     if (function == NULL) {
         // Collecting a list (without filtering) results in that same list.
         return ths;
@@ -333,7 +333,7 @@ METH_IMPL_0(List, fetch) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(List, forEach, function) {
+METH_IMPL_0_opt(List, forEach, function) {
     ListInfo *info = getInfo(ths);
     zarray arr = info->a;
     zvalue result = NULL;
@@ -444,12 +444,12 @@ METH_IMPL_0(List, reverse) {
 
 
 // Documented in spec.
-METH_IMPL_1_2(List, sliceExclusive, start, end) {
+METH_IMPL_1_opt(List, sliceExclusive, start, end) {
     return doSlice(ths, false, start, end);
 }
 
 // Documented in spec.
-METH_IMPL_1_2(List, sliceInclusive, start, end) {
+METH_IMPL_1_opt(List, sliceInclusive, start, end) {
     return doSlice(ths, true, start, end);
 }
 

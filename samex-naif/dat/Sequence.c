@@ -110,7 +110,7 @@ METH_IMPL_1(Sequence, reverseNth, n) {
 }
 
 // Documented in spec.
-METH_IMPL_2_3(Sequence, sliceGeneral, style, start, end) {
+METH_IMPL_2_opt(Sequence, sliceGeneral, style, start, end) {
     zint size = get_size(ths);
     zint limit = size - 1;
 

@@ -372,7 +372,7 @@ METH_IMPL_rest(Map, cat, args) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(Map, collect, function) {
+METH_IMPL_0_opt(Map, collect, function) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
     zvalue result[size];
@@ -523,7 +523,7 @@ METH_IMPL_0(Map, fetch) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(Map, forEach, function) {
+METH_IMPL_0_opt(Map, forEach, function) {
     MapInfo *info = getInfo(ths);
     zint size = info->size;
     zvalue result = NULL;
