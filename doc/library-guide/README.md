@@ -62,6 +62,9 @@ will be returned, or one of:
 
 * `x | y` &mdash; Returns either type `x` or type `y`.
 
+* `logic` &mdash; Shorthand that means the same thing as `. | void` while
+  implying that the expected use case is for conditional logic.
+
 ### Contents
 
 * Global Classes
