@@ -42,7 +42,7 @@ export class PegSet
         ## Make a combined string, passing it to the general constructor,
         ## which then splays all the characters out as a set of table keys.
         def string = "".cat(strings*);
-        def names = string.collect { ch -> cast(Symbol, ch) };
+        def names = string.collect { ch -> Class.cast(Symbol, ch) };
         return this.new(names*)
     };
 

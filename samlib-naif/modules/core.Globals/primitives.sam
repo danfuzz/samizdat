@@ -37,10 +37,7 @@ export
     Symbol,
     SymbolTable,
     Value,
-    cast,
-    classOf,
     die,
-    maybeCast,
     note,
     nullBox,
     voidResult;

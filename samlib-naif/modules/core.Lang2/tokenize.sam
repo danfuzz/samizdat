@@ -164,7 +164,7 @@ def tokQuotedIdentifier = {:
     "\\"
     s = tokString
 
-    { @identifier{value: cast(Symbol, s::value)} }
+    { @identifier{value: Class.cast(Symbol, s::value)} }
 :};
 
 ## "Parses" an unrecognized character. This also consumes any further
@@ -320,7 +320,7 @@ tokInt2 := {:
 ## parsing.
 def tokHexChar = {:
     digits = tokHexDigit+
-    { cast(String, intFromDigits(16, digits)) }
+    { Class.cast(String, intFromDigits(16, digits)) }
 :};
 
 ## Parses a single entity-named character. This is called during `\&...;`
@@ -334,11 +334,11 @@ def tokNamedChar = {:
 |
     "#x"
     digits = tokHexDigit+
-    { cast(String, intFromDigits(16, digits)) }
+    { Class.cast(String, intFromDigits(16, digits)) }
 |
     "#"
     digits = tokDecDigit+
-    { cast(String, intFromDigits(10, digits)) }
+    { Class.cast(String, intFromDigits(10, digits)) }
 :};
 
 ## Parses the inner portion of a string interpolation expression. This

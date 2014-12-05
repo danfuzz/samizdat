@@ -318,16 +318,12 @@ METH_IMPL_rest(SymbolTable, cat, args) {
     SymbolTableInfo *info = getInfo(result);
 
     for (zint i = 0; i < args.size; i++) {
-        zvalue one = args.elems[i];
+        // Note: `maybeCast` guarantees that a non-null result is of the
+        // indicated class.
+        zvalue one = maybeCast(CLS_SymbolTable, args.elems[i]);
 
-        if (!classAccepts(CLS_SymbolTable, one)) {
-            // TODO: Should be the full `cast()`. Fix this when that function
-            // is sanely available here.
-            one = METH_CALL(one, castToward, CLS_SymbolTable);
-            if ((one == NULL) || !classAccepts(CLS_SymbolTable, one)) {
-                die("Invalid argument to `cat()`: %s",
-                    cm_debugString(args.elems[i]));
-            }
+        if (one == NULL) {
+            die("Invalid argument to `cat()`: %s", cm_debugString(one));
         }
 
         SymbolTableInfo *oneInfo = getInfo(one);

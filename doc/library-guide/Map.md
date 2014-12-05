@@ -122,7 +122,8 @@ It is a terminal error if `this` does not contain exactly one mapping.
 #### `.cat(more*) -> map`
 
 Returns a map consisting of the combination of the mappings of `ths` and the
-arguments. Arguments are allowed to be maps, records, or symbol tables.
+arguments. Arguments are allowed to be maps or anything which can be cast
+to a map, including notably records and symbol tables.
 
 For any keys in common between the arguments, the lastmost argument's value
 is the one that ends up in the result. Despite the `cat` name, strictly

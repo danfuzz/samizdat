@@ -76,7 +76,7 @@ fn extractMethods(allMethods, scope) {
     def pairs = selectedMethods.collect { one ->
         def name = one::name;
         If.is { names.get(name) }
-            { die("Duplicate method: ", cast(String, name)) };
+            { die("Duplicate method: ", Class.cast(String, name)) };
         names := @{names*, (name): true};
         [makeLiteral(name), @closure{one*}]
     };
@@ -236,7 +236,7 @@ export fn makeClassDef(name, attributes, methods) {
 
     attribMap.keyList().forEach { key ->
         If.not { CLASS_ATTRIBUTES.get(key) }
-            { die("Invalid attribute: ", cast(String, key)) }
+            { die("Invalid attribute: ", Class.cast(String, key)) }
     };
 
     def accessSecret = (If.value { attribMap.get(@access) }
@@ -361,7 +361,7 @@ export fn makeImport(baseData) {
             ## No `name` provided, so figure out a default one.
             data := @{
                 data*,
-                name: cast(Symbol, "$".cat(get_baseName(data::source)))
+                name: Class.cast(Symbol, "$".cat(get_baseName(data::source)))
             }
         };
 

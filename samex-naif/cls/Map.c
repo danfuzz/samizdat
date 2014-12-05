@@ -322,18 +322,16 @@ METH_IMPL_rest(Map, cat, args) {
     zint size = thsSize;
 
     for (zint i = 0; i < args.size; i++) {
-        zvalue one = args.elems[i];
-        if (classAccepts(CLS_Map, one)) {
-            maps[i] = one;
-        } else {
-            // TODO: Should be the full `cast()`. Fix this when that function
-            // is sanely available here.
-            maps[i] = METH_CALL(CLS_Map, castFrom, one);
-            if (maps[i] == NULL) {
-                die("Invalid argument to `cat()`: %s", cm_debugString(one));
-            }
+        // Note: `maybeCast` guarantees that a non-null result is of the
+        // indicated class.
+        zvalue one = maybeCast(CLS_Map, args.elems[i]);
+
+        if (one == NULL) {
+            die("Invalid argument to `cat()`: %s", cm_debugString(one));
         }
-        infos[i] = getInfo(maps[i]);
+
+        maps[i] = one;
+        infos[i] = getInfo(one);
         size += infos[i]->size;
     }
 

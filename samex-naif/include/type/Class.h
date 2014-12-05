@@ -38,6 +38,11 @@ inline void assertHasClass(zvalue value, zvalue cls) {
 }
 
 /**
+ * Performs the equivalent of the static method call `Class.cast(cls, value)`.
+ */
+zvalue cast(zvalue cls, zvalue value);
+
+/**
  * Like `cls.accepts(value)`, except this works before the system is fully
  * started (in particular, before any methods are bound).
  */
@@ -70,5 +75,11 @@ zvalue makeClass(zvalue name, zvalue parent,
  */
 zvalue makeCoreClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods);
+
+/**
+ * Performs the equivalent of the static method call
+ * `Class.maybeCast(cls, value)`.
+ */
+zvalue maybeCast(zvalue cls, zvalue value);
 
 #endif

@@ -17,8 +17,8 @@ void.
 The default implementation of this method merely checks to see if `this` is
 already of class `cls`. If so, it returns `this`; if not, it returns `void`.
 
-**Note:** This method is used by the global functions `cast()` and
-`maybeCast()` as part of the more general casting mechanism.
+**Note:** This method is used by the class methods `Class.cast()` and
+`Class.maybeCast()` as part of the more general casting mechanism.
 
 #### `.crossEq(other) -> . | void`
 
@@ -134,37 +134,3 @@ The default implementation calls through to the global function `order`
 
 **Note:** This is the method which underlies the implementation
 of all per-class ordering functions.
-
-
-<br><br>
-### Functions
-
-#### `cast(cls, value) -> .`
-
-"Hard" cast operation. This is like `maybeCast()`, except that this terminates
-the runtime with an error if the cast could not complete, instead of returning
-void.
-
-#### `classOf(value) -> class`
-
-Returns the class of the given arbitrary `value`. The return value is always
-of class `Class`.
-
-#### `maybeCast(cls, value) -> . | void`
-
-"Soft" cast operation. This attempts to cast (convert in a maximally
-data-preserving fashion) the given `value` to the indicated class `cls`.
-
-This function operates by first checking to see if `value` is already of
-a proper class, and returning it directly if so.
-
-If not, this function calls `value.castToward(cls)` to give `value` "first
-dibs" on conversion. If it results in a value of an appropriate class, then
-that value is then returned.
-
-If not, this function then calls `cls.castFrom(value)`, passing it the
-non-void result of the previous step (if any) or the original value (if not).
-If this call results in a value of an appropriate class, then that value is
-then returned.
-
-If not, this function returns void.

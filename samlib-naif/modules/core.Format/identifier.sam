@@ -26,7 +26,7 @@ export fn isIdentifier(symbol) {
     If.not { Symbol.accepts(symbol) }
         { return };
 
-    def string = cast(String, symbol);
+    def string = Class.cast(String, symbol);
 
     If.is { Cmp.eq(string, "") }
         { return };

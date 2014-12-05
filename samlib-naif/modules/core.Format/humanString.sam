@@ -14,7 +14,7 @@ import ./sourceGeneral :: sourceGeneral;
 ## Function for producing a human-oriented string of the argument.
 export fn humanString(value) {
     return If.cases(
-        { classOf(value) },
+        { Class.of(value) },
         {
             (List): { . ->
                 def elems = value.collect(humanString);

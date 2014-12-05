@@ -67,7 +67,7 @@ note("Records");
 
 expectEq("eq 1", @eek{x: 10}, @(@eek){x: 10});
 expectEq("eq 2", @eek{x: 10}, @eek{x: (5).add(5)});
-expectEq("eq 3", @eek{x: 10}, @(cast(Symbol, "eek")){x: 10});
+expectEq("eq 3", @eek{x: 10}, @(Class.cast(Symbol, "eek")){x: 10});
 
 expectNe("ne 1", @x{}, @x{a: 1});
 expectNe("ne 2", @x{a: 1}, @x{a: 2});

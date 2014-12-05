@@ -106,7 +106,7 @@ def tokIdentifier = PegMain.newSequence(
 def tokQuotedIdentifier = PegMain.newSequence(
     PegSequence.newString("\\"),
     tokString,
-    PegCode.new { ., s -> @identifier{value: cast(Symbol, s::value)} });
+    PegCode.new { ., s -> @identifier{value: Class.cast(Symbol, s::value)} });
 
 ## Documented in spec.
 def tokError = PegMain.newSequence(

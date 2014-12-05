@@ -13,7 +13,7 @@ import core.LangNode :: *;
 ##
 
 ## Int value of Unicode code point `0`.
-def CHAR_0 = cast(Int, "0");
+def CHAR_0 = Class.cast(Int, "0");
 
 ## Parses and returns a base-10 unsigned int, or returns void if the string
 ## doesn't represent such a number.
@@ -23,7 +23,7 @@ fn intOrVoid(string) {
     string.forEach { ch ->
         If.is { Cmp.perLt(ch, "0") } { return };
         If.is { Cmp.perGt(ch, "9") } { return };
-        def digit = cast(Int, ch).sub(CHAR_0);
+        def digit = Class.cast(Int, ch).sub(CHAR_0);
         value := value.mul(10).add(digit);
     };
 
@@ -49,7 +49,7 @@ fn safeIndexForNames(baseStr, names*) {
     def baseSz = baseStr.get_size();
 
     def indexes = names.collect { name /next ->
-        def nameStr = cast(String, name);
+        def nameStr = Class.cast(String, name);
         If.is { Cmp.perLt(nameStr.get_size(), baseSz) }
             {
                 ## Can't possibly be a prefix, so no conflict.
@@ -152,8 +152,8 @@ fn safeIndex(node, baseStr) {
 ## where `index` is `-1` consistently with the other functions exported here.
 export fn makeVarName(baseStr, index) {
     return If.is { Cmp.eq(index, -1) }
-        { cast(Symbol, baseStr) }
-        { cast(Symbol, baseStr.cat($Format::int(index))) }
+        { Class.cast(Symbol, baseStr) }
+        { Class.cast(Symbol, baseStr.cat($Format::int(index))) }
 };
 
 ## Returns an unused variable name within `node`, either the given `baseStr` or

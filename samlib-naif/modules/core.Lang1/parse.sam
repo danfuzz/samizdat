@@ -86,7 +86,7 @@ def parVarLvalue = PegMain.newSequence(
 def parIdentifierSymbol = PegMain.newChoice(
     PegSequence.new(
         PegSet.new(@string),
-        PegCode.new { s -> makeLiteral(cast(Symbol, s::value)) }),
+        PegCode.new { s -> makeLiteral(Class.cast(Symbol, s::value)) }),
     PegSequence.new(
         parNameSymbol,
         PegCode.new { name -> makeLiteral(name) }),
@@ -789,7 +789,7 @@ def parPexSet = PegMain.newSequence(
         PegMain.newSequence(
             PegRepeat.newPlus(parPexSetString),
             PegCode.new { strings ->
-                "".cat(strings*).collect { ch -> cast(Symbol, ch) }
+                "".cat(strings*).collect { ch -> Class.cast(Symbol, ch) }
             }),
         PegMain.newSequence(
             PegRepeat.newPlus(parPexToken),
