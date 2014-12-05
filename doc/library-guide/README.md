@@ -58,6 +58,9 @@ will be returned, or one of:
 
 * `is Name` &mdash; Returns an instance of the class `Name`.
 
+* `is [Name*]` / `is [Name+]` &mdash; Returns a list of instances of the
+  class `Name`. In the second case, the list will never be empty.
+
 * `== value` &mdash; Returns a specific value.
 
 * `x | y` &mdash; Returns either type `x` or type `y`.
