@@ -98,7 +98,7 @@ This is implemented similarly to `.eq()` (see which).
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
-#### `class.order(value, other) -> is Int`
+#### `class.order(value, other) -> is Symbol`
 
 Returns the order of the two given values, using the cross-class order.
 

@@ -12,7 +12,7 @@ implicitly by the string interpolation system.
 <br><br>
 ### Functions
 
-#### `formatterFor(formatSpec) -> function`
+#### `formatterFor(formatSpec) -> is Function`
 
 This takes a formatting specification string and returns a formatter
 function which takes a single argument and applies the so specified
