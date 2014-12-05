@@ -68,8 +68,8 @@ void.
 The default implementation of this method merely checks to see if `value` is
 already of the class. If so, it returns `value`; if not, it returns `void`.
 
-**Note:** This method is used by the global functions `cast()` and
-`maybeCast()` as part of the more general casting mechanism.
+**Note:** This method is used by the class methods `Class.cast()` and
+`Class.maybeCast()` as part of the more general casting mechanism.
 
 #### `.get_name() -> symbol`
 
