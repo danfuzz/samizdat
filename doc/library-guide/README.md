@@ -56,9 +56,9 @@ will be returned, or one of:
 
 * `void` &mdash; Returns void.
 
-* `type | void` &mdash; Might or might not return a value. If a value, it
-  will be of the indicated type (including `.` to indicate an arbitrarily
-  typed value).
+* `is Name` &mdash; Returns an instance of the class `Name`.
+
+* `x | y` &mdash; Returns either type `x` or type `y`.
 
 ### Contents
 
