@@ -68,7 +68,8 @@ Default implementation.
 #### `.cat(more*) -> symbolTable`
 
 Returns a symbol table consisting of the combination of the mappings of `ths`
-and the arguments. Arguments must each be a symbol table or a record.
+and the arguments. Arguments are allowed to be symbol tables or anything which
+can be cast to a symbol table, including notably records and maps.
 
 For any keys in common between the arguments, the lastmost argument's value
 is the one that ends up in the result. Despite the `cat` name, strictly
