@@ -48,7 +48,7 @@ msg(UserClass);            ## a user class
 
 msg(@blort);               ## an interned symbol
 msg(@blort.toUnlisted());  ## an unlisted symbol
-msg(classOf);              ## a builtin function
+msg(note);                 ## a builtin function
 msg(msg);                  ## a named in-language function
 msg({ -> });               ## an anonymous in-language function
 
