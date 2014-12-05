@@ -95,7 +95,7 @@ arguments requires.
 If `node` is a `literal`, this returns its literal value. If not, this
 returns void.
 
-#### `get_baseName(taggedName) -> string`
+#### `get_baseName(taggedName) -> is String`
 
 Gets the "base" name from a tagged name value. Operates on `@external`
 module name and `@internal` relative path values. For `@external` names,

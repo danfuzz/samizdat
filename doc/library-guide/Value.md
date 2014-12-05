@@ -74,7 +74,7 @@ It returns `@same` if `eq()` returns non-void, or void if not.
 **Note:** This is the method which underlies the implementation
 of all cross-class ordering functions.
 
-#### `.debugString() -> string`
+#### `.debugString() -> is String`
 
 Returns a string representation of the given value, meant to aid in debugging.
 This is in contrast to the functions in `core.Format` which are meant to

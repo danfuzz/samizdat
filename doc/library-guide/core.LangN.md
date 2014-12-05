@@ -11,7 +11,7 @@ layers 0, 1, and 2.
 <br><br>
 ### Functions
 
-#### `languageOf(string) -> string | void`
+#### `languageOf(string) -> is String | void`
 
 Finds and returns the language module directive in the given string,
 which is assumed to be a Samizdat program. If there is no directive

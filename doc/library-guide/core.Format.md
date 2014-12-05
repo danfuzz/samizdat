@@ -33,16 +33,16 @@ following, with the indicated meaning:
 
 **Syntax Note:** Used in the translation of string interpolation forms.
 
-#### `int(value, optBase?) -> string`
+#### `int(value, optBase?) -> is String`
 
 Converts an int into a string form, in the given base which defaults to
 10. If specified, `optBase*` can be any int in the range `(2..36)`.
 
-#### `intHex(value) -> string`
+#### `intHex(value) -> is String`
 
 Same as `int(value, 16)`.
 
-#### `source(value?) -> string`
+#### `source(value?) -> is String`
 
 Converts an arbitrary value into a string representation form
 that is meant to mimic the Samizdat source syntax. If `value` is not passed,
@@ -60,12 +60,12 @@ language:
   non-printing characters other than newline that are in the Latin-1
   code point range.
 
-#### `sourceUnadorned(value?) -> string`
+#### `sourceUnadorned(value?) -> is String`
 
 This is just like `source`, except that top-level adornment
 (quotes, etc.) are not produced.
 
-#### `usual(value?) -> string`
+#### `usual(value?) -> is String`
 
 Converts an arbitrary value into a string representation form, meant
 to be useful for producing the "usual" human-oriented output. This is

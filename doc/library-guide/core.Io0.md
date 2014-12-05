@@ -42,7 +42,7 @@ it exists but is not a directory), then this function returns void.
 **Note:** The result map will not contain mappings for `"."` (directory
 self-reference) or `".."` (parent directory reference).
 
-#### `readFileUtf8(path) -> string`
+#### `readFileUtf8(path) -> is String`
 
 Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string

@@ -25,7 +25,7 @@ of `Null`, this will only ever return `@same` when called appropriately. That
 is, this function returns `@same` if called as `null.crossOrder(null)` and
 will terminate with an error in all other cases.
 
-#### `.debugString() -> string`
+#### `.debugString() -> is String`
 
 Returns `"null"`.
 

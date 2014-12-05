@@ -44,7 +44,7 @@ interned symbols getting ordered *before* unlisted symbols. Two
 different unlisted symbols with the same name are considered unordered
 (but not equal).
 
-#### `.debugString() -> string`
+#### `.debugString() -> is String`
 
 Returns a string representation of the symbol. This includes a suggestive
 prefix before the name of `@` for interned symbols or `@+` for unlisted
