@@ -93,7 +93,7 @@ of `this`), or void if not.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> is Class | void`
+#### `.crossEq(other) -> logic`
 
 Compares two classes. Two different classes are never equal.
 
@@ -102,7 +102,7 @@ Compares two classes. Two different classes are never equal.
 This is identical to `.perEq()`, except it first asserts that `other` has the
 same direct class as `this` (which in practice is only true of metaclasses).
 
-#### `.perEq(other) -> is Class | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

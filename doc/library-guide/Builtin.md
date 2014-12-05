@@ -11,7 +11,7 @@ of the system.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> is Builtin | void`
+#### `.crossEq(other) -> logic`
 
 Performs an identity comparison. Two builtins are only equal if they
 refer to the exact same functionality.
@@ -24,7 +24,7 @@ Performs an identity comparison. Builtins do not have a defined order.
 
 Returns the symbolic name of the builtin, if it has one.
 
-#### `.perEq(other) -> is Builtin | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

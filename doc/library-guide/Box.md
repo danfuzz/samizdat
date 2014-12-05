@@ -50,7 +50,7 @@ is an instance of `Result`.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> is Box | void`
+#### `.crossEq(other) -> logic`
 
 Performs an identity comparison. No two different boxes are ever considered
 equal.
@@ -60,7 +60,7 @@ equal.
 Performs an identity comparison. No two different boxes are ever considered
 equal, and two different boxes have no defined order.
 
-#### `.perEq(other) -> is Box | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

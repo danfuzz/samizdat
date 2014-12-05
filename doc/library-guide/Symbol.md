@@ -54,7 +54,7 @@ symbols.
 
 Returns `this`.
 
-#### `.perEq(other) -> is Symbol | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

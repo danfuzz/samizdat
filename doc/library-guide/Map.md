@@ -81,7 +81,7 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> is Map | void`
+#### `.crossEq(other) -> logic`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
@@ -92,8 +92,7 @@ keys, with the same rules as list comparison. Given two maps with equal
 key lists, ordering is by comparing corresponding lists of values, in
 key order.
 
-
-#### `.perEq(other) -> is Map | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

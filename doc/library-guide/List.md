@@ -30,15 +30,7 @@ the function is happy to operate given zero arguments.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.perEq(other) -> is List | void`
-
-Default implementation.
-
-#### `.perOrder(other) -> is Symbol`
-
-Default implementation.
-
-#### `.crossEq(other) -> is List | void`
+#### `.crossEq(other) -> logic`
 
 Compares two lists. Two lists are equal if they have equal elements in
 identical orders.
@@ -47,6 +39,14 @@ identical orders.
 
 Compares two lists for order. Lists order by pairwise corresponding-element
 comparison, with a strict prefix always ordering before its longer brethren.
+
+#### `.perEq(other) -> logic`
+
+Default implementation.
+
+#### `.perOrder(other) -> is Symbol`
+
+Default implementation.
 
 
 <br><br>

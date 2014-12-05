@@ -82,7 +82,7 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> is Record | void`
+#### `.crossEq(other) -> logic`
 
 Compares two records. Two records are equal if they have equal names and
 equal data payloads.
@@ -92,7 +92,7 @@ equal data payloads.
 Compares two records for order. Records order by name as the major order
 and data payload as minor order.
 
-#### `.perEq(other) -> is Record | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

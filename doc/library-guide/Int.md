@@ -7,7 +7,7 @@ Int
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> is Int | void`
+#### `.crossEq(other) -> logic`
 
 Compares the integer values of two ints.
 
@@ -16,7 +16,7 @@ Compares the integer values of two ints.
 Compares the integer values of two ints, ordering by value in the usual
 manner.
 
-#### `.perEq(other) -> is Int | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

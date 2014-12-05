@@ -46,7 +46,7 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> is String | void`
+#### `.crossEq(other) -> logic`
 
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
@@ -57,7 +57,7 @@ Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
 
-#### `.perEq(other) -> is String | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

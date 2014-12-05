@@ -41,7 +41,7 @@ This class knows how to cast as follows:
 * `Int` &mdash; Returns `0` given `false`, or `true` given `1`.
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> is Bool | void`
+#### `.crossEq(other) -> logic`
 
 Compares two boolean values. This is only logical-true if the two given
 values are the same.
@@ -54,7 +54,7 @@ Compares the given boolean values, ordering `false` before `true`.
 
 Returns `"true"` or `"false'`, in the reasonably expected cases.
 
-#### `.perEq(other) -> is Bool | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 
