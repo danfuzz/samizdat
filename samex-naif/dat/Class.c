@@ -255,6 +255,18 @@ void assertHasClass0(zvalue value, zvalue cls) {
 }
 
 // Documented in header.
+zvalue cast(zvalue cls, zvalue value) {
+    zvalue result = maybeCast(cls, value);
+
+    if (result != NULL) {
+        return result;
+    }
+
+    die("Could not cast: to %s, from %s",
+        cm_debugString(cls), cm_debugString(value));
+}
+
+// Documented in header.
 bool classAccepts(zvalue cls, zvalue value) {
     assertIsClass(cls);
     return acceptsUnchecked(cls, value);
@@ -294,10 +306,50 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
     return result;
 }
 
+// Documented in header.
+zvalue maybeCast(zvalue cls, zvalue value) {
+    if (METH_CALL(cls, accepts, value)) {
+        return value;
+    }
+
+    zvalue result = METH_CALL(value, castToward, cls);
+
+    if (result != NULL) {
+        if (METH_CALL(cls, accepts, result)) {
+            return result;
+        }
+        value = result;
+    }
+
+    result = METH_CALL(cls, castFrom, value);
+
+    if ((result != NULL) && METH_CALL(cls, accepts, result)) {
+        return result;
+    }
+
+    return NULL;
+}
+
+
 
 //
 // Class Definition
 //
+
+// Documented in header.
+CMETH_IMPL_2(Class, cast, cls, value) {
+    return cast(cls, value);
+}
+
+// Documented in header.
+CMETH_IMPL_1(Class, of, value) {
+    return classOf(value);
+}
+
+// Documented in header.
+CMETH_IMPL_2(Class, maybeCast, cls, value) {
+    return maybeCast(cls, value);
+}
 
 // Documented in spec.
 METH_IMPL_1(Class, accepts, value) {
@@ -513,7 +565,10 @@ MOD_INIT(objectModel) {
 // Documented in header.
 void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
-        NULL,
+        METH_TABLE(
+            CMETH_BIND(Class, cast),
+            CMETH_BIND(Class, maybeCast),
+            CMETH_BIND(Class, of)),
         METH_TABLE(
             METH_BIND(Class, accepts),
             METH_BIND(Class, castFrom),
