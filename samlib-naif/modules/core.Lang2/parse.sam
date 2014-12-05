@@ -378,7 +378,7 @@ def parPostfixOperator = {:
     key = parKeyLiteral
     { { node -> makeGet(node, key) } }
 |
-    ## The lookahead failure here is to make the grammar prefer `*` to be
+    ## The lookahead-failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
     ## but higher layers augment its meaning.)
     @"*" !parExpression
