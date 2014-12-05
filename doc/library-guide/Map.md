@@ -11,7 +11,7 @@ as defined by the class method `Cmp.order()`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.castFrom(value) -> map | void`
+#### `class.castFrom(value) -> is Map | void`
 
 This class knows how to cast as follows:
 
@@ -29,7 +29,7 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `value`.
 
-#### `class.new(args*) -> map`
+#### `class.new(args*) -> is Map`
 
 This makes a map from a series of mappings, given as pairs of
 key-then-value arguments. For example:
@@ -46,7 +46,7 @@ arguments to this function.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `class.singleValue(keys*, value) -> map`
+#### `class.singleValue(keys*, value) -> is Map`
 
 This makes a map which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns
@@ -81,7 +81,7 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> map | void`
+#### `.crossEq(other) -> is Map | void`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
@@ -93,7 +93,7 @@ key lists, ordering is by comparing corresponding lists of values, in
 key order.
 
 
-#### `.perEq(other) -> map | void`
+#### `.perEq(other) -> is Map | void`
 
 Default implementation.
 
@@ -119,7 +119,7 @@ It is a terminal error if `this` does not contain exactly one mapping.
 <br><br>
 ### Method Definitions: `Collection` protocol
 
-#### `.cat(more*) -> map`
+#### `.cat(more*) -> is Map`
 
 Returns a map consisting of the combination of the mappings of `ths` and the
 arguments. Arguments are allowed to be maps or anything which can be cast
@@ -133,7 +133,7 @@ get to it given the class's key ordering and uniqueness constraints.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `.del(keys*) -> map`
+#### `.del(keys*) -> is Map`
 
 Returns a map just like the given one, except that
 the mappings for the given `keys`, if any, are removed. If `this`
@@ -165,7 +165,7 @@ sorted keys.
 
 Collects or filters the mappings of `this`.
 
-#### `.fetch() -> map | void`
+#### `.fetch() -> is Map | void`
 
 Returns void on an empty map. Returns `this` on a single-element map.
 Terminates with an error in all other cases.

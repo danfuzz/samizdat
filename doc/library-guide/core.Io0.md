@@ -28,7 +28,7 @@ returns a symbol, one of:
 * `@directory` &mdash; Indicates a directory.
 * `@other` &mdash; Any other existing file (e.g., a named pipe).
 
-#### `readDirectory(path) -> map | void`
+#### `readDirectory(path) -> is Map | void`
 
 Reads the contents of the indicated directory, using the underlying OS's
 functionality. Returns a map from names (strings) to types (also strings).

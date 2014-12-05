@@ -11,7 +11,7 @@ global variable environment.
 <br><br>
 ### Functions
 
-#### `parseArgs(args) -> map`
+#### `parseArgs(args) -> is Map`
 
 Simple argument parser. This accepts a list of strings, taken to be
 command-line arguments, and parses them into options and other arguments,
