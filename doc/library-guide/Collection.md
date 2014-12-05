@@ -54,7 +54,7 @@ bound in `this` at all).
 **Syntax Note:** This is the method that underlies the `value[key]`
 syntactic form.
 
-#### `.get_size() -> int`
+#### `.get_size() -> is Int`
 
 Gets the size (element count) of `this`.
 

@@ -52,7 +52,7 @@ comparison, with a strict prefix always ordering before its longer brethren.
 <br><br>
 ### Method Definitions: `Collection` and `Sequence` protocols
 
-#### `.cat(more*) -> int`
+#### `.cat(more*) -> is Int`
 
 Returns a list consisting of the concatenation of the elements
 of `ths` and all the argument lists, in argument order.
@@ -67,7 +67,7 @@ effect as if it were only mentioned once.
 
 Defined as per the `Sequence` protocol.
 
-#### `.get_size() -> int`
+#### `.get_size() -> is Int`
 
 Returns the number of elements in the list.
 

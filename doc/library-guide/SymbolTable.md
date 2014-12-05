@@ -89,6 +89,6 @@ does not bind any of the given symbols, then this returns `this`.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 symbol table. If there is no such mapping, then this returns void.
 
-#### `.get_size() -> int`
+#### `.get_size() -> is Int`
 
 Returns the number of mappings contained within `this`.

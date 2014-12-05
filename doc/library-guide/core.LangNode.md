@@ -80,12 +80,12 @@ For specific details on which names are mapped, refer to the source.
 Indicates whether `node` might possibly yield void when evalutated.
 Returns `node` to indicate logic-true.
 
-#### `formalsMaxArgs([formal*]) -> int`
+#### `formalsMaxArgs([formal*]) -> is Int`
 
 Gets the maximum number of arguments that a given list of `formal`
 arguments could possibly accept. If there is no limit, this returns `-1`.
 
-#### `formalsMinArgs([formal*]) -> int`
+#### `formalsMinArgs([formal*]) -> is Int`
 
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
@@ -120,7 +120,7 @@ If `node` defines no names, this returns `[]` (the empty list).
 It is a fatal error to call this on an *unresolved* wildcard
 `importModuleSelection` node.
 
-#### `intFromDigits(base, digits) -> int`
+#### `intFromDigits(base, digits) -> is Int`
 
 Converts a list of digit character tokens into an int, given the base.
 `base` is allowed to be any value in the range `(2..16)`. A digit character

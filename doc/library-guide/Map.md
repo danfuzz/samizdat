@@ -144,7 +144,7 @@ does not bind any of the given keys, then this returns `this`.
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this returns void.
 
-#### `.get_size() -> int`
+#### `.get_size() -> is Int`
 
 Returns the number of mappings in the map.
 

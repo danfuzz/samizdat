@@ -87,7 +87,7 @@ effect as if it were only mentioned once.
 
 Defined as per the `Sequence` protocol.
 
-#### `.get_size() -> int`
+#### `.get_size() -> is Int`
 
 Returns the number of characters in the string.
 

@@ -7,7 +7,7 @@ Int
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> int | void`
+#### `.crossEq(other) -> is Int | void`
 
 Compares the integer values of two ints.
 
@@ -16,7 +16,7 @@ Compares the integer values of two ints.
 Compares the integer values of two ints, ordering by value in the usual
 manner.
 
-#### `.perEq(other) -> int | void`
+#### `.perEq(other) -> is Int | void`
 
 Default implementation.
 
@@ -28,18 +28,18 @@ Default implementation.
 <br><br>
 ### Method Definitions: `Bitwise` protocol
 
-#### `.and(other) -> int`
+#### `.and(other) -> is Int`
 
 Straightforward protocol implementation.
 
-#### `.bit(other) -> int`
+#### `.bit(other) -> is Int`
 
 Straightforward protocol implementation.
 
 **Note**: Bits at or beyond `this.bitSize()` are considered to be the
 same as `this.bit(this.bitSize() - 1)`.
 
-#### `.bitSize() -> int`
+#### `.bitSize() -> is Int`
 
 Straightforward protocol implementation.
 
@@ -72,29 +72,29 @@ Straightforward protocol implementation.
 <br><br>
 ### Method Definitions: `Number` protocol
 
-#### `.abs() -> int`
+#### `.abs() -> is Int`
 
 Straightforward protocol implementation.
 
-#### `.add(other) -> int`
+#### `.add(other) -> is Int`
 
 Straightforward protocol implementation.
 
-#### `.div(other) -> int`
+#### `.div(other) -> is Int`
 
 Straightforward protocol implementation, using truncated division.
 
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.divEu(other) -> int`
+#### `.divEu(other) -> is Int`
 
 Straightforward protocol implementation, using truncated Euclidean division.
 
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.mod(other) -> int`
+#### `.mod(other) -> is Int`
 
 Straightforward protocol implementation. The truncated modulo operation
 `x % y` can be defined in terms of truncated division as `x - (x / y) * y`.
@@ -102,7 +102,7 @@ Straightforward protocol implementation. The truncated modulo operation
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.modEu(other) -> int`
+#### `.modEu(other) -> is Int`
 
 Straightforward protocol implementation. The truncated Euclidean modulo
 operation `x %% y` can be defined in terms of truncated Euclidean division
@@ -111,15 +111,15 @@ as `x - (x // y) * y`.
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.mul(other) -> int`
+#### `.mul(other) -> is Int`
 
 Straightforward protocol implementation.
 
-#### `.neg() -> int`
+#### `.neg() -> is Int`
 
 Straightforward protocol implementation.
 
-#### `.sign() -> int`
+#### `.sign() -> is Int`
 
 Straightforward protocol implementation.
 
