@@ -58,6 +58,8 @@ will be returned, or one of:
 
 * `is Name` &mdash; Returns an instance of the class `Name`.
 
+* `== value` &mdash; Returns a specific value.
+
 * `x | y` &mdash; Returns either type `x` or type `y`.
 
 ### Contents
