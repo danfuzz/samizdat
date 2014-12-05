@@ -6,11 +6,7 @@ The following sections define the core library for Samizdat Layers 0&ndash;2.
 The core library isn't as minimal as the language itself, but it is still
 intended to be more on the minimal side of things. Beyond the true
 essentials, the library contains bindings that have proven to be useful
-in practice for building programs in the language. A subset of the library
-is defined to be "primitive," that is written into the lowest layer of
-language implementation as primitive functions. The remainder of the library
-is implemented in-language in terms of the primitive functions and the
-language syntax.
+in practice for building programs in the language.
 
 Each section covers definitions for one conceptual area, either
 concerning a class, data type, module, or some more nebulous concept.
@@ -23,8 +19,8 @@ where particular classes indicate which methods they bind and with what
 specific meaning. The other two sections indicate functions and constants that
 are exported from the module but not tied directly to any particular class.
 
-In addition, functions that are used in the translation of syntactic
-constructs are marked with a note along the lines of,
+In addition, methods and functions that are used in the translation of
+syntactic constructs are marked with a note along the lines of,
 "**Syntax Note:** Used in the translation of `example` forms."
 
 Each method and function listed here is introduced with a "prototype" that
