@@ -14,7 +14,7 @@ This is equivalent to the syntactic form `{: rule1 | rule2 | etc :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(rules*) -> :Parser`
+#### `class.new(rules*) -> is PegChoice | == fail`
 
 Creates an instance of this class.
 

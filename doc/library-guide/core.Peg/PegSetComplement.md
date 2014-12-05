@@ -19,13 +19,13 @@ equivalent to the syntactic form `{: [! "string1" "string2" "etc."] :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(names*) -> :Parser`
+#### `class.new(names*) -> is PegSetComplement | == any`
 
 Creates an instance of this class.
 
 As a special case, if no arguments are passed, this returns `core.Peg :: any`.
 
-#### `class.newChars(strings*) -> :Parser`
+#### `class.newChars(strings*) -> is PegSetComplement | == any`
 
 Creates a character set instance of this class, which matches any token
 *except* the characters of the given `strings`. Each argument must be a

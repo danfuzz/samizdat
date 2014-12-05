@@ -11,7 +11,7 @@ providing the `ParserState` protocol.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(input) -> :BasicState`
+#### `class.new(input) -> is BasicState`
 
 Creates an instance of this class, with an empty trailing context and the
 given `input` as its input generator.
@@ -23,6 +23,6 @@ given `input` as its input generator.
 Works as documented per the specification for the protocol, with the
 following refinements:
 
-#### `.applyRule(rule) -> newState`
+#### `.applyRule(rule) -> is ParserState`
 
 Always calls `rule.parse(this)`.

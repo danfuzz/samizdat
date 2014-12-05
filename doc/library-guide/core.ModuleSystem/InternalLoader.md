@@ -12,7 +12,7 @@ or resource requests it cannot find directly.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(path, globals, nextLoader) -> InternalLoader`
+#### `class.new(path, globals, nextLoader) -> is InternalLoader`
 
 This creates a module-internal file loader.
 
