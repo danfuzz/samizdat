@@ -7,7 +7,7 @@ Record
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(name, data?) -> record`
+#### `class.new(name, data?) -> is Record`
 
 Returns a record with the given name (a symbol) and optional `data` payload.
 If `data` is not specified, it defaults to `@{}` (the empty symbol table).
@@ -33,7 +33,7 @@ other than a symbol table.
 <br><br>
 ### Method Definitions: `Record` protocol
 
-#### `.cat(more*) -> record`
+#### `.cat(more*) -> is Record`
 
 Returns a record consisting of the combination of the mappings of `this` and
 the arguments, with the same name as `ths`. Arguments must each be a record
@@ -44,7 +44,7 @@ is the one that ends up in the result. Despite the `cat` name, strictly
 speaking this isn't a linear concatenation, but it is as close as one can
 get to it given the class's key uniqueness constraints.
 
-#### `.del(symbols*) -> record`
+#### `.del(symbols*) -> is Record`
 
 Returns a record with the same name and mappings as `this`, except without
 any data bindings for the given `symbols`.
@@ -54,15 +54,15 @@ any data bindings for the given `symbols`.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 record. If there is no such mapping, then this returns void.
 
-#### `.get_data() -> symbolTable`
+#### `.get_data() -> is SymbolTable`
 
 Returns the data payload of the given record.
 
-#### `.get_name() -> symbol`
+#### `.get_name() -> is Symbol`
 
 Returns the name (tag) of the given record.
 
-#### `.hasName(name) -> record`
+#### `.hasName(name) -> is Record`
 
 Returns `this` if its name is as given, or void if not.
 
@@ -82,20 +82,20 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> record | void`
+#### `.crossEq(other) -> logic`
 
 Compares two records. Two records are equal if they have equal names and
 equal data payloads.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two records for order. Records order by name as the major order
 and data payload as minor order.
 
-#### `.perEq(other) -> record | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.

@@ -17,7 +17,7 @@ This is equivalent to the syntactic form
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(function) -> :PegCode`
+#### `class.new(function) -> is PegCode`
 
 Creates an instance of this class.
 

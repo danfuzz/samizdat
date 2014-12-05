@@ -14,7 +14,7 @@ that `value` is a constant expression.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(value) -> :PegResult`
+#### `class.new(value) -> is PegResult`
 
 Creates an instance of this class.
 

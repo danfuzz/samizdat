@@ -11,10 +11,10 @@ This module defines a map of XML-style entity names to corresponding strings.
 
 #### `ENTITY_MAP`
 
-Map of entity names to their string values. This is a map from strings to
-strings, where the keys are XML entity names (such as `"lt" "gt" "zigrarr"`)
-and the corresponding values are the strings represented by those entity
-names (such as, correspondingly, `"<" ">" "⇝"`).
+Table of entity names to their string values. This is a symbol table from
+strings to strings, where the keys are XML entity names (such as `"lt"
+"gt" "zigrarr"`) and the corresponding values are the strings represented
+by those entity names (such as, correspondingly, `"<" ">" "⇝"`).
 
 The set of entities is intended to track the XML spec for same, which
 as of this writing can be found at

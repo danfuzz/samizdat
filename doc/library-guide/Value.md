@@ -20,7 +20,7 @@ already of class `cls`. If so, it returns `this`; if not, it returns `void`.
 **Note:** This method is used by the class methods `Class.cast()` and
 `Class.maybeCast()` as part of the more general casting mechanism.
 
-#### `.crossEq(other) -> . | void`
+#### `.crossEq(other) -> logic`
 
 Performs a class-specific equality comparison of the two given
 values, using the "cross-class ordering" order. When called by the system,
@@ -45,7 +45,7 @@ to determine equality much quicker than determining order.
 **Note:** This is the method which underlies the implementation
 of all cross-class equality comparison functions.
 
-#### `.crossOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> is Symbol | void`
 
 Returns the class-specific order of the two given values, using the
 "cross-class ordering" order. When called by the system, the two values are
@@ -74,7 +74,7 @@ It returns `@same` if `eq()` returns non-void, or void if not.
 **Note:** This is the method which underlies the implementation
 of all cross-class ordering functions.
 
-#### `.debugString() -> string`
+#### `.debugString() -> is String`
 
 Returns a string representation of the given value, meant to aid in debugging.
 This is in contrast to the functions in `core.Format` which are meant to
@@ -93,7 +93,7 @@ by `@<...>`.
 **Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
 
-#### `.debugSymbol() -> symbol | void`
+#### `.debugSymbol() -> is Symbol | void`
 
 Some values have an associated symbolic name, or an optional associated name.
 This method provides access to that name. If non-void, the result of this
@@ -104,7 +104,7 @@ The class `Value` binds this to a function which always returns void.
 **Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
 
-#### `.perEq(other) -> . | void`
+#### `.perEq(other) -> logic`
 
 Performs a per-class equality comparison of the two given values, using the
 per-class order. This should return `this` if the two values are to be
@@ -120,7 +120,7 @@ of all per-class equality comparison functions.
 
 **Syntax Note:** Used in the translation of `expression == expression` forms.
 
-#### `.perOrder(other) -> symbol | void`
+#### `.perOrder(other) -> is Symbol | void`
 
 Performs an order comparison of the two given values, using the per-class
 order. Return values are the same as with `crossOrder` (see which). As

@@ -88,7 +88,7 @@ available `format`s.
 **Note:** This function is implemented in terms of the `readResource()`
 method.
 
-#### `main(libraryPath, primitiveGlobals) -> {globals*}`
+#### `main(libraryPath, primitiveGlobals) -> .`
 
 This is the main entrypoint for loading the entire system. As such, it's
 not that useful for most code.
@@ -99,7 +99,7 @@ the `main` file of that library, and runs it, passing it the same two
 arguments given to this function.
 
 This returns whatever the library's `main` returns, which is generally
-expected to be the library's full global environment, as a map.
+expected to be the library's full global environment, as a symbol table.
 
 #### `run(path, loader, args*) -> . | void`
 

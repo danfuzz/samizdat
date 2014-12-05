@@ -24,7 +24,7 @@ the same void-or-value behavior.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(filterFunction, generators*) -> :FilterGenerator`
+#### `class.new(filterFunction, generators*) -> is FilterGenerator`
 
 Creates an instance of this class.
 

@@ -104,7 +104,7 @@ the empty set of tokens or characters).
 <br><br>
 ### Method Definitions: `Parser` protocol
 
-#### `.parse(state) -> :ParserState | void`
+#### `.parse(state) -> is ParserState | void`
 
 Performs a parse of `state` (a parser state object). If successful, returns a
 new state that represents the successful parse. If unsuccessful, returns void.
@@ -117,28 +117,28 @@ context.
 <br><br>
 ### Method Definitions: `ParserState` protocol
 
-#### `.addContext(value) -> :ParserState`
+#### `.addContext(value) -> is ParserState`
 
 Returns an instance just like `this`, except with `value` appended to the
 end of its trailing context.
 
-#### `.applyRule(rule) -> :ParserState | void`
+#### `.applyRule(rule) -> is ParserState | void`
 
 Applies the given `rule`, either by invoking its `.parse()` method, passing
 `this` as the state argument, or by doing (in some way) the equivalent
 thereof. Returns whatever `rule.parse()` returns (or equivalently would
 have returned).
 
-#### `.get_context() -> list`
+#### `.get_context() -> is List`
 
 Gets the trailing context of `this`.
 
-#### `.shiftInput() -> :ParserState | void`
+#### `.shiftInput() -> is ParserState | void`
 
 Returns an instance just like `this`, except with the first element of the
 input "consumed" and appended to the trailing context.
 
-#### `.withContext(list) -> :ParserState`
+#### `.withContext(list) -> is ParserState`
 
 Returns an instance just like `this`, except with its trailing context
 replaced with `list`, which must be a list.
@@ -158,7 +158,7 @@ character-as-token values.
 This function creates a `BasicState` parser state object to wrap `input`, and
 then in turn uses that to apply the `rule`.
 
-#### `stringFromTokenList(tokens) -> string`
+#### `stringFromTokenList(tokens) -> is String`
 
 Takes a list of tokenizer-style character tokens (that is, records whose
 names are each a single-character-long symbols), returning the result of
@@ -166,7 +166,7 @@ concatenating all the characters together in order, as a string.
 
 This function is intended to aid in the building of tokenizers.
 
-#### `symbolFromTokenList(tokens) -> symbol`
+#### `symbolFromTokenList(tokens) -> is Symbol`
 
 Like `stringFromTokenList`, except returns an interned symbol instead of
 a string.

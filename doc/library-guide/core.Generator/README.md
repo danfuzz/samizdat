@@ -26,7 +26,7 @@ elements in sequence).
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> is List`
 
 Collects all the elements yielded by the generator into a list. Returns
 the list. If a filter function is given, calls it with each element (as
@@ -68,7 +68,7 @@ last yielded element of the generator before it became voided.
 **Note:** The function `forEachAll` is a multi-generator generalization
 of this method.
 
-#### `.nextValue(box) -> generator | void`
+#### `.nextValue(box) -> is Generator | void`
 
 Generates the next item in `this`, if any. If there is a generated
 element, calls `box.store(elem)` and returns a generator which can
@@ -80,7 +80,7 @@ returns void.
 <br><br>
 ### Functions
 
-#### `collectAll(filterFunction, generators*) -> list`
+#### `collectAll(filterFunction, generators*) -> is List`
 
 Creates a filter generator over the indicated generators, and collects
 the results of running it into a list.
@@ -103,7 +103,7 @@ function returns void.
 
 **Syntax Note:** Used in the translation of `for` forms.
 
-#### `stdCollect(generator, optFilterFunction?) -> list`
+#### `stdCollect(generator, optFilterFunction?) -> is List`
 
 "Standard" implementation of `.collect()`, in terms of `.nextValue()`. This
 function is provided as a convenient function to bind `.collect` to, for

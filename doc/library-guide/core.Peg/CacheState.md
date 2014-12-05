@@ -14,7 +14,7 @@ TODO: Eventually this class may grow into a packrat parser.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(input) -> :CacheState`
+#### `class.new(input) -> is CacheState`
 
 Creates an instance of this class with an empty trailing context and the
 given `input` as its input generator.
@@ -25,11 +25,11 @@ given `input` as its input generator.
 Works as documented per the specification for the protocol, with the
 following refinements:
 
-#### `.applyRule(rule) -> :CacheState`
+#### `.applyRule(rule) -> is CacheState`
 
 Always calls `rule.parse(this)`.
 
-#### `.shiftInput() -> :CacheState`
+#### `.shiftInput() -> is CacheState`
 
 Returns an instance just like this one, except with on one item from the
 `input` shifted onto the trailing context. This class guarantees that

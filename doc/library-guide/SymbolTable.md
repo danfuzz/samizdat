@@ -13,7 +13,7 @@ methods of `Collection`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(args*) -> map`
+#### `class.new(args*) -> is Map`
 
 This makes a symbol table from a series of mappings, given as pairs of
 symbol-then-value arguments. This function is meant to be exactly parallel to
@@ -21,7 +21,7 @@ symbol-then-value arguments. This function is meant to be exactly parallel to
 
 **Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
 
-#### `class.singleValue(keys*, value) -> map`
+#### `class.singleValue(keys*, value) -> is Map`
 
 This makes a symbol table which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns
@@ -37,12 +37,12 @@ representable in real Samizdat syntax.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> symbolTable | void`
+#### `.crossEq(other) -> logic`
 
 Compares two symbol tables. Two symbol tables are equal if they have
 equal sets of mappings.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two symbol tables for order. The size of the table is the major
 order (smaller is earlier). After that, the keys are compared as sorted
@@ -53,11 +53,11 @@ same name are not considered ordered with respect to each other, it is
 possible for two symbol tables to also be unordered with respect to each
 other.
 
-#### `.perEq(other) -> symbolTable | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 
@@ -65,7 +65,7 @@ Default implementation.
 <br><br>
 ### Method Definitions
 
-#### `.cat(more*) -> symbolTable`
+#### `.cat(more*) -> is SymbolTable`
 
 Returns a symbol table consisting of the combination of the mappings of `ths`
 and the arguments. Arguments are allowed to be symbol tables or anything which
@@ -78,7 +78,7 @@ get to it given the class's key uniqueness constraints.
 
 **Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
 
-#### `.del(symbols*) -> symbolTable`
+#### `.del(symbols*) -> is SymbolTable`
 
 Returns a symbol table just like the given one, except that
 the mappings for the given `symbols`, if any, are removed. If `this`
@@ -89,6 +89,6 @@ does not bind any of the given symbols, then this returns `this`.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 symbol table. If there is no such mapping, then this returns void.
 
-#### `.get_size() -> int`
+#### `.get_size() -> is Int`
 
 Returns the number of mappings contained within `this`.

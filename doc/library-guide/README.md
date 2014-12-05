@@ -56,9 +56,17 @@ will be returned, or one of:
 
 * `void` &mdash; Returns void.
 
-* `type | void` &mdash; Might or might not return a value. If a value, it
-  will be of the indicated type (including `.` to indicate an arbitrarily
-  typed value).
+* `is Name` &mdash; Returns an instance of the class `Name`.
+
+* `is [Name*]` / `is [Name+]` &mdash; Returns a list of instances of the
+  class `Name`. In the second case, the list will never be empty.
+
+* `== value` &mdash; Returns a specific value.
+
+* `x | y` &mdash; Returns either type `x` or type `y`.
+
+* `logic` &mdash; Shorthand that means the same thing as `. | void` while
+  implying that the expected use case is for conditional logic.
 
 ### Contents
 

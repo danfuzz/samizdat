@@ -22,7 +22,7 @@ the syntactic form `{: "string" :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(rules*) -> :Parser`
+#### `class.new(rules*) -> is PegSequence | empty`
 
 Creates an instance of this class.
 
@@ -31,7 +31,7 @@ Special cases:
 * If no arguments are passed, this returns `core.Peg :: empty`.
 * If exactly one argument is passed, this returns that rule directly.
 
-#### `class.newString(string) -> :Parser`
+#### `class.newString(string) -> is PegSequence | is PegResult | is PegSet`
 
 Creates an instance of this class, which matches the given string
 exactly, as a sequence of characters. `string` must be a string. The result of

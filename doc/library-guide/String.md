@@ -8,7 +8,7 @@ String
 <br><br>
 ### Class Method Definitions
 
-#### `class.castFrom(value) -> string | void`
+#### `class.castFrom(value) -> is String | void`
 
 This class knows how to cast as follows:
 
@@ -46,22 +46,22 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> string | void`
+#### `.crossEq(other) -> logic`
 
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
 
-#### `.perEq(other) -> string | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 
@@ -69,7 +69,7 @@ Default implementation.
 <br><br>
 ### Method Definitions: `Collection` and `Sequence` protocols
 
-#### `.cat(more*) -> string`
+#### `.cat(more*) -> is String`
 
 Returns a string consisting of the concatenation of the contents of `ths`
 and all the arguments, in argument order. Arguments are allowed to be
@@ -77,7 +77,7 @@ either strings or symbols.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
 
-#### `.del(ns*) -> string`
+#### `.del(ns*) -> is String`
 
 Returns a string like the given one, but without the indicated characters
 (by index). If a given index is repeated more than once, it has the same
@@ -87,11 +87,11 @@ effect as if it were only mentioned once.
 
 Defined as per the `Sequence` protocol.
 
-#### `.get_size() -> int`
+#### `.get_size() -> is Int`
 
 Returns the number of characters in the string.
 
-#### `.keyList() -> list`
+#### `.keyList() -> is List`
 
 Defined as per the `Sequence` protocol.
 
@@ -99,25 +99,25 @@ Defined as per the `Sequence` protocol.
 
 Gets the nth character of the string, as a single-element string.
 
-#### `.repeat(count) -> string`
+#### `.repeat(count) -> is String`
 
 Returns a string consisting of `count` repetitions of the contents of `this`.
 `count` must be a non-negative int.
 
-#### `.reverse() -> string`
+#### `.reverse() -> is String`
 
 Returns a string like the one given, except with characters in the opposite
 order.
 
-#### `.sliceExclusive(start, end?) -> string`
+#### `.sliceExclusive(start, end?) -> is String`
 
 Returns an end-exclusive slice of the given string.
 
-#### `.sliceInclusive(start, end?) -> string`
+#### `.sliceInclusive(start, end?) -> is String`
 
 Returns an end-inclusive slice of the given string.
 
-#### `.valueList(n) -> list`
+#### `.valueList(n) -> is List`
 
 Defined as per the `Sequence` protocol.
 
@@ -125,16 +125,16 @@ Defined as per the `Sequence` protocol.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(filterFunction) -> list`
+#### `.collect(filterFunction) -> is List`
 
 Collects or filters the characters of `string`.
 
-#### `.fetch() -> string | void`
+#### `.fetch() -> is String | void`
 
 Returns void on an empty string. Returns `this` on a single-character string.
 Terminates with an error in all other cases.
 
-#### `.nextValue(box) -> generator | void`
+#### `.nextValue(box) -> is String | void`
 
 On a non-empty string, calls `box.store(string[0])` and returns
 `string[1..]`. On an empty string, this returns void.

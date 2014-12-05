@@ -22,13 +22,13 @@ equivalent to the syntactic form `{: ["string1" "string2" "etc"] :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(names*) -> :Parser`
+#### `class.new(names*) -> is PegSet | == fail`
 
 Creates an instance of this class.
 
 As a special case, if no `names` are passed, this returns `core.Peg :: fail`.
 
-#### `class.newChars(strings*) -> :PegSet`
+#### `class.newChars(strings*) -> is PegSet`
 
 Creates a character set instance of this class, which matches any of the
 characters of the given `strings`. Each argument must be a string. The result

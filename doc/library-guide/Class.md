@@ -50,7 +50,7 @@ that the overall behavior can be guaranteed by the system. Individual
 classes are allowed to define `.castToward()` and `class.castFrom()` to
 add their particular contribution to the behavior.
 
-#### `class.of(value) -> class`
+#### `class.of(value) -> is Class`
 
 Returns the class of the given arbitrary `value`. The return value is always
 of class `Class`.
@@ -71,14 +71,14 @@ already of the class. If so, it returns `value`; if not, it returns `void`.
 **Note:** This method is used by the class methods `Class.cast()` and
 `Class.maybeCast()` as part of the more general casting mechanism.
 
-#### `.get_name() -> symbol`
+#### `.get_name() -> is Symbol`
 
 Returns the name of the class, as a symbol.
 
 **Note:** It is possible for two different classes to have the same name,
 so `cls1.get_name() == cls2.get_name()` does *not* imply that `cls1 == cls2`.
 
-#### `.get_parent() -> class | void`
+#### `.get_parent() -> is Class | void`
 
 Returns the parent class (that is, the superclass) of the given class. This
 returns a class for all classes except `Value`. For `Value`, this returns
@@ -93,20 +93,20 @@ of `this`), or void if not.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> class | void`
+#### `.crossEq(other) -> logic`
 
 Compares two classes. Two different classes are never equal.
 
-#### `.crossOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> is Symbol | void`
 
 This is identical to `.perEq()`, except it first asserts that `other` has the
 same direct class as `this` (which in practice is only true of metaclasses).
 
-#### `.perEq(other) -> class | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Compares two classes for order, as follows:
 

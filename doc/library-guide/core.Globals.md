@@ -10,12 +10,12 @@ environment used when evaluating Samizdat source in the usual manner.
 <br><br>
 ### Functions
 
-#### `earlyEnvironment() -> map`
+#### `earlyEnvironment() -> is Map`
 
 Returns a map of the simplest constant and function definitions. This
 function is used internally during system bootstrap.
 
-#### `fullEnvironment() -> map`
+#### `fullEnvironment() -> is Map`
 
 Returns a map of all of the standard global variable bindings.
 
