@@ -70,7 +70,7 @@ export fn get_varRefs(node) {
             ## symtab. The final result is the list of referenced variable
             ## names, that is, a list of all the keys. The cast to `Map` is
             ## because symtab doesn't have `keyList()`.
-            cast(Map, @{}.cat(statementRefs*)).keyList();
+            Class.cast(Map, @{}.cat(statementRefs*)).keyList();
         };
 
         @closureRef: {

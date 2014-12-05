@@ -223,7 +223,7 @@ export fn main(selfPath, rawArgs*) {
     };
     note("");
 
-    def modeSym = cast(Symbol, args::options::mode | DEFAULT_MODE);
+    def modeSym = Class.cast(Symbol, args::options::mode | DEFAULT_MODE);
     def modeName = MODE_MAP[modeSym] |
         {
             note("Unknown compilation mode: \%q(args::options::mode)");

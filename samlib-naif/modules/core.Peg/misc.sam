@@ -21,7 +21,7 @@ export fn apply(rule, input) {
         {
             ## This converts generated characters into tokens with the
             ## characters as the record name.
-            input.collect { ch -> @(cast(Symbol, ch)){} }
+            input.collect { ch -> @(Class.cast(Symbol, ch)){} }
         }
         { input };
 

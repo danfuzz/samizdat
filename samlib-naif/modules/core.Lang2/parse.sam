@@ -112,7 +112,7 @@ def parVarLvalue = {:
 ## returning a symbol literal in all cases.
 def parIdentifierSymbol = {:
     s = @string
-    { makeLiteral(cast(Symbol, s::value)) }
+    { makeLiteral(Class.cast(Symbol, s::value)) }
 |
     name = parNameSymbol
     { makeLiteral(name) }
@@ -1019,7 +1019,7 @@ def parPexSet = {:
 
     terminals = (
         strings = parPexSetString+
-        { "".cat(strings*).collect { ch -> cast(Symbol, ch) } }
+        { "".cat(strings*).collect { ch -> Class.cast(Symbol, ch) } }
     |
         tokens = parPexToken+
         { tokens.collect { n -> n::value } }

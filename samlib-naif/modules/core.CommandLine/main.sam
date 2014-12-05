@@ -49,7 +49,7 @@ def parFlag = {:
     flag = parWord
 
     ## The `!=` rejects plain `--`.
-    { (flag != "") & {cast(Symbol, flag): true} }
+    { (flag != "") & {Class.cast(Symbol, flag): true} }
 :};
 
 ## Parses a syntactically invalid option. This includes words that start with

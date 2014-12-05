@@ -40,7 +40,7 @@ export class PegSequence
 
     ## Documented in spec.
     class.newString(string) {
-        def resultType = cast(Symbol, string);
+        def resultType = Class.cast(Symbol, string);
 
         ## Trivial case: Empty string. Return an always-successful yield of
         ## `@""`.
@@ -55,7 +55,7 @@ export class PegSequence
         ## which allows us to minimize code duplication.
 
         ## Make a list of rules per character.
-        def chars = string.collect { ch -> PegSet.new(cast(Symbol, ch)) };
+        def chars = string.collect { ch -> PegSet.new(Class.cast(Symbol, ch)) };
 
         return this.new(chars*, PegResult.new(@(resultType){}))
     };

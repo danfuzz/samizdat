@@ -128,7 +128,7 @@ fn processYieldDef(clo) {
             ],
             cleanups: ["jumpRetire(jump)"],
             vars: @{(name): @{
-                    origName: cast(Symbol, "<\(name)>"),
+                    origName: Class.cast(Symbol, "<\(name)>"),
                     kind:     "yield",
                     name:     safeName("yield", name),
                     init:     MethCall.new("CLS_Result", "SYM(new)", "jump")
@@ -159,7 +159,7 @@ fn processFreeVars(clo) {
 ## (must be safe), an arbitrary original `name`, and an optional `optIndex`
 ## (an unsigned int).
 fn safeName(prefix, name, optIndex?) {
-    def nameStr = cast(String, name);
+    def nameStr = Class.cast(String, name);
     def chars = [ ch in nameStr -> C_IDENT_CHARS[ch] & ch | "_" ];
     def index = (def i = optIndex*) & [i, "_"] | "";
 
@@ -209,7 +209,7 @@ export fn processVars(clo) {
     def varStats = [ name in names ->
         def binding = vars[name];
         Comment.new(
-            "\%q(cast(String, binding::origName))",
+            "\%q(Class.cast(String, binding::origName))",
             Assign.new("zvalue \(binding::name)", binding::init));
     ];
 

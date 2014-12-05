@@ -66,7 +66,7 @@ def SPECIAL_VALUES = {
 ## the prefix is empty and the symbol does not look like an identifier, then
 ## the result is backslash-prefixed in addition to being quoted.
 fn nameString(prefix, name) {
-    def nameString = cast(String, name);
+    def nameString = Class.cast(String, name);
 
     If.is { isIdentifier(name) }
         { return prefix.cat(nameString) };
@@ -136,7 +136,7 @@ fn String_source(value, adorn) {
 ## Stringifies a symbol.
 fn Symbol_source(value, adorn) {
     If.is { Cmp.eq(adorn, false) }
-        { return sourceGeneral(cast(String, value), false) };
+        { return sourceGeneral(Class.cast(String, value), false) };
 
     def prefix = If.is { value.isInterned() } { "@" } { "@+" };
     return nameString(prefix, value);

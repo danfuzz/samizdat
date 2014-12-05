@@ -32,7 +32,7 @@ export class OpenRange
     class.new(firstValue, optIncrement?) {
         def increment = If.or { optIncrement* } { 1 };
         def converter = converterFor(Class.of(firstValue));
-        def value = cast(Int, firstValue);
+        def value = Class.cast(Int, firstValue);
 
         return this.(NEW)(@{converter, increment, value})
     };

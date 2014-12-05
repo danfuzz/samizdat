@@ -14,21 +14,21 @@ import ./int :: intWithBase;
 
 
 ## The first Unicode surrogate code point.
-def CHAR_SURROGATE_START = cast(String, 55296);  ## U+D800
+def CHAR_SURROGATE_START = Class.cast(String, 55296);  ## U+D800
 
 ## The last Unicode surrogate code point.
-def CHAR_SURROGATE_END = cast(String, 57343);    ## U+DFFF
+def CHAR_SURROGATE_END = Class.cast(String, 57343);    ## U+DFFF
 
 ## The last Unicode code point.
-def CHAR_UNICODE_END = cast(String, 1114111);   ## U+10FFFF
+def CHAR_UNICODE_END = Class.cast(String, 1114111);   ## U+10FFFF
 
 ## Map of special-case characters to either their stringified forms or
 ## to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = {
-    (ClosedRange.newInclusive(cast(String, 1), cast(String, 31)))*: "x",
-    (ClosedRange.newInclusive(cast(String, 127), cast(String, 159)))*: "x",
-    cast(String, 65534): "x",
-    cast(String, 65535): "x",
+    (ClosedRange.newInclusive(Class.cast(String, 1), Class.cast(String, 31)))*: "x",
+    (ClosedRange.newInclusive(Class.cast(String, 127), Class.cast(String, 159)))*: "x",
+    Class.cast(String, 65534): "x",
+    Class.cast(String, 65535): "x",
     "\0": "\\0",
     "\n": "\\n",
     "\r": "\\r",
@@ -39,7 +39,7 @@ def SPECIAL_CHARS = {
 
 ## Does hex character conversion.
 fn hexStringChar(ch) {
-    return "\\x".cat(intWithBase(cast(Int, ch), 16), ";")
+    return "\\x".cat(intWithBase(Class.cast(Int, ch), 16), ";")
 };
 
 ## Helper for stringifying strings: Returns the converted form of the
