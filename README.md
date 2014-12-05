@@ -23,8 +23,9 @@ Samizdat is a high-level programming language somewhere down the
 family lineage from all of [ALGOL](http://en.wikipedia.org/wiki/ALGOL),
 [Lisp](http://en.wikipedia.org/wiki/LISP), and
 [Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is intended to be an
-attractive target for use in text processing, free-form data structure
-manipulation, and general higher-level systems application programming.
+easy and compelling language to use for text processing, free-form data
+structure manipulation, and general higher-level systems application
+programming.
 
 As a fundamental part of its philosophy, Samizdat eschews hidden state and
 randomness, aiming for programs to be fully deterministic unless they
