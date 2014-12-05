@@ -35,21 +35,20 @@ fn msgTen(header, origGen) {
 
     var count = 10;
     var gen = origGen;
-    { /done ->
-        loop {
-            count := count.sub(1);
-            If.is { Cmp.lt(count, 0) }
-                { yield /done };
 
-            def result;
-            If.value { gen.nextValue(result?) }
-                { nextGen ->
-                    msg(result);
-                    gen := nextGen
-                }
-                { yield /done }
-        }
-    }();
+    If.loopUntil { /out ->
+        count := count.sub(1);
+        If.is { Cmp.lt(count, 0) }
+            { yield /out [] };
+
+        def result;
+        If.value { gen.nextValue(result?) }
+            { nextGen ->
+                msg(result);
+                gen := nextGen
+            }
+            { yield /out [] }
+    };
 
     note("  [...]");
     note("  value: ", $Format::source(origGen));

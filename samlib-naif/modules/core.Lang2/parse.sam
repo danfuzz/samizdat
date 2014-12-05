@@ -378,7 +378,7 @@ def parPostfixOperator = {:
     key = parKeyLiteral
     { { node -> makeGet(node, key) } }
 |
-    ## The lookahead failure here is to make the grammar prefer `*` to be
+    ## The lookahead-failure here is to make the grammar prefer `*` to be
     ## treated as a binary op. (`*` is only defined as postfix in Layer 0,
     ## but higher layers augment its meaning.)
     @"*" !parExpression
@@ -2171,7 +2171,7 @@ def parOptBreakDef = {:
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     loop { /\"continue" ->
+##     If.loop { /\"continue" ->
 ##         If.value { test }
 ##             { name /next -> stat1; stat2 }
 ##             { yield /\"break" }
@@ -2204,7 +2204,7 @@ def parWhileExpression = {:
 
         def mainClosure = makeFullClosure(@{
             yieldDef: @break,
-            statements: [breakDef*, makeFunCall(REFS::loop, loopClosure)]
+            statements: [breakDef*, makeFunCall(METHODS::If_loop, loopClosure)]
         });
 
         makeFunCall(mainClosure)
@@ -2220,7 +2220,7 @@ def parWhileExpression = {:
 ## ```
 ## { /\"break" ->
 ##     def out = \"break";
-##     loop { /\"continue" ->
+##     If.loop { /\"continue" ->
 ##         { /next -> stat1; stat2 }();
 ##         If.not { expr }
 ##             { yield /\"break" }
@@ -2251,7 +2251,7 @@ def parDoExpression = {:
         });
         def mainClosure = makeFullClosure(@{
             yieldDef: @break,
-            statements: [breakDef*, makeFunCall(REFS::loop, loopClosure)]
+            statements: [breakDef*, makeFunCall(METHODS::If_loop, loopClosure)]
         });
 
         makeFunCall(mainClosure)

@@ -17,7 +17,7 @@ fn intBody(value, base) {
     var text = "";
     var v = value;
 
-    loop {
+    If.loop {
         If.is { Cmp.perEq(v, 0) }
             { return text };
 

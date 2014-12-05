@@ -79,6 +79,8 @@ DEF_SYMBOL(is);
 DEF_SYMBOL(isInterned);
 DEF_SYMBOL(keyList);
 DEF_SYMBOL(le);
+DEF_SYMBOL(loop);
+DEF_SYMBOL(loopUntil);
 DEF_SYMBOL(lt);
 DEF_SYMBOL(maybeValue);
 DEF_SYMBOL(mod);

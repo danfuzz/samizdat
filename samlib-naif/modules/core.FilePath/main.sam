@@ -44,29 +44,28 @@ export fn get_directory(path) {
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
-    { /out ->
-        loop {
-            at := at.sub(1);
+    If.loopUntil { /out ->
+        at := at.sub(1);
 
-            def ch = path.get(at);
-            If.is { Cmp.ne(ch, "/") } { yield /out };
-            If.is { Cmp.eq(at, 0) } { return "/" };
-        }
-    }();
+        def ch = path.get(at);
+        If.is { Cmp.ne(ch, "/") } { yield /out [] };
+        If.is { Cmp.eq(at, 0) } { return "/" };
+    };
 
     ## Back up until the next-final slash. If we hit the start of the path,
     ## then that means there was no slash, making the result be `"."`. If
     ## the next-final slash is at the start of the path, then the result is
     ## `"/"`.
-    loop {
+    return If.loopUntil {
         If.is { Cmp.eq(at, 0) } { return "." };
         at := at.sub(1);
 
         def ch = path.get(at);
         If.is { Cmp.eq(ch, "/") }
             {
-                If.is { Cmp.eq(at, 0) } { return "/" };
-                return path.sliceExclusive(0, at)
+                If.is { Cmp.eq(at, 0) }
+                    { "/" }
+                    { path.sliceExclusive(0, at) }
             };
     }
 };
@@ -79,22 +78,20 @@ export fn get_file(path) {
 
     ## Back up over any path-final slashes. If we hit the start of the path,
     ## then that means the path was all slashes, making the result be `"/"`.
-    { /out ->
-        loop {
-            at := at.sub(1);
+    If.loopUntil { /out ->
+        at := at.sub(1);
 
-            def ch = path.get(at);
-            If.is { Cmp.ne(ch, "/") } { yield /out };
-            If.is { Cmp.eq(at, 0) } { return "/" };
-        }
-    }();
+        def ch = path.get(at);
+        If.is { Cmp.ne(ch, "/") } { yield /out [] };
+        If.is { Cmp.eq(at, 0) } { return "/" };
+    };
 
     def endAt = at;  ## The index of the final character of the result.
 
     ## Back up until the next-final slash. If we hit the start of the path,
     ## then that means there was no slash, making the result be the entire
     ## `path` minus any path-final slashes.
-    loop {
+    If.loop {
         If.is { Cmp.eq(at, 0) }
             { return path.sliceInclusive(0, endAt) };
 

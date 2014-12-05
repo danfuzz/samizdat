@@ -27,17 +27,15 @@ fn msgAll(header, origGen) {
     note(header);
 
     var gen = origGen;
-    { /done ->
-        loop {
-            def result;
-            If.value { gen.nextValue(result?) }
-                { nextGen ->
-                    msg(result);
-                    gen := nextGen
-                }
-                { yield /done }
-        }
-    }();
+    If.loopUntil { /out ->
+        def result;
+        If.value { gen.nextValue(result?) }
+            { nextGen ->
+                msg(result);
+                gen := nextGen
+            }
+            { yield /out [] }
+    };
 
     note("  [all]");
     msg(origGen.collect());
