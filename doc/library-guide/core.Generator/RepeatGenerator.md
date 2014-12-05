@@ -11,7 +11,7 @@ given value a finite number of times before becoming voided.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(size, optValue?) -> :SerialGenerator`
+#### `class.new(size, optValue?) -> is SerialGenerator | == nullGenerator`
 
 Creates an instance of this class. If `optValue` is not passed, it is
 taken to be `null`.
