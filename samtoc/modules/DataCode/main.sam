@@ -226,7 +226,7 @@ export fn convert(value) {
     return if (def special = SPECIAL_VALUES[value]) {
         special
     } else {
-        switch (classOf(value)) {
+        switch (Class.of(value)) {
             (Class):       { Class_convert(value)       };
             (Int):         { Int_convert(value)         };
             (List):        { List_convert(value)        };

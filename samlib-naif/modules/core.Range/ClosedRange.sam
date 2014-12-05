@@ -32,7 +32,7 @@ export class ClosedRange
     ## Documented in spec.
     class.new(firstValue, size, optIncrement?) {
         def increment = If.or { optIncrement* } { 1 };
-        def converter = converterFor(classOf(firstValue));
+        def converter = converterFor(Class.of(firstValue));
         def value = cast(Int, firstValue);
 
         If.not { Int.accepts(size) }
