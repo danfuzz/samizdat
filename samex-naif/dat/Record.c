@@ -122,7 +122,7 @@ zint recNameIndex(zvalue record) {
 //
 
 // Documented in spec.
-CMETH_IMPL_1_2(Record, new, name, data) {
+CMETH_IMPL_1_opt(Record, new, name, data) {
     zint index = symbolIndex(name);  // Do this early, to catch non-symbols.
 
     if (data == NULL) {

@@ -48,7 +48,7 @@ static zvalue doNew(zvalue cls, zvalue data) {
  * Class method to construct an instance. This is the function that's bound as
  * the class method for the `new` symbol.
  */
-CMETH_IMPL_0_1(Object, new, data) {
+CMETH_IMPL_0_opt(Object, new, data) {
     return doNew(thsClass, data);
 }
 
@@ -56,7 +56,7 @@ CMETH_IMPL_0_1(Object, new, data) {
  * Instance method to construct an instance. This is the function that's bound
  * as the instance method for the `new` symbol.
  */
-METH_IMPL_0_1(Object, new, data) {
+METH_IMPL_0_opt(Object, new, data) {
     return doNew(classOf(ths), data);
 }
 
@@ -64,7 +64,7 @@ METH_IMPL_0_1(Object, new, data) {
  * Method to get the given object's data payload. This is the function
  * that's bound as the instance method for the `access` symbol.
  */
-METH_IMPL_0_1(Object, access, key) {
+METH_IMPL_0_opt(Object, access, key) {
     zvalue data = getInfo(ths)->data;
     return (key == NULL) ? data : symtabGet(data, key);
 }
@@ -75,7 +75,7 @@ METH_IMPL_0_1(Object, access, key) {
 //
 
 // Documented in spec.
-CMETH_IMPL_2_4(Object, subclass, name, config,
+CMETH_IMPL_2_opt_opt(Object, subclass, name, config,
         classMethods, instanceMethods) {
     if (thsClass != CLS_Object) {
         die("Invalid parent class: %s", cm_debugString(thsClass));

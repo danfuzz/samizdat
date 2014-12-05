@@ -20,7 +20,7 @@
 //
 
 // Documented in spec.
-FUNC_IMPL_1_2(Generator_stdCollect, generator, function) {
+FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
     zvalue stackArr[CLS_MAX_GENERATOR_ITEMS_SOFT];
     zvalue *arr = stackArr;
     zint maxSize = CLS_MAX_GENERATOR_ITEMS_SOFT;
@@ -95,7 +95,7 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
 }
 
 // Documented in spec.
-FUNC_IMPL_1_2(Generator_stdForEach, generator, function) {
+FUNC_IMPL_1_opt(Generator_stdForEach, generator, function) {
     zvalue box = cm_new(Cell);
     zvalue result = NULL;
 

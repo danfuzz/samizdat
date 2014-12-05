@@ -80,7 +80,7 @@ CMETH_IMPL_1(Bool, castFrom, value) {
 }
 
 // Documented in spec.
-CMETH_IMPL_0_1(Bool, fromLogic, value) {
+CMETH_IMPL_0_opt(Bool, fromLogic, value) {
     return (value == NULL) ? BOOL_FALSE : BOOL_TRUE;
 }
 

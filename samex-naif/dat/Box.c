@@ -53,7 +53,7 @@ static zvalue newBox(zvalue cls, BoxInfo info) {
 //
 
 // Documented in spec.
-METH_IMPL_0_1(Box, collect, function) {
+METH_IMPL_0_opt(Box, collect, function) {
     zvalue value = METH_CALL(ths, fetch);
 
     if ((value != NULL) && (function != NULL)) {
@@ -69,7 +69,7 @@ METH_IMPL_0(Box, fetch) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(Box, forEach, function) {
+METH_IMPL_0_opt(Box, forEach, function) {
     zvalue value = METH_CALL(ths, fetch);
 
     if ((value == NULL) || (function == NULL)) {
@@ -127,12 +127,12 @@ zvalue CLS_Box = NULL;
 //
 
 // Documented in spec.
-CMETH_IMPL_0_1(Cell, new, value) {
+CMETH_IMPL_0_opt(Cell, new, value) {
     return newBox(CLS_Cell, (BoxInfo) {value, true});
 }
 
 // Documented in spec.
-METH_IMPL_0_1(Cell, store, value) {
+METH_IMPL_0_opt(Cell, store, value) {
     getInfo(ths)->value = value;
     return value;
 }
@@ -176,7 +176,7 @@ METH_IMPL_0(Lazy, fetch) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(Lazy, store, value) {
+METH_IMPL_0_opt(Lazy, store, value) {
     die("Cannot `store()` to `Lazy`.");
 }
 
@@ -201,7 +201,7 @@ zvalue CLS_Lazy = NULL;
 //
 
 // Documented in spec.
-METH_IMPL_0_1(NullBox, store, value) {
+METH_IMPL_0_opt(NullBox, store, value) {
     // Return `value`, but otherwise do nothing.
     return value;
 }
@@ -235,7 +235,7 @@ CMETH_IMPL_0(Promise, new) {
 }
 
 // Documented in spec.
-METH_IMPL_0_1(Promise, store, value) {
+METH_IMPL_0_opt(Promise, store, value) {
     BoxInfo *info = getInfo(ths);
 
     if (!info->canStore) {
@@ -267,14 +267,14 @@ zvalue CLS_Promise = NULL;
 //
 
 // Documented in spec.
-CMETH_IMPL_0_1(Result, new, value) {
+CMETH_IMPL_0_opt(Result, new, value) {
     return (value == NULL)
         ? THE_VOID_RESULT
         : newBox(CLS_Result, (BoxInfo) {value, false});
 }
 
 // Documented in spec.
-METH_IMPL_0_1(Result, store, value) {
+METH_IMPL_0_opt(Result, store, value) {
     die("Cannot `store()` to `Result`.");
 }
 

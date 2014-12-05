@@ -51,7 +51,7 @@ CMETH_IMPL_rest_2(If, andThenElse, functions, thenFunction, elseFunction) {
 }
 
 // Documented in spec.
-CMETH_IMPL_2_3(If, cases, testFunction, valueFunctions, defaultFunction) {
+CMETH_IMPL_2_opt(If, cases, testFunction, valueFunctions, defaultFunction) {
     zvalue value = FUN_CALL(testFunction);
 
     if (value == NULL) {
@@ -70,7 +70,7 @@ CMETH_IMPL_2_3(If, cases, testFunction, valueFunctions, defaultFunction) {
 }
 
 // Documented in spec.
-CMETH_IMPL_2_3(If, is, testFunction, isFunction, notFunction) {
+CMETH_IMPL_2_opt(If, is, testFunction, isFunction, notFunction) {
     if (FUN_CALL(testFunction) != NULL) {
         return FUN_CALL(isFunction);
     } else if (notFunction != NULL) {
@@ -108,7 +108,7 @@ CMETH_IMPL_rest(If, or, functions) {
 }
 
 // Documented in spec.
-CMETH_IMPL_2_3(If, value, testFunction, valueFunction, voidFunction) {
+CMETH_IMPL_2_opt(If, value, testFunction, valueFunction, voidFunction) {
     zvalue result = FUN_CALL(testFunction);
 
     if (result != NULL) {
