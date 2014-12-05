@@ -8,6 +8,54 @@ These are the instance methods on `Class`, which means that they &mdash;
 along with the default methods on `Value` &mdash; are the default *class*
 methods for all classes.
 
+The instance methods defined here are the instance methods on `Class`, which
+means that they &mdash; along with the default methods on `Value` &mdash; are
+the default *class* methods for all classes.
+
+<br><br>
+### Class Method Definitions
+
+**Note:** These are the class methods on the class `Class`, and not class
+methods in general.
+
+#### `class.cast(cls, value) -> .`
+
+"Hard" cast operation. This is like `.maybeCast()`, except that this
+terminates the runtime with an error if the cast could not complete, instead
+of returning void.
+
+**Note:** See note on `.maybeCast()` for rationale of how this is defined.
+
+#### `class.maybeCast(cls, value) -> . | void`
+
+"Soft" cast operation. This attempts to cast (convert in a maximally
+data-preserving fashion) the given `value` to the indicated class `cls`.
+
+This function operates by first checking to see if `value` is already of
+a proper class, and returning it directly if so.
+
+If not, this function calls `value.castToward(cls)` to give `value` "first
+dibs" on conversion. If it results in a value of an appropriate class, then
+that value is then returned.
+
+If not, this function then calls `cls.castFrom(value)`, passing it the
+non-void result of the previous step (if any) or the original value (if not).
+If this call results in a value of an appropriate class, then that value is
+then returned.
+
+If not, this function returns void.
+
+**Note:** This is defined as a class method and not an instance method, so
+that the overall behavior can be guaranteed by the system. Individual
+classes are allowed to define `.castToward()` and `class.castFrom()` to
+add their particular contribution to the behavior.
+
+#### `class.of(value) -> class`
+
+Returns the class of the given arbitrary `value`. The return value is always
+of class `Class`.
+
+
 <br><br>
 ### Method Definitions: `Class` protocol
 
