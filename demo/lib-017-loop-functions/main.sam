@@ -66,7 +66,7 @@ fn expectNe(name, v1, v2) {
 fn loop1() {
     var x = 0;
 
-    loop {
+    If.loop {
         x := x.add(1);
         If.is { Cmp.eq(x, 10) }
             { return x }
@@ -78,7 +78,7 @@ expectEq("loop 1", 10, loop1());
 fn loop2() {
     var x = 0;
 
-    loop {
+    If.loop {
         x := x.add(1);
         If.is { Cmp.eq(x, 10) }
             { return x };
@@ -89,3 +89,14 @@ fn loop2() {
 };
 
 expectEq("loop 2", 10, loop2());
+
+fn loop3() {
+    var x = 0;
+
+    return If.loopUntil {
+        x := x.add(1);
+        Cmp.eq(x, 10)  ## When non-void, should cause loop termination.
+    };
+};
+
+expectEq("loop 3", 10, loop3());
