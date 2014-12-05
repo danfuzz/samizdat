@@ -37,7 +37,7 @@ representable in real Samizdat syntax.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> is SymbolTable | void`
+#### `.crossEq(other) -> logic`
 
 Compares two symbol tables. Two symbol tables are equal if they have
 equal sets of mappings.
@@ -53,7 +53,7 @@ same name are not considered ordered with respect to each other, it is
 possible for two symbol tables to also be unordered with respect to each
 other.
 
-#### `.perEq(other) -> is SymbolTable | void`
+#### `.perEq(other) -> logic`
 
 Default implementation.
 

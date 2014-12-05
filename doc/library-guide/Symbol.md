@@ -32,7 +32,7 @@ this method does *not* just return `this`.)
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> builtin | void`
+#### `.crossEq(other) -> logic`
 
 Returns `this` if `other` is a reference to the same symbol, or void if
 not.

@@ -20,7 +20,7 @@ already of class `cls`. If so, it returns `this`; if not, it returns `void`.
 **Note:** This method is used by the class methods `Class.cast()` and
 `Class.maybeCast()` as part of the more general casting mechanism.
 
-#### `.crossEq(other) -> . | void`
+#### `.crossEq(other) -> logic`
 
 Performs a class-specific equality comparison of the two given
 values, using the "cross-class ordering" order. When called by the system,
@@ -104,7 +104,7 @@ The class `Value` binds this to a function which always returns void.
 **Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
 
-#### `.perEq(other) -> . | void`
+#### `.perEq(other) -> logic`
 
 Performs a per-class equality comparison of the two given values, using the
 per-class order. This should return `this` if the two values are to be

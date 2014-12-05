@@ -134,7 +134,7 @@ Collects or filters the characters of `string`.
 Returns void on an empty string. Returns `this` on a single-character string.
 Terminates with an error in all other cases.
 
-#### `.nextValue(box) -> generator | void`
+#### `.nextValue(box) -> is String | void`
 
 On a non-empty string, calls `box.store(string[0])` and returns
 `string[1..]`. On an empty string, this returns void.
