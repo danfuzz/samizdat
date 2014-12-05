@@ -48,7 +48,7 @@ Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text.
 
-#### `readLink(path) -> path | void`
+#### `readLink(path) -> is String | void`
 
 Checks the filesystem to see if the given filesystem path refers to a symbolic
 link. If it does, then this returns the string which represents the direct
