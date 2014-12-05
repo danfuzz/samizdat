@@ -11,7 +11,7 @@ Int
 
 Compares the integer values of two ints.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares the integer values of two ints, ordering by value in the usual
 manner.
@@ -20,7 +20,7 @@ manner.
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 

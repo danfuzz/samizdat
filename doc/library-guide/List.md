@@ -34,7 +34,7 @@ the function is happy to operate given zero arguments.
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 
@@ -43,7 +43,7 @@ Default implementation.
 Compares two lists. Two lists are equal if they have equal elements in
 identical orders.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two lists for order. Lists order by pairwise corresponding-element
 comparison, with a strict prefix always ordering before its longer brethren.

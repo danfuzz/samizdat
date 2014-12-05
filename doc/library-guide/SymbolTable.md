@@ -37,12 +37,12 @@ representable in real Samizdat syntax.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> symbolTable | void`
+#### `.crossEq(other) -> is SymbolTable | void`
 
 Compares two symbol tables. Two symbol tables are equal if they have
 equal sets of mappings.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two symbol tables for order. The size of the table is the major
 order (smaller is earlier). After that, the keys are compared as sorted
@@ -53,11 +53,11 @@ same name are not considered ordered with respect to each other, it is
 possible for two symbol tables to also be unordered with respect to each
 other.
 
-#### `.perEq(other) -> symbolTable | void`
+#### `.perEq(other) -> is SymbolTable | void`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 
@@ -65,7 +65,7 @@ Default implementation.
 <br><br>
 ### Method Definitions
 
-#### `.cat(more*) -> symbolTable`
+#### `.cat(more*) -> is SymbolTable`
 
 Returns a symbol table consisting of the combination of the mappings of `ths`
 and the arguments. Arguments are allowed to be symbol tables or anything which
@@ -78,7 +78,7 @@ get to it given the class's key uniqueness constraints.
 
 **Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
 
-#### `.del(symbols*) -> symbolTable`
+#### `.del(symbols*) -> is SymbolTable`
 
 Returns a symbol table just like the given one, except that
 the mappings for the given `symbols`, if any, are removed. If `this`

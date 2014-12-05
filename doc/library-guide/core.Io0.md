@@ -17,7 +17,7 @@ string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `fileType(path) -> symbol`
+#### `fileType(path) -> is Symbol`
 
 Returns the type of the file whose `path` is as given. This function always
 returns a symbol, one of:

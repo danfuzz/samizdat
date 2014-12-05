@@ -18,7 +18,7 @@ values are both `null` per se. That is, this function returns `null` if
 called as `null.crossEq(null)` and will terminate with an error in
 all other cases.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares the given `Null` values for order. As there is only one instance
 of `Null`, this will only ever return `@same` when called appropriately. That
@@ -33,6 +33,6 @@ Returns `"null"`.
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.

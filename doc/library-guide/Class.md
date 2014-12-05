@@ -71,7 +71,7 @@ already of the class. If so, it returns `value`; if not, it returns `void`.
 **Note:** This method is used by the class methods `Class.cast()` and
 `Class.maybeCast()` as part of the more general casting mechanism.
 
-#### `.get_name() -> symbol`
+#### `.get_name() -> is Symbol`
 
 Returns the name of the class, as a symbol.
 
@@ -97,7 +97,7 @@ of `this`), or void if not.
 
 Compares two classes. Two different classes are never equal.
 
-#### `.crossOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> is Symbol | void`
 
 This is identical to `.perEq()`, except it first asserts that `other` has the
 same direct class as `this` (which in practice is only true of metaclasses).
@@ -106,7 +106,7 @@ same direct class as `this` (which in practice is only true of metaclasses).
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Compares two classes for order, as follows:
 

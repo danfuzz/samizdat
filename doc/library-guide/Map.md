@@ -85,7 +85,7 @@ This class knows how to cast as follows:
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal
@@ -97,7 +97,7 @@ key order.
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 

@@ -54,11 +54,11 @@ any data bindings for the given `symbols`.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 record. If there is no such mapping, then this returns void.
 
-#### `.get_data() -> symbolTable`
+#### `.get_data() -> is SymbolTable`
 
 Returns the data payload of the given record.
 
-#### `.get_name() -> symbol`
+#### `.get_name() -> is Symbol`
 
 Returns the name (tag) of the given record.
 
@@ -87,7 +87,7 @@ This class knows how to cast as follows:
 Compares two records. Two records are equal if they have equal names and
 equal data payloads.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two records for order. Records order by name as the major order
 and data payload as minor order.
@@ -96,6 +96,6 @@ and data payload as minor order.
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.

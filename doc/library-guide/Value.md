@@ -45,7 +45,7 @@ to determine equality much quicker than determining order.
 **Note:** This is the method which underlies the implementation
 of all cross-class equality comparison functions.
 
-#### `.crossOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> is Symbol | void`
 
 Returns the class-specific order of the two given values, using the
 "cross-class ordering" order. When called by the system, the two values are
@@ -93,7 +93,7 @@ by `@<...>`.
 **Note:** In general, it is a bad idea to call this function for any
 purpose other than temporary debugging code.
 
-#### `.debugSymbol() -> symbol | void`
+#### `.debugSymbol() -> is Symbol | void`
 
 Some values have an associated symbolic name, or an optional associated name.
 This method provides access to that name. If non-void, the result of this
@@ -120,7 +120,7 @@ of all per-class equality comparison functions.
 
 **Syntax Note:** Used in the translation of `expression == expression` forms.
 
-#### `.perOrder(other) -> symbol | void`
+#### `.perOrder(other) -> is Symbol | void`
 
 Performs an order comparison of the two given values, using the per-class
 order. Return values are the same as with `crossOrder` (see which). As

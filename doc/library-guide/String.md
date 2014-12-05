@@ -51,7 +51,7 @@ This class knows how to cast as follows:
 Compares two strings. Two strings are equal if they have equal characters in
 identical orders.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares two strings for order. Strings order by pairwise
 corresponding-character comparison, with a strict prefix always ordering
@@ -61,7 +61,7 @@ before its longer brethren.
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 

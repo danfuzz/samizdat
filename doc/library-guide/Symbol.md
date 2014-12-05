@@ -11,18 +11,18 @@ language constructs.
 <br><br>
 ### Method Definitions: `Symbol` protocol
 
-#### `.cat(more*) -> symbol`
+#### `.cat(more*) -> is Symbol`
 
 Returns an interned symbol whose name consists of `this`'s name
 concatenated with the names of all the arguments, in argument order.
 Arguments must all be symbols.
 
-#### `.isInterned() -> symbol | void`
+#### `.isInterned() -> is Symbol | void`
 
 Returns `this` if it is interned (that is, *not* unlisted). Returns void
 otherwise.
 
-#### `.toUnlisted() -> symbol`
+#### `.toUnlisted() -> is Symbol`
 
 Returns a new unlisted symbol whose name is the same as `this`'s. This
 *always* returns a fresh symbol. (That is, if given an unlisted symbol,
@@ -37,7 +37,7 @@ this method does *not* just return `this`.)
 Returns `this` if `other` is a reference to the same symbol, or void if
 not.
 
-#### `.crossOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> is Symbol | void`
 
 Orders symbols by internedness (primary) and name (secondary), with
 interned symbols getting ordered *before* unlisted symbols. Two
@@ -50,14 +50,14 @@ Returns a string representation of the symbol. This includes a suggestive
 prefix before the name of `@` for interned symbols or `@+` for unlisted
 symbols.
 
-#### `.debugSymbol() -> symbol`
+#### `.debugSymbol() -> is Symbol`
 
 Returns `this`.
 
-#### `.perEq(other) -> symbol | void`
+#### `.perEq(other) -> is Symbol | void`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol | void`
+#### `.perOrder(other) -> is Symbol | void`
 
 Default implementation.
