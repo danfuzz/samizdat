@@ -91,7 +91,7 @@ Defined as per the `Sequence` protocol.
 
 Returns the number of characters in the string.
 
-#### `.keyList() -> list`
+#### `.keyList() -> is List`
 
 Defined as per the `Sequence` protocol.
 
@@ -117,7 +117,7 @@ Returns an end-exclusive slice of the given string.
 
 Returns an end-inclusive slice of the given string.
 
-#### `.valueList(n) -> list`
+#### `.valueList(n) -> is List`
 
 Defined as per the `Sequence` protocol.
 
@@ -125,7 +125,7 @@ Defined as per the `Sequence` protocol.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(filterFunction) -> list`
+#### `.collect(filterFunction) -> is List`
 
 Collects or filters the characters of `string`.
 

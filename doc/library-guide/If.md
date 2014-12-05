@@ -105,7 +105,7 @@ Primitive conditional loop. This calls `function` with no arguments. If
 it returns a value (not void), then this method returns that value. Otherwise,
 it repeats.
 
-#### `class.maybeValue(function) -> list`
+#### `class.maybeValue(function) -> is List`
 
 Function call helper, to deal with value-or-void situations. This calls
 `function` with no arguments, wrapping its return value in a list and in

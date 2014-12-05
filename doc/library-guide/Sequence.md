@@ -18,7 +18,7 @@ For sequences, `get` behaves the same as `nth`, except that it returns
 void for `key` values that are either non-ints or negative (instead of
 reporting a terminal error).
 
-#### `.keyList() -> list`
+#### `.keyList() -> is List`
 
 (Refinement of `Collection` protocol.)
 
@@ -98,7 +98,7 @@ must both be ints. `end` defaults to `#this - 1` if omitted.
 
 This is equivalent to calling `this.sliceExclusive(start, end + 1)`.
 
-#### `.valueList() -> list`
+#### `.valueList() -> is List`
 
 (Refinement of `Collection` protocol.)
 

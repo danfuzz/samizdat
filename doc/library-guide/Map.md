@@ -148,11 +148,11 @@ the given map. If there is no such mapping, then this returns void.
 
 Returns the number of mappings in the map.
 
-#### `.keyList() -> list`
+#### `.keyList() -> is List`
 
 Returns a list of all the keys mapped by the given `map`, in sorted order.
 
-#### `.valueList() -> list`
+#### `.valueList() -> is List`
 
 Returns a list of all the values mapped by the given `map`, in order of the
 sorted keys.
@@ -161,7 +161,7 @@ sorted keys.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> is List`
 
 Collects or filters the mappings of `this`.
 

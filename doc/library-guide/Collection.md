@@ -61,10 +61,10 @@ Gets the size (element count) of `this`.
 **Syntax Note:** This is the method underlying the `#value` syntactic
 form (prefix `#` operator).
 
-#### `.keyList() -> list`
+#### `.keyList() -> is List`
 
 Returns the list of keys mapped by the collection.
 
-#### `.valueList() -> list`
+#### `.valueList() -> is List`
 
 Returns the list of values mapped by the collection.
