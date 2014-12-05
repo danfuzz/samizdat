@@ -87,6 +87,24 @@ this function calls the consequent function with no arguments, whereas
 **Syntax Note:** Used in the translation of `if` and `expression & expression`
 forms.
 
+#### `class.loop(function) -> .`
+
+Primitive unconditional loop construct. This repeatedly calls the given
+`function` with no arguments.
+
+In order for the loop to terminate, the `function` must use a nonlocal exit.
+
+This is, of course, not a conditional of any sort. Nonetheless, it is defined
+here to go with `.loopUntil()`.
+
+**Syntax Note:** Used in the translation of `do` and `while` forms.
+
+#### `class.loopUntil(function) -> .`
+
+Primitive conditional loop. This calls `function` with no arguments. If
+it returns a value (not void), then this method returns that value. Otherwise,
+it repeats.
+
 #### `class.maybeValue(function) -> list`
 
 Function call helper, to deal with value-or-void situations. This calls

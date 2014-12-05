@@ -150,15 +150,6 @@ void.
 Returns the class of the given arbitrary `value`. The return value is always
 of class `Class`.
 
-#### `loop(function) -> void`
-
-Primitive unconditional loop construct. This repeatedly calls the given
-`function` with no arguments.
-
-In order for the loop to terminate, the `function` must use a nonlocal exit.
-
-**Syntax Note:** Used in the translation of `do` and `while` forms.
-
 #### `maybeCast(cls, value) -> . | void`
 
 "Soft" cast operation. This attempts to cast (convert in a maximally
