@@ -78,7 +78,7 @@ expectEq("source 5",  "@blort",          $Format::source(@blort));
 expectEq("source 6",  "\"x\"",           $Format::source("x"));
 expectEq("source 7",  "\"fizmo\\n\"",    $Format::source("fizmo\n"));
 expectEq("source 8",  "123",             $Format::source(123));
-expectEq("source 9",  "@<Builtin cast>", $Format::source(cast));
+expectEq("source 9",  "@<Builtin note>", $Format::source(note));
 expectEq("source 10", "String",          $Format::source(String));
 
 ## This stringifies differently depending on if we're compiled or not. TODO:
