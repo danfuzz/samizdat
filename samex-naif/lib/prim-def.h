@@ -41,10 +41,7 @@ PRIM_DEF(nullBox,                 THE_NULL_BOX);
 PRIM_DEF(voidResult,              THE_VOID_RESULT);
 
 // Primitive functions: directly exported.
-PRIM_FUNC(cast,                   2, 2);
-PRIM_FUNC(classOf,                1, 1);
 PRIM_FUNC(die,                    0, -1);
-PRIM_FUNC(maybeCast,              2, 2);
 PRIM_FUNC(note,                   0, -1);
 
 // Primitive functions: intended for modularization
