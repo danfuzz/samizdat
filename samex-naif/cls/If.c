@@ -81,6 +81,28 @@ CMETH_IMPL_2_opt(If, is, testFunction, isFunction, notFunction) {
 }
 
 // Documented in spec.
+CMETH_IMPL_1(If, loop, function) {
+    for (;;) {
+        zstackPointer save = datFrameStart();
+        FUN_CALL(function);
+        datFrameReturn(save, NULL);
+    }
+}
+
+// Documented in spec.
+CMETH_IMPL_1(If, loopUntil, function) {
+    zvalue result = NULL;
+
+    while (result == NULL) {
+        zstackPointer save = datFrameStart();
+        result = FUN_CALL(function);
+        datFrameReturn(save, result);
+    }
+
+    return result;
+}
+
+// Documented in spec.
 CMETH_IMPL_1(If, maybeValue, function) {
     zvalue value = FUN_CALL(function);
     return (value == NULL) ? EMPTY_LIST : listFromValue(value);
@@ -130,6 +152,8 @@ MOD_INIT(If) {
             CMETH_BIND(If, andThenElse),
             CMETH_BIND(If, cases),
             CMETH_BIND(If, is),
+            CMETH_BIND(If, loop),
+            CMETH_BIND(If, loopUntil),
             CMETH_BIND(If, maybeValue),
             CMETH_BIND(If, not),
             CMETH_BIND(If, or),
