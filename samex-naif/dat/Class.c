@@ -279,6 +279,9 @@ bool classHasParent(zvalue cls, zvalue parent) {
     return classEqUnchecked(getInfo(cls)->parent, parent);
 }
 
+// This provides the non-inline version of this function.
+extern zvalue classOf(zvalue value);
+
 // Documented in header.
 bool haveSameClass(zvalue value, zvalue other) {
     return classEqUnchecked(classOf(value), classOf(other));
@@ -329,7 +332,6 @@ zvalue maybeCast(zvalue cls, zvalue value) {
 
     return NULL;
 }
-
 
 
 //

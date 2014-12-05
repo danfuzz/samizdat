@@ -18,9 +18,6 @@
 //
 
 // This provides the non-inline version of this function.
-extern zvalue classOf(zvalue value);
-
-// This provides the non-inline version of this function.
 extern zvalue datNonVoid(zvalue value);
 
 // Documented in header.
