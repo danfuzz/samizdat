@@ -80,6 +80,7 @@ def CLASS_METHODS = [
     @{class: If,  name: @andThenElse},
     @{class: If,  name: @cases},
     @{class: If,  name: @is},
+    @{class: If,  name: @loop},
     @{class: If,  name: @maybeValue},
     @{class: If,  name: @not},
     @{class: If,  name: @or},
