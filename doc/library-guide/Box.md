@@ -50,21 +50,21 @@ is an instance of `Result`.
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> box | void`
+#### `.crossEq(other) -> is Box | void`
 
 Performs an identity comparison. No two different boxes are ever considered
 equal.
 
-#### `.crossOrder(other) -> symbol | void`
+#### `.crossOrder(other) -> is Symbol | void`
 
 Performs an identity comparison. No two different boxes are ever considered
 equal, and two different boxes have no defined order.
 
-#### `.perEq(other) -> box | void`
+#### `.perEq(other) -> is Box | void`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol | void`
+#### `.perOrder(other) -> is Symbol | void`
 
 Default implementation.
 
@@ -72,7 +72,7 @@ Default implementation.
 <br><br>
 ### Method Definitions: `Box` protocol
 
-#### `.collect(optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> is List`
 
 Refinement of the `Generator` protocol. This is equivalent to getting the
 contents of the box as a list (of zero or one element), and calling
@@ -85,7 +85,7 @@ If the box either is unset or has been set to void, this returns void.
 Unlike the general `Generator` protocol, it is never a fatal error to call
 this function.
 
-#### `.nextValue(outBox) -> [] | void`
+#### `.nextValue(outBox) -> == [] | void`
 
 Refinement of the `Generator` protocol. If the box has a stored value, this
 stores it to the given `outBox` and returns `[]` (the empty list). If the
@@ -103,7 +103,7 @@ Concrete subclasses have differing behavior in response to this method.
 <br><br>
 ### Class Method Definitions: `Cell` class
 
-#### `class.new(value?) -> cell`
+#### `class.new(value?) -> is Cell`
 
 Constructs a new cell. If `value` is specified, that is the value stored
 in the cell. If `value` is not specified, the cell initially stores void.
@@ -122,7 +122,7 @@ in the cell. If `value` is not specified, the cell initially stores void.
 <br><br>
 ### Class Method Definitions: `Lazy` class
 
-#### `class.new(function) -> lazy`
+#### `class.new(function) -> is Lazy`
 
 Constructs a new lazy box. `function` must be a function which accepts
 no arguments.
@@ -159,7 +159,7 @@ refer to the so-specified value.
 <br><br>
 ### Class Method Definitions: `Promise` class
 
-#### `class.new() -> promise`
+#### `class.new() -> is Promise`
 
 Constructs a new promise. It initially stores void, and may be `.store()`d
 to no more than once.
@@ -179,7 +179,7 @@ it is invalid to call this method twice on the same promise.
 <br><br>
 ### Class Method Definitions: `Result` class
 
-#### `class.new(value?) -> cell`
+#### `class.new(value?) -> is Result`
 
 Constructs a new result. If `value` is supplied, that is the value stored
 in the result. If `value` is not supplied, the result stores void. Once

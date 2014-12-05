@@ -11,7 +11,7 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Class Method Definitions
 
-#### `class.castFrom(value) -> bool | void`
+#### `class.castFrom(value) -> is Bool | void`
 
 This class knows how to cast as follows:
 
@@ -20,7 +20,7 @@ This class knows how to cast as follows:
 * `Int` &mdash; Returns `false` given `0`, or `1` given `true`.
 * `Value` &mdash; Returns `value`.
 
-#### `class.fromLogic(value?) -> bool`
+#### `class.fromLogic(value?) -> is Bool`
 
 Returns the boolean equivalent of the argument-or-not. This is a bridge
 from value-or-void logic. If given an argument, this returns `true`. If
@@ -41,24 +41,24 @@ This class knows how to cast as follows:
 * `Int` &mdash; Returns `0` given `false`, or `true` given `1`.
 * `Value` &mdash; Returns `this`.
 
-#### `.crossEq(other) -> bool | void`
+#### `.crossEq(other) -> is Bool | void`
 
 Compares two boolean values. This is only logical-true if the two given
 values are the same.
 
-#### `.crossOrder(other) -> symbol`
+#### `.crossOrder(other) -> is Symbol`
 
 Compares the given boolean values, ordering `false` before `true`.
 
-#### `.debugString() -> string`
+#### `.debugString() -> is String`
 
 Returns `"true"` or `"false'`, in the reasonably expected cases.
 
-#### `.perEq(other) -> bool | void`
+#### `.perEq(other) -> is Bool | void`
 
 Default implementation.
 
-#### `.perOrder(other) -> symbol`
+#### `.perOrder(other) -> is Symbol`
 
 Default implementation.
 
@@ -66,7 +66,7 @@ Default implementation.
 <br><br>
 ### Method Definitions: `Bool` protocol
 
-#### `.toLogic() -> true | void`
+#### `.toLogic() -> == true | void`
 
 Converts `this` into a value useful for logic operations. In particular, this
 returns `true` if given `true` and void if given `false`.
@@ -77,28 +77,28 @@ returns `true` if given `true` and void if given `false`.
 <br><br>
 ### Method Definitions: `Bitwise` protocol
 
-#### `.and(other) -> bool`
+#### `.and(other) -> is Bool`
 
 Straightforward protocol implementation.
 
-#### `.bit(int) -> int`
+#### `.bit(int) -> is Int`
 
 Returns `1` if called as `bit(true, 0)`. Returns `0` for any other
 valid pair of arguments.
 
-#### `.bitSize() -> int`
+#### `.bitSize() -> is Int`
 
 Returns `1`, always.
 
-#### `.not() -> bool`
+#### `.not() -> is Bool`
 
 Straightforward protocol implementation.
 
-#### `.or(other) -> bool`
+#### `.or(other) -> is Bool`
 
 Straightforward protocol implementation.
 
-#### `.shl(int) -> bool`
+#### `.shl(int) -> is Bool`
 
 Returns the given argument if shifted by `0`, or if `false` is shifted
 by any amount. Returns `false` if `true` is right-shifted by any
@@ -106,6 +106,6 @@ amount.
 
 It is a terminal error to try to shift `true` left by any amount.
 
-#### `.xor(other) -> bool`
+#### `.xor(other) -> is Bool`
 
 Straightforward protocol implementation.
