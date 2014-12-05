@@ -46,15 +46,15 @@ Straightforward protocol implementation.
 **Note:** The minimum size of an int is `1`, which is the size of
 both `0` and `-1`.
 
-#### `.not() -> bitwise`
+#### `.not() -> is Bitwise`
 
 Straightforward protocol implementation.
 
-#### `.or(other) -> bitwise`
+#### `.or(other) -> is Bitwise`
 
 Straightforward protocol implementation.
 
-#### `.shl(int) -> bitwise`
+#### `.shl(int) -> is Bitwise`
 
 Straightforward protocol implementation.
 
@@ -64,7 +64,7 @@ in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
 non-negative ints.
 
-#### `.xor(other) -> bitwise`
+#### `.xor(other) -> is Bitwise`
 
 Straightforward protocol implementation.
 
@@ -123,6 +123,6 @@ Straightforward protocol implementation.
 
 Straightforward protocol implementation.
 
-#### `.sub(other) -> number`
+#### `.sub(other) -> is Number`
 
 Straightforward protocol implementation.

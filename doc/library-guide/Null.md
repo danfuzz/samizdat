@@ -11,7 +11,7 @@ There is only one value of class `Null`. It's refered to by the keyword
 <br><br>
 ### Method Definitions: `Value` protocol
 
-#### `.crossEq(other) -> null | void`
+#### `.crossEq(other) -> == null | void`
 
 Compares two `Null` values. This is only logical-true if the two given
 values are both `null` per se. That is, this function returns `null` if
@@ -29,7 +29,7 @@ will terminate with an error in all other cases.
 
 Returns `"null"`.
 
-#### `.perEq(other) -> null | void`
+#### `.perEq(other) -> == null | void`
 
 Default implementation.
 

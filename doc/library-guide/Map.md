@@ -170,7 +170,7 @@ Collects or filters the mappings of `this`.
 Returns void on an empty map. Returns `this` on a single-element map.
 Terminates with an error in all other cases.
 
-#### `.nextValue(box) -> generator | void`
+#### `.nextValue(box) -> is Map | void`
 
 On a non-empty map, calls `box.store(mapping)` where `mapping` is
 the first mapping in the map in its iteration order, and returns

@@ -119,7 +119,7 @@ or just returns `this` if there is no filter function.
 Returns void on an empty list. Returns the sole element of a single-element
 list. Terminates with an error in all other cases.
 
-#### `.nextValue(box) -> generator | void`
+#### `.nextValue(box) -> is List | void`
 
 On a non-empty list, calls `box.store(this[0])` and returns
 `this[1..]`. On an empty list, this just returns void.
