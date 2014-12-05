@@ -163,12 +163,12 @@ expect("maybeCast 6", 70,      { maybeCast(Int, "F") });
 expect("maybeCast 7", @frotz,  { maybeCast(Symbol, "frotz") });
 expectVoid("maybeCast 8",      { maybeCast(String, null) });
 
-expect("cast 1", "frotz", { cast(String, "frotz") });
-expect("cast 2", "frotz", { cast(Core, "frotz") });
-expect("cast 3", "frotz", { cast(Value, "frotz") });
-expect("cast 4", "frotz", { cast(String, @frotz) });
-expect("cast 5", "F",     { cast(String, 70) });
-expect("cast 6", 70,      { cast(Int, "F") });
-expect("cast 7", @frotz,  { cast(Symbol, "frotz") });
+expect("cast 1", "frotz", { Class.cast(String, "frotz") });
+expect("cast 2", "frotz", { Class.cast(Core, "frotz") });
+expect("cast 3", "frotz", { Class.cast(Value, "frotz") });
+expect("cast 4", "frotz", { Class.cast(String, @frotz) });
+expect("cast 5", "F",     { Class.cast(String, 70) });
+expect("cast 6", 70,      { Class.cast(Int, "F") });
+expect("cast 7", @frotz,  { Class.cast(Symbol, "frotz") });
 
 note("All good.");

@@ -94,7 +94,10 @@ def expression;
 ## Parses a single digit, yielding its value as an int.
 def digit = {:
     ch = ["0".."9"]
-    { cast(Int, cast(String, ch.name)) - cast(Int, "0") }
+    {
+        def codepoint = Class.cast(Int, Class.cast(String, ch.name));
+        codepoint - Class.cast(Int, "0")
+    }
 :};
 
 ## Parses a whole number (non-negative integer), yielding its value as an int.
