@@ -69,7 +69,7 @@ export class PegRepeat
             }
             { {->} };
 
-        loop {
+        If.loop {
             If.value { remainingState.applyRule(rule) }
                 { newState ->
                     ## Successfully parsed the inner rule. Extract the result,
