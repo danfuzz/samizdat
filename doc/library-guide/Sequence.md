@@ -30,12 +30,12 @@ Returns the nth (zero-based) element of the sequence. Returns void if `n < 0`
 or `n >= #this`. It is an error (terminating the runtime) if `n` is not an
 `Int`.
 
-#### `.repeat(count) -> sequence`
+#### `.repeat(count) -> is Sequence`
 
 Returns a sequence consisting of `count` repetitions of the contents of `this`.
 `count` must be a non-negative int.
 
-#### `.reverse() -> sequence`
+#### `.reverse() -> is Sequence`
 
 Returns a sequence just like the given one, except with elements in
 the opposite order.
@@ -51,7 +51,7 @@ end of the sequence. This is equivalent to `this.reverse().nth(n)`.
 **Syntax Note:** This is the function that underlies the `seq[^value]`
 syntactic form.
 
-#### `.sliceExclusive(start, end?) -> sequence | void`
+#### `.sliceExclusive(start, end?) -> is Sequence | void`
 
 Returns a sequence of the same class as `this`, consisting of an
 index-based "slice" of elements taken from `this`, from the `start`
@@ -73,7 +73,7 @@ In this case, the result is a sequence consisting of elements of `this`
 starting at index `start` and continuing through, but not including, index
 `end`.
 
-#### `.sliceGeneral(style, start, end?) -> sequence | void`
+#### `.sliceGeneral(style, start, end?) -> is Sequence | void`
 
 Returns a sequence of the same class as `this`, consisting of an index-based
 "slice" of elements taken from `sequence`, from the `start` index through the
@@ -89,7 +89,7 @@ is to be counted from.
 This method in turn calls one of `.sliceExclusive()` or `.sliceInclusive()` to
 perform the actual slicing.
 
-#### `.sliceInclusive(start, end?) -> sequence | void`
+#### `.sliceInclusive(start, end?) -> is Sequence | void`
 
 Returns a sequence of the same class as `this`, consisting of an
 index-based "slice" of elements taken from `this`, from the `start`
