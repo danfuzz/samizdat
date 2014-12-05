@@ -11,7 +11,7 @@ either numeric or character values.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(firstValue, optIncrement?) -> :OpenRange`
+#### `class.new(firstValue, optIncrement?) -> is OpenRange`
 
 Creates an open (never voided) range generator for numbers or single-character
 strings. `firstValue` must be either a number or a single-character string.
@@ -27,11 +27,11 @@ and each subsequent call yields the previous value plus the given increment
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(optFilterFunction?) -> list`
+#### `.collect(optFilterFunction?) -> n/a  ## Always reports error.`
 
 Reports a fatal error, as `OpenRange` values are unbounded generators.
 
-#### `.nextValue(box) -> range | void`
+#### `.nextValue(box) -> is OpenRange`
 
 Yields the first element of the range, and returns a range representing
 the remaining elements.
