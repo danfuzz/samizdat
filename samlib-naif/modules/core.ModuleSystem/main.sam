@@ -266,7 +266,7 @@ fn treeFromText(loader, text) {
 
 
 ##
-## Class definition: `Loader` protocol
+## Global `Loader` helper functions.
 ##
 
 ## Documented in spec.
