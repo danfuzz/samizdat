@@ -85,6 +85,9 @@ static void assertIsClass(zvalue value) {
  * relationships, and setting names. This does *not* set up any method tables.
  * Neither of the first two arguments can be `NULL`.
  *
+ * If `isCore` is passed as `true`, then the result is marked a core class
+ * and is also made immortal.
+ *
  * As special cases, it is valid to pass `NULL` for the `parent` as long
  * as `Value` is not yet initialized, and it is valid to pass `NULL` for
  * `name` as long as `Symbol` is not yet initialized. These cases only hold
@@ -128,6 +131,10 @@ static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
     if (parent != NULL) {
         clsInfo->parent = parent;
         metaInfo->parent = parent->cls;
+    }
+
+    if (isCore) {
+        datImmortalize(cls);
     }
 
     return cls;
@@ -303,7 +310,7 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
     zvalue result = makeClassPair(name, parent, true);
     classBindMethods(result, classMethods, instanceMethods);
 
-    return datImmortalize(result);
+    return result;
 }
 
 // Documented in header.
