@@ -71,7 +71,7 @@ zvalue makeClass(zvalue name, zvalue parent,
 
 /**
  * Makes a new core class. This is just like `makeClass`, except that the
- * result is designated as a "core" class.
+ * result (a) is designated as a "core" class, and (b) is marked "immortal."
  */
 zvalue makeCoreClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods);
