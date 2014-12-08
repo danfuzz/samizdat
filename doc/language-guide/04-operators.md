@@ -13,10 +13,13 @@ The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
 
-### Postfix Operators (Precedence 8, highest / tightest)
+### Postfix and Tight Infix Operators (Precedence 8, highest / tightest)
 
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
+
+In addition, there are a few infix operators which bind tighter than
+prefix operators, included here.
 
 #### Invoke method &mdash; `targetExpr.name(arg, arg, ...) { block } { block } ...`
 
@@ -187,7 +190,6 @@ if (generator.nextValue(result?)) {
     [...]
 }
 ```
-
 
 #### Interpolate generator or value &mdash; `expression*`
 
