@@ -365,15 +365,13 @@ def parActualsList = {:
     parFullClosure+
 :};
 
-## Parses a unary postfix operator. This yields a function (per se) to call
-## in order to construct a node that represents the appropriate ultimate
-## function call.
+## Parses a unary postfix or tight-infix operator. This yields a function
+## (per se) to call in order to construct a node that represents the
+## appropriate ultimate function call.
 def parPostfixOperator = {:
     actuals = parActualsList
     { { node -> makeFunCallGeneral(node, actuals*) } }
 |
-    ## This is sorta-kinda a binary operator, but in terms of precedence it
-    ## fits better here.
     @"::"
     key = parKeyLiteral
     { { node -> makeGet(node, key) } }
