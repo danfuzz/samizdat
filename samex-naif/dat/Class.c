@@ -130,9 +130,6 @@ static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
         metaInfo->parent = parent->cls;
     }
 
-    // TODO: Consider *not* making all classes immortal.
-    datImmortalize(cls);
-
     return cls;
 }
 
@@ -306,7 +303,7 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
     zvalue result = makeClassPair(name, parent, true);
     classBindMethods(result, classMethods, instanceMethods);
 
-    return result;
+    return datImmortalize(result);
 }
 
 // Documented in header.

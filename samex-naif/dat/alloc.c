@@ -350,8 +350,7 @@ void datMark(zvalue value) {
     value->mark = liveColor;
     enlist(&liveHead, value);
 
-    // As of this writing, classes are all immortal, but that may change. This
-    // check has negligible cost and safeguards against that possible change.
+    // Mark the class, if not already done. (Classes are not immortal.)
     zvalue cls = value->cls;
     if (cls->mark != liveColor) {
         cls->mark = liveColor;
