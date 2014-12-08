@@ -343,17 +343,14 @@ zvalue datImmortalize(zvalue value) {
 
 // Documented in header.
 void datMark(zvalue value) {
-    if ((value == NULL) || (value->mark == liveColor)) {
+    if (value == NULL) {
         return;
     }
 
-    value->mark = liveColor;
-    enlist(&liveHead, value);
-
-    // Mark the class, if not already done. (Classes are not immortal.)
-    zvalue cls = value->cls;
-    if (cls->mark != liveColor) {
-        cls->mark = liveColor;
-        enlist(&liveHead, cls);
+    // Mark the value, and iterate to mark its class (and then metaclass,
+    // etc.). The loop is needed since classes are not all immortal.
+    for (/*value*/; value->mark != liveColor; value = value->cls) {
+        value->mark = liveColor;
+        enlist(&liveHead, value);
     }
 }
