@@ -432,7 +432,7 @@ This is equivalent to calling the class method
 `Class.typeCast(expression, expression)`, with the arguments in the same
 order.
 
-#### Type check &mdash; `expression is expression`
+#### Type check &mdash; `expression isa expression`
 
 This is equivalent to calling the class method
 `Class.typeIs(expression, expression)`, with the arguments in the same
