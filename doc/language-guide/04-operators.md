@@ -205,9 +205,9 @@ either a value or void) from a function. Inside an expression, a void
 interpolation is generally invalid (resulting in terminal error).
 
 **Note:** A postfix star expression as an element of a function call
-argument list, as a collection index, as a list literal element, or as
-a map literal key has a slightly different (but related) meaning. See
-the documentation on those constructs for more details.
+argument list, as a list literal element, or as a map or symbol table literal
+key has a slightly different (but related) meaning. See the documentation on
+those constructs for more details.
 
 #### Convert logical truth value to boolean &mdash; `expression??`
 
