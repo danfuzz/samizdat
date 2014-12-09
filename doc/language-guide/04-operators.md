@@ -170,11 +170,12 @@ returns it) but still allowed.
 
 #### Maybe value &mdash; `expression?`
 
-In case an expression might legitimately result in a value or void, that
-inner expression can be converted into a list by appending a question mark to
-it. If the inner expression results in a value `v`, then the outer expression
-results in a single-element list of the result `[v]`. If the inner expression
-results in void, the outer expression results in `[]` (the empty list).
+In case an expression might legitimately result in a value or void, and that
+possibly-void result further used, such an expression can be converted into a
+list by appending a question mark to it. If the inner expression results in a
+value `v`, then the outer expression results in a single-element list of the
+result `[v]`. If the inner expression results in void, the outer expression
+results in `[]` (the empty list).
 
 As a special case of this operator, when applied directly to a variable name
 (with no intervening parentheses), this operator denotes the box which holds
@@ -182,7 +183,7 @@ the so-named variable, similar to the `&name` form in C. Normally, the box
 representation of variables is kept "behind the scenes," but sometimes it is
 useful to access a variable's box directly. This form is most useful when
 using protocols that explicitly want to take boxes, such as notably the
-generator and parser protocols. For example:
+generator protocol. For example:
 
 ```
 def result;
