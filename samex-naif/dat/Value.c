@@ -35,7 +35,7 @@ extern void *datPayload(zvalue value);
 
 // Documented in spec.
 METH_IMPL_1(Value, castToward, cls) {
-    return classAccepts(cls, ths) ? ths : NULL;
+    return typeAccepts(cls, ths) ? ths : NULL;
 }
 
 // Documented in spec.
@@ -66,7 +66,7 @@ METH_IMPL_0(Value, debugString) {
 
     if (name == NULL) {
         name = EMPTY_STRING;
-    } else if (!classAccepts(CLS_Symbol, name)) {
+    } else if (!typeAccepts(CLS_Symbol, name)) {
         // Suppress a non-symbol name.
         name = stringFromUtf8(-1, " (non-symbol name)");
     } else {

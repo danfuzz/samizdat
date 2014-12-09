@@ -72,7 +72,7 @@ CMETH_IMPL_1(Bool, castFrom, value) {
             case 0: return BOOL_FALSE;
             case 1: return BOOL_TRUE;
         }
-    } else if (classAccepts(thsClass, value)) {
+    } else if (typeAccepts(thsClass, value)) {
         return value;
     }
 
@@ -113,7 +113,7 @@ METH_IMPL_0(Bool, bitSize) {
 METH_IMPL_1(Bool, castToward, cls) {
     if (cmpEq(cls, CLS_Int)) {
         return intFromZint(zboolValue(ths));
-    } else if (classAccepts(cls, ths)) {
+    } else if (typeAccepts(cls, ths)) {
         return ths;
     }
 

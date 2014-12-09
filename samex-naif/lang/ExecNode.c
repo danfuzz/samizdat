@@ -207,7 +207,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
 void exnoConvert(zvalue *orig) {
     if (*orig == NULL) {
         // Nothing to do.
-    } else if (classAccepts(CLS_Record, *orig)) {
+    } else if (typeAccepts(CLS_Record, *orig)) {
         *orig = cm_new(ExecNode, *orig);
     } else {
         // Assumed to be a list.

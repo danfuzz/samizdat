@@ -252,7 +252,7 @@ CMETH_IMPL_1(Map, castFrom, value) {
     } else if (cmpEq(cls, CLS_Record)) {
         value = get_data(value);
         // ...and fall through to the conversion below.
-    } else if (classAccepts(thsClass, value)) {
+    } else if (typeAccepts(thsClass, value)) {
         return value;
     } else {
         return NULL;
@@ -301,7 +301,7 @@ METH_IMPL_1(Map, castToward, cls) {
     if (cmpEq(cls, CLS_SymbolTable)) {
         zint size = info->size;
         return symtabFromZassoc((zassoc) {info->size, info->elems});
-    } else if (classAccepts(cls, ths)) {
+    } else if (typeAccepts(cls, ths)) {
         return ths;
     }
 

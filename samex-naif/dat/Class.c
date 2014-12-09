@@ -251,17 +251,12 @@ extern void assertHasClass(zvalue value, zvalue cls);
 
 // Documented in header.
 void assertHasClass0(zvalue value, zvalue cls) {
-    if (classAccepts(cls, value)) {
+    assertIsClass(cls);
+    if (acceptsUnchecked(cls, value)) {
         die("Expected class %s; got %s of class %s.",
             cm_debugString(cls), cm_debugString(value),
             cm_debugString(classOf(value)));
     }
-}
-
-// Documented in header.
-bool classAccepts(zvalue cls, zvalue value) {
-    assertIsClass(cls);
-    return acceptsUnchecked(cls, value);
 }
 
 // Documented in header.

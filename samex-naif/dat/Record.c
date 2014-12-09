@@ -127,7 +127,7 @@ CMETH_IMPL_1_opt(Record, new, name, data) {
 
     if (data == NULL) {
         data = EMPTY_SYMBOL_TABLE;
-    } else if (classAccepts(CLS_Record, data)) {
+    } else if (typeAccepts(CLS_Record, data)) {
         // Extract the data out of the given record.
         data = getInfo(data)->data;
     } else {
@@ -148,7 +148,7 @@ CMETH_IMPL_1_opt(Record, new, name, data) {
 METH_IMPL_1(Record, castToward, cls) {
     if (cmpEq(cls, CLS_SymbolTable)) {
         return getInfo(ths)->data;
-    } else if (classAccepts(cls, ths)) {
+    } else if (typeAccepts(cls, ths)) {
         return ths;
     }
 

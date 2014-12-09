@@ -19,7 +19,7 @@
  * Common code for checking paths.
  */
 void checkPath0(zvalue path, bool isAbsolute) {
-    if (!classAccepts(CLS_String, path)) {
+    if (!typeAccepts(CLS_String, path)) {
         die("Invalid path: not a string");
     }
 
