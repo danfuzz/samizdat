@@ -38,12 +38,6 @@ inline void assertHasClass(zvalue value, zvalue cls) {
 }
 
 /**
- * Like `cls.accepts(value)`, except this works before the system is fully
- * started (in particular, before any methods are bound).
- */
-bool classAccepts(zvalue cls, zvalue value);
-
-/**
  * Returns `true` iff the given class has the given parent. This is for
  * a direct parent check only, not for general ancestry.
  */
