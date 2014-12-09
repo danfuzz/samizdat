@@ -73,7 +73,7 @@ export fn resolveImport(node, resolveFn) {
                                 {
                                     die("Could not resolve import: ",
                                         sourceString(node::source), " :: ",
-                                        Class.cast(String, one))
+                                        Class.typeCast(String, one))
                                 }
                         };
                         node

@@ -71,7 +71,7 @@ void.
 The default implementation of this method merely checks to see if `value` is
 already of the class. If so, it returns `value`; if not, it returns `void`.
 
-**Note:** This method is used by the class methods `Class.cast()` and
+**Note:** This method is used by the class methods `Class.typeCast()` and
 `Class.typeCast()` as part of the more general casting mechanism.
 
 #### `.get_name() -> is Symbol`

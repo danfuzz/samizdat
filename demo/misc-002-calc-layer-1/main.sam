@@ -103,8 +103,8 @@ def expression;
 def digit = {:
     ch = ["0".."9"]
     {
-        def codepoint = Class.cast(Int, Class.cast(String, ch.get_name()));
-        codepoint.sub(Class.cast(Int, "0"))
+        def codepoint = Class.typeCast(Int, Class.typeCast(String, ch.get_name()));
+        codepoint.sub(Class.typeCast(Int, "0"))
     }
 :};
 

@@ -38,7 +38,7 @@ inline void assertHasClass(zvalue value, zvalue cls) {
 }
 
 /**
- * Performs the equivalent of the static method call `Class.cast(cls, value)`.
+ * Performs the equivalent of the static method call `Class.typeCast(cls, value)`.
  */
 zvalue cast(zvalue cls, zvalue value);
 

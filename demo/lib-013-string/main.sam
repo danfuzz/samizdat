@@ -163,12 +163,4 @@ expect("typeCast 6", 70,      { Class.typeCast(Int, "F") });
 expect("typeCast 7", @frotz,  { Class.typeCast(Symbol, "frotz") });
 expectVoid("typeCast 8",      { Class.typeCast(String, null) });
 
-expect("cast 1", "frotz", { Class.cast(String, "frotz") });
-expect("cast 2", "frotz", { Class.cast(Core, "frotz") });
-expect("cast 3", "frotz", { Class.cast(Value, "frotz") });
-expect("cast 4", "frotz", { Class.cast(String, @frotz) });
-expect("cast 5", "F",     { Class.cast(String, 70) });
-expect("cast 6", 70,      { Class.cast(Int, "F") });
-expect("cast 7", @frotz,  { Class.cast(Symbol, "frotz") });
-
 note("All good.");

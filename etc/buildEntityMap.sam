@@ -50,7 +50,7 @@ def parCodePoint = {:
         for (digit in digits) {
             value := value * 16 + digit
         };
-        Class.cast(String, value)
+        Class.typeCast(String, value)
     }
 :};
 
