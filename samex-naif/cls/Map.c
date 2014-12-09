@@ -322,9 +322,9 @@ METH_IMPL_rest(Map, cat, args) {
     zint size = thsSize;
 
     for (zint i = 0; i < args.size; i++) {
-        // Note: `maybeCast` guarantees that a non-null result is of the
+        // Note: `typeCast` guarantees that a non-null result is of the
         // indicated class.
-        zvalue one = maybeCast(CLS_Map, args.elems[i]);
+        zvalue one = typeCast(CLS_Map, args.elems[i]);
 
         if (one == NULL) {
             die("Invalid argument to `cat()`: %s", cm_debugString(one));

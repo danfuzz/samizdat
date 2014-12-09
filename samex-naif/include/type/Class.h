@@ -78,8 +78,8 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 
 /**
  * Performs the equivalent of the static method call
- * `Class.maybeCast(cls, value)`.
+ * `Class.typeCast(cls, value)`.
  */
-zvalue maybeCast(zvalue cls, zvalue value);
+zvalue typeCast(zvalue cls, zvalue value);
 
 #endif

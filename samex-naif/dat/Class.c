@@ -260,7 +260,7 @@ void assertHasClass0(zvalue value, zvalue cls) {
 
 // Documented in header.
 zvalue cast(zvalue cls, zvalue value) {
-    zvalue result = maybeCast(cls, value);
+    zvalue result = typeCast(cls, value);
 
     if (result != NULL) {
         return result;
@@ -314,7 +314,7 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 }
 
 // Documented in header.
-zvalue maybeCast(zvalue cls, zvalue value) {
+zvalue typeCast(zvalue cls, zvalue value) {
     if (METH_CALL(cls, accepts, value)) {
         return value;
     }
@@ -353,8 +353,8 @@ CMETH_IMPL_1(Class, of, value) {
 }
 
 // Documented in header.
-CMETH_IMPL_2(Class, maybeCast, cls, value) {
-    return maybeCast(cls, value);
+CMETH_IMPL_2(Class, typeCast, cls, value) {
+    return typeCast(cls, value);
 }
 
 // Documented in spec.
@@ -573,8 +573,8 @@ void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
         METH_TABLE(
             CMETH_BIND(Class, cast),
-            CMETH_BIND(Class, maybeCast),
-            CMETH_BIND(Class, of)),
+            CMETH_BIND(Class, of),
+            CMETH_BIND(Class, typeCast)),
         METH_TABLE(
             METH_BIND(Class, accepts),
             METH_BIND(Class, castFrom),
