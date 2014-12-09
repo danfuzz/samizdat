@@ -40,9 +40,9 @@ typedef struct {
  * calling `.debugString()` on `value`.
  */
 static char *ensureString(zvalue value) {
-    if (classAccepts(CLS_String, value)) {
+    if (typeAccepts(CLS_String, value)) {
         // No conversion.
-    } else if (classAccepts(CLS_Symbol, value)) {
+    } else if (typeAccepts(CLS_Symbol, value)) {
         value = cm_castFrom(CLS_String, value);
     } else {
         value = METH_CALL(value, debugString);

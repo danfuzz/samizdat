@@ -18,21 +18,31 @@ the default *class* methods for all classes.
 **Note:** These are the class methods on the class `Class`, and not class
 methods in general.
 
-#### `class.cast(cls, value) -> .`
+#### `class.of(value) -> is Class`
 
-"Hard" cast operation. This is like `.maybeCast()`, except that this
-terminates the runtime with an error if the cast could not complete, instead
-of returning void.
+Returns the class of the given arbitrary `value`. The return value is always
+of class `Class`.
 
-**Note:** See note on `.maybeCast()` for rationale of how this is defined.
+#### `class.typeAccepts(cls, value) -> . | void`
 
-#### `class.maybeCast(cls, value) -> . | void`
+Type compatibility check, with "soft" failure. This calls `cls.accepts(value)`,
+returning `value` if that call returns non-void, or returning void otherwise.
 
-"Soft" cast operation. This attempts to cast (convert in a maximally
-data-preserving fashion) the given `value` to the indicated class `cls`.
+**Note:** This is defined as a class method and not an instance method, so
+that the overall behavior can be guaranteed by the system, including the
+guarantee that a non-void return value is always the passed `value`.
+Individual types are allowed to define `.accepts()` to add their particular
+contribution to the behavior.
+
+#### `class.typeCast(cls, value) -> . | void`
+
+Type cast operation, with "soft" failure. This attempts to cast (convert in a
+maximally data-preserving fashion) the given `value` to the indicated class
+`cls`. If the cast can be performed, this returns the so-cast value. If not,
+this returns void.
 
 This function operates by first checking to see if `value` is already of
-a proper class, and returning it directly if so.
+a matching class, and returning it directly if so.
 
 If not, this function calls `value.castToward(cls)` to give `value` "first
 dibs" on conversion. If it results in a value of an appropriate class, then
@@ -46,14 +56,10 @@ then returned.
 If not, this function returns void.
 
 **Note:** This is defined as a class method and not an instance method, so
-that the overall behavior can be guaranteed by the system. Individual
-classes are allowed to define `.castToward()` and `class.castFrom()` to
-add their particular contribution to the behavior.
-
-#### `class.of(value) -> is Class`
-
-Returns the class of the given arbitrary `value`. The return value is always
-of class `Class`.
+that the overall behavior can be guaranteed by the system, including the
+type guarantee on non-void return values. Individual classes are allowed to
+define `.castToward()` and `class.castFrom()` to add their particular
+contribution to the behavior.
 
 
 <br><br>
@@ -68,8 +74,8 @@ void.
 The default implementation of this method merely checks to see if `value` is
 already of the class. If so, it returns `value`; if not, it returns `void`.
 
-**Note:** This method is used by the class methods `Class.cast()` and
-`Class.maybeCast()` as part of the more general casting mechanism.
+**Note:** This method is used by the class methods `Class.typeCast()` and
+`Class.typeCast()` as part of the more general casting mechanism.
 
 #### `.get_name() -> is Symbol`
 

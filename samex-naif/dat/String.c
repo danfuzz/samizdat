@@ -316,7 +316,7 @@ CMETH_IMPL_1(String, castFrom, value) {
         }
     } else if (cmpEq(cls, CLS_Symbol)) {
         return stringFromZstring(zstringFromSymbol(value));
-    } else if (classAccepts(thsClass, value)) {
+    } else if (typeAccepts(thsClass, value)) {
         return value;
     }
 
@@ -333,7 +333,7 @@ METH_IMPL_1(String, castToward, cls) {
         }
     } else if (cmpEq(cls, CLS_Symbol)) {
         return symbolFromZstring(info->s);
-    } else if (classAccepts(cls, ths)) {
+    } else if (typeAccepts(cls, ths)) {
         return ths;
     }
 
@@ -353,7 +353,7 @@ METH_IMPL_rest(String, cat, args) {
     zint size = thsSize;
     for (zint i = 0; i < args.size; i++) {
         zvalue one = args.elems[i];
-        if (classAccepts(CLS_Symbol, one)) {
+        if (typeAccepts(CLS_Symbol, one)) {
             one = cm_castFrom(CLS_String, one);
         } else {
             assertString(one);

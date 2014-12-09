@@ -38,17 +38,6 @@ inline void assertHasClass(zvalue value, zvalue cls) {
 }
 
 /**
- * Performs the equivalent of the static method call `Class.cast(cls, value)`.
- */
-zvalue cast(zvalue cls, zvalue value);
-
-/**
- * Like `cls.accepts(value)`, except this works before the system is fully
- * started (in particular, before any methods are bound).
- */
-bool classAccepts(zvalue cls, zvalue value);
-
-/**
  * Returns `true` iff the given class has the given parent. This is for
  * a direct parent check only, not for general ancestry.
  */
@@ -77,9 +66,15 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods);
 
 /**
- * Performs the equivalent of the static method call
- * `Class.maybeCast(cls, value)`.
+ * Performs the equivalent of the class method call
+ * `Class.typeAccepts(cls, value)`.
  */
-zvalue maybeCast(zvalue cls, zvalue value);
+zvalue typeAccepts(zvalue cls, zvalue value);
+
+/**
+ * Performs the equivalent of the class method call
+ * `Class.typeCast(cls, value)`.
+ */
+zvalue typeCast(zvalue cls, zvalue value);
 
 #endif

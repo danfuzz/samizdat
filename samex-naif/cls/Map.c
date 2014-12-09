@@ -252,7 +252,7 @@ CMETH_IMPL_1(Map, castFrom, value) {
     } else if (cmpEq(cls, CLS_Record)) {
         value = get_data(value);
         // ...and fall through to the conversion below.
-    } else if (classAccepts(thsClass, value)) {
+    } else if (typeAccepts(thsClass, value)) {
         return value;
     } else {
         return NULL;
@@ -301,7 +301,7 @@ METH_IMPL_1(Map, castToward, cls) {
     if (cmpEq(cls, CLS_SymbolTable)) {
         zint size = info->size;
         return symtabFromZassoc((zassoc) {info->size, info->elems});
-    } else if (classAccepts(cls, ths)) {
+    } else if (typeAccepts(cls, ths)) {
         return ths;
     }
 
@@ -322,9 +322,9 @@ METH_IMPL_rest(Map, cat, args) {
     zint size = thsSize;
 
     for (zint i = 0; i < args.size; i++) {
-        // Note: `maybeCast` guarantees that a non-null result is of the
+        // Note: `typeCast` guarantees that a non-null result is of the
         // indicated class.
-        zvalue one = maybeCast(CLS_Map, args.elems[i]);
+        zvalue one = typeCast(CLS_Map, args.elems[i]);
 
         if (one == NULL) {
             die("Invalid argument to `cat()`: %s", cm_debugString(one));

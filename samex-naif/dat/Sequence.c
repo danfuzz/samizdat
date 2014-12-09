@@ -54,7 +54,7 @@ void seqConvertSliceArgs(zint *startPtr, zint *endPtr, bool inclusive,
 
 // Documented in header.
 zint seqNthIndexLenient(zvalue key) {
-    if (classAccepts(CLS_Int, key)) {
+    if (typeAccepts(CLS_Int, key)) {
         zint index = zintFromInt(key);
         return (index >= 0) ? index : -1;
     } else {
@@ -64,7 +64,7 @@ zint seqNthIndexLenient(zvalue key) {
 
 // Documented in header.
 zint seqNthIndexStrict(zint size, zvalue n) {
-    if (classAccepts(CLS_Int, n)) {
+    if (typeAccepts(CLS_Int, n)) {
         zint index = zintFromInt(n);
         return ((index >= 0) && (index < size)) ? index : -1;
     } else {

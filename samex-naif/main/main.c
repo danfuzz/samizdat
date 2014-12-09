@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
     zvalue result = METH_APPLY(runFunc, call, argsList);
 
-    if ((result != NULL) && (classAccepts(CLS_Int, result))) {
+    if ((result != NULL) && (typeAccepts(CLS_Int, result))) {
         exit((int) zintFromInt(result));
     }
 

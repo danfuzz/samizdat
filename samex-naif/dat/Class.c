@@ -251,29 +251,12 @@ extern void assertHasClass(zvalue value, zvalue cls);
 
 // Documented in header.
 void assertHasClass0(zvalue value, zvalue cls) {
-    if (classAccepts(cls, value)) {
+    assertIsClass(cls);
+    if (acceptsUnchecked(cls, value)) {
         die("Expected class %s; got %s of class %s.",
             cm_debugString(cls), cm_debugString(value),
             cm_debugString(classOf(value)));
     }
-}
-
-// Documented in header.
-zvalue cast(zvalue cls, zvalue value) {
-    zvalue result = maybeCast(cls, value);
-
-    if (result != NULL) {
-        return result;
-    }
-
-    die("Could not cast: to %s, from %s",
-        cm_debugString(cls), cm_debugString(value));
-}
-
-// Documented in header.
-bool classAccepts(zvalue cls, zvalue value) {
-    assertIsClass(cls);
-    return acceptsUnchecked(cls, value);
 }
 
 // Documented in header.
@@ -314,8 +297,13 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 }
 
 // Documented in header.
-zvalue maybeCast(zvalue cls, zvalue value) {
-    if (METH_CALL(cls, accepts, value)) {
+zvalue typeAccepts(zvalue cls, zvalue value) {
+    return (METH_CALL(cls, accepts, value) != NULL) ? value : NULL;
+}
+
+// Documented in header.
+zvalue typeCast(zvalue cls, zvalue value) {
+    if (METH_CALL(cls, accepts, value) != NULL) {
         return value;
     }
 
@@ -342,19 +330,19 @@ zvalue maybeCast(zvalue cls, zvalue value) {
 // Class Definition
 //
 
-// Documented in header.
-CMETH_IMPL_2(Class, cast, cls, value) {
-    return cast(cls, value);
-}
-
-// Documented in header.
+// Documented in spec.
 CMETH_IMPL_1(Class, of, value) {
     return classOf(value);
 }
 
-// Documented in header.
-CMETH_IMPL_2(Class, maybeCast, cls, value) {
-    return maybeCast(cls, value);
+// Documented in spec.
+CMETH_IMPL_2(Class, typeAccepts, cls, value) {
+    return typeAccepts(cls, value);
+}
+
+// Documented in spec.
+CMETH_IMPL_2(Class, typeCast, cls, value) {
+    return typeCast(cls, value);
 }
 
 // Documented in spec.
@@ -362,7 +350,7 @@ METH_IMPL_1(Class, accepts, value) {
     return acceptsUnchecked(ths, value) ? value : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Class, castFrom, value) {
     return acceptsUnchecked(ths, value) ? value : NULL;
 }
@@ -572,9 +560,9 @@ MOD_INIT(objectModel) {
 void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
         METH_TABLE(
-            CMETH_BIND(Class, cast),
-            CMETH_BIND(Class, maybeCast),
-            CMETH_BIND(Class, of)),
+            CMETH_BIND(Class, of),
+            CMETH_BIND(Class, typeAccepts),
+            CMETH_BIND(Class, typeCast)),
         METH_TABLE(
             METH_BIND(Class, accepts),
             METH_BIND(Class, castFrom),
