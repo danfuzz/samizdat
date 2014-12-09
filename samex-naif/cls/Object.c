@@ -115,6 +115,34 @@ METH_IMPL_0(Object, gcMark) {
     return NULL;
 }
 
+// Documented in spec.
+METH_IMPL_1(Object, crossEq, other) {
+    if (ths == other) {
+        return ths;
+    }
+
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
+        die("`crossEq` called with incompatible arguments.");
+    }
+
+    return METH_CALL(getInfo(ths)->data, crossEq, getInfo(other)->data);
+}
+
+// Documented in spec.
+METH_IMPL_1(Object, crossOrder, other) {
+    if (ths == other) {
+        return SYM(same);
+    }
+
+    // Note: `other` not guaranteed to have the same class as `ths`.
+    if (!haveSameClass(ths, other)) {
+        die("`crossOrder` called with incompatible arguments.");
+    }
+
+    return METH_CALL(getInfo(ths)->data, crossOrder, getInfo(other)->data);
+}
+
 /** Initializes the module. */
 MOD_INIT(Object) {
     MOD_USE(Value);
@@ -125,6 +153,8 @@ MOD_INIT(Object) {
         METH_TABLE(
             CMETH_BIND(Object, subclass)),
         METH_TABLE(
+            METH_BIND(Object, crossEq),
+            METH_BIND(Object, crossOrder),
             METH_BIND(Object, gcMark)));
 }
 
