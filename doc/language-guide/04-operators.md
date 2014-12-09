@@ -7,7 +7,7 @@ Expression Operators
 Samizdat provides many of the same operators found throughout the C family,
 as well as a few new ones. In Samizdat, almost all infix operators are
 left-associative, that is `x op y op z` is equivalent to `(x op y) op z`.
-The one exception is the assignment operator `:=`.
+The few exceptions are noted explicitly, below.
 
 The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
@@ -426,6 +426,10 @@ ensures that a void `y` won't improperly cause `z` to be evaluated.
 These are operators that are concerned with the types / classes of
 values.
 
+Unlike most infix expressions, type calculus expressions are
+*non-associative*. This means that it is not syntactically correct to
+chain these expressions together without intervening parentheses.
+
 #### Type cast &mdash; `expression as expression`
 
 This is equivalent to calling the class method
@@ -443,7 +447,9 @@ order. For example, `1 isa Int` is equivalent to `Class.typeIs(Int, 1)`.
 ### Assignment (precedence 1; lowest / loosest) &mdash; `lvalue := expression`
 
 The `:=` operator indicates assignment. `lvalue` is an expression that must
-be a valid value reference (assignment target).
+be a valid value reference (assignment target). Unlike most infix expressions,
+assignment expressions are *right-associative*. That is, `a := b := c` is
+equivalent to `a := (b := c)`.
 
 In general, the `lvalue` is evaluated before the `expression`, and the
 result of the overall expression is the same as the evaluated result
