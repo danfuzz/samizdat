@@ -429,14 +429,15 @@ values.
 #### Type cast &mdash; `expression as expression`
 
 This is equivalent to calling the class method
-`Class.typeCast(expression, expression)`, with the arguments in the same
-order.
+`Class.typeCast(expression, expression)`, with the arguments in the opposite
+order. For example, `"foo" as Symbol` is equivalent to
+`Class.typeCast(Symbol, "foo")`.
 
 #### Type check &mdash; `expression isa expression`
 
 This is equivalent to calling the class method
-`Class.typeIs(expression, expression)`, with the arguments in the same
-order.
+`Class.typeAccepts(expression, expression)`, with the arguments in the same
+order. For example, `1 isa Int` is equivalent to `Class.typeIs(Int, 1)`.
 
 
 ### Assignment (precedence 1; lowest / loosest) &mdash; `lvalue := expression`
