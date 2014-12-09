@@ -32,3 +32,22 @@ passing `@{}` (the empty symbol table).
 
 **Note:** If you call this function twice with identical arguments, the
 results will be two *different* classes with the same `name`.
+
+
+<br><br>
+### Method Definitions: `Value` protocol
+
+#### `.crossEq(other) -> logic`
+
+Compares two objects. This is true if both have the same payload.
+
+**Note:** As per the usual contract for this method, it is invalid to call
+this method on two values of different classes.
+
+#### `.crossOrder(other) -> is Symbol`
+
+Compares two objects for order. This returns the result of ordering the two
+objects' respective data payloads.
+
+**Note:** As per the usual contract for this method, it is invalid to call
+this method on two values of different classes.
