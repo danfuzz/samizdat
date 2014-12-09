@@ -119,6 +119,7 @@ DEF_SYMBOL(sub);
 DEF_SYMBOL(subclass);
 DEF_SYMBOL(toLogic);
 DEF_SYMBOL(toUnlisted);
+DEF_SYMBOL(typeAccepts);
 DEF_SYMBOL(typeCast);
 DEF_SYMBOL(value);
 DEF_SYMBOL(valueList);

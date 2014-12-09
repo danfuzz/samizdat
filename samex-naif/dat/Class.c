@@ -302,8 +302,13 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
 }
 
 // Documented in header.
+zvalue typeAccepts(zvalue cls, zvalue value) {
+    return (METH_CALL(cls, accepts, value) != NULL) ? value : NULL;
+}
+
+// Documented in header.
 zvalue typeCast(zvalue cls, zvalue value) {
-    if (METH_CALL(cls, accepts, value)) {
+    if (METH_CALL(cls, accepts, value) != NULL) {
         return value;
     }
 
@@ -333,6 +338,11 @@ zvalue typeCast(zvalue cls, zvalue value) {
 // Documented in spec.
 CMETH_IMPL_1(Class, of, value) {
     return classOf(value);
+}
+
+// Documented in spec.
+CMETH_IMPL_2(Class, typeAccepts, cls, value) {
+    return typeAccepts(cls, value);
 }
 
 // Documented in spec.
@@ -556,6 +566,7 @@ void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
         METH_TABLE(
             CMETH_BIND(Class, of),
+            CMETH_BIND(Class, typeAccepts),
             CMETH_BIND(Class, typeCast)),
         METH_TABLE(
             METH_BIND(Class, accepts),

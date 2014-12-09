@@ -23,6 +23,17 @@ methods in general.
 Returns the class of the given arbitrary `value`. The return value is always
 of class `Class`.
 
+#### `class.typeAccepts(cls, value) -> . | void`
+
+Type compatibility check, with "soft" failure. This calls `cls.accepts(value)`,
+returning `value` if that call returns non-void, or returning void otherwise.
+
+**Note:** This is defined as a class method and not an instance method, so
+that the overall behavior can be guaranteed by the system, including the
+guarantee that a non-void return value is always the passed `value`.
+Individual types are allowed to define `.accepts()` to add their particular
+contribution to the behavior.
+
 #### `class.typeCast(cls, value) -> . | void`
 
 Type cast operation, with "soft" failure. This attempts to cast (convert in a

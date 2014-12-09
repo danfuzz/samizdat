@@ -72,7 +72,13 @@ zvalue makeCoreClass(zvalue name, zvalue parent,
         zvalue classMethods, zvalue instanceMethods);
 
 /**
- * Performs the equivalent of the static method call
+ * Performs the equivalent of the class method call
+ * `Class.typeAccepts(cls, value)`.
+ */
+zvalue typeAccepts(zvalue cls, zvalue value);
+
+/**
+ * Performs the equivalent of the class method call
  * `Class.typeCast(cls, value)`.
  */
 zvalue typeCast(zvalue cls, zvalue value);
