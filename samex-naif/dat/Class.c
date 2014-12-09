@@ -259,13 +259,6 @@ void assertHasClass0(zvalue value, zvalue cls) {
     }
 }
 
-// Documented in header.
-bool classHasParent(zvalue cls, zvalue parent) {
-    assertIsClass(cls);
-    assertIsClass(parent);
-    return classEqUnchecked(getInfo(cls)->parent, parent);
-}
-
 // This provides the non-inline version of this function.
 extern zvalue classOf(zvalue value);
 

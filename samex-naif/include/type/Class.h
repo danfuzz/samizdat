@@ -38,12 +38,6 @@ inline void assertHasClass(zvalue value, zvalue cls) {
 }
 
 /**
- * Returns `true` iff the given class has the given parent. This is for
- * a direct parent check only, not for general ancestry.
- */
-bool classHasParent(zvalue cls, zvalue parent);
-
-/**
  * Returns true iff the classes of the given values (that is, `classOf()` on
  * each) are the same.
  */
