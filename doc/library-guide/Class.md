@@ -18,14 +18,6 @@ the default *class* methods for all classes.
 **Note:** These are the class methods on the class `Class`, and not class
 methods in general.
 
-#### `class.cast(cls, value) -> .`
-
-"Hard" cast operation. This is like `.typeCast()`, except that this
-terminates the runtime with an error if the cast could not complete, instead
-of returning void.
-
-**Note:** See note on `.typeCast()` for rationale of how this is defined.
-
 #### `class.of(value) -> is Class`
 
 Returns the class of the given arbitrary `value`. The return value is always

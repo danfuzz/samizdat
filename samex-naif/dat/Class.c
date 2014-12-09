@@ -342,17 +342,12 @@ zvalue typeCast(zvalue cls, zvalue value) {
 // Class Definition
 //
 
-// Documented in header.
-CMETH_IMPL_2(Class, cast, cls, value) {
-    return cast(cls, value);
-}
-
-// Documented in header.
+// Documented in spec.
 CMETH_IMPL_1(Class, of, value) {
     return classOf(value);
 }
 
-// Documented in header.
+// Documented in spec.
 CMETH_IMPL_2(Class, typeCast, cls, value) {
     return typeCast(cls, value);
 }
@@ -362,7 +357,7 @@ METH_IMPL_1(Class, accepts, value) {
     return acceptsUnchecked(ths, value) ? value : NULL;
 }
 
-// Documented in header.
+// Documented in spec.
 METH_IMPL_1(Class, castFrom, value) {
     return acceptsUnchecked(ths, value) ? value : NULL;
 }
@@ -572,7 +567,6 @@ MOD_INIT(objectModel) {
 void bindMethodsForClass(void) {
     classBindMethods(CLS_Class,
         METH_TABLE(
-            CMETH_BIND(Class, cast),
             CMETH_BIND(Class, of),
             CMETH_BIND(Class, typeCast)),
         METH_TABLE(

@@ -50,7 +50,6 @@ DEF_SYMBOL(bit);
 DEF_SYMBOL(bitSize);
 DEF_SYMBOL(call);
 DEF_SYMBOL(cases);
-DEF_SYMBOL(cast);
 DEF_SYMBOL(castFrom);
 DEF_SYMBOL(castToward);
 DEF_SYMBOL(cat);
