@@ -16,7 +16,7 @@ def KEYWORD_NAMES = [
     @return, @true, @var, @yield,
 
     ## Layer 2.
-    @by, @default, @do, @else, @for, @if, @in, @module, @switch,
+    @as, @by, @default, @do, @else, @for, @if, @in, @isa, @module, @switch,
     @while
 ];
 
