@@ -12,7 +12,11 @@
 ##
 ## Class Definition
 ##
-## Payload: {input: generator, context: [item*], shifted: lazy}
+## Payload:
+##   input: generator
+##   context: [item*]
+##   shifted: lazy<state>
+##   parses:  box<map>
 
 ## Secrets used to control access to this class.
 def ACCESS = @ACCESS.toUnlisted();
@@ -34,7 +38,13 @@ export class CacheState
                 { newInput -> this.fullNew(newInput, [context*, result]) }
         };
 
-        return this.(NEW)(@{input, context, shifted: shifted?})
+        var parses = {};
+
+        return this.(NEW)(@{
+            input,
+            context,
+            shifted: shifted?,
+            parses: parses?})
     };
 
     ## Documented in spec.
@@ -45,7 +55,16 @@ export class CacheState
 
     ## Documented in spec.
     .applyRule(rule) {
-        return? rule.parse(this)
+        def data = this.(ACCESS)();
+        def parses = data::parses;
+
+        return? If.value { (parses*).get(rule) }
+            { result -> result* }
+            {
+                def result = rule.parse(this)?;
+                parses* := {(parses*)*, (rule): result};
+                result*
+            }
     };
 
     ## Documented in spec.

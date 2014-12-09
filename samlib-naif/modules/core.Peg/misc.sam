@@ -9,6 +9,7 @@
 #= language core.Lang0
 
 import ./BasicState :: *;
+import ./CacheState :: *;
 
 
 ##
@@ -25,7 +26,7 @@ export fn apply(rule, input) {
         }
         { input };
 
-    def state = BasicState.new(tokens);
+    def state = CacheState.new(tokens);
 
     return? If.value { state.applyRule(rule) }
         { result -> result.get_context()* }
