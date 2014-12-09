@@ -1126,6 +1126,8 @@ def UNARY_OPERATORS = @{
 
 ## For binary operators, map of token types to method references.
 def BINARY_OPERATORS = @{
+    @as:     METHODS::Class_typeCast,
+    @isa:    METHODS::Class_typeAccepts,
     @"+":    METHODS::add,
     @"-":    METHODS::sub,
     @"*":    METHODS::mul,
@@ -1642,7 +1644,7 @@ def parMulExpression = {:
     opExes = (
         op = [@"*" @"/" @"%" @"//" @"%%" @"<<<" @">>>"]
         expr = parUnaryExpression
-        { {op, expr} }
+        { @{op, expr} }
     )*
 
     { makeBinaryCalls(firstEx, opExes) }
@@ -1654,7 +1656,7 @@ def parAddExpression = {:
     opExes = (
         op = [@"+" @"-" @"&&&" @"|||" @"^^^"]
         expr = parMulExpression
-        { {op, expr} }
+        { @{op, expr} }
     )*
 
     { makeBinaryCalls(firstEx, opExes) }
@@ -1672,7 +1674,7 @@ def parCompareExpression = {:
             @"\\==" @"\\!=" @"\\<" @"\\>" @"\\<=" @"\\>="
         ]
         expr = parAddExpression
-        { {op, expr} }
+        { @{op, expr} }
     )*
 
     { makeCompareCalls(firstEx, opExes) }
@@ -1825,6 +1827,25 @@ def parLogicOrExpression = {:
     |
         ## It's not actually a logical-or expression.
         { one }
+    )
+:};
+
+## Parses a type-calculus expression. These translate into calls to class
+## methods on the class `Class`.
+def parTypeExpression = {:
+    firstEx = parLogicOrExpression
+
+    (
+        ## There is no `*` repetition here, because this level of operator
+        ## is non-associative.
+        op = [@as @isa]
+        expr = parLogicOrExpression
+        {
+            def resolvedOp = BINARY_OPERATORS.get(op.get_name());
+            makeFunCall(resolvedOp, expr, firstEx)
+        }
+    |
+        { firstEx }
     )
 :};
 
@@ -2304,7 +2325,7 @@ def parForExpression = {:
 
 ## This is the top rule of the operator expression tree of rules. For more
 ## details, see the comment where `parOpExpression` is declared, above.
-parOpExpression := parLogicOrExpression;
+parOpExpression := parTypeExpression;
 
 ## Layer 2 parser for a general expression.
 parExpression2 := {:

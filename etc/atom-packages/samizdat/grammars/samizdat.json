@@ -271,6 +271,10 @@
           "name" : "keyword.definition.samizdat"
         },
         {
+          "match" : "(?x)\n\t\t\t\t\t\t\\b(as|isa)\\b\n\t\t\t\t\t",
+          "name" : "keyword.operator.samizdat"
+        },
+        {
           "match" : "(?x)\n\t\t\t\t\t\t\\b(true|false|null|nullBox|nullGenerator|voidResult)\\b\n\t\t\t\t\t",
           "name" : "constant.language.samizdat"
         },

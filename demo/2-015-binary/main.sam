@@ -184,3 +184,10 @@ msg(returnVoid() | returnVoid() | returnVoid() | 60);
 msg((returnVoid() | returnVoid())??);
 msg((returnVoid() | returnVoid() | returnVoid())??);
 msg((returnVoid() | returnVoid() | returnVoid() | returnVoid())??);
+
+note("\nType calculus");
+msg(1 isa Int);
+msg("foo" isa String);
+msg((@bar isa Bool)?);
+msg("foo" as Symbol);
+msg(@foo as String);

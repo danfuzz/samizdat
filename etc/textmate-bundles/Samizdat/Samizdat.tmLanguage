@@ -702,6 +702,14 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>keyword.operator.samizdat</string>
+					<key>match</key>
+					<string>(?x)
+						\b(as|isa)\b
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>constant.language.samizdat</string>
 					<key>match</key>
 					<string>(?x)

@@ -7,13 +7,13 @@ Expression Operators
 Samizdat provides many of the same operators found throughout the C family,
 as well as a few new ones. In Samizdat, almost all infix operators are
 left-associative, that is `x op y op z` is equivalent to `(x op y) op z`.
-The one exception is the assignment operator `:=`.
+The few exceptions are noted explicitly, below.
 
 The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
 
-### Postfix and Tight Infix Operators (Precedence 8, highest / tightest)
+### Postfix and Tight Infix Operators (Precedence 9; highest / tightest)
 
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
@@ -240,7 +240,7 @@ used to take a flag value and incorporate it into a logical
 expression (such as might be the expression checked in an `if` statement).
 
 
-### Prefix Operators (Precedence 7)
+### Prefix Operators (precedence 8)
 
 Prefix operators are higher in precedence than infix operators, but lower
 in precedence than postfix operators.
@@ -280,7 +280,7 @@ expression results in an int or boolean, and results in the bitwise complement
 of the inner expression's result.
 
 
-### Multiplicative Infix Operators (Precedence 6)
+### Multiplicative Infix Operators (precedence 7)
 
 #### Multiplication &mdash; `expression * expression`
 
@@ -326,7 +326,7 @@ If the second expression results in a negative number, this instead becomes
 a left shift.
 
 
-### Additive Infix Operators (Precedence 5)
+### Additive Infix Operators (precedence 6)
 
 #### Addition &mdash; `expression + expression`
 
@@ -354,7 +354,7 @@ This asserts that both expressions result in ints, and results in the
 bitwise xor of the two numbers.
 
 
-### Comparison Infix Operators (Precedence 4)
+### Comparison Infix Operators (precedence 5)
 
 In general, comparison operators correspond to function calls to standard
 comparison functions. The contract of these functions is to return their
@@ -389,7 +389,7 @@ or `.crossOrder()`. See the documentation of `Cmp` for more details.
 ints and floating point numbers.
 
 
-### Value/Void Logical-And Operator (Precedence 3) &mdash; `expression & expression`
+### Value/Void Logical-And Operator (precedence 4) &mdash; `expression & expression`
 
 This is short-circuit logical-and (conjunction). When evaluating this
 operator, the first (left-hand) expression is evaluated. If that results
@@ -405,7 +405,7 @@ binding is *only* allowed on the left-hand side of an `&` expression; in
 any other expression context it is a syntax error.
 
 
-### Value/Void Logical-Or Operator (Precedence 2) &mdash; `expression | expression`
+### Value/Void Logical-Or Operator (precedence 3) &mdash; `expression | expression`
 
 This is a short-circuit logical-or (disjunction). When evaluating this
 operator, the first (left-hand) expression is evaluated. If that results
@@ -421,10 +421,35 @@ to void, then the slightly longer form `(x & y? | z?)*` is an equivalent that
 ensures that a void `y` won't improperly cause `z` to be evaluated.
 
 
-### Assignment (Precedence 1) &mdash; `lvalue := expression`
+### Type calculus (precedence 2)
+
+These are operators that are concerned with the types / classes of
+values.
+
+Unlike most infix expressions, type calculus expressions are
+*non-associative*. This means that it is not syntactically correct to
+chain these expressions together without intervening parentheses.
+
+#### Type cast &mdash; `expression as expression`
+
+This is equivalent to calling the class method
+`Class.typeCast(expression, expression)`, with the arguments in the opposite
+order. For example, `"foo" as Symbol` is equivalent to
+`Class.typeCast(Symbol, "foo")`.
+
+#### Type check &mdash; `expression isa expression`
+
+This is equivalent to calling the class method
+`Class.typeAccepts(expression, expression)`, with the arguments in the same
+order. For example, `1 isa Int` is equivalent to `Class.typeIs(Int, 1)`.
+
+
+### Assignment (precedence 1; lowest / loosest) &mdash; `lvalue := expression`
 
 The `:=` operator indicates assignment. `lvalue` is an expression that must
-be a valid value reference (assignment target).
+be a valid value reference (assignment target). Unlike most infix expressions,
+assignment expressions are *right-associative*. That is, `a := b := c` is
+equivalent to `a := (b := c)`.
 
 In general, the `lvalue` is evaluated before the `expression`, and the
 result of the overall expression is the same as the evaluated result
