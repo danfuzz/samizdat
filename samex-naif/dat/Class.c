@@ -259,18 +259,6 @@ void assertHasClass0(zvalue value, zvalue cls) {
 }
 
 // Documented in header.
-zvalue cast(zvalue cls, zvalue value) {
-    zvalue result = typeCast(cls, value);
-
-    if (result != NULL) {
-        return result;
-    }
-
-    die("Could not cast: to %s, from %s",
-        cm_debugString(cls), cm_debugString(value));
-}
-
-// Documented in header.
 bool classAccepts(zvalue cls, zvalue value) {
     assertIsClass(cls);
     return acceptsUnchecked(cls, value);
