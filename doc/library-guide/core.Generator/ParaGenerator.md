@@ -14,7 +14,7 @@ generators is voided.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(generators*) -> is ParaGenerator | is ListWrapGenerator | == nullGenerator`
+#### `class.new(generators*) -> isa ParaGenerator | isa ListWrapGenerator | == nullGenerator`
 
 Creates an instance of this class.
 

@@ -83,12 +83,12 @@ For specific details on which names are mapped, refer to the source.
 Indicates whether `node` might possibly yield void when evalutated.
 Returns `node` to indicate logic-true.
 
-#### `formalsMaxArgs([formal*]) -> is Int`
+#### `formalsMaxArgs([formal*]) -> isa Int`
 
 Gets the maximum number of arguments that a given list of `formal`
 arguments could possibly accept. If there is no limit, this returns `-1`.
 
-#### `formalsMinArgs([formal*]) -> is Int`
+#### `formalsMinArgs([formal*]) -> isa Int`
 
 Gets the minimum number of arguments that a given list of `formal`
 arguments requires.
@@ -98,7 +98,7 @@ arguments requires.
 If `node` is a `literal`, this returns its literal value. If not, this
 returns void.
 
-#### `get_baseName(taggedName) -> is String`
+#### `get_baseName(taggedName) -> isa String`
 
 Gets the "base" name from a tagged name value. Operates on `@external`
 module name and `@internal` relative path values. For `@external` names,
@@ -115,7 +115,7 @@ get_baseName(@internal{name: "frotz.txt"})                =>  "frotz"
 get_baseName(@internal{name: "frobozz/magic/frotz.txt"})  =>  "frotz"
 ```
 
-#### `get_definedNames(node) -> is [Symbol*]`
+#### `get_definedNames(node) -> isa [Symbol*]`
 
 Gets a list of the names of all variables defined by the given `node`.
 If `node` defines no names, this returns `[]` (the empty list).
@@ -123,31 +123,31 @@ If `node` defines no names, this returns `[]` (the empty list).
 It is a fatal error to call this on an *unresolved* wildcard
 `importModuleSelection` node.
 
-#### `intFromDigits(base, digits) -> is Int`
+#### `intFromDigits(base, digits) -> isa Int`
 
 Converts a list of digit character tokens into an int, given the base.
 `base` is allowed to be any value in the range `(2..16)`. A digit character
 of `"_"` is allowed but otherwise ignored.
 
-#### `isExpression(node) -> is ExpressionNode | void`
+#### `isExpression(node) -> isa ExpressionNode | void`
 
 Indicates whether `node` is a full expression node type (as opposed to,
 notably, a restricted expression node type or a statement node type).
 Returns `node` to indicate logic-true.
 
-#### `makeApply(target, name, optValues?) -> is ExpressionNode`
+#### `makeApply(target, name, optValues?) -> isa ExpressionNode`
 
 Makes an `apply` node, where the method `name` (an expression node) is
 called on the given `target` (an expression node) with the given `optValues*`
 as arguments. If `optValues` is not passed, it defaults to `@void`.
 
-#### `makeAssignmentIfPossible(target, value) -> is ExpressionNode | .`
+#### `makeAssignmentIfPossible(target, value) -> isa ExpressionNode | .`
 
 Makes an assignment node of some form, if possible. Given a `lvalue`-bearing
 `target`, this calls `lvalue(value)` to produce a result. Otherwise, this
 returns void.
 
-#### `makeBasicClosure(table) -> is ExpressionNode`
+#### `makeBasicClosure(table) -> isa ExpressionNode`
 
 Makes a `closure` node, using the bindings of `table` as a basis, and adding
 in sensible defaults for `formals` and `statements` if missing:
@@ -159,13 +159,13 @@ No default is provided for `yield`, as it is not always possible to
 figure out a default for it at the points where `closure` nodes need to
 be produced de novo. See `makeFullClosure()` for more detail.
 
-#### `makeCall(target, name, values*) -> is ExpressionNode`
+#### `makeCall(target, name, values*) -> isa ExpressionNode`
 
 Makes a `call` node, where the method `name` (an expression node) is
 called on the given `target` (an expression node) with the given `values`
 (each an expression node) as arguments, in order.
 
-#### `makeCallGeneral(target, name, values*) -> is ExpressionNode`
+#### `makeCallGeneral(target, name, values*) -> isa ExpressionNode`
 
 Returns a method invocation node, where the method `name` (an expression node)
 is called on the given `target` (an expression node) with the given `values`
@@ -182,19 +182,19 @@ Otherwise, if there are no `interpolate` nodes in `values`, the end result is
 a straightforward `call` node, identical to having called `makeCall` with the
 same arguments.
 
-#### `makeCallLiterals(target, name, values*) -> is ExpressionNode`
+#### `makeCallLiterals(target, name, values*) -> isa ExpressionNode`
 
 Like `makeCall`, except that each of the `values` is made to be a literal
 value.
 
-#### `makeClassDef(name, attributes, methods) -> is ExpressionNode`
+#### `makeClassDef(name, attributes, methods) -> isa ExpressionNode`
 
 Makes a class definition node. This is a `top` variable definition of a class
 with the given name. `attributes` must be a list of single-binding symbol
 tables, and `methods` must be a list of an arbitrary mix of `classMethod`
 and `instanceMethod` nodes.
 
-#### `makeDynamicImport(node) -> is [ExpressionNode+]`
+#### `makeDynamicImport(node) -> isa [ExpressionNode+]`
 
 Converts an `import*` node to a list of statement nodes which perform an
 equivalent set of actions, dynamically.
@@ -211,18 +211,18 @@ replacement node, because some `import*` forms must expand to multiple
 statements. Always returning a list makes it possible to treat all return
 values more uniformly.
 
-#### `makeExport(node) -> is ExpressionNode`
+#### `makeExport(node) -> isa ExpressionNode`
 
 Makes an `export` node, indicating that the given `node`'s definitions
 are to be exported. `node` must be valid to export, e.g. (but not limited
 to) a `varDef` node.
 
-#### `makeExportSelection(names+) -> is ExpressionNode`
+#### `makeExportSelection(names+) -> isa ExpressionNode`
 
 Makes an `exportSelection` node to export the variables with the given
 `names`. Each of the `names` must be a symbol.
 
-#### `makeFullClosure(base) -> is ExpressionNode`
+#### `makeFullClosure(base) -> isa ExpressionNode`
 
 Makes a `closure` node, using the bindings of `base` as a basis, adding
 in defaults like `makeBasicClosure()` (see which), and also performing
@@ -249,7 +249,7 @@ result. If the node cannot possibly yield void, then it is directly used as
 the `yield`. If it might yield void, then it is wrapped in a `@maybe`, and
 the `@maybe` is used as the binding for `yield` in the result.
 
-#### `makeFunCall(function, values*) -> is ExpressionNode`
+#### `makeFunCall(function, values*) -> isa ExpressionNode`
 
 Makes a `call` node, where `function` (an expression node) is called
 with each of the `values` (each an expression node) as arguments, in
@@ -261,7 +261,7 @@ The result is a `call` node with `function` as the target and literal
 As a special case, if `function` is actually a `@methodId` node, then that
 node is "deconstructed" into either a class or instance method call.
 
-#### `makeFunCallGeneral(function, values*) -> is ExpressionNode`
+#### `makeFunCallGeneral(function, values*) -> isa ExpressionNode`
 
 Like `makeCallGeneral`, except this takes a `function` instead of a
 `target` and `name`.
@@ -269,17 +269,17 @@ Like `makeCallGeneral`, except this takes a `function` instead of a
 The result is a `call` or `apply` node with `function` as the target and
 literal `@call` as the name.
 
-#### `makeFunCallThunks(function, values*) -> is ExpressionNode`
+#### `makeFunCallThunks(function, values*) -> isa ExpressionNode`
 
 Like `makeFunCall`, except that each of the `values` is wrapped in
 a thunk. This is useful in converting conditional expressions and the like.
 
-#### `makeGet(collArg, keyArg) -> is ExpressionNode`
+#### `makeGet(collArg, keyArg) -> isa ExpressionNode`
 
 Makes a collection access (`get`) expression. This is a `call` node
 of two arguments (a collection node and a key node).
 
-#### `makeImport(baseData) -> is ExpressionNode`
+#### `makeImport(baseData) -> isa ExpressionNode`
 
 Makes an `@import*` node, based on `baseData`, which must be a table which
 includes a consistent set of bindings for one of the `@import` node types.
@@ -303,7 +303,7 @@ the rejection. This makes it safe to "optimistically" parse a generalized
 version of the `import` syntax, and use this function for a final
 validation.
 
-#### `makeInfoTable(node) -> is SymbolTable`
+#### `makeInfoTable(node) -> isa SymbolTable`
 
 Constructs the metainformation from a `closure` node that represents a
 top-level module. This returns a symbol table that binds `exports`, `imports`,
@@ -316,18 +316,18 @@ any unresolved wildcard imports.
 **Note:** If `node` already has an `info` binding, then this function
 just returns that.
 
-#### `makeInterpolate(expr) -> is ExpressionNode`
+#### `makeInterpolate(expr) -> isa ExpressionNode`
 
 Makes an interpolation of the given expression node. The result is a
 `fetch` node that refers to the given `expr` as both the main `value` and
 as an `interpolate` binding, and which binds `lvalue` to a store conversion
 function. See `makeFunCallGeneral` for more details about `interpolate` bindings.
 
-#### `makeLiteral(value) -> is ExpressionNode`
+#### `makeLiteral(value) -> isa ExpressionNode`
 
 Makes a `literal` node.
 
-#### `makeMapExpression(mappings*) -> is ExpressionNode`
+#### `makeMapExpression(mappings*) -> isa ExpressionNode`
 
 Makes an expression node that represents the construction of a map
 consisting of the given `mappings`. Arguments that are `mapping`
@@ -337,7 +337,7 @@ In trivial cases, the result is a simple `call` node for a call to
 `Map.new()` or `Map.singleValue()`. In other cases, the result is a call to
 `cat` with less trivial internal structure.
 
-#### `makeMaybe(value) -> is ExpressionNode`
+#### `makeMaybe(value) -> isa ExpressionNode`
 
 Makes a raw `maybe` node. These are only valid to use in limited contexts.
 See the expression node specification for details.
@@ -345,7 +345,7 @@ See the expression node specification for details.
 **Note:** This is different than `makeMaybeValue` in that
 the latter produces an expression node which always evaluates to a list.
 
-#### `makeMaybeValue(node) -> is ExpressionNode`
+#### `makeMaybeValue(node) -> isa ExpressionNode`
 
 Makes a maybe-value expression for the given `node`. This effectively
 returns a node representing `node?` (for the original `node`).
@@ -355,11 +355,11 @@ In the usual case, the result is equivalent to a node for
 returns the so-bound value. The latter is the case for general variable
 references, where postfix `?` denotes a reference to the varaible's box.
 
-#### `makeNoYield(value) -> is ExpressionNode`
+#### `makeNoYield(value) -> isa ExpressionNode`
 
 Makes a `noYield` node.
 
-#### `makeNonlocalExit(function, optValue?) -> is ExpressionNode`
+#### `makeNonlocalExit(function, optValue?) -> isa ExpressionNode`
 
 Makes a node representing a nonlocal exit, for calling the given `function`
 with optional expression argument `optValue*`. `optValue*` is allowed
@@ -369,7 +369,7 @@ treated as if it were specified as `@void{}`.
 This produces a `nonlocalExit` node per se, which must eventually be
 processed via `makeFullClosure()` or similar.
 
-#### `makeRecordExpression(name, data) -> is ExpressionNode`
+#### `makeRecordExpression(name, data) -> isa ExpressionNode`
 
 Makes an expression node that represents a construction of a record with
 the given `name` and `data`, both themselves expression nodes.
@@ -378,7 +378,7 @@ Most of the time, this results in a node representing a call to `Record.new`.
 However, if both `name` and `data` are `literal` nodes, this function
 returns a `literal` node representing the actual constructed record.
 
-#### `makeSymbolTableExpression(mappings*) -> is ExpressionNode`
+#### `makeSymbolTableExpression(mappings*) -> isa ExpressionNode`
 
 Makes an expression node that represents the construction of a symbol table
 consisting of the given `mappings`. Arguments that are `mapping`
@@ -388,7 +388,7 @@ arguments. In trivial cases, the result is a simple `call` node for a call to
 `SymbolTable.new()` or `SymbolTable.singleValue()`. In other cases, the result
 is a call to `cat` with less trivial internal structure.
 
-#### `makeThunk(node) -> is ExpressionNode`
+#### `makeThunk(node) -> isa ExpressionNode`
 
 Makes a thunk (no-argument function) that evaluates the given node, allowing
 it to evaluate to void. That is, this returns `{ -> node }`. If given
@@ -396,7 +396,7 @@ any regular expression node, the result has a `maybe` node for the `yield`.
 For the special `yield` node types (`maybe`, `void`, or `nonlocalExit`), the
 result contains the given `node` as the `yield`, directly.
 
-#### `makeVarDef(name, box, optValue?) -> is ExpressionNode`
+#### `makeVarDef(name, box, optValue?) -> isa ExpressionNode`
 
 Makes a `varDef` statement node. `name` and `box` must both be symbols.
 `optValue` if passed must be an expression node, including the option of using
@@ -406,12 +406,12 @@ were specified as `@void{}`.
 See the documentation on `varDef` nodes for information about the allowed
 values for `box` and how it relates to `optValue`.
 
-#### `makeVarFetch(name) -> is ExpressionNode`
+#### `makeVarFetch(name) -> isa ExpressionNode`
 
 Makes a `fetch` node with a `varRef` payload, and no additional bindings.
 `name` must be a symbol.
 
-#### `makeVarFetchGeneral(name) -> is ExpressionNode`
+#### `makeVarFetchGeneral(name) -> isa ExpressionNode`
 
 Makes a `fetch` node with a `varRef` payload. `name` must be a symbol.
 
@@ -422,16 +422,16 @@ usable as-is (to fetch a variable's value), as well as usable as an lvalue
 operations are achieved by having `lvalue` and `box` bound on the resulting
 node, respectively.
 
-#### `makeVarRef(name) -> is ExpressionNode`
+#### `makeVarRef(name) -> isa ExpressionNode`
 
 Makes a `varRef` node. `name` must be a symbol.
 
-#### `makeVarStore(name, value) -> is ExpressionNode`
+#### `makeVarStore(name, value) -> isa ExpressionNode`
 
 Makes a `store` node with a `varRef` node for the target and the indicated
 `value` binding. `name` must be a symbol.
 
-#### `resolveImport(node, resolveFn) -> is ExpressionNode`
+#### `resolveImport(node, resolveFn) -> isa ExpressionNode`
 
 Returns a node just like the given one (which must be an `import*` node),
 except that it is resolved, using `resolveFn` to resolve any references.
@@ -444,18 +444,18 @@ Everything else just passes through as-is, if valid.
 It is a fatal error (terminating the runtime) if `node` is found to be
 invalid.
 
-#### `withDynamicImports(node) -> is ExpressionNode`
+#### `withDynamicImports(node) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` nodes in the `statements` converted to their dynamic
 forms.
 
-#### `withFormals(node, [formal*]) -> is ExpressionNode`
+#### `withFormals(node, [formal*]) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with `formals` (re)bound as given.
 
-#### `withModuleDefs(node) -> is ExpressionNode`
+#### `withModuleDefs(node) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with `statements` and `yield` bindings processed to make the node
@@ -482,7 +482,7 @@ binding for the metainformation. This includes the following transformations:
 It is invalid (terminating the runtime) to call this function
 on a `closure` with a `yield` that is anything but `@void`.
 
-#### `withName(node, name) -> is ExpressionNode`
+#### `withName(node, name) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with the `name` binding as given. If the original `node` already had a
@@ -490,18 +490,18 @@ with the `name` binding as given. If the original `node` already had a
 
 `name` must be a symbol.
 
-#### `withResolvedImports(node, resolveFn) -> is ExpressionNode`
+#### `withResolvedImports(node, resolveFn) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with any `import*` or `export(import*)`nodes in the `statements` list
 validated and transformed, by calling `resolveImport(node, resolveFn)`.
 
-#### `withTop(node) -> is ExpressionNode`
+#### `withTop(node) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `varDef` node), except
 with the addition of a `top: true` binding.
 
-#### `withYieldDef(node, name) -> is ExpressionNode`
+#### `withYieldDef(node, name) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with the addition of a yield definition binding for the given `name`.
@@ -512,7 +512,7 @@ replace it. Instead, this adds an initial variable definition statement
 to the `statements` in the result, which binds the given name to the original
 `yieldDef` name.
 
-#### `withYieldDefIfAbsent(node, name) -> is ExpressionNode`
+#### `withYieldDefIfAbsent(node, name) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with the addition of a yield definition binding for the given `name`, but
@@ -524,7 +524,7 @@ This function is useful for propagating an outer yield definition into an
 inner closure, especially with regards to providing the expected behavior
 around implicit yielding of the final statement of a closure.
 
-#### `withoutIntermediates(node) -> is ExpressionNode`
+#### `withoutIntermediates(node) -> isa ExpressionNode`
 
 Makes a node just like the given one, except without any "intermediate"
 data payload bindings. These are bindings which are incidentally used
@@ -538,7 +538,7 @@ parenthesized expressions to ensure that a parenthesized postfix-`*`
 expression (e.g. `foo(bar, (baz*))`) is treated as a "fetch" and not as a
 call argument interpolation.
 
-#### `withoutTops(node) -> is ExpressionNode`
+#### `withoutTops(node) -> isa ExpressionNode`
 
 Makes a node just like the given one (presumably a `closure` node), except
 with no `top` decalarations in the `statements` list.

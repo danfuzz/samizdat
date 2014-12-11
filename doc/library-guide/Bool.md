@@ -11,7 +11,7 @@ keywords `true` and `false` refer to the only two values of this class.
 <br><br>
 ### Class Method Definitions
 
-#### `class.castFrom(value) -> is Bool | void`
+#### `class.castFrom(value) -> isa Bool | void`
 
 This class knows how to cast as follows:
 
@@ -20,7 +20,7 @@ This class knows how to cast as follows:
 * `Int` &mdash; Returns `false` given `0`, or `1` given `true`.
 * `Value` &mdash; Returns `value`.
 
-#### `class.fromLogic(value?) -> is Bool`
+#### `class.fromLogic(value?) -> isa Bool`
 
 Returns the boolean equivalent of the argument-or-not. This is a bridge
 from value-or-void logic. If given an argument, this returns `true`. If
@@ -46,11 +46,11 @@ This class knows how to cast as follows:
 Compares two boolean values. This is only logical-true if the two given
 values are the same.
 
-#### `.crossOrder(other) -> is Symbol`
+#### `.crossOrder(other) -> isa Symbol`
 
 Compares the given boolean values, ordering `false` before `true`.
 
-#### `.debugString() -> is String`
+#### `.debugString() -> isa String`
 
 Returns `"true"` or `"false'`, in the reasonably expected cases.
 
@@ -58,7 +58,7 @@ Returns `"true"` or `"false'`, in the reasonably expected cases.
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol`
+#### `.perOrder(other) -> isa Symbol`
 
 Default implementation.
 
@@ -77,28 +77,28 @@ returns `true` if given `true` and void if given `false`.
 <br><br>
 ### Method Definitions: `Bitwise` protocol
 
-#### `.and(other) -> is Bool`
+#### `.and(other) -> isa Bool`
 
 Straightforward protocol implementation.
 
-#### `.bit(int) -> is Int`
+#### `.bit(int) -> isa Int`
 
 Returns `1` if called as `bit(true, 0)`. Returns `0` for any other
 valid pair of arguments.
 
-#### `.bitSize() -> is Int`
+#### `.bitSize() -> isa Int`
 
 Returns `1`, always.
 
-#### `.not() -> is Bool`
+#### `.not() -> isa Bool`
 
 Straightforward protocol implementation.
 
-#### `.or(other) -> is Bool`
+#### `.or(other) -> isa Bool`
 
 Straightforward protocol implementation.
 
-#### `.shl(int) -> is Bool`
+#### `.shl(int) -> isa Bool`
 
 Returns the given argument if shifted by `0`, or if `false` is shifted
 by any amount. Returns `false` if `true` is right-shifted by any
@@ -106,6 +106,6 @@ amount.
 
 It is a terminal error to try to shift `true` left by any amount.
 
-#### `.xor(other) -> is Bool`
+#### `.xor(other) -> isa Bool`
 
 Straightforward protocol implementation.

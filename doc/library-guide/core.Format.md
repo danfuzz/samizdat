@@ -12,7 +12,7 @@ implicitly by the string interpolation system.
 <br><br>
 ### Functions
 
-#### `formatterFor(formatSpec) -> is Function`
+#### `formatterFor(formatSpec) -> isa Function`
 
 This takes a formatting specification string and returns a formatter
 function which takes a single argument and applies the so specified
@@ -33,16 +33,16 @@ following, with the indicated meaning:
 
 **Syntax Note:** Used in the translation of string interpolation forms.
 
-#### `int(value, optBase?) -> is String`
+#### `int(value, optBase?) -> isa String`
 
 Converts an int into a string form, in the given base which defaults to
 10. If specified, `optBase*` can be any int in the range `(2..36)`.
 
-#### `intHex(value) -> is String`
+#### `intHex(value) -> isa String`
 
 Same as `int(value, 16)`.
 
-#### `source(value?) -> is String`
+#### `source(value?) -> isa String`
 
 Converts an arbitrary value into a string representation form
 that is meant to mimic the Samizdat source syntax. If `value` is not passed,
@@ -60,12 +60,12 @@ language:
   non-printing characters other than newline that are in the Latin-1
   code point range.
 
-#### `sourceUnadorned(value?) -> is String`
+#### `sourceUnadorned(value?) -> isa String`
 
 This is just like `source`, except that top-level adornment
 (quotes, etc.) are not produced.
 
-#### `usual(value?) -> is String`
+#### `usual(value?) -> isa String`
 
 Converts an arbitrary value into a string representation form, meant
 to be useful for producing the "usual" human-oriented output. This is

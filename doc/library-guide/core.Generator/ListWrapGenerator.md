@@ -13,7 +13,7 @@ and `FilterGenerator`, implemented more efficiently than either of those.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(generator) -> is ListWrapGenerator`
+#### `class.new(generator) -> isa ListWrapGenerator`
 
 Creates an instance of this class.
 

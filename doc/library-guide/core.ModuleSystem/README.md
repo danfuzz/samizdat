@@ -88,7 +88,7 @@ available `format`s.
 **Note:** This function is implemented in terms of the `readResource()`
 method.
 
-#### `main(libraryPath, primitiveGlobals) -> is SymbolTable`
+#### `main(libraryPath, primitiveGlobals) -> isa SymbolTable`
 
 This is the main entrypoint for loading the entire system. As such, it's
 not that useful for most code.

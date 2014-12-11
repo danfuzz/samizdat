@@ -7,7 +7,7 @@ Record
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(name, data?) -> is Record`
+#### `class.new(name, data?) -> isa Record`
 
 Returns a record with the given name (a symbol) and optional `data` payload.
 If `data` is not specified, it defaults to `@{}` (the empty symbol table).
@@ -33,7 +33,7 @@ other than a symbol table.
 <br><br>
 ### Method Definitions: `Record` protocol
 
-#### `.cat(more*) -> is Record`
+#### `.cat(more*) -> isa Record`
 
 Returns a record consisting of the combination of the mappings of `this` and
 the arguments, with the same name as `ths`. Arguments must each be a record
@@ -44,7 +44,7 @@ is the one that ends up in the result. Despite the `cat` name, strictly
 speaking this isn't a linear concatenation, but it is as close as one can
 get to it given the class's key uniqueness constraints.
 
-#### `.del(symbols*) -> is Record`
+#### `.del(symbols*) -> isa Record`
 
 Returns a record with the same name and mappings as `this`, except without
 any data bindings for the given `symbols`.
@@ -54,15 +54,15 @@ any data bindings for the given `symbols`.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 record. If there is no such mapping, then this returns void.
 
-#### `.get_data() -> is SymbolTable`
+#### `.get_data() -> isa SymbolTable`
 
 Returns the data payload of the given record.
 
-#### `.get_name() -> is Symbol`
+#### `.get_name() -> isa Symbol`
 
 Returns the name (tag) of the given record.
 
-#### `.hasName(name) -> is Record`
+#### `.hasName(name) -> isa Record`
 
 Returns `this` if its name is as given, or void if not.
 
@@ -87,7 +87,7 @@ This class knows how to cast as follows:
 Compares two records. Two records are equal if they have equal names and
 equal data payloads.
 
-#### `.crossOrder(other) -> is Symbol`
+#### `.crossOrder(other) -> isa Symbol`
 
 Compares two records for order. Records order by name as the major order
 and data payload as minor order.
@@ -96,6 +96,6 @@ and data payload as minor order.
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol`
+#### `.perOrder(other) -> isa Symbol`
 
 Default implementation.
