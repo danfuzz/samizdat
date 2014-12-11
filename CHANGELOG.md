@@ -70,7 +70,7 @@ Version History
 
   * New semantics for (local) variable binding.
 
-* 0.6.0 &mdash; 14-mar-2014  &mdash; "Birthday Pi"
+* 0.6.0 &mdash; 14-mar-2014 &mdash; "Birthday Pi"
 
   * **Milestone:** The Samizdat project is now one year old.
 
@@ -97,7 +97,7 @@ Version History
 
   * Now built using a "real" build system (Blur).
 
-* 0.7.0 &mdash; 30-may-2014  &mdash; "Import-Export Business"
+* 0.7.0 &mdash; 30-may-2014 &mdash; "Import-Export Business"
 
   * **Milestone:** Module system rewritten and fully fleshed out. This
     includes a fairly straightforward semantic model and a set of `import`
@@ -125,7 +125,7 @@ Version History
 
   * Lots of miscellaneous tweaks and additions to the core library.
 
-* 0.8.0 &mdash; 13-jun-2014  &mdash; "Many Happy Returns"
+* 0.8.0 &mdash; 13-jun-2014 &mdash; "Many Happy Returns"
 
   * **Milestone:** Major rework of closure yield / return syntax and
     semantics.
@@ -145,7 +145,7 @@ Version History
     definitions of a couple more (`apply`, `call`, and `closure`) to
     use `void` nodes for bindings instead of having optional bindings.
 
-* 0.9.0 &mdash; 17-sep-2014  &mdash; "Class Struggle"
+* 0.9.0 &mdash; 17-sep-2014 &mdash; "Class Struggle"
 
   * **Milestone:** Replacement of method binding and dispatch with a new
     Smalltalk-style class system.
@@ -199,7 +199,7 @@ Version History
       that function can then perform assignment on it in a reasonably
       sane way.
 
-* 0.10.0 &mdash; 17-oct-2014  &mdash; "I Never Metaclass I Didn't Like"
+* 0.10.0 &mdash; 17-oct-2014 &mdash; "I Never Metaclass I Didn't Like"
 
   * **Milestone:** The object model has grown to include metaclasses and
     class methods.
@@ -221,3 +221,44 @@ Version History
 
   * Split `Box` into a family of classes, for the various standard box
     behaviors.
+
+* 0.11.0 &mdash; 15-dec-2014 &mdash; "That's Classified Information"
+
+  * **Milestone:** Major progress on "class-centric" rework. The system is
+    moving away from functions / closures as the most primitive bearers of
+    behavior and variable state, in favor of giving to classes this
+    responsibility.
+
+    * `call` and `apply` execution nodes now represent method calls, not
+      function calls. Function calls are no more and no less than a call to
+      the method named `.call()`.
+
+    * Reworked all library constructor functions to instead be defined as
+      class methods, usually called `.new()`.
+
+    * Moved most global functions to instead be class methods on new
+      utility (uninstantiable) classes.
+
+  * Other major syntactic changes:
+
+    * Replaced rvalue syntax `var x` by slightly generalizing the postfix
+      `?` syntax.
+
+    * Introduced infix operators `as` (cast to class/type) and `isa` (check
+      for class/type match).
+
+  * Other major semantic changes:
+
+    * Reworked and generally simplified the Parser protocol, making it
+      easier to both understand and implement.
+
+  * Other notable changes:
+
+    * Implemented "shared content" lists, to enable more efficient list
+      deconstruction.
+
+    * Nearly completely rewrote the core interpreter, to avoid all runtime
+      record binding lookup, and to do more up-front validation of closures.
+
+    * Did major restructuring on the C code, to make it a bit cleaner and
+      more maintainable going forward.
