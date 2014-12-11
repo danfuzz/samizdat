@@ -11,7 +11,7 @@ as defined by the class method `Cmp.order()`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.castFrom(value) -> is Map | void`
+#### `class.castFrom(value) -> isa Map | void`
 
 This class knows how to cast as follows:
 
@@ -29,7 +29,7 @@ This class knows how to cast as follows:
 
 * `Value` &mdash; Returns `value`.
 
-#### `class.new(args*) -> is Map`
+#### `class.new(args*) -> isa Map`
 
 This makes a map from a series of mappings, given as pairs of
 key-then-value arguments. For example:
@@ -46,7 +46,7 @@ arguments to this function.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `class.singleValue(keys*, value) -> is Map`
+#### `class.singleValue(keys*, value) -> isa Map`
 
 This makes a map which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns
@@ -85,7 +85,7 @@ This class knows how to cast as follows:
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
 
-#### `.crossOrder(other) -> is Symbol`
+#### `.crossOrder(other) -> isa Symbol`
 
 Compares two maps for order. Maps order primarily by ordered lists of
 keys, with the same rules as list comparison. Given two maps with equal
@@ -96,7 +96,7 @@ key order.
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol`
+#### `.perOrder(other) -> isa Symbol`
 
 Default implementation.
 
@@ -118,7 +118,7 @@ It is a terminal error if `this` does not contain exactly one mapping.
 <br><br>
 ### Method Definitions: `Collection` protocol
 
-#### `.cat(more*) -> is Map`
+#### `.cat(more*) -> isa Map`
 
 Returns a map consisting of the combination of the mappings of `ths` and the
 arguments. Arguments are allowed to be maps or anything which can be cast
@@ -132,7 +132,7 @@ get to it given the class's key ordering and uniqueness constraints.
 **Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
-#### `.del(keys*) -> is Map`
+#### `.del(keys*) -> isa Map`
 
 Returns a map just like the given one, except that
 the mappings for the given `keys`, if any, are removed. If `this`
@@ -143,15 +143,15 @@ does not bind any of the given keys, then this returns `this`.
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this returns void.
 
-#### `.get_size() -> is Int`
+#### `.get_size() -> isa Int`
 
 Returns the number of mappings in the map.
 
-#### `.keyList() -> is List`
+#### `.keyList() -> isa List`
 
 Returns a list of all the keys mapped by the given `map`, in sorted order.
 
-#### `.valueList() -> is List`
+#### `.valueList() -> isa List`
 
 Returns a list of all the values mapped by the given `map`, in order of the
 sorted keys.
@@ -160,16 +160,16 @@ sorted keys.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(optFilterFunction?) -> is List`
+#### `.collect(optFilterFunction?) -> isa List`
 
 Collects or filters the mappings of `this`.
 
-#### `.fetch() -> is Map | void`
+#### `.fetch() -> isa Map | void`
 
 Returns void on an empty map. Returns `this` on a single-element map.
 Terminates with an error in all other cases.
 
-#### `.nextValue(box) -> is Map | void`
+#### `.nextValue(box) -> isa Map | void`
 
 On a non-empty map, calls `box.store(mapping)` where `mapping` is
 the first mapping in the map in its iteration order, and returns

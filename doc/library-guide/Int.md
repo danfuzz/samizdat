@@ -11,7 +11,7 @@ Int
 
 Compares the integer values of two ints.
 
-#### `.crossOrder(other) -> is Symbol`
+#### `.crossOrder(other) -> isa Symbol`
 
 Compares the integer values of two ints, ordering by value in the usual
 manner.
@@ -20,7 +20,7 @@ manner.
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol`
+#### `.perOrder(other) -> isa Symbol`
 
 Default implementation.
 
@@ -28,33 +28,33 @@ Default implementation.
 <br><br>
 ### Method Definitions: `Bitwise` protocol
 
-#### `.and(other) -> is Int`
+#### `.and(other) -> isa Int`
 
 Straightforward protocol implementation.
 
-#### `.bit(other) -> is Int`
+#### `.bit(other) -> isa Int`
 
 Straightforward protocol implementation.
 
 **Note**: Bits at or beyond `this.bitSize()` are considered to be the
 same as `this.bit(this.bitSize() - 1)`.
 
-#### `.bitSize() -> is Int`
+#### `.bitSize() -> isa Int`
 
 Straightforward protocol implementation.
 
 **Note:** The minimum size of an int is `1`, which is the size of
 both `0` and `-1`.
 
-#### `.not() -> is Bitwise`
+#### `.not() -> isa Bitwise`
 
 Straightforward protocol implementation.
 
-#### `.or(other) -> is Bitwise`
+#### `.or(other) -> isa Bitwise`
 
 Straightforward protocol implementation.
 
-#### `.shl(int) -> is Bitwise`
+#### `.shl(int) -> isa Bitwise`
 
 Straightforward protocol implementation.
 
@@ -64,7 +64,7 @@ in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
 non-negative ints.
 
-#### `.xor(other) -> is Bitwise`
+#### `.xor(other) -> isa Bitwise`
 
 Straightforward protocol implementation.
 
@@ -72,29 +72,29 @@ Straightforward protocol implementation.
 <br><br>
 ### Method Definitions: `Number` protocol
 
-#### `.abs() -> is Int`
+#### `.abs() -> isa Int`
 
 Straightforward protocol implementation.
 
-#### `.add(other) -> is Int`
+#### `.add(other) -> isa Int`
 
 Straightforward protocol implementation.
 
-#### `.div(other) -> is Int`
+#### `.div(other) -> isa Int`
 
 Straightforward protocol implementation, using truncated division.
 
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.divEu(other) -> is Int`
+#### `.divEu(other) -> isa Int`
 
 Straightforward protocol implementation, using truncated Euclidean division.
 
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.mod(other) -> is Int`
+#### `.mod(other) -> isa Int`
 
 Straightforward protocol implementation. The truncated modulo operation
 `x % y` can be defined in terms of truncated division as `x - (x / y) * y`.
@@ -102,7 +102,7 @@ Straightforward protocol implementation. The truncated modulo operation
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.modEu(other) -> is Int`
+#### `.modEu(other) -> isa Int`
 
 Straightforward protocol implementation. The truncated Euclidean modulo
 operation `x %% y` can be defined in terms of truncated Euclidean division
@@ -111,18 +111,18 @@ as `x - (x // y) * y`.
 It is an error (terminating the runtime) if the second argument
 is `0`, as there is no "infinity" representation in the class.
 
-#### `.mul(other) -> is Int`
+#### `.mul(other) -> isa Int`
 
 Straightforward protocol implementation.
 
-#### `.neg() -> is Int`
+#### `.neg() -> isa Int`
 
 Straightforward protocol implementation.
 
-#### `.sign() -> is Int`
+#### `.sign() -> isa Int`
 
 Straightforward protocol implementation.
 
-#### `.sub(other) -> is Number`
+#### `.sub(other) -> isa Number`
 
 Straightforward protocol implementation.

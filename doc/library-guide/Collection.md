@@ -14,7 +14,7 @@ would expect.
 <br><br>
 ### Method Definitions: `Collection` protocol
 
-#### `.cat(more*) -> is Collection`
+#### `.cat(more*) -> isa Collection`
 
 Returns the concatenation of all of the given `more*` values to `this`.
 The `more*` values must be "compatible" with `this` (as defined by the class
@@ -31,7 +31,7 @@ For classes that have element constraints, a concatenation will not
 necessarily contain all the original constituent elements, and the order might
 be different. See individual implementation docs for details.
 
-#### `.del(keys*) -> is Collection`
+#### `.del(keys*) -> isa Collection`
 
 Returns a collection just like the given one, except that the mappings for the
 given `keys`, if any, are removed. If any of the `keys` is a duplicate, then
@@ -54,17 +54,17 @@ bound in `this` at all).
 **Syntax Note:** This is the method that underlies the `value[key]`
 syntactic form.
 
-#### `.get_size() -> is Int`
+#### `.get_size() -> isa Int`
 
 Gets the size (element count) of `this`.
 
 **Syntax Note:** This is the method underlying the `#value` syntactic
 form (prefix `#` operator).
 
-#### `.keyList() -> is List`
+#### `.keyList() -> isa List`
 
 Returns the list of keys mapped by the collection.
 
-#### `.valueList() -> is List`
+#### `.valueList() -> isa List`
 
 Returns the list of values mapped by the collection.

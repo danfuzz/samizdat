@@ -16,11 +16,11 @@ of the system.
 Performs an identity comparison. Two builtins are only equal if they
 refer to the exact same functionality.
 
-#### `.crossOrder(other) -> is Symbol | void`
+#### `.crossOrder(other) -> isa Symbol | void`
 
 Performs an identity comparison. Builtins do not have a defined order.
 
-#### `.debugSymbol() -> is Symbol | void`
+#### `.debugSymbol() -> isa Symbol | void`
 
 Returns the symbolic name of the builtin, if it has one.
 
@@ -28,7 +28,7 @@ Returns the symbolic name of the builtin, if it has one.
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol | void`
+#### `.perOrder(other) -> isa Symbol | void`
 
 Default implementation.
 

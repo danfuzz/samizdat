@@ -13,7 +13,7 @@ methods of `Collection`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(args*) -> is Map`
+#### `class.new(args*) -> isa Map`
 
 This makes a symbol table from a series of mappings, given as pairs of
 symbol-then-value arguments. This function is meant to be exactly parallel to
@@ -21,7 +21,7 @@ symbol-then-value arguments. This function is meant to be exactly parallel to
 
 **Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
 
-#### `class.singleValue(keys*, value) -> is Map`
+#### `class.singleValue(keys*, value) -> isa Map`
 
 This makes a symbol table which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns
@@ -42,7 +42,7 @@ representable in real Samizdat syntax.
 Compares two symbol tables. Two symbol tables are equal if they have
 equal sets of mappings.
 
-#### `.crossOrder(other) -> is Symbol`
+#### `.crossOrder(other) -> isa Symbol`
 
 Compares two symbol tables for order. The size of the table is the major
 order (smaller is earlier). After that, the keys are compared as sorted
@@ -57,7 +57,7 @@ other.
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol`
+#### `.perOrder(other) -> isa Symbol`
 
 Default implementation.
 
@@ -65,7 +65,7 @@ Default implementation.
 <br><br>
 ### Method Definitions
 
-#### `.cat(more*) -> is SymbolTable`
+#### `.cat(more*) -> isa SymbolTable`
 
 Returns a symbol table consisting of the combination of the mappings of `ths`
 and the arguments. Arguments are allowed to be symbol tables or anything which
@@ -78,7 +78,7 @@ get to it given the class's key uniqueness constraints.
 
 **Syntax Note:** Used in the translation of `@{key: value, ...}` forms.
 
-#### `.del(symbols*) -> is SymbolTable`
+#### `.del(symbols*) -> isa SymbolTable`
 
 Returns a symbol table just like the given one, except that
 the mappings for the given `symbols`, if any, are removed. If `this`
@@ -89,6 +89,6 @@ does not bind any of the given symbols, then this returns `this`.
 Returns the value mapped to the given `symbol` (a symbol) in the given
 symbol table. If there is no such mapping, then this returns void.
 
-#### `.get_size() -> is Int`
+#### `.get_size() -> isa Int`
 
 Returns the number of mappings contained within `this`.

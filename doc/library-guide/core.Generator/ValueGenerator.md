@@ -11,7 +11,7 @@ given `value`, never becoming voided.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(value) -> is ValueGenerator`
+#### `class.new(value) -> isa ValueGenerator`
 
 Creates an instance of this class.
 

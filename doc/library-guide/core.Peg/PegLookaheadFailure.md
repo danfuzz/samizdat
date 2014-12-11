@@ -15,7 +15,7 @@ This is equivalent to the syntactic form `{: !rule :}`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(rule) -> is PegLookaheadFailure | == eof | == fail`
+#### `class.new(rule) -> isa PegLookaheadFailure | == eof | == fail`
 
 Creates an instance of this class.
 

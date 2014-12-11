@@ -17,7 +17,7 @@ string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `fileType(path) -> is Symbol`
+#### `fileType(path) -> isa Symbol`
 
 Returns the type of the file whose `path` is as given. This function always
 returns a symbol, one of:
@@ -28,7 +28,7 @@ returns a symbol, one of:
 * `@directory` &mdash; Indicates a directory.
 * `@other` &mdash; Any other existing file (e.g., a named pipe).
 
-#### `readDirectory(path) -> is Map | void`
+#### `readDirectory(path) -> isa Map | void`
 
 Reads the contents of the indicated directory, using the underlying OS's
 functionality. Returns a map from names (strings) to types (also strings).
@@ -42,13 +42,13 @@ it exists but is not a directory), then this function returns void.
 **Note:** The result map will not contain mappings for `"."` (directory
 self-reference) or `".."` (parent directory reference).
 
-#### `readFileUtf8(path) -> is String`
+#### `readFileUtf8(path) -> isa String`
 
 Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text.
 
-#### `readLink(path) -> is String | void`
+#### `readLink(path) -> isa String | void`
 
 Checks the filesystem to see if the given filesystem path refers to a symbolic
 link. If it does, then this returns the string which represents the direct

@@ -18,7 +18,7 @@ the default *class* methods for all classes.
 **Note:** These are the class methods on the class `Class`, and not class
 methods in general.
 
-#### `class.of(value) -> is Class`
+#### `class.of(value) -> isa Class`
 
 Returns the class of the given arbitrary `value`. The return value is always
 of class `Class`.
@@ -77,14 +77,14 @@ already of the class. If so, it returns `value`; if not, it returns `void`.
 **Note:** This method is used by the class methods `Class.typeCast()` and
 `Class.typeCast()` as part of the more general casting mechanism.
 
-#### `.get_name() -> is Symbol`
+#### `.get_name() -> isa Symbol`
 
 Returns the name of the class, as a symbol.
 
 **Note:** It is possible for two different classes to have the same name,
 so `cls1.get_name() == cls2.get_name()` does *not* imply that `cls1 == cls2`.
 
-#### `.get_parent() -> is Class | void`
+#### `.get_parent() -> isa Class | void`
 
 Returns the parent class (that is, the superclass) of the given class. This
 returns a class for all classes except `Value`. For `Value`, this returns
@@ -103,7 +103,7 @@ of `this`), or void if not.
 
 Compares two classes. Two different classes are never equal.
 
-#### `.crossOrder(other) -> is Symbol | void`
+#### `.crossOrder(other) -> isa Symbol | void`
 
 This is identical to `.perEq()`, except it first asserts that `other` has the
 same direct class as `this` (which in practice is only true of metaclasses).
@@ -112,7 +112,7 @@ same direct class as `this` (which in practice is only true of metaclasses).
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol`
+#### `.perOrder(other) -> isa Symbol`
 
 Compares two classes for order, as follows:
 

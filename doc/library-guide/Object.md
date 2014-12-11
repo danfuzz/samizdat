@@ -20,7 +20,7 @@ become bound as both class and instance methods:
 <br><br>
 ### Class Method Definitions
 
-#### `class.subclass(name, config, classMethods?, instanceMethods?) -> is Class`
+#### `class.subclass(name, config, classMethods?, instanceMethods?) -> isa Class`
 
 Makes a new object class with the given `name` and `secrets`. `name` must
 be a symbol. `config` must be a symbol table that maps any of `access` and
@@ -44,7 +44,7 @@ Compares two objects. This is true if both have the same payload.
 **Note:** As per the usual contract for this method, it is invalid to call
 this method on two values of different classes.
 
-#### `.crossOrder(other) -> is Symbol`
+#### `.crossOrder(other) -> isa Symbol`
 
 Compares two objects for order. This returns the result of ordering the two
 objects' respective data payloads.

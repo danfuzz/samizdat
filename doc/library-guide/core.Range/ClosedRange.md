@@ -11,7 +11,7 @@ character values, with a finite size.
 <br><br>
 ### Class Method Definitions:
 
-#### `class.new(firstValue, size, optIncrement?) -> is ClosedRange`
+#### `class.new(firstValue, size, optIncrement?) -> isa ClosedRange`
 
 Creates a closed range. `firstValue` must be either a number or
 a single-character string. `size` must be an int.
@@ -20,7 +20,7 @@ a single-character string. `size` must be an int.
 **Note:** If `size` is non-positive (`0` or negative), this returns a valid,
 but voided, instance.
 
-#### `class.newExclusive(firstValue, limit, optIncrement?) -> is ClosedRange`
+#### `class.newExclusive(firstValue, limit, optIncrement?) -> isa ClosedRange`
 
 End-exclusive range generator for int or single-character strings.
 This is a convenient wrapper for `.new()`.
@@ -47,7 +47,7 @@ Special cases:
 **Syntax Note:** Used in the translation of `(expression..!expression)`
 forms.
 
-#### `class.newInclusive(firstValue, limit, optIncrement?) -> is ClosedRange`
+#### `class.newInclusive(firstValue, limit, optIncrement?) -> isa ClosedRange`
 
 End-inclusive range generator for int or single-character strings.
 This is a convenient wrapper for `.new()`.
@@ -71,11 +71,11 @@ forms.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(optFilterFunction?) -> is List`
+#### `.collect(optFilterFunction?) -> isa List`
 
 Returns all the elements of the range as a list.
 
-#### `.nextValue(box) -> is ClosedRange | void`
+#### `.nextValue(box) -> isa ClosedRange | void`
 
 If non-empty, yields the first element of the range, and returns a range
 representing the remainder. If empty, returns void.

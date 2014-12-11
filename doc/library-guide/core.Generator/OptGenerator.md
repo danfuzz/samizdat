@@ -13,7 +13,7 @@ infinitum, never becoming voided.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(generator) -> is OptGenerator`
+#### `class.new(generator) -> isa OptGenerator`
 
 Creates an instance of this class.
 

@@ -9,7 +9,7 @@ A `List` is a kind of `Sequence`.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(values*) -> is List`
+#### `class.new(values*) -> isa List`
 
 Constructs a list consisting of the given values, in order.
 These equivalences hold for Samizdat Layer 0 source code:
@@ -35,7 +35,7 @@ the function is happy to operate given zero arguments.
 Compares two lists. Two lists are equal if they have equal elements in
 identical orders.
 
-#### `.crossOrder(other) -> is Symbol`
+#### `.crossOrder(other) -> isa Symbol`
 
 Compares two lists for order. Lists order by pairwise corresponding-element
 comparison, with a strict prefix always ordering before its longer brethren.
@@ -44,7 +44,7 @@ comparison, with a strict prefix always ordering before its longer brethren.
 
 Default implementation.
 
-#### `.perOrder(other) -> is Symbol`
+#### `.perOrder(other) -> isa Symbol`
 
 Default implementation.
 
@@ -52,12 +52,12 @@ Default implementation.
 <br><br>
 ### Method Definitions: `Collection` and `Sequence` protocols
 
-#### `.cat(more*) -> is Int`
+#### `.cat(more*) -> isa Int`
 
 Returns a list consisting of the concatenation of the elements
 of `ths` and all the argument lists, in argument order.
 
-#### `.del(ns*) -> is List`
+#### `.del(ns*) -> isa List`
 
 Returns a list like the given one, but without the indicated elements
 (by index). If a given index is repeated more than once, it has the same
@@ -67,11 +67,11 @@ effect as if it were only mentioned once.
 
 Defined as per the `Sequence` protocol.
 
-#### `.get_size() -> is Int`
+#### `.get_size() -> isa Int`
 
 Returns the number of elements in the list.
 
-#### `.keyList() -> is List`
+#### `.keyList() -> isa List`
 
 Defined as per the `Sequence` protocol.
 
@@ -79,27 +79,27 @@ Defined as per the `Sequence` protocol.
 
 Gets the nth element of the string.
 
-#### `.repeat(count) -> is List`
+#### `.repeat(count) -> isa List`
 
 Returns a list consisting of `count` repetitions of the contents of `this`.
 `count` must be a non-negative int.
 
-#### `.reverse() -> is List`
+#### `.reverse() -> isa List`
 
 Returns a list like the one given, except with elements in the opposite
 order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
 
-#### `.sliceExclusive(start, end?) -> is List`
+#### `.sliceExclusive(start, end?) -> isa List`
 
 Returns an end-exclusive slice of the given list.
 
-#### `.sliceInclusive(start, end?) -> is List`
+#### `.sliceInclusive(start, end?) -> isa List`
 
 Returns an end-inclusive slice of the given list.
 
-#### `.valueList() -> is List`
+#### `.valueList() -> isa List`
 
 Defined as per the `Sequence` protocol. In this case, this function always
 returns `this`, directly.
@@ -109,7 +109,7 @@ returns `this`, directly.
 <br><br>
 ### Method Definitions: `Generator` protocol.
 
-#### `.collect(optFilterFunction?) -> is List`
+#### `.collect(optFilterFunction?) -> isa List`
 
 Filters the elements of `this` using the given filter function if supplied,
 or just returns `this` if there is no filter function.
@@ -119,7 +119,7 @@ or just returns `this` if there is no filter function.
 Returns void on an empty list. Returns the sole element of a single-element
 list. Terminates with an error in all other cases.
 
-#### `.nextValue(box) -> is List | void`
+#### `.nextValue(box) -> isa List | void`
 
 On a non-empty list, calls `box.store(this[0])` and returns
 `this[1..]`. On an empty list, this just returns void.

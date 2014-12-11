@@ -13,16 +13,16 @@ parser expression (`{: ... :}`) is always an instance of this class.
 <br><br>
 ### Class Method Definitions
 
-#### `class.new(rule) -> is PegMain`
+#### `class.new(rule) -> isa PegMain`
 
 Creates an instance of this class which wraps the given `rule`.
 
-#### `class.newChoice(rules*) -> is PegMain`
+#### `class.newChoice(rules*) -> isa PegMain`
 
 Creates an instance of this class which wraps a `PegChoice` constructed
 from the given `rules`.
 
-#### `class.newSequence(rules*) -> is PegMain`
+#### `class.newSequence(rules*) -> isa PegMain`
 
 Creates an instance of this class which wraps a `PegSequence` constructed
 from the given `rules`.
