@@ -1,5 +1,5 @@
 {
-  "name": "samizdat",
+  "name": "language-samizdat",
   "version": "0.0.1",
   "description": "Samizdat language support for Atom",
   "repository": "https://github.com/danfuzz/samizdat",
