@@ -36,5 +36,5 @@ init-prog
 
 plutil -convert json -r \
     "${baseDir}/textmate-bundles/Samizdat/Samizdat.tmLanguage" \
-    -o "${progDir}/samizdat/grammars/samizdat.json"
+    -o "${progDir}/samizdat-language/grammars/samizdat.json"
 
