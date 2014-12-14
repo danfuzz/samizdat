@@ -3,6 +3,7 @@ Samizdat Miscellaneous Notes
 
 Contents:
 
+* [Design Highlights](design-highlights.md)
 * [Manifesto](manifesto.md)
 * [Reading List](reading-list.md)
 * [Startup Walk-Through](startup-walk-through.md)
