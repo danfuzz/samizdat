@@ -16,3 +16,7 @@ More specifically, the Markdown variant is Github-Flavored Markdown (a/k/a
 
 **Rationale:** The project is hosted on Github, and Github makes it easy
 to read documents formatted this way.
+
+### Miscellanea
+
+The capitalization of JavaScript is "JavaScript."

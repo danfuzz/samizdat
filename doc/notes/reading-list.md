@@ -56,7 +56,7 @@ Languages
     <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.21.7508>
 
 * JavaScript
-  * Value representation in Javascript implementations (NaN-Boxing and
+  * Value representation in JavaScript implementations (NaN-Boxing and
     Nun-Boxing) &mdash;
     <http://wingolog.org/archives/2011/05/18/value-representation-in-javascript-implementations>
 
