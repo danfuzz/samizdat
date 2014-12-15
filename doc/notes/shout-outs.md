@@ -22,8 +22,8 @@ explore these topics, while still being a practical and compelling language
 in its own right.
 
 In the context of project sponsor [Nextbit Systems](http://nextbit.com),
-Samizdat is an exploration of "cloud computing orientation" applied to
-programming language design.
+Samizdat is an exploration of programming language language design in
+the context of a multi-device "personal cloud" operating system.
 
 Samizdat's syntax can be traced in part to
 [ALGOL](http://en.wikipedia.org/wiki/ALGOL), through
