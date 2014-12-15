@@ -78,7 +78,7 @@ a directory named with its number suffixed with a suggestive summary, e.g.
 
 Building just the "pure interpreter" runtime only takes a few seconds.
 The downside to this build is that it takes somewhere in the neighborhood
-of 30 seconds to a minute after starting, before it will read in a
+of ten to fifteen seconds after starting, before it will read in a
 program. Even so, it can be useful to run in many cases, such as when
 making modifications to the core runtime.
 
