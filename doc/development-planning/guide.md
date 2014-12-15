@@ -24,10 +24,10 @@ environment:
 
 The automated build for Samizdat requires these additional items:
 
-* The build makes use of standard Posix command-line utilities, such as
-  (but not limited to) `cp`, `mkdir`, and `find`.
+* Standard Posix command-line utilities, such as (but not limited to) `cp`,
+  `mkdir`, and `find`.
 
-* The build makes use of the Bash scripting language, version 3.2 or later.
+* The Bash scripting language, version 3.2 or later.
 
 To be clear, the Samizdat build process is fairly straightforward, and
 it is not be particularly hard to compile it "manually," should the need
