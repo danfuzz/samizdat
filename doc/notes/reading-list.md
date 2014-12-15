@@ -44,6 +44,9 @@ Languages
   * Modular Type Classes &mdash;
     <http://www.mpi-sws.org/~dreyer/papers/mtc/main-long.pdf>
 
+* Haxe
+  * Haxe, a cross-platform language and toolkit &mdash; <http://haxe.org/>
+
 * Humus
   * The Humus actor language &mdash; <http://www.dalnefre.com/wp/humus/>
 
