@@ -191,4 +191,11 @@ char *utilCwd(void);
 #define utilZero(dest) \
     memset((dest), 0, sizeof(dest))
 
+/**
+ * Guaranteed-stable sort. The arguments are just like those to the standard
+ * library function `qsort()`.
+ */
+void utilSortStable(void *base, size_t nel, size_t width,
+        int (*compar)(const void *, const void *));
+
 #endif
