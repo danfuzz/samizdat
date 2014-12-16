@@ -61,8 +61,8 @@ zvalue ioFileType(zvalue path, bool followSymlinks) {
 
     struct stat statBuf;
     int statResult = followSymlinks
-        ? lstat(str, &statBuf)
-        : stat(str, &statBuf);
+        ? stat(str, &statBuf)
+        : lstat(str, &statBuf);
 
     if (statResult != 0) {
         if ((errno == ENOENT) || (errno == ENOTDIR)) {
