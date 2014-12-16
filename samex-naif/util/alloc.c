@@ -2,6 +2,9 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+// Needed for `getpagesize` when using glibc.
+#define _XOPEN_SOURCE 700
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
