@@ -6,11 +6,15 @@
 // Figures out the directory where the executable resides.
 //
 
+// Required for `lstat()` and `readlink()` when using glibc.
+#define _POSIX_C_SOURCE 200112L
+
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "util.h"

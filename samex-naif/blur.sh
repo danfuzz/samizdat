@@ -54,7 +54,7 @@ if (( optimize )); then
     CC=(${CC[@]} -O3)
 fi
 
-COMPILE_C=("${CC[@]}" -g -c -I"${PROJECT_DIR}/include")
+COMPILE_C=("${CC[@]}" -std=c99 -g -c -I"${PROJECT_DIR}/include")
 LINK_BIN=("${CC[@]}" -g)
 
 # Rules to copy each library source file to the final lib directory.
