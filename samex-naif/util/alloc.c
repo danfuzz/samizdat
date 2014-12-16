@@ -2,9 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-// Needed for `getpagesize` when using glibc.
-#define _XOPEN_SOURCE 700
-
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -56,7 +53,7 @@ static zint rangesSize = 0;
  */
 static PageRange pageRangeFromAddressRange(void *startPtr, void *endPtr) {
     if (PAGE_MASK == 0) {
-        PAGE_SIZE = getpagesize();
+        PAGE_SIZE = sysconf(_SC_PAGESIZE);
         PAGE_MASK = ~(PAGE_SIZE - 1);
     }
 
@@ -102,7 +99,7 @@ static void addPages(void *start, void *end) {
 
     ranges[rangesSize] = range;
     rangesSize++;
-    mergesort(ranges, rangesSize, sizeof(PageRange), compareRanges);
+    qsort(ranges, rangesSize, sizeof(PageRange), compareRanges);
 
     // Combine adjacent ranges (if possible).
 
