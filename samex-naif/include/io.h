@@ -39,8 +39,12 @@ zvalue ioCwd(void);
  * `@absent` if the file doesn't exist (including if one of the named
  * directories in the path doesn't exist). Types are the same as for
  * `core.Io0::fileType` (see which).
+ *
+ * If `followSymlinks` is passed as `true`, then symlinks are followed, and
+ * the result is the file type of the linked file. If `false`, then the
+ * result given a symlink is `@symlink`.
  */
-zvalue ioFileType(zvalue path);
+zvalue ioFileType(zvalue path, bool followSymlinks);
 
 /**
  * Gets the contents of the directory at the given path. If the path does not

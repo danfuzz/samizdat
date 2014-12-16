@@ -25,7 +25,7 @@ zvalue ioReadDirectory(zvalue path) {
     char str[sz + 1];
     utf8FromString(sz + 1, str, path);
 
-    zvalue type = ioFileType(path);
+    zvalue type = ioFileType(path, true);
     if (!cmpEq(type, SYM(directory))) {
         return NULL;
     }
