@@ -7,7 +7,7 @@
 //
 
 // Required for `lstat()` and `readlink()` when using glibc.
-#define _POSIX_C_SOURCE 200112L
+#define _XOPEN_SOURCE 700
 
 #include <errno.h>
 #include <limits.h>

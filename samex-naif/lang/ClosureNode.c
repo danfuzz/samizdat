@@ -7,6 +7,9 @@
 //
 // Translation of the main info of a `closure` node.
 
+// Needed by `Jump.h`. See that file for further info.
+#define _XOPEN_SOURCE 700
+
 #include "langnode.h"
 #include "type/define.h"
 #include "type/Box.h"

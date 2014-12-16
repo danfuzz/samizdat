@@ -2,10 +2,14 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+// Needed for `lstat` and `readlink` when using glibc.
+#define _XOPEN_SOURCE 700
+
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "io.h"
@@ -53,24 +57,31 @@ zvalue ioCwd(void) {
 }
 
 // Documented in header.
-zvalue ioFileType(zvalue path) {
+zvalue ioFileType(zvalue path, bool followSymlinks) {
     ioCheckPath(path);
     zint sz = utf8SizeFromString(path);
     char str[sz + 1];
     utf8FromString(sz + 1, str, path);
 
     struct stat statBuf;
-    if (stat(str, &statBuf) != 0) {
+    int statResult = followSymlinks
+        ? stat(str, &statBuf)
+        : lstat(str, &statBuf);
+
+    if (statResult != 0) {
         if ((errno == ENOENT) || (errno == ENOTDIR)) {
-            // File not found or invalid component, neither of which
-            // are really errors from the perspective of this function.
+            // File not found or invalid component, neither of which are
+            // really errors from the perspective of this function.
             return SYM(absent);
         }
-        die("Trouble with stat(): %s", strerror(errno));
+        die("Trouble with `%s`: %s",
+            followSymlinks ? "lstat" : "stat",
+            strerror(errno));
     }
 
     if (S_ISREG(statBuf.st_mode))      { return SYM(file);      }
     else if (S_ISDIR(statBuf.st_mode)) { return SYM(directory); }
+    else if (S_ISLNK(statBuf.st_mode)) { return SYM(symlink);   }
     else                               { return SYM(other);     }
 }
 

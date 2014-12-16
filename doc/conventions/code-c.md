@@ -265,3 +265,21 @@ environments, without having to install additional packages.
 
 The "gold standard" is that any given function be available in
 both OS X and typical Linux userlands.
+
+#### System headers
+
+It is acceptable to define the "feature test macro" `_XOPEN_SOURCE` to have
+the value `700`, before `#include`ing a system header file, in cases where
+doing so would enable some required / desired functionality. When doing so,
+it is important to note in a comment why the macro is being defined.
+
+For example:
+
+```c
+// Required for `lstat()` and `readlink()` when using glibc.
+#define _XOPEN_SOURCE 700
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+```

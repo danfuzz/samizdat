@@ -2,15 +2,21 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+// Needed for `readdir_r` when using glibc.
+#define _XOPEN_SOURCE 700
+
 #include <dirent.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "io.h"
 #include "type/Cmp.h"
 #include "type/Map.h"
 #include "type/String.h"
-#include "type/Value.h"
+#include "type/SymbolTable.h"
 #include "util.h"
 
 
@@ -25,7 +31,7 @@ zvalue ioReadDirectory(zvalue path) {
     char str[sz + 1];
     utf8FromString(sz + 1, str, path);
 
-    zvalue type = ioFileType(path);
+    zvalue type = ioFileType(path, true);
     if (!cmpEq(type, SYM(directory))) {
         return NULL;
     }
@@ -35,6 +41,7 @@ zvalue ioReadDirectory(zvalue path) {
         die("Trouble opening directory \"%s\": %s", str, strerror(errno));
     }
 
+    zvalue pathPrefix = cm_cat(path, stringFromZchar('/'));
     zvalue result = EMPTY_MAP;
     struct dirent entry;
     struct dirent *entryPtr;
@@ -47,24 +54,24 @@ zvalue ioReadDirectory(zvalue path) {
             break;
         }
 
-        if ((entry.d_namlen < 3)
+        // Note: `dirent.d_namlen` is not a standard field.
+        zint nameSz = strlen(entry.d_name);
+
+        if ((nameSz < 3)
             && (   (strcmp(entry.d_name, ".") == 0)
                 || (strcmp(entry.d_name, "..") == 0))) {
             // Skip the entries for "this directory" and "parent directory."
             continue;
         }
 
-        zvalue name = stringFromUtf8(entry.d_namlen, entry.d_name);
-        zvalue type;
+        zvalue name = stringFromUtf8(nameSz, entry.d_name);
 
-        switch (entry.d_type) {
-            case DT_REG: { type = SYM(file);      break; }
-            case DT_DIR: { type = SYM(directory); break; }
-            case DT_LNK: { type = SYM(symlink);   break; }
-            default:     { type = SYM(other);     break; }
-        }
+        // Note: `dirent.d_type` is very conveniently defined in BSD, but it
+        // is unfortunately *not* particularly standardized. Instead, we
+        // use `lstat()` (via `ioFileType()`).
+        zvalue type = ioFileType(cm_cat(pathPrefix, name), false);
 
-        result = cm_cat(result, mapFromMapping((zmapping) {name, type}));
+        result = cm_cat(result, symtabFromMapping((zmapping) {name, type}));
     }
 
     if (closedir(dir) != 0) {

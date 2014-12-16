@@ -88,12 +88,12 @@ static zvalue loadFile(zvalue path) {
     zvalue binPath = cm_cat(path, stringFromUtf8(-1, ".samb"));
     zvalue func;
 
-    if (cmpEq(ioFileType(binPath), SYM(file))) {
+    if (cmpEq(ioFileType(binPath, true), SYM(file))) {
         // We found a binary file.
         func = datEvalBinary(PRIMITIVE_ENVIRONMENT, binPath);
     } else {
         zvalue srcPath = cm_cat(path, stringFromUtf8(-1, ".sam"));
-        if (cmpEq(ioFileType(srcPath), SYM(file))) {
+        if (cmpEq(ioFileType(srcPath, true), SYM(file))) {
             // We found a source text file.
             zvalue text = ioReadFileUtf8(srcPath);
             zvalue tree = langSimplify0(langParseProgram0(text), NULL);

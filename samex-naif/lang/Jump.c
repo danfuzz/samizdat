@@ -6,6 +6,9 @@
 // Nonlocal jump (exit / yield) functions
 //
 
+// Needed by `Jump.h`. See that file for further info.
+#define _XOPEN_SOURCE 700
+
 #include "type/Jump.h"
 #include "type/String.h"
 #include "type/define.h"

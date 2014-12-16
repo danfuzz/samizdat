@@ -9,6 +9,18 @@
 #ifndef _TYPE_JUMP_H_
 #define _TYPE_JUMP_H_
 
+// Needed for `sigjmp_buf` when using glibc.
+//
+// Note: Rather than define this directly here, the following setup causes the
+// compiler to bail if the source that `#include`s this file fails to define
+// the constant appropriately. This avoids having the feature macro defined
+// inconsistently within a single file.
+#ifndef _XOPEN_SOURCE
+#error Jump.h requires: `#define _XOPEN_SOURCE 700`
+#elif _XOPEN_SOURCE != 700
+#error Jump.h requires: `#define _XOPEN_SOURCE 700`
+#endif
+
 #include <setjmp.h>
 #include <stdbool.h>
 

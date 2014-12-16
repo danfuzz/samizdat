@@ -19,7 +19,7 @@ FUN_IMPL_DECL(Io0_cwd) {
 // Documented in spec.
 FUN_IMPL_DECL(Io0_fileType) {
     zvalue path = args.elems[0];
-    return ioFileType(path);
+    return ioFileType(path, true);
 }
 
 // Documented in spec.
