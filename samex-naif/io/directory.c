@@ -10,7 +10,7 @@
 #include "type/Cmp.h"
 #include "type/Map.h"
 #include "type/String.h"
-#include "type/Value.h"
+#include "type/SymbolTable.h"
 #include "util.h"
 
 
@@ -35,6 +35,7 @@ zvalue ioReadDirectory(zvalue path) {
         die("Trouble opening directory \"%s\": %s", str, strerror(errno));
     }
 
+    zvalue pathPrefix = cm_cat(path, stringFromZchar('/'));
     zvalue result = EMPTY_MAP;
     struct dirent entry;
     struct dirent *entryPtr;
@@ -55,16 +56,13 @@ zvalue ioReadDirectory(zvalue path) {
         }
 
         zvalue name = stringFromUtf8(entry.d_namlen, entry.d_name);
-        zvalue type;
 
-        switch (entry.d_type) {
-            case DT_REG: { type = SYM(file);      break; }
-            case DT_DIR: { type = SYM(directory); break; }
-            case DT_LNK: { type = SYM(symlink);   break; }
-            default:     { type = SYM(other);     break; }
-        }
+        // Note: `dirent.d_type` is very conveniently defined in BSD, but it
+        // is unfortunately *not* particularly standardized. Instead, we
+        // use `lstat()` (via `ioFileType()`).
+        zvalue type = ioFileType(cm_cat(pathPrefix, name), false);
 
-        result = cm_cat(result, mapFromMapping((zmapping) {name, type}));
+        result = cm_cat(result, symtabFromMapping((zmapping) {name, type}));
     }
 
     if (closedir(dir) != 0) {
