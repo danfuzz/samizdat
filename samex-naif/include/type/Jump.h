@@ -9,6 +9,9 @@
 #ifndef _TYPE_JUMP_H_
 #define _TYPE_JUMP_H_
 
+// Needed for `sigjmp_buf` when using glibc.
+#define _XOPEN_SOURCE 700
+
 #include <setjmp.h>
 #include <stdbool.h>
 
