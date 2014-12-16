@@ -6,6 +6,7 @@
 ## Calculator Demo
 ##
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang1
 
 import core.Generator :: *;
