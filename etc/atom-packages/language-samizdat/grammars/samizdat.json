@@ -1,11 +1,6 @@
 {
   "fileTypes" : [
     "sam",
-    "sam0",
-    "sam1",
-    "sam2",
-    "sam3",
-    "sam4",
     "saminfo"
   ],
   "foldingStartMarker" : "\\{:? *(##.*)?$",

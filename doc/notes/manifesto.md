@@ -1,7 +1,7 @@
 Manifesto
 =========
 
-Javascript is the latest major language in the long-dominant Algol / C
+JavaScript is the latest major language in the long-dominant Algol / C
 tradition, and it has succeeded in capturing the mindshare of millions of
 programmers. However, it suffers from major semantic shortcomings, which
 will only be addressed from within its own ecosystem over an excruciatingly

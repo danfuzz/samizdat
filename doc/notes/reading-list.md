@@ -44,6 +44,9 @@ Languages
   * Modular Type Classes &mdash;
     <http://www.mpi-sws.org/~dreyer/papers/mtc/main-long.pdf>
 
+* Haxe
+  * Haxe, a cross-platform language and toolkit &mdash; <http://haxe.org/>
+
 * Humus
   * The Humus actor language &mdash; <http://www.dalnefre.com/wp/humus/>
 
@@ -56,7 +59,7 @@ Languages
     <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.21.7508>
 
 * JavaScript
-  * Value representation in Javascript implementations (NaN-Boxing and
+  * Value representation in JavaScript implementations (NaN-Boxing and
     Nun-Boxing) &mdash;
     <http://wingolog.org/archives/2011/05/18/value-representation-in-javascript-implementations>
 

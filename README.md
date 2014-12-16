@@ -32,10 +32,11 @@ randomness, aiming for programs to be fully deterministic unless they
 explicitly rely on external state (such as a filesystem or network link).
 It also attempts to make immutable values the most attractive first choice for
 data representation. This all makes Samizdat a "functional" language of sorts,
-in the "Scheme camp" moreso than the "Haskell camp."
+in the "Scheme camp" more than the "Haskell camp."
 
 Find lots of documentation in [the doc/ directory](doc), including notably:
 
+* a brief enumeration of [design highlights](doc/notes/design-highlights.md).
 * an [overview](doc/development-planning/overview.md) of the main components
   of the system.
 * a brief [development guide](doc/development-planning/guide.md).

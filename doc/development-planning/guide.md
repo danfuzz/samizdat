@@ -24,10 +24,10 @@ environment:
 
 The automated build for Samizdat requires these additional items:
 
-* The build makes use of standard Posix command-line utilities, such as
-  (but not limited to) `cp`, `mkdir`, and `find`.
+* Standard Posix command-line utilities, such as (but not limited to) `cp`,
+  `mkdir`, and `find`.
 
-* The build makes use of the Bash scripting language, version 3.2 or later.
+* The Bash scripting language, version 3.2 or later.
 
 To be clear, the Samizdat build process is fairly straightforward, and
 it is not be particularly hard to compile it "manually," should the need
@@ -78,7 +78,7 @@ a directory named with its number suffixed with a suggestive summary, e.g.
 
 Building just the "pure interpreter" runtime only takes a few seconds.
 The downside to this build is that it takes somewhere in the neighborhood
-of 30 seconds to a minute after starting, before it will read in a
+of ten to fifteen seconds after starting, before it will read in a
 program. Even so, it can be useful to run in many cases, such as when
 making modifications to the core runtime.
 
