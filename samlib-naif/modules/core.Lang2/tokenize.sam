@@ -10,6 +10,7 @@
 ## Layer 1 parsing, and the comments should be taken in light of that.
 
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang1
 
 import core.EntityMap :: ENTITY_MAP;

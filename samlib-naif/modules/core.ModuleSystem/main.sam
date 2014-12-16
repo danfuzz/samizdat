@@ -11,6 +11,7 @@
 ## This directive only has an effect when the module system loads *itself*
 ## in a chained loader. The primordial / bootstrap module system gets loaded
 ## as a layer 0 file no matter what the directive says (or doesn't say).
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 

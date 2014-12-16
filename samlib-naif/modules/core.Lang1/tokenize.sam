@@ -9,6 +9,7 @@
 ## the Samizdat Layer 0 and Samizdat Layer 1 specifications.
 ##
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 import core.Generator;

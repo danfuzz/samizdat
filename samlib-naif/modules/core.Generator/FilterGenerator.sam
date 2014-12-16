@@ -8,6 +8,7 @@
 ## Payload is a map `{filterFunction: function, generator: subGen}`.
 ## `subGen` is expected to produce lists of arguments to apply.
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 import ./ParaGenerator :: *;

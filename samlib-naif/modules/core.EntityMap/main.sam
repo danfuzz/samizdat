@@ -10,6 +10,7 @@
 ## file entity-map.txt as input. Rerun that program should the contents
 ## of this file need to be updated.
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 ## Documented in spec.

@@ -7,6 +7,7 @@
 ##
 ## Payload is `{size, value}`.
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 import ./NullGenerator :: nullGenerator;

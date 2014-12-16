@@ -2,6 +2,7 @@
 ## Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 ## Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 import core.Format;

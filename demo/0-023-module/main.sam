@@ -6,6 +6,7 @@
 ## Throwaway demo of module mechanism
 ##
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 

@@ -6,6 +6,7 @@
 ## Range-of-value classes
 ##
 
+## This file is written in a subset of the language. See spec for details.
 #= language core.Lang0
 
 export import ./ClosedRange :: *;
