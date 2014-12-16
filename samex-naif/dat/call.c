@@ -6,9 +6,6 @@
 // Function / method calling
 //
 
-#include <stdarg.h>
-#include <stdio.h>   // For `asprintf`.
-
 #include "type/Builtin.h"
 #include "type/List.h"
 #include "type/String.h"
@@ -67,16 +64,16 @@ static char *callReporter(void *state) {
 
         if (targetName != NULL) {
             char *nameStr = ensureString(targetName);
-            asprintf(&result, "%s (instance of %s)",
+            utilAsprintf(&result, "%s (instance of %s)",
                 nameStr, classStr);
             utilFree(nameStr);
         } else {
-            asprintf(&result, "anonymous instance of %s", classStr);
+            utilAsprintf(&result, "anonymous instance of %s", classStr);
         }
     } else {
         char *targetStr = cm_debugString(ste->target);
         char *nameStr = ensureString(ste->name);
-        asprintf(&result, "%s.%s on %s", classStr, nameStr, targetStr);
+        utilAsprintf(&result, "%s.%s on %s", classStr, nameStr, targetStr);
         utilFree(targetStr);
         utilFree(nameStr);
     }
