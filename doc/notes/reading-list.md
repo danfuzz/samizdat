@@ -54,6 +54,10 @@ Languages
   * The Icon language (success/failure-based control) &mdash;
     <http://en.wikipedia.org/wiki/Icon_%28programming_language%29>
 
+* IMP
+  * The IMP language (early language with parsing support) &mdash;
+    <https://en.wikipedia.org/wiki/IMP_programming_language>
+
 * Java
   * Jalapeño: a Compiler-Supported Java Virtual Machine for Servers &mdash;
     <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.21.7508>
@@ -148,6 +152,8 @@ Topics
     &mdash; <http://www.rano.org/bcompiler.html>
   * Cognitive dimensions of notations (Wikipedia article) &mdash;
     <https://en.wikipedia.org/wiki/Cognitive_dimensions_of_notations>
+  * How to Trick the Gullible into Learning a New Programming Language &mdash;
+    <http://raganwald.com/2014/05/13/how-to-trick-the-gullible-into-learning-a-new-language.html>
   * Out of the Tar Pit (approximately, a case for, and definition of,
     functional-relational programming) &mdash;
     <http://shaffner.us/cs/papers/tarpit.pdf>
