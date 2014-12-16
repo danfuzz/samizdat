@@ -2,9 +2,13 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+// Needed for `readdir_r` when using glibc.
+#define _XOPEN_SOURCE 700
+
 #include <dirent.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
 
 #include "io.h"
 #include "type/Cmp.h"
