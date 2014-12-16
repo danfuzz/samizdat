@@ -68,6 +68,14 @@ $ ./demo/run-all --runtime=tot --compiler=simple --clean-build
 ```
 
 
+TLDR Hello World
+----------------
+
+```
+note("Hello, World!")
+```
+
+
 More Info
 ---------
 
