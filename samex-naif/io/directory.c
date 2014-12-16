@@ -52,14 +52,17 @@ zvalue ioReadDirectory(zvalue path) {
             break;
         }
 
-        if ((entry.d_namlen < 3)
+        // Note: `dirent.d_namlen` is not a standard field.
+        zint nameSz = strlen(entry.d_name);
+
+        if ((nameSz < 3)
             && (   (strcmp(entry.d_name, ".") == 0)
                 || (strcmp(entry.d_name, "..") == 0))) {
             // Skip the entries for "this directory" and "parent directory."
             continue;
         }
 
-        zvalue name = stringFromUtf8(entry.d_namlen, entry.d_name);
+        zvalue name = stringFromUtf8(nameSz, entry.d_name);
 
         // Note: `dirent.d_type` is very conveniently defined in BSD, but it
         // is unfortunately *not* particularly standardized. Instead, we
