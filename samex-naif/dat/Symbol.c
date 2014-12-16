@@ -142,7 +142,7 @@ static int searchOrder(const void *key, const void *vptr) {
  */
 static zvalue findInternedSymbol(zstring name) {
     if (theNeedSort) {
-        mergesort(
+        qsort(
             theInternedSymbols, theInternedSymbolCount,
             sizeof(zvalue), sortOrder);
         theNeedSort = false;
