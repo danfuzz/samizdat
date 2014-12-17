@@ -25,7 +25,7 @@ char *utilCwd(void) {
     char buf[maxSize + 1];
 
     if (getcwd(buf, maxSize) == NULL) {
-        die("Trouble with getcwd(): %s", strerror(errno));
+        die("Trouble with `getcwd`: %s", strerror(errno));
     }
 
     return utilStrdup(buf);

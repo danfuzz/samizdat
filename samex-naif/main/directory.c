@@ -49,7 +49,7 @@ static char *getLink(const char *path) {
             // are really errors from the perspective of this function.
             return NULL;
         }
-        die("Trouble with lstat(): %s", strerror(errno));
+        die("Trouble with `lstat`: %s", strerror(errno));
     }
 
     off_t size = statBuf.st_size;
@@ -69,7 +69,7 @@ static char *resolveLinks(const char *path) {
     char *result = realpath(path, resultBuf);
 
     if (result == NULL) {
-        die("Trouble with realpath(): %s", strerror(errno));
+        die("Trouble with `realpath`: %s", strerror(errno));
     }
 
     return utilStrdup(resultBuf);
@@ -134,7 +134,7 @@ static char *resolveArgv0(const char *argv0) {
         if (stat(oneFile, &statBuf) != 0) {
             // File not found or invalid component aren't actually fatal here.
             if ((errno != ENOENT) && (errno != ENOTDIR)) {
-                die("Trouble with lstat(): %s", strerror(errno));
+                die("Trouble with `stat`: %s", strerror(errno));
             }
         } else {
             // Found it!

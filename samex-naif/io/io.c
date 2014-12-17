@@ -118,7 +118,7 @@ zvalue ioReadLink(zvalue path) {
             // are really errors from the perspective of this function.
             return NULL;
         }
-        die("Trouble with lstat(): %s", strerror(errno));
+        die("Trouble with `lstat`: %s", strerror(errno));
     }
 
     if (!S_ISLNK(statBuf.st_mode)) {
@@ -133,9 +133,9 @@ zvalue ioReadLink(zvalue path) {
     char linkStr[linkSz];
     ssize_t linkResult = readlink(str, linkStr, linkSz);
     if (linkResult < 0) {
-        die("Trouble with readlink(): %s", strerror(errno));
+        die("Trouble with `readlink`: %s", strerror(errno));
     } else if (linkResult != linkSz) {
-        die("Strange readlink() result: %ld", (long) linkResult);
+        die("Strange `readlink` result: %ld", (long) linkResult);
     }
 
     return stringFromUtf8(linkSz, linkStr);
