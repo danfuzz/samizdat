@@ -55,7 +55,7 @@ if (( optimize )); then
 fi
 
 COMPILE_C=("${CC[@]}" -std=c99 -g -c -I"${PROJECT_DIR}/include")
-LINK_BIN=("${CC[@]}" -g)
+LINK_BIN=("${CC[@]}" -g -ldl)
 
 # Rules to copy each library source file to the final lib directory.
 
