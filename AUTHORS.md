@@ -1,10 +1,18 @@
-Samizdat Authors
-================
+Authors and Acknowledgements
+============================
+
+Authors
+-------
 
 * Dan Bornstein:
   [Email](mailto:danfuzz@milk.com) /
   [Website](http://milk.com/) /
   [GitHub](https://github.com/danfuzz)
+
+### Externally-provided subprojects
+
+* Timsort: See [its AUTHORS file](samex-naif/util/timsort/AUTHORS).
+
 
 Acknowledgements
 ----------------
