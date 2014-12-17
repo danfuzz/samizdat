@@ -53,7 +53,7 @@ static zint rangesSize = 0;
  */
 static PageRange pageRangeFromAddressRange(void *startPtr, void *endPtr) {
     if (PAGE_MASK == 0) {
-        PAGE_SIZE = getpagesize();
+        PAGE_SIZE = sysconf(_SC_PAGESIZE);
         PAGE_MASK = ~(PAGE_SIZE - 1);
     }
 
@@ -99,7 +99,7 @@ static void addPages(void *start, void *end) {
 
     ranges[rangesSize] = range;
     rangesSize++;
-    mergesort(ranges, rangesSize, sizeof(PageRange), compareRanges);
+    qsort(ranges, rangesSize, sizeof(PageRange), compareRanges);
 
     // Combine adjacent ranges (if possible).
 

@@ -283,3 +283,7 @@ For example:
 #include <sys/types.h>
 #include <unistd.h>
 ```
+
+Similarly, if absolutely necessary, it is acceptable to define `_GNU_SOURCE`.
+As of this writing, the only known reason to do that is to guarantee proper
+access to the `*asprintf` library functions.

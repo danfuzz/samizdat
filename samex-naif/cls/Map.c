@@ -2,8 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include <stdlib.h>
-
 #include "type/Box.h"
 #include "type/Cmp.h"
 #include "type/Generator.h"
@@ -13,6 +11,7 @@
 #include "type/Record.h"
 #include "type/SymbolTable.h"
 #include "type/define.h"
+#include "util.h"
 
 #include "impl.h"
 
@@ -197,12 +196,12 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
         case 2: { return mapFrom2(mappings[0], mappings[1]); }
     }
 
-    // Sort the mappings using mergesort. Mergesort is stable and operates
-    // best on partially sorted data. As it happens, the input to this
-    // function is commonly partially sorted, and the stability matters
-    // due to this function's API.
+    // Sort the mappings using a stable sort. The stability matters due to
+    // this function's API. `utilSortStable` is also written to work well on
+    // partially-sorted data, and as it happens, the input to this function is
+    // commonly partially sorted.
 
-    mergesort(mappings, size, sizeof(zmapping), mappingOrder);
+    utilSortStable(mappings, size, sizeof(zmapping), mappingOrder);
 
     // Collapse away all but the last of any sequence of same-key mappings.
     // The last one is kept, as that is consistent with the exposed API.
