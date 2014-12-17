@@ -113,6 +113,8 @@ expectNe("ne 3", {true: 1}, {(true): 1});
 expectNe("ne 4", {false: 1}, {(false): 1});
 
 expectEq("cat", {10: 1, 20: 2, 30: 3}, {10: 1}.cat({30: 3}, {20: 2}));
+expectEq("cat", {10: 1, 20: 2}, {10: 10}.cat({10: 1, 20: 2}));
+expectEq("cat", {10: 1, 20: 2}, {10: 10}.cat({10: 100, 20: 2, 10: 1}));
 
 ## Symbol table conversion.
 expectEq("symtab 1", {},             {}.cat(@{}));
