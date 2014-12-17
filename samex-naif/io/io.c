@@ -107,11 +107,13 @@ zvalue ioReadFileUtf8(zvalue path) {
 // Documented in header.
 zvalue ioReadLink(zvalue path) {
     ioCheckPath(path);
+
     zint sz = utf8SizeFromString(path);
     char str[sz + 1];
     utf8FromString(sz + 1, str, path);
 
     struct stat statBuf;
+
     if (lstat(str, &statBuf) != 0) {
         if ((errno == ENOENT) || (errno == ENOTDIR)) {
             // File not found or invalid component, neither of which
@@ -119,9 +121,7 @@ zvalue ioReadLink(zvalue path) {
             return NULL;
         }
         die("Trouble with `lstat`: %s", strerror(errno));
-    }
-
-    if (!S_ISLNK(statBuf.st_mode)) {
+    } else if (!S_ISLNK(statBuf.st_mode)) {
         // Not a symlink.
         return NULL;
     }

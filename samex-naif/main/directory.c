@@ -43,6 +43,7 @@ static const char *PROC_SELF_FILES[] = {
  */
 static char *getLink(const char *path) {
     struct stat statBuf;
+
     if (lstat(path, &statBuf) != 0) {
         if ((errno == ENOENT) || (errno == ENOTDIR)) {
             // File not found or invalid component, neither of which
@@ -50,14 +51,25 @@ static char *getLink(const char *path) {
             return NULL;
         }
         die("Trouble with `lstat`: %s", strerror(errno));
+    } else if (!S_ISLNK(statBuf.st_mode)) {
+        // Not a symlink.
+        return NULL;
     }
 
-    off_t size = statBuf.st_size;
-    char *result = utilAlloc(size + 1);
+    // The required link buffer size is determined per the (oblique)
+    // recommendation in the Posix docs for `readlink`.
 
-    readlink(path, result, size);
-    result[size] = '\0';
+    off_t linkSz = statBuf.st_size;
+    char *result = utilAlloc(linkSz + 1);
+    ssize_t linkResult = readlink(path, result, linkSz);
 
+    if (linkResult < 0) {
+        die("Trouble with `readlink`: %s", strerror(errno));
+    } else if (linkResult != linkSz) {
+        die("Strange `readlink` result: %ld", (long) linkResult);
+    }
+
+    result[linkSz] = '\0';
     return result;
 }
 
