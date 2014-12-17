@@ -514,10 +514,10 @@ Examples:
 * `keys` &mdash; List of keys to be bound.
 * `value` &mdash; Value to bind to.
 
-Used as an argument to `makeMapExpression` (never directly executed).
-This represents one mapping inside a map expression. Elements of `keys`
-are treated with respect to interpolation just like arguments in a
-`call` node.
+Used as an argument to `makeMapExpression` or `makeSymbolTableExpression`
+(never directly executed). This represents one mapping inside a map or
+map-like constructor expression. Elements of `keys` are treated with respect
+to interpolation just like arguments in a `call` node.
 
 #### `methodId` &mdash; `@methodId{class?: expression, name: expression}`
 
