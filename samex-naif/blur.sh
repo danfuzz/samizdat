@@ -55,7 +55,8 @@ if (( optimize )); then
 fi
 
 COMPILE_C=("${CC[@]}" -std=c99 -g -c -I"${PROJECT_DIR}/include")
-LINK_BIN=("${CC[@]}" -g -ldl)
+LINK_BIN=("${CC[@]}" -g)
+LINK_BIN_SUFFIX=(-ldl)
 
 # Rules to copy each library source file to the final lib directory.
 
@@ -114,7 +115,8 @@ rule body \
     --req="${FINAL_LIB}" \
     "${C_OBJECTS[@]/#/--req=}" \
     --msg="Link: ${FINAL_EXE}" \
-    --cmd="$(quote "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}")"
+    --cmd="$(quote "${LINK_BIN[@]}" -o "${FINAL_EXE}" "${C_OBJECTS[@]}" \
+        ${LINK_BIN_SUFFIX[@]})"
 
 # Rule to clean stuff
 
