@@ -56,10 +56,12 @@ static char *getLink(const char *path) {
         return NULL;
     }
 
-    // The required link buffer size is determined per the (oblique)
-    // recommendation in the Posix docs for `readlink`.
+    // If `st_size` is non-zero, then it can safely be used as the size of
+    // the link data. However, on Linux some valid links (particularly, those
+    // in `/proc/`) will have `st_size` reported as `0`. In such cases, we
+    // use an ample but fixed-size buffer, and hope for the best.
 
-    off_t linkSz = statBuf.st_size;
+    size_t linkSz = (statBuf.st_size != 0) ? statBuf.st_size : 500;
     char *result = utilAlloc(linkSz + 1);
     ssize_t linkResult = readlink(path, result, linkSz);
 

@@ -126,10 +126,12 @@ zvalue ioReadLink(zvalue path) {
         return NULL;
     }
 
-    // The required link buffer size is determined per the (oblique)
-    // recommendation in the Posix docs for `readlink`.
+    // If `st_size` is non-zero, then it can safely be used as the size of
+    // the link data. However, on Linux some valid links (particularly, those
+    // in `/proc/`) will have `st_size` reported as `0`. In such cases, we
+    // use an ample but fixed-size buffer, and hope for the best.
 
-    size_t linkSz = statBuf.st_size;
+    size_t linkSz = (statBuf.st_size != 0) ? statBuf.st_size : 500;
     char linkStr[linkSz];
     ssize_t linkResult = readlink(str, linkStr, linkSz);
     if (linkResult < 0) {
