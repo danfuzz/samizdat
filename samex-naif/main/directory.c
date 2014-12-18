@@ -6,7 +6,7 @@
 // Figures out the directory where the executable resides.
 //
 
-// Required for `lstat()` and `readlink()` when using glibc.
+// Required for `realpath` when using glibc.
 #define _XOPEN_SOURCE 700
 
 #include <errno.h>
@@ -38,30 +38,6 @@ static const char *PROC_SELF_FILES[] = {
 };
 
 /**
- * Reads and returns the contents of a symlink, if it in fact exists.
- * Otherwise returns `NULL`.
- */
-static char *getLink(const char *path) {
-    struct stat statBuf;
-    if (lstat(path, &statBuf) != 0) {
-        if ((errno == ENOENT) || (errno == ENOTDIR)) {
-            // File not found or invalid component, neither of which
-            // are really errors from the perspective of this function.
-            return NULL;
-        }
-        die("Trouble with lstat(): %s", strerror(errno));
-    }
-
-    off_t size = statBuf.st_size;
-    char *result = utilAlloc(size + 1);
-
-    readlink(path, result, size);
-    result[size] = '\0';
-
-    return result;
-}
-
-/**
  * Resolves links in the given path, returning an absolute path.
  */
 static char *resolveLinks(const char *path) {
@@ -69,7 +45,7 @@ static char *resolveLinks(const char *path) {
     char *result = realpath(path, resultBuf);
 
     if (result == NULL) {
-        die("Trouble with realpath(): %s", strerror(errno));
+        die("Trouble with `realpath`: %s", strerror(errno));
     }
 
     return utilStrdup(resultBuf);
@@ -134,7 +110,7 @@ static char *resolveArgv0(const char *argv0) {
         if (stat(oneFile, &statBuf) != 0) {
             // File not found or invalid component aren't actually fatal here.
             if ((errno != ENOENT) && (errno != ENOTDIR)) {
-                die("Trouble with lstat(): %s", strerror(errno));
+                die("Trouble with `stat`: %s", strerror(errno));
             }
         } else {
             // Found it!
@@ -158,7 +134,7 @@ char *getProgramDirectory(const char *argv0, const char *suffix) {
     char *execPath = NULL;
 
     for (int i = 0; PROC_SELF_FILES[i] != NULL; i++) {
-        execPath = getLink(PROC_SELF_FILES[i]);
+        execPath = utilReadLink(PROC_SELF_FILES[i]);
         if (execPath != NULL) {
             break;
         }

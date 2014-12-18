@@ -163,6 +163,15 @@ char *utf8EncodeOne(char *result, zint ch);
  */
 char *utilCwd(void);
 
+/**
+ * Reads and returns the contents of a symlink, if it in fact exists.
+ * Otherwise returns `NULL`. Will die with an error if there is a problem
+ * other than a non-existent file.
+ *
+ * Non-`NULL` return values are allocated and must be freed with `utilFree()`.
+ */
+char *utilReadLink(const char *path);
+
 
 //
 // Miscellaneous Declarations
