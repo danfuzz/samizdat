@@ -112,35 +112,15 @@ zvalue ioReadLink(zvalue path) {
     char str[sz + 1];
     utf8FromString(sz + 1, str, path);
 
-    struct stat statBuf;
+    char *resultStr = utilReadLink(str);
 
-    if (lstat(str, &statBuf) != 0) {
-        if ((errno == ENOENT) || (errno == ENOTDIR)) {
-            // File not found or invalid component, neither of which
-            // are really errors from the perspective of this function.
-            return NULL;
-        }
-        die("Trouble with `lstat`: %s", strerror(errno));
-    } else if (!S_ISLNK(statBuf.st_mode)) {
-        // Not a symlink.
+    if (resultStr == NULL) {
         return NULL;
+    } else {
+        zvalue result = stringFromUtf8(-1, resultStr);
+        utilFree(resultStr);
+        return result;
     }
-
-    // If `st_size` is non-zero, then it can safely be used as the size of
-    // the link data. However, on Linux some valid links (particularly, those
-    // in `/proc/`) will have `st_size` reported as `0`. In such cases, we
-    // use an ample but fixed-size buffer, and hope for the best.
-
-    size_t linkSz = (statBuf.st_size != 0) ? statBuf.st_size : 500;
-    char linkStr[linkSz];
-    ssize_t linkResult = readlink(str, linkStr, linkSz);
-    if (linkResult < 0) {
-        die("Trouble with `readlink`: %s", strerror(errno));
-    } else if (linkResult != linkSz) {
-        die("Strange `readlink` result: %ld", (long) linkResult);
-    }
-
-    return stringFromUtf8(linkSz, linkStr);
 }
 
 // Documented in header.
