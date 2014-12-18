@@ -60,16 +60,17 @@ char *utilReadLink(const char *path) {
     // in `/proc/`) will have `st_size` reported as `0`. In such cases, we
     // use an ample but fixed-size buffer, and hope for the best.
 
-    size_t linkSz = (statBuf.st_size != 0) ? statBuf.st_size : 500;
+    bool assumeSize = (statBuf.st_size == 0);
+    size_t linkSz = assumeSize ? 500 : statBuf.st_size;
     char *result = utilAlloc(linkSz + 1);
-    ssize_t linkResult = readlink(path, result, linkSz);
+    ssize_t resultSz = readlink(path, result, linkSz);
 
-    if (linkResult < 0) {
+    if (resultSz < 0) {
         die("Trouble with `readlink`: %s", strerror(errno));
-    } else if (linkResult != linkSz) {
-        die("Strange `readlink` result: %ld", (long) linkResult);
+    } else if (assumeSize ? (resultSz > linkSz) : (resultSz != linkSz)) {
+        die("Strange `readlink` result: %ld", (long) resultSz);
     }
 
-    result[linkSz] = '\0';
+    result[resultSz] = '\0';
     return result;
 }
