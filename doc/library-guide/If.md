@@ -135,7 +135,7 @@ class.maybeValue(function) {
 #### `class.not(testFunction, notFunction) -> . | void`
 
 This is identical to `.is()`, except that the `isFunction` argument is
-omitted.
+omitted and the `notFunction` argument is required (not optional).
 
 **Syntax Note:** Used in the translation of `do` and `!expression` forms.
 
