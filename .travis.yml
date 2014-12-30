@@ -1,20 +1,20 @@
 language: c
 
 compiler:
-    - clang
-    - gcc
+  - clang
+  - gcc
 
 script: ./demo/run-all --runtime=tot --compiler=simple --clean-build --time
 
 os:
-    - linux
-    - osx
+  - linux
+  - osx
 
 matrix:
-    # No notifications for Linux until it's believed-working.
-    allow_failures:
-        - os: linux
-    # Don't bother with Gcc on OS X.
-    exclude:
-        - os: osx
-          compiler: gcc
+  # No notifications for Linux until it's believed-working.
+  allow_failures:
+    - os: linux
+  # Don't bother with Gcc on OS X.
+  exclude:
+    - os: osx
+      compiler: gcc
