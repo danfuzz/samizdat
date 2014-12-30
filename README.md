@@ -11,6 +11,8 @@ This project is an incomplete work-in-progress.
   particularly embarrassing.
 * Nearly everything is subject to change.
 
+[![Build Status](https://travis-ci.org/danfuzz/samizdat.svg?branch=master)](https://travis-ci.org/danfuzz/samizdat)
+
 - - - - - - - - - -
 
 Samizdat
