@@ -28,6 +28,9 @@ matrix:
     - os: osx
       compiler: gcc
 
+# This tells Travis that we want to use their new Docker-based system.
+sudo: false
+
 
 #
 # Branches to build
