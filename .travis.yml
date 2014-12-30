@@ -1,3 +1,7 @@
+#
+# Project information
+#
+
 language: c
 
 compiler:
@@ -5,6 +9,11 @@ compiler:
   - gcc
 
 script: ./demo/run-all --runtime=tot --compiler=simple --clean-build --time
+
+
+#
+# Configurations to build
+#
 
 os:
   - linux
@@ -18,3 +27,12 @@ matrix:
   exclude:
     - os: osx
       compiler: gcc
+
+
+#
+# Branches to build
+#
+
+branches:
+  only:
+    - master
