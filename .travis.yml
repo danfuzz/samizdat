@@ -10,7 +10,11 @@ os:
     - linux
     - osx
 
-# No notifications for Linux until it's believed-working.
 matrix:
+    # No notifications for Linux until it's believed-working.
     allow_failures:
         - os: linux
+    # Don't bother with Gcc on OS X.
+    exclude:
+        - os: osx
+          compiler: gcc
