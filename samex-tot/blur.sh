@@ -17,6 +17,7 @@ fi
 # Main script
 #
 
+echo 1>&2 '=== blur-tot 1'
 OUT="${BASE_DIR}/out"
 FINAL="${OUT}/final"
 
@@ -69,6 +70,7 @@ EXTRA_FILES=(
 # sources.
 C_SOURCE_FILES=("${SOURCE_FILES[@]/%.sam/.c}")         # Change suffix.
 C_SOURCE_FILES=("${C_SOURCE_FILES[@]/#/${INTERMED}/}") # Add directory prefix.
+echo 1>&2 '=== blur-tot 100'
 
 
 # Sub-rules for file copying
