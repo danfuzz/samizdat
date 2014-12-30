@@ -44,18 +44,37 @@ FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 FINAL_LIB="${FINAL}/lib/${PROJECT_NAME}"
 FINAL_EXE="${FINAL_LIB}/${binName}"
 
+# Set `$CC` to `"cc"` if it's not already set.
+if [[ ${CC} == '' ]]; then
+    CC='cc'
+fi
+
+# Identify Clang vs. Gcc.
+WHAT_CC="$(
+    "${CC}" --version | awk '
+    BEGIN   { result = "unknown"   }
+    /clang/ { result = "clang"     }
+    /gcc/   { result = "gcc"       }
+    END     { printf("%s", result) }
+    ')"
+
+if [[ ${WHAT_CC} == 'unknown' ]]; then
+    echo 1>&2 "Sorry: Cannot use compiler: ${WHAT_CC}"
+    exit 1
+fi
+
 if (( profile )); then
-    CC=(cc -pg)
+    CC_PREFIX=("${CC}" -pg)
 else
-    CC=(cc)
+    CC_PREFIX=("${CC}")
 fi
 
 if (( optimize )); then
-    CC=(${CC[@]} -O3)
+    CC_PREFIX=("${CC_PREFIX[@]}" -O3)
 fi
 
-COMPILE_C=("${CC[@]}" -std=c99 -g -c -I"${PROJECT_DIR}/include")
-LINK_BIN=("${CC[@]}" -g)
+COMPILE_C=("${CC_PREFIX[@]}" -std=c99 -g -c -I"${PROJECT_DIR}/include")
+LINK_BIN=("${CC_PREFIX[@]}" -g)
 LINK_BIN_SUFFIX=(-ldl)
 
 # Rules to copy each library source file to the final lib directory.
