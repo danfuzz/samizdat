@@ -129,16 +129,19 @@ if (( build )); then
     fi
 fi
 
+echo '=== samex 1'
 runtimeOpt=()
 if [[ ${runtimeName} != '' ]]; then
     runtimeOpt=(--runtime="${runtimeName}")
 fi
+echo '=== samex 2'
 
 name="$("${baseDir}/helper/find-samex" "${runtimeOpt[@]}" --bin)"
 if [[ $? != 0 ]]; then
     exit 1
 fi
 
+echo '=== samex 3'
 cmd=("${name}" "$@")
 
 if (( timeRun )); then
