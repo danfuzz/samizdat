@@ -1,0 +1,5 @@
+language: c
+compiler:
+    - clang
+    - gcc
+script: ./demo/run-all --runtime=tot --compiler=simple --clean-build --time
