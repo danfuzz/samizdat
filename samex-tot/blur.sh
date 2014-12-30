@@ -32,7 +32,7 @@ MODULE_NAMES=(
     $(
         cd "${LIB_SOURCE_DIR}/modules"
         find . \
-            -depth 1 \
+            -maxdepth 1 -mindepth 1 \
             '(' \
                 '(' -type d -print ')' -o \
                 '(' -type f -name '*.saminfo' -print ')' \
