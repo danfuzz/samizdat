@@ -87,9 +87,10 @@ fi
 # Identify Clang vs. Gcc.
 WHAT_CC="$(
     "${CC}" --version | awk '
-    /clang/ { print "clang"; exit 0; }
-    /gcc/   { print "gcc";   exit 0; }
-    END     { print "unknown" }
+    BEGIN   { result = "unknown"   }
+    /clang/ { result = "clang"     }
+    /gcc/   { result = "gcc"       }
+    END     { printf("%s", result) }
     ')"
 
 CC_PREFIX=("${CC}" -g)
