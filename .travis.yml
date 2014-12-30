@@ -38,4 +38,7 @@ sudo: false
 
 branches:
   only:
+    # We care deeply about `master`.
     - master
+    # So we can get Travis to try things out without polluting `master`.
+    - /^travis-.*$/
