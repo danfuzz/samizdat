@@ -28,6 +28,7 @@ FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 LIB_SOURCE_DIR='../samlib-naif'
 
 # Names of all the modules defined in the core library.
+echo 1>&2 '=== things go wrong here.'
 MODULE_NAMES=(
     $(
         cd "${LIB_SOURCE_DIR}/modules"
@@ -46,6 +47,7 @@ MODULE_NAMES=(
             print name;
         }'
     ))
+echo 1>&2 '=== END things go wrong here.'
 
 # Names of all the source files in the core library.
 SOURCE_FILES=(
