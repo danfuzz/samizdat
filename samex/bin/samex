@@ -9,7 +9,6 @@
 # General setup
 #
 
-echo '=== samex a'
 # Set `progName` to the program name, `progDir` to its directory, and `baseDir`
 # to `progDir`'s directory. Follows symlinks.
 function init-prog {
@@ -52,7 +51,6 @@ timeRun=0
 # Whether to profile the run.
 profileRun=0
 
-echo '=== samex b'
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
@@ -99,7 +97,6 @@ unset opt
 
 # Build the binary, if requested.
 
-echo '=== samex c'
 if (( build )); then
     if [[ ${runtimeName} == '' ]]; then
         echo 'No --runtime specified.' 1>&2
@@ -123,30 +120,25 @@ if (( build )); then
         rm -rf "${sourceDir}/out" || exit 1
     fi
 
-    echo '=== samex d'
     "${sourceDir}/blur/blur" \
         --in-dir="${projectDir}" "${buildOpts[@]}" \
         || exit 1
-    echo '=== samex e'
 
     if (( justBuild )); then
         exit
     fi
 fi
 
-echo '=== samex 1'
 runtimeOpt=()
 if [[ ${runtimeName} != '' ]]; then
     runtimeOpt=(--runtime="${runtimeName}")
 fi
-echo '=== samex 2'
 
 name="$("${baseDir}/helper/find-samex" "${runtimeOpt[@]}" --bin)"
 if [[ $? != 0 ]]; then
     exit 1
 fi
 
-echo '=== samex 3'
 cmd=("${name}" "$@")
 
 if (( timeRun )); then

@@ -67,10 +67,8 @@ echo '# Building samex-* (runtime)...'
 echo '#'
 echo ''
 
-echo '=== build-for 1'
 "${baseDir}/out/final/bin/samex" --just-build "${buildOpts[@]}" \
     || exit 1
-echo '=== build-for 2'
 
 if (( buildCompiler )); then
     echo ''

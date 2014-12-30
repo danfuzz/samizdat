@@ -71,7 +71,6 @@ unset opt
 # Main script
 #
 
-echo '=== run-all 1'
 # Start timing, if asked.
 
 if (( timeRun )); then
@@ -92,9 +91,7 @@ fi
 
 # Find all the demo directories.
 
-echo '=== run-all 2'
 allNames=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
-echo '=== run-all 3'
 
 # Run each demo.
 
