@@ -28,6 +28,7 @@ FINAL_INCLUDE="${FINAL}/include/${PROJECT_NAME}"
 
 LIB_SOURCE_DIR='../samlib-naif'
 
+echo 1>&2 '=== blur-tot 2'
 # Names of all the modules defined in the core library.
 MODULE_NAMES=(
     $(
@@ -48,6 +49,7 @@ MODULE_NAMES=(
         }'
     ))
 
+echo 1>&2 '=== blur-tot 3'
 # Names of all the source files in the core library.
 SOURCE_FILES=(
     $(cd "${LIB_SOURCE_DIR}"; find . \
@@ -59,6 +61,7 @@ SOURCE_FILES=(
 # Files that are just copied as-is to the final lib directory. This is
 # everything in the library source directory not covered by `SOURCE_FILES`,
 # above.
+echo 1>&2 '=== blur-tot 4'
 EXTRA_FILES=(
     $(cd "${LIB_SOURCE_DIR}"; find . \
         -type f \
