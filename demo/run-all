@@ -91,7 +91,9 @@ fi
 
 # Find all the demo directories.
 
-allNames=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
+allNames=($(
+    find "${progDir}" -mindepth 1 -maxdepth 1 -type d -exec basename '{}' ';'
+))
 
 # Run each demo.
 
