@@ -84,36 +84,38 @@ if [[ ${CC} == '' ]]; then
     CC='cc'
 fi
 
-# Identify Clang vs. Gcc.
-WHAT_CC="$(
-    "${CC}" --version | awk '
-    BEGIN          { result = "unknown"   }
-    /clang/        { result = "clang"     }
-    /GCC/ || /gcc/ { result = "gcc"       }
-    END            { printf("%s", result) }
-    ')"
+# Figure out what OS we have, and set up build commands accordingly. See the
+# build code in <https://github.com/danfuzz/dl-example> for details about all
+# the compiler options.
 
-CC_PREFIX=("${CC}" -g)
+if [[ ${OSTYPE} == '' ]]; then
+    OSTYPE="$(uname)"
+fi
 
-case "${WHAT_CC}" in
-    (clang)
-        COMPILE_LIB=(
-            "${CC_PREFIX[@]}"
-                -dynamiclib -undefined dynamic_lookup
-                -I"${includeDir}"
-        )
-        ;;
-    (gcc)
-        COMPILE_LIB=(
-            "${CC_PREFIX[@]}"
-                -fPIC -shared -Ur
-                -I"${includeDir}"
-        )
-        ;;
+case "${OSTYPE}" in
+    (linux* | Linux*)
+        WHAT_OS='linux'
+    ;;
+    (darwin* | Darwin* | *bsd* | *BSD*)
+        WHAT_OS='bsd'
+    ;;
     (*)
-        echo 1>&2 "Sorry: Cannot use compiler: ${WHAT_CC}"
+        echo 1>&2 "Sorry: Unknown OS type: ${OSTYPE}"
         exit 1
-        ;;
+    ;;
 esac
 
-"${COMPILE_LIB[@]}" -o "${outputFile}" "$@"
+COMPILE_CMD=("${CC}" -g -I"${includeDir}")
+
+case "${WHAT_OS}" in
+    (bsd)
+        COMPILE_CMD+=(-dynamiclib -undefined dynamic_lookup)
+    ;;
+    (linux)
+        COMPILE_CMD+=(-fPIC -shared -Ur)
+    ;;
+esac
+
+# Do the compiling.
+
+"${COMPILE_CMD[@]}" -o "${outputFile}" "$@"
