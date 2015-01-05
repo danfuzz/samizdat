@@ -77,6 +77,10 @@ COMPILE_C=("${CC_PREFIX[@]}" -std=c99 -g -c -I"${PROJECT_DIR}/include")
 LINK_BIN=("${CC_PREFIX[@]}" -g)
 LINK_BIN_SUFFIX=(-ldl)
 
+if [[ ${WHAT_CC} == 'gcc' ]]; then
+    LINK_BIN=("${LINK_BIN[@]}" -rdynamic)
+fi
+
 # Rules to copy each library source file to the final lib directory.
 
 LIB_SOURCE_BASE="${BASE_DIR}/samlib-naif"
