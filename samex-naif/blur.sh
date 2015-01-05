@@ -52,10 +52,10 @@ fi
 # Identify Clang vs. Gcc.
 WHAT_CC="$(
     "${CC}" --version | awk '
-    BEGIN   { result = "unknown"   }
-    /clang/ { result = "clang"     }
-    /GCC/   { result = "gcc"       }
-    END     { printf("%s", result) }
+    BEGIN          { result = "unknown"   }
+    /clang/        { result = "clang"     }
+    /GCC/ || /gcc/ { result = "gcc"       }
+    END            { printf("%s", result) }
     ')"
 
 if [[ ${WHAT_CC} == 'unknown' ]]; then
