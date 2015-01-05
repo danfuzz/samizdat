@@ -54,7 +54,7 @@ WHAT_CC="$(
     "${CC}" --version | awk '
     BEGIN   { result = "unknown"   }
     /clang/ { result = "clang"     }
-    /gcc/   { result = "gcc"       }
+    /GCC/   { result = "gcc"       }
     END     { printf("%s", result) }
     ')"
 
