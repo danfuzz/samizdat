@@ -106,7 +106,7 @@ case "${WHAT_CC}" in
     (gcc)
         COMPILE_LIB=(
             "${CC_PREFIX[@]}"
-                -shared -Ur
+                -fPIC -shared -Ur
                 -I"${includeDir}"
         )
         ;;
