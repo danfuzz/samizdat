@@ -49,36 +49,45 @@ if [[ ${CC} == '' ]]; then
     CC='cc'
 fi
 
-# Identify Clang vs. Gcc.
-WHAT_CC="$(
-    "${CC}" --version | awk '
-    BEGIN          { result = "unknown"   }
-    /clang/        { result = "clang"     }
-    /GCC/ || /gcc/ { result = "gcc"       }
-    END            { printf("%s", result) }
-    ')"
+# Figure out what OS we have, and set up build commands accordingly. See the
+# build code in <https://github.com/danfuzz/dl-example> for details about all
+# the compiler options.
 
-if [[ ${WHAT_CC} == 'unknown' ]]; then
-    echo 1>&2 "Sorry: Cannot use compiler: ${WHAT_CC}"
-    exit 1
+if [[ ${OSTYPE} == '' ]]; then
+    OSTYPE="$(uname)"
 fi
 
+case "${OSTYPE}" in
+    (linux* | Linux*)
+        WHAT_OS='linux'
+    ;;
+    (darwin* | Darwin* | *bsd* | *BSD*)
+        WHAT_OS='bsd'
+    ;;
+    (*)
+        echo 1>&2 "Sorry: Unknown OS type: ${OSTYPE}"
+        exit 1
+    ;;
+esac
+
+CC_PREFIX=("${CC}")
+
 if (( profile )); then
-    CC_PREFIX=("${CC}" -pg)
-else
-    CC_PREFIX=("${CC}")
+    CC_PREFIX+=(-pg)
 fi
 
 if (( optimize )); then
-    CC_PREFIX=("${CC_PREFIX[@]}" -O3)
+    CC_PREFIX+=(-O3)
 fi
 
 COMPILE_C=("${CC_PREFIX[@]}" -std=c99 -g -c -I"${PROJECT_DIR}/include")
-LINK_BIN=("${CC_PREFIX[@]}" -g)
-LINK_BIN_SUFFIX=(-ldl)
 
-if [[ ${WHAT_CC} == 'gcc' ]]; then
-    LINK_BIN=("${LINK_BIN[@]}" -rdynamic)
+LINK_BIN=("${CC_PREFIX[@]}" -g)
+LINK_BIN_SUFFIX=()
+
+if [[ ${WHAT_OS} == 'linux' ]]; then
+    LINK_BIN+=(-rdynamic)
+    LINK_BIN_SUFFIX+=(-ldl)
 fi
 
 # Rules to copy each library source file to the final lib directory.
