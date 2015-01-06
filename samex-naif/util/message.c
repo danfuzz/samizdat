@@ -40,15 +40,15 @@ void die(const char *format, ...) {
 
     va_start(rest, format);
     char *str = utilVFormat(format, rest);
-    va_end(rest);
-
-    fprintf(stderr, "%s\n", str);
+    fputs(str, stderr);
+    fputs("\n", stderr);
     utilFree(str);
+    va_end(rest);
 
     // This check prevents infinite recursion in cases where the stack trace
     // output ends up calling `die`.
     if (currentlyDying) {
-        fprintf(stderr, "    ...while in the middle of dying. Eek!");
+        fputs("    ...while in the middle of dying. Eek!\n", stderr);
     } else {
         currentlyDying = true;
 
@@ -58,7 +58,9 @@ void die(const char *format, ...) {
         while ((stackPtr != NULL) && (stackPtr->magic == UTIL_GIBLET_MAGIC)) {
             if (stackPtr->function != NULL) {
                 char *message = stackPtr->function(stackPtr->state);
-                fprintf(stderr, "    at %s\n", message);
+                fputs("    at ", stderr);
+                fputs(message, stderr);
+                fputs("\n", stderr);
             }
             stackPtr = stackPtr->pop;
         }
@@ -72,11 +74,21 @@ void note(const char *format, ...) {
     va_list rest;
 
     va_start(rest, format);
-    char *str = utilVFormat(format, rest);
+
+    if (strcmp(format, "%s") == 0) {
+        // Avoid the parsing overhead for a simple literal string. This is how
+        // this function gets called from the in-language `note()` function.
+        const char *str = va_arg(rest, const char *);
+        fputs(str, stderr);
+    } else {
+        char *str = utilVFormat(format, rest);
+        fputs(str, stderr);
+        utilFree(str);
+    }
+
     va_end(rest);
 
-    fprintf(stderr, "%s\n", str);
-    utilFree(str);
+    fputs("\n", stderr);
 }
 
 // Documented in header.
