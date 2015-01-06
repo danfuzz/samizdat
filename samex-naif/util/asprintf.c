@@ -17,7 +17,7 @@
 //
 
 // Documented in header.
-int utilAsprintf(char **ret, const char *format, ...) {
+int xutilAsprintfx(char **ret, const char *format, ...) {
     va_list rest;
 
     va_start(rest, format);
