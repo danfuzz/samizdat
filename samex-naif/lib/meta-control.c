@@ -43,14 +43,14 @@ static char *unifiedString(zarray args, const char *ifNone) {
 // Documented in spec.
 FUN_IMPL_DECL(die) {
     char *str = unifiedString(args, "Alas.");
-    xdiex("%s", str);
+    die("%s", str);
 }
 
 // Documented in spec.
 FUN_IMPL_DECL(note) {
     char *str = unifiedString(args, NULL);
 
-    xnotex("%s", str);
+    note("%s", str);
     utilFree(str);
 
     return NULL;
