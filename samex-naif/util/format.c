@@ -148,6 +148,14 @@ char *utilVFormat(const char *format, va_list rest) {
                     intermed = freeMe;
                     break;
                 }
+                case 'p': {
+                    void *ptr = va_arg(rest, void *);
+                    if (asprintf(&freeMe, "%p", ptr) < 0) {
+                        die("Failure in `asprintf`.");
+                    }
+                    intermed = freeMe;
+                    break;
+                }
             }
         }
 

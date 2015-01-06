@@ -119,6 +119,7 @@ void xdiex(const char *format, ...)
  * Directives:
  * * `%` -- Literal `%`.
  * * `d` -- The given `zint` argument as a decimal.
+ * * `p` -- The given `void *` argument as a pointer address.
  * * `s` -- The given string argument (type `const char *`).
  *
  * Modifier prefixes:
