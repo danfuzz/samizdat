@@ -128,12 +128,6 @@ char *utilFormat(const char *format, ...);
 void *utilAlloc(zint size);
 
 /**
- * Exactly like `asprintf`, except that `utilFree` should be used to free
- * the result.
- */
-int xutilAsprintfx(char **ret, const char *format, ...);
-
-/**
  * Frees memory previously allocated by `utilAlloc`.
  */
 void utilFree(void *memory);
