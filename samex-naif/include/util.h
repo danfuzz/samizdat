@@ -92,6 +92,33 @@ void xdiex(const char *format, ...)
 
 
 //
+// String Formatting Declarations
+//
+
+/**
+ * Returns a freshly-allocated string constructed based on the given format
+ * string and additional arguments. This is similar to `asprintf()`, except
+ * that the return value is the allocated string (not a size-or-error) and
+ * directives are bespoke.
+ *
+ * Directives:
+ * * `%` -- Literal `%`.
+ * * `d` -- The given `zint` argument as a decimal.
+ * * `s` -- The given string argument (type `const char *`).
+ *
+ * Modifier prefixes:
+ * * `0`..`9` -- Indicate field width. An initial `0` means that padding
+ *     should be with zeros instead of spaces.
+ *
+ * **Note:** The impetus for this function was that there is arguably no saner
+ * way to allow for formatting of `zint`s. `zint` is defined to be 64 bits,
+ * and there is no fixed directive string (per spec) which means "64-bit
+ * integer." That is, `PRId64` is *way too ugly* to use in regular code.
+ */
+char *utilFormat(const char *format, ...);
+
+
+//
 // Allocation Declarations
 //
 
