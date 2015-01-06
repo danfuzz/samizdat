@@ -1,12 +1,12 @@
+# Copyright 2013-2014 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
 #
 # Project information
 #
 
 language: c
-
-compiler:
-  - clang
-  - gcc
 
 script: ./demo/run-all --runtime=tot --compiler=simple --clean-build --time
 
@@ -19,10 +19,15 @@ os:
   - linux
   - osx
 
+compiler:
+  - clang
+  - gcc
+
 matrix:
-  # No notifications for Linux until it's believed-working.
-  allow_failures:
-    - os: linux
+  # Uncomment this to disable Linux if/when it is known-broken.
+  # allow_failures:
+  #   - os: linux
+
   # Don't bother with Gcc on OS X.
   exclude:
     - os: osx
@@ -40,5 +45,6 @@ branches:
   only:
     # We care deeply about `master`.
     - master
+
     # So we can get Travis to try things out without polluting `master`.
     - /^travis-.*$/
