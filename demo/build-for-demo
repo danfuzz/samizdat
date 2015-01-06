@@ -30,17 +30,24 @@ init-prog
 # Argument parsing
 #
 
+# Whether to clean before building.
+clean=0
+
 # Build options to pass to `samex`.
 buildOpts=()
 
 # Whether to build the compiler.
 buildCompiler=0
 
-# We just pass options through as-is, except that we treat `--compiler=*`
-# as indicating that the compiler should also be built.
+# We just pass options through as-is, except:
+# * We take `--compiler=*` to mean the compiler should also be built.
+# * We turn `--clean-build` into `--build` and do the cleaning in this script.
 for opt in "$@"; do
     if [[ ${opt} =~ ^--compiler=(.*) ]]; then
         buildCompiler=1
+    elif [[ ${opt} = --clean-build ]]; then
+        clean=1
+        buildOpts+=(--build)
     else
         buildOpts+=("${opt}")
     fi
@@ -53,6 +60,18 @@ unset opt
 #
 
 echo '########## PRE-RUN BUILDS'
+echo '#'
+
+if (( clean )); then
+    echo ''
+    echo '#'
+    echo '# Cleaning...'
+    echo '#'
+    rm -rf "${baseDir}/out" \
+        || exit 1
+fi
+
+echo ''
 echo '#'
 echo '# Building samex (wrappers)...'
 echo '#'
