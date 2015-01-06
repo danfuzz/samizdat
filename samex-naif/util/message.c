@@ -35,6 +35,51 @@ static bool currentlyDying = false;
 //
 
 // Documented in header.
+void die(const char *format, ...) {
+    va_list rest;
+
+    va_start(rest, format);
+    char *str = utilVFormat(format, rest);
+    va_end(rest);
+
+    fprintf(stderr, "%s\n", str);
+    utilFree(str);
+
+    // This check prevents infinite recursion in cases where the stack trace
+    // output ends up calling `die`.
+    if (currentlyDying) {
+        fprintf(stderr, "    ...while in the middle of dying. Eek!");
+    } else {
+        currentlyDying = true;
+
+        // Use a local variable for the stack pointer, since the stringifiers
+        // will also manipulate the stack (and may have bugs!).
+        UtilStackGiblet *stackPtr = utilStackTop;
+        while ((stackPtr != NULL) && (stackPtr->magic == UTIL_GIBLET_MAGIC)) {
+            if (stackPtr->function != NULL) {
+                char *message = stackPtr->function(stackPtr->state);
+                fprintf(stderr, "    at %s\n", message);
+            }
+            stackPtr = stackPtr->pop;
+        }
+    }
+
+    exit(1);
+}
+
+// Documented in header.
+void note(const char *format, ...) {
+    va_list rest;
+
+    va_start(rest, format);
+    char *str = utilVFormat(format, rest);
+    va_end(rest);
+
+    fprintf(stderr, "%s\n", str);
+    utilFree(str);
+}
+
+// Documented in header.
 void xnotex(const char *format, ...) {
     va_list rest;
 

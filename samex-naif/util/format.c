@@ -7,7 +7,6 @@
 #define _GNU_SOURCE
 
 #include <inttypes.h>
-#include <stdarg.h>
 #include <stdio.h>
 
 #include "impl.h"
@@ -89,10 +88,18 @@ static void bufCatChars(zformatBuf *buf, char ch, zint size) {
 
 // Documented in header.
 char *utilFormat(const char *format, ...) {
-    zformatBuf buf = { 0, 0, NULL };
     va_list rest;
 
     va_start(rest, format);
+    char *result = utilVFormat(format, rest);
+    va_end(rest);
+
+    return result;
+}
+
+// Documented in header.
+char *utilVFormat(const char *format, va_list rest) {
+    zformatBuf buf = { 0, 0, NULL };
 
     while (*format != '\0') {
         char ch = *format;
@@ -136,7 +143,7 @@ char *utilFormat(const char *format, ...) {
                 case 'd': {
                     zint i = va_arg(rest, zint);
                     if (asprintf(&freeMe, "%" PRId64, i) < 0) {
-                        xdiex("Failure in `asprintf`.");
+                        die("Failure in `asprintf`.");
                     }
                     intermed = freeMe;
                     break;
@@ -145,7 +152,7 @@ char *utilFormat(const char *format, ...) {
         }
 
         if (intermed == NULL) {
-            xdiex("Unterminated format directive.");
+            die("Unterminated format directive.");
         }
 
         if (fieldWidth > 0) {
@@ -161,8 +168,6 @@ char *utilFormat(const char *format, ...) {
             utilFree(freeMe);
         }
     }
-
-    va_end(rest);
 
     bufCatChar(&buf, '\0');
     return buf.chars;

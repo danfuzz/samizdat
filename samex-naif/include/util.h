@@ -9,6 +9,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
+#include <stdarg.h>
 #include <string.h>
 
 #include "ztype.h"
@@ -75,6 +76,20 @@ extern UtilStackGiblet *utilStackTop;
     } while(0)
 
 /**
+ * Dies (aborts the process) with the given message. Arguments are as
+ * with `utilFormat()`. If there is any active stack context (more
+ * `UTIL_TRACE_START()`s than `UTIL_TRACE_END()`s), then that context is
+ * appended to the death report.
+ */
+void die(const char *format, ...)
+    __attribute__((noreturn));
+
+/**
+ * Emits a debugging message. Arguments are as with `utilFormat()`.
+ */
+void note(const char *format, ...);
+
+/**
  * Emits a debugging message. Arguments are as with `printf()`.
  */
 void xnotex(const char *format, ...)
@@ -116,6 +131,12 @@ void xdiex(const char *format, ...)
  * integer." That is, `PRId64` is *way too ugly* to use in regular code.
  */
 char *utilFormat(const char *format, ...);
+
+/**
+ * Like `utilFormat`, but takes a `va_list` instead of separate args. Use
+ * similar to `vasprintf()`.
+ */
+char *utilVFormat(const char *format, va_list);
 
 
 //
