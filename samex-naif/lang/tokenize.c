@@ -62,7 +62,7 @@ static zint read(ParseState *state) {
  */
 static void reset(ParseState *state, zint mark) {
     if (mark > state->at) {
-        die("Cannot reset forward: %lld > %lld", mark, state->at);
+        xdiex("Cannot reset forward: %lld > %lld", mark, state->at);
     }
 
     state->at = mark;
@@ -140,12 +140,12 @@ static zvalue tokenizeInt(ParseState *state) {
         value = (value * 10) + (ch - '0');
 
         if (value >= 0x80000000) {
-            die("Overvalue int token.");
+            xdiex("Overvalue int token.");
         }
     }
 
     if (!any) {
-        die("Invalid int token (no digits).");
+        xdiex("Invalid int token (no digits).");
     }
 
     zvalue intval = intFromZint(value);
@@ -169,7 +169,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
               ((ch >= '0') && (ch <= '9')))) {
             break;
         } else if (s.size == LANG_MAX_STRING_CHARS) {
-            die("Overlong identifier token.");
+            xdiex("Overlong identifier token.");
         }
 
         chars[s.size] = ch;
@@ -222,14 +222,14 @@ static zvalue tokenizeString(ParseState *state) {
         zint ch = peek(state);
 
         if (ch == -1) {
-            die("Unterminated string.");
+            xdiex("Unterminated string.");
         } else if (ch == '\n') {
-            die("Invalid character in string: `\n`");
+            xdiex("Invalid character in string: `\n`");
         } else if (ch == '\"') {
             read(state);
             break;
         } else if (s.size == LANG_MAX_STRING_CHARS) {
-            die("Overlong string token.");
+            xdiex("Overlong string token.");
         } else if (ch == '\\') {
             read(state);
             ch = peek(state);
@@ -244,7 +244,7 @@ static zvalue tokenizeString(ParseState *state) {
                     break;
                 }
                 default: {
-                    die("Invalid string escape character: %#llx", ch);
+                    xdiex("Invalid string escape character: %#llx", ch);
                 }
             }
         }
@@ -266,7 +266,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     read(state);
 
     if (peek(state) != '\"') {
-        die("Invalid quoted identifier.");
+        xdiex("Invalid quoted identifier.");
     }
 
     zvalue result = tokenizeString(state);
@@ -325,7 +325,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     zvalue name = tokenizeIdentifier(state);
 
     if (name == NULL) {
-        die("Invalid directive name.");
+        xdiex("Invalid directive name.");
     }
 
     zchar chars[LANG_MAX_STRING_CHARS];
@@ -337,7 +337,7 @@ static zvalue tokenizeDirective(ParseState *state) {
         if ((ch == -1) || (ch == '\n')) {
             break;
         } else if (s.size == LANG_MAX_STRING_CHARS) {
-            die("Overlong directive token.");
+            xdiex("Overlong directive token.");
         } else if ((s.size == 0) && (ch == ' ')) {
             // Skip initial spaces.
             continue;
@@ -402,7 +402,7 @@ static zvalue tokenizeAnyToken(ParseState *state) {
     zvalue result = tokenizeIdentifier(state);
 
     if (result == NULL) {
-        die("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
+        xdiex("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
     }
 
     return result;
@@ -441,7 +441,7 @@ zvalue langTokenize0(zvalue string) {
             break;
         } else if (!nodeRecTypeIs(one, NODE_directive)) {
             if (out >= LANG_MAX_TOKENS) {
-                die("Too many tokens.");
+                xdiex("Too many tokens.");
             }
 
             result[out] = one;

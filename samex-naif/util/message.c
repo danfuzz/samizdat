@@ -37,7 +37,7 @@ static bool currentlyDying = false;
 //
 
 // Documented in header.
-void note(const char *format, ...) {
+void xnotex(const char *format, ...) {
     va_list rest;
 
     va_start(rest, format);
@@ -47,7 +47,7 @@ void note(const char *format, ...) {
 }
 
 // Documented in header.
-void die(const char *format, ...) {
+void xdiex(const char *format, ...) {
     va_list rest;
 
     va_start(rest, format);

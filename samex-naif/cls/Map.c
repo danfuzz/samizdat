@@ -267,7 +267,7 @@ CMETH_IMPL_1(Map, castFrom, value) {
 // Documented in spec.
 CMETH_IMPL_rest(Map, new, args) {
     if ((args.size & 1) != 0) {
-        die("Odd argument count for map construction.");
+        xdiex("Odd argument count for map construction.");
     }
 
     zint size = args.size >> 1;
@@ -326,7 +326,7 @@ METH_IMPL_rest(Map, cat, args) {
         zvalue one = typeCast(CLS_Map, args.elems[i]);
 
         if (one == NULL) {
-            die("Invalid argument to `cat()`: %s", cm_debugString(one));
+            xdiex("Invalid argument to `cat()`: %s", cm_debugString(one));
         }
 
         maps[i] = one;
@@ -514,7 +514,7 @@ METH_IMPL_0(Map, fetch) {
             return ths;
         }
         default: {
-            die("Invalid to call `fetch` on map with size > 1.");
+            xdiex("Invalid to call `fetch` on map with size > 1.");
         }
     }
 }
@@ -566,7 +566,7 @@ METH_IMPL_0(Map, get_key) {
     MapInfo *info = getInfo(ths);
 
     if (info->size != 1) {
-        die("Not a size 1 map.");
+        xdiex("Not a size 1 map.");
     }
 
     return info->elems[0].key;
@@ -582,7 +582,7 @@ METH_IMPL_0(Map, get_value) {
     MapInfo *info = getInfo(ths);
 
     if (info->size != 1) {
-        die("Not a size 1 map.");
+        xdiex("Not a size 1 map.");
     }
 
     return info->elems[0].value;

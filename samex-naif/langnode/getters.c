@@ -56,7 +56,7 @@ zvalue get_baseName(zvalue source) {
             return cm_nth(parts, 0);
         }
         default: {
-            die("Bad type for `get_baseName`.");
+            xdiex("Bad type for `get_baseName`.");
         }
     }
 }
@@ -75,7 +75,7 @@ zvalue get_definedNames(zvalue node) {
         case NODE_importModuleSelection: {
             zvalue select = cm_get(node, SYM(select));
             if (select == NULL) {
-                die("Cannot call `get_definedNames` on unresolved import.");
+                xdiex("Cannot call `get_definedNames` on unresolved import.");
             }
 
             zvalue prefix = cm_get(node, SYM(prefix));

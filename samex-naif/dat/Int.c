@@ -85,7 +85,7 @@ zint zintFromInt(zvalue intval) {
         if ((op)(&result, x)) { \
             return intFromZint(result); \
         } else { \
-            die("Overflow / error on" #name "(%lld).", x); \
+            xdiex("Overflow / error on" #name "(%lld).", x); \
         } \
     } \
     extern int semicolonRequiredHere
@@ -103,7 +103,7 @@ zint zintFromInt(zvalue intval) {
         if ((op)(&result, x, y)) { \
             return intFromZint(result); \
         } else { \
-            die("Overflow / error on" #name "(%lld, %lld).", x, y); \
+            xdiex("Overflow / error on" #name "(%lld, %lld).", x, y); \
         } \
     } \
     extern int semicolonRequiredHere

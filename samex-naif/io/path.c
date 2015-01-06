@@ -20,25 +20,25 @@
  */
 void checkPath0(zvalue path, bool isAbsolute) {
     if (!typeAccepts(CLS_String, path)) {
-        die("Invalid path: not a string");
+        xdiex("Invalid path: not a string");
     }
 
     zint sz = utf8SizeFromString(path);
     char str[sz + 1];  // `+1` for the null byte.
 
     if (sz == 0) {
-        die("Invalid path: empty string");
+        xdiex("Invalid path: empty string");
     }
 
     utf8FromString(sz + 1, str, path);
 
     if (isAbsolute && (str[0] != '/')) {
-        die("Invalid path: not absolute");
+        xdiex("Invalid path: not absolute");
     }
 
     for (zint i = 0; i < sz; i++) {
         if (str[i] == '\0') {
-            die("Invalid path: contains `\\0` character");
+            xdiex("Invalid path: contains `\\0` character");
         }
     }
 }

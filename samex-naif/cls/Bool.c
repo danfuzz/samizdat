@@ -172,7 +172,7 @@ METH_IMPL_1(Bool, shl, n) {
     } else if (ni < 0) {
         return BOOL_FALSE;
     } else {
-        die("Undefined `bool` shift result.");
+        xdiex("Undefined `bool` shift result.");
     }
 }
 
@@ -190,7 +190,7 @@ METH_IMPL_1(Bool, shr, n) {
     } else if (ni > 0) {
         return BOOL_FALSE;
     } else {
-        die("Undefined `bool` shift result.");
+        xdiex("Undefined `bool` shift result.");
     }
 }
 

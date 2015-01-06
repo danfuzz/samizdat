@@ -100,7 +100,7 @@ static zvalue methCall0(zvalue target, zint nameIndex, zarray args) {
 
     if (function == NULL) {
         zvalue nameStr = cm_castFrom(CLS_String, symbolFromIndex(nameIndex));
-        die("Unbound method: %s.%s", cm_debugString(cls),
+        xdiex("Unbound method: %s.%s", cm_debugString(cls),
             cm_debugString(nameStr));
     }
 
@@ -143,5 +143,5 @@ zvalue methCall(zvalue target, zvalue name, zarray args) {
 
 // Documented in header.
 zvalue mustNotYield(zvalue value) {
-    die("Improper yield from `noYield` expression.");
+    xdiex("Improper yield from `noYield` expression.");
 }

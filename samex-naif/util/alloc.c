@@ -94,7 +94,7 @@ static void addPages(void *start, void *end) {
     // Need to add a new range or extend an existing one.
 
     if (rangesSize >= UTIL_MAX_PAGE_RANGES) {
-        die("Too many heap page ranges!");
+        xdiex("Too many heap page ranges!");
     }
 
     ranges[rangesSize] = range;
@@ -133,13 +133,13 @@ static void addPages(void *start, void *end) {
 // Documented in header.
 void *utilAlloc(zint size) {
     if (size < 0) {
-        die("Invalid allocation size: %lld", size);
+        xdiex("Invalid allocation size: %lld", size);
     }
 
     void *result = calloc(1, size);
 
     if (result == NULL) {
-        die("Failed to allocate: size %#llx", size);
+        xdiex("Failed to allocate: size %#llx", size);
     }
 
     if (MEMORY_PARANOIA) {

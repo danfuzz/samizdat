@@ -327,7 +327,7 @@ METH_IMPL_0(List, fetch) {
             return arr.elems[0];
         }
         default: {
-            die("Invalid to call `fetch` on list with size > 1.");
+            xdiex("Invalid to call `fetch` on list with size > 1.");
         }
     }
 }
@@ -406,7 +406,7 @@ METH_IMPL_1(List, repeat, count) {
     zint n = zintFromInt(count);
 
     if (n < 0) {
-        die("Invalid negative count for `repeat`.");
+        xdiex("Invalid negative count for `repeat`.");
     } else if (n == 0) {
         return EMPTY_LIST;
     }

@@ -234,7 +234,7 @@ zvalue symtabFromZarray(zarray arr) {
     if (arr.size == 0) {
         return EMPTY_SYMBOL_TABLE;
     } else if ((arr.size & 1) != 0) {
-        die("Odd argument count for symbol table construction.");
+        xdiex("Odd argument count for symbol table construction.");
     }
 
     zvalue result = allocInstance(arr.size >> 1);
@@ -323,7 +323,7 @@ METH_IMPL_rest(SymbolTable, cat, args) {
         zvalue one = typeCast(CLS_SymbolTable, args.elems[i]);
 
         if (one == NULL) {
-            die("Invalid argument to `cat()`: %s", cm_debugString(one));
+            xdiex("Invalid argument to `cat()`: %s", cm_debugString(one));
         }
 
         SymbolTableInfo *oneInfo = getInfo(one);

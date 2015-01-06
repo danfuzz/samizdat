@@ -76,7 +76,7 @@ static void assertIsClass(zvalue value) {
         cls = getInfo(cls)->parent;
     }
 
-    die("Expected a class; got %s.", cm_debugString(value));
+    xdiex("Expected a class; got %s.", cm_debugString(value));
 }
 
 /**
@@ -98,7 +98,7 @@ static void assertIsClass(zvalue value) {
 static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
     if (CLS_Symbol != NULL) {
         if (name == NULL) {
-            die("Improper argument to `makeClassPair()`: null `name`");
+            xdiex("Improper argument to `makeClassPair()`: null `name`");
         } else {
             assertHasClass(name, CLS_Symbol);
         }
@@ -106,7 +106,7 @@ static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
 
     if (CLS_Value != NULL) {
         if (parent == NULL) {
-            die("Improper argument to `makeClassPair()`: null `parent`");
+            xdiex("Improper argument to `makeClassPair()`: null `parent`");
         } else {
             assertIsClass(parent);
         }
@@ -253,7 +253,7 @@ extern void assertHasClass(zvalue value, zvalue cls);
 void assertHasClass0(zvalue value, zvalue cls) {
     assertIsClass(cls);
     if (acceptsUnchecked(cls, value)) {
-        die("Expected class %s; got %s of class %s.",
+        xdiex("Expected class %s; got %s of class %s.",
             cm_debugString(cls), cm_debugString(value),
             cm_debugString(classOf(value)));
     }
@@ -362,7 +362,7 @@ METH_IMPL_1(Class, crossOrder, other) {
     }
 
     if (!haveSameClass(ths, other)) {
-        die("Improper call to `crossOrder`: different concrete classes");
+        xdiex("Improper call to `crossOrder`: different concrete classes");
     }
 
     // We should only be able to make it here if given two instances of
@@ -454,7 +454,7 @@ METH_IMPL_1(Class, perOrder, other) {
             // Names are the same. The order is not defined given two
             // different non-core classes.
             if (core1 || core2) {
-                die("Shouldn't happen: Same-name-but-different core classes.");
+                xdiex("Shouldn't happen: Same-name-but-different core classes.");
             }
             return NULL;
         }
@@ -468,7 +468,7 @@ METH_IMPL_1(Class, perOrder, other) {
 MOD_INIT(objectModel) {
     // Make sure that the "exposed" header is sized the same as the real one.
     if (sizeof(DatHeaderExposed) != sizeof(DatHeader)) {
-        die("Mismatched exposed header size: should be %lu",
+        xdiex("Mismatched exposed header size: should be %lu",
             sizeof(DatHeader));
     }
 

@@ -177,7 +177,7 @@ METH_IMPL_0(Lazy, fetch) {
 
 // Documented in spec.
 METH_IMPL_0_opt(Lazy, store, value) {
-    die("Cannot `store()` to `Lazy`.");
+    xdiex("Cannot `store()` to `Lazy`.");
 }
 
 /** Initializes the module. */
@@ -239,7 +239,7 @@ METH_IMPL_0_opt(Promise, store, value) {
     BoxInfo *info = getInfo(ths);
 
     if (!info->canStore) {
-        die("Cannot `store()` to resolved `Promise`.");
+        xdiex("Cannot `store()` to resolved `Promise`.");
     }
 
     info->canStore = false;
@@ -275,7 +275,7 @@ CMETH_IMPL_0_opt(Result, new, value) {
 
 // Documented in spec.
 METH_IMPL_0_opt(Result, store, value) {
-    die("Cannot `store()` to `Result`.");
+    xdiex("Cannot `store()` to `Result`.");
 }
 
 /** Initializes the module. */

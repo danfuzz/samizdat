@@ -31,7 +31,7 @@ char *utilCwd(void) {
     char buf[maxSize + 1];
 
     if (getcwd(buf, maxSize) == NULL) {
-        die("Trouble with `getcwd`: %s", strerror(errno));
+        xdiex("Trouble with `getcwd`: %s", strerror(errno));
     }
 
     return utilStrdup(buf);
@@ -48,7 +48,7 @@ char *utilReadLink(const char *path) {
             errno = 0;
             return NULL;
         }
-        die("Trouble with `lstat`: %s", strerror(errno));
+        xdiex("Trouble with `lstat`: %s", strerror(errno));
     } else if (!S_ISLNK(statBuf.st_mode)) {
         // Not a symlink.
         errno = 0;
@@ -66,9 +66,9 @@ char *utilReadLink(const char *path) {
     ssize_t resultSz = readlink(path, result, linkSz);
 
     if (resultSz < 0) {
-        die("Trouble with `readlink`: %s", strerror(errno));
+        xdiex("Trouble with `readlink`: %s", strerror(errno));
     } else if (assumeSize ? (resultSz > linkSz) : (resultSz != linkSz)) {
-        die("Strange `readlink` result: %ld", (long) resultSz);
+        xdiex("Strange `readlink` result: %ld", (long) resultSz);
     }
 
     result[resultSz] = '\0';

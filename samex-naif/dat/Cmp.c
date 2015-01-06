@@ -15,7 +15,7 @@
 // Documented in header.
 zvalue cmpEq(zvalue value, zvalue other) {
     if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `cmpEq`.");
+        xdiex("Shouldn't happen: NULL argument passed to `cmpEq`.");
     } else if (value == other) {
         return value;
     } else if (haveSameClass(value, other)) {
@@ -39,7 +39,7 @@ bool cmpEqNullOk(zvalue value, zvalue other) {
 // Documented in header.
 zvalue cmpOrder(zvalue value, zvalue other) {
     if ((value == NULL) || (other == NULL)) {
-        die("Shouldn't happen: NULL argument passed to `cmpOrder`.");
+        xdiex("Shouldn't happen: NULL argument passed to `cmpOrder`.");
     } else if (value == other) {
         return SYM(same);
     } else if (haveSameClass(value, other)) {

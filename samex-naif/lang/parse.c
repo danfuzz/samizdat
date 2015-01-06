@@ -85,7 +85,7 @@ static zint cursor(ParseState *state) {
  */
 static void reset(ParseState *state, zint mark) {
     if (mark > state->at) {
-        die("Cannot reset forward: %lld > %lld", mark, state->at);
+        xdiex("Cannot reset forward: %lld > %lld", mark, state->at);
     }
 
     state->at = mark;
@@ -110,7 +110,7 @@ static zvalue peekMatch(ParseState *state, zvalue name) {
  * Dumps (some of) the pending tokens, as part of an error report.
  */
 static void dumpState(ParseState *state) {
-    note("Pending tokens:");
+    xnotex("Pending tokens:");
 
     for (zint i = 0; i < 25; i++) {
         zvalue one = read(state);
@@ -119,7 +119,7 @@ static void dumpState(ParseState *state) {
         }
 
         char *oneStr = cm_debugString(one);
-        note("    %s", oneStr);
+        xnotex("    %s", oneStr);
         utilFree(oneStr);
     }
 }
@@ -543,7 +543,7 @@ DEF_PARSE(listItem) {
     zvalue expr = PARSE(expression);
 
     if (MATCH(CH_COLON)) {
-        die("Mapping syntax not valid as a list item or call argument.");
+        xdiex("Mapping syntax not valid as a list item or call argument.");
     }
 
     return expr;
@@ -611,7 +611,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue formals = cm_get(c, SYM(formals));
     if (!cmpEq(formals, EMPTY_LIST)) {
-        die("Invalid formal argument in code block.");
+        xdiex("Invalid formal argument in code block.");
     }
 
     return c;
@@ -625,7 +625,7 @@ DEF_PARSE(basicNullaryClosure) {
 
     zvalue formals = cm_get(c, SYM(formals));
     if (!cmpEq(formals, EMPTY_LIST)) {
-        die("Invalid formal argument in code block.");
+        xdiex("Invalid formal argument in code block.");
     }
 
     return c;
@@ -738,7 +738,7 @@ DEF_PARSE(unaryExpression) {
                 break;
             }
             default: {
-                die("Unexpected postfix.");
+                xdiex("Unexpected postfix.");
             }
         }
     }
@@ -1370,7 +1370,7 @@ zvalue langParseExpression0(zvalue expression) {
 
     if (!isEof(&state)) {
         dumpState(&state);
-        die("Extra tokens at end of expression.");
+        xdiex("Extra tokens at end of expression.");
     }
 
     return result;
@@ -1391,7 +1391,7 @@ zvalue langParseProgram0(zvalue program) {
 
     if (!isEof(&state)) {
         dumpState(&state);
-        die("Extra tokens at end of program.");
+        xdiex("Extra tokens at end of program.");
     }
 
     return result;

@@ -29,7 +29,7 @@ void datFrameError(const char *msg) {
     datGc();
     frameStackTop = frameStackBase;
 
-    die("%s", msg);
+    xdiex("%s", msg);
 }
 
 

@@ -36,7 +36,7 @@ static FILE *openFile(zvalue path, const char *mode) {
 
     FILE *file = fopen(str, mode);
     if (file == NULL) {
-        die("Trouble opening file \"%s\": %s", str, strerror(errno));
+        xdiex("Trouble opening file \"%s\": %s", str, strerror(errno));
     }
 
     return file;
@@ -74,7 +74,7 @@ zvalue ioFileType(zvalue path, bool followSymlinks) {
             // really errors from the perspective of this function.
             return SYM(absent);
         }
-        die("Trouble with `%s`: %s",
+        xdiex("Trouble with `%s`: %s",
             followSymlinks ? "lstat" : "stat",
             strerror(errno));
     }
@@ -92,11 +92,11 @@ zvalue ioReadFileUtf8(zvalue path) {
     size_t amt = fread(buf, 1, sizeof(buf), in);
 
     if (ferror(in)) {
-        die("Trouble reading file: %s", strerror(errno));
+        xdiex("Trouble reading file: %s", strerror(errno));
     }
 
     if (!feof(in)) {
-        die("Overlong file: %s", strerror(errno));
+        xdiex("Overlong file: %s", strerror(errno));
     }
 
     fclose(in);
@@ -136,7 +136,7 @@ void ioWriteFileUtf8(zvalue path, zvalue text) {
     utilFree(utf);
 
     if (amt != utfSize) {
-        die("Trouble writing file: %s", strerror(errno));
+        xdiex("Trouble writing file: %s", strerror(errno));
     }
 
     fclose(out);

@@ -74,9 +74,9 @@ static bool uncheckedEq(zvalue symbol1, zvalue symbol2) {
  */
 static zvalue makeSymbol0(zstring name, bool interned) {
     if (theNextIndex >= DAT_MAX_SYMBOLS) {
-        die("Too many symbols!");
+        xdiex("Too many symbols!");
     } else if (name.size > DAT_MAX_SYMBOL_SIZE) {
-        die("Symbol name too long: \"%s\"", utf8DupFromZstring(name));
+        xdiex("Symbol name too long: \"%s\"", utf8DupFromZstring(name));
     }
 
     zvalue result = datAllocValue(CLS_Symbol, sizeof(SymbolInfo));
@@ -211,7 +211,7 @@ bool symbolEq(zvalue symbol1, zvalue symbol2) {
 // Documented in header.
 zvalue symbolFromIndex(zint index) {
     if ((index < 0) || (index >= theNextIndex)) {
-        die("Bad index for symbol: %lld", index);
+        xdiex("Bad index for symbol: %lld", index);
     }
 
     return theSymbols[index];
@@ -266,7 +266,7 @@ zorder zorderFromSymbol(zvalue symbol) {
     else if (index == SYMIDX(more)) { return ZMORE; }
     else if (index == SYMIDX(same)) { return ZSAME; }
 
-    die("Invalid order symbol: %s", cm_debugString(symbol));
+    xdiex("Invalid order symbol: %s", cm_debugString(symbol));
 }
 
 // Documented in header.
@@ -298,7 +298,7 @@ METH_IMPL_rest(Symbol, cat, args) {
     }
 
     if (size > DAT_MAX_SYMBOL_SIZE) {
-        die("Too many characters in arguments to `Symbol.cat()`.");
+        xdiex("Too many characters in arguments to `Symbol.cat()`.");
     }
 
     zchar chars[size];

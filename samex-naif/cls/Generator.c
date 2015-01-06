@@ -45,7 +45,7 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
                 continue;
             }
         } else if (one == NULL) {
-            die("Unexpected lack of result.");
+            xdiex("Unexpected lack of result.");
         }
 
         if (at == maxSize) {
@@ -54,7 +54,7 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
                 arr = utilAlloc(maxSize * sizeof(zvalue));
                 utilCpy(zvalue, arr, stackArr, at);
             } else {
-                die("Generator produced way too many items.");
+                xdiex("Generator produced way too many items.");
             }
         }
 
@@ -87,7 +87,7 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
         // voided.
         result = cm_fetch(box);
         if (METH_CALL(nextGen, nextValue, box) != NULL) {
-            die("Generator produced second item in `fetch`.");
+            xdiex("Generator produced second item in `fetch`.");
         }
     }
 

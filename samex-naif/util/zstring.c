@@ -38,7 +38,7 @@ zint utf8FromZstring(zint resultSize, char *result, zstring string) {
     zint finalSize = out - result;
 
     if (finalSize > resultSize) {
-        die("Buffer too small for UTF-8-encoded string.");
+        xdiex("Buffer too small for UTF-8-encoded string.");
     }
 
     return finalSize;

@@ -111,7 +111,7 @@ static zvalue extractMethods(zvalue allMethods, zvalue scope) {
         if (!cmpEq(scope, get_name(one))) {
             continue;
         } else if (cm_get(names, name)) {
-            die("Duplicate method: %s", cm_debugString(name));
+            xdiex("Duplicate method: %s", cm_debugString(name));
         }
 
         names = symtabCatMapping(names, (zmapping) {name, BOOL_TRUE});
@@ -209,7 +209,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return cm_new_Record(SYM(store),
             SYM(target), innerTarget, SYM(value), value);
     } else {
-        die("Improper `lvalue` binding.");
+        xdiex("Improper `lvalue` binding.");
     }
 }
 
@@ -278,14 +278,14 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     zint attribSize = get_size(attribMap);
 
     if (get_size(attributes) != attribSize) {
-        die("Duplicate attribute.");
+        xdiex("Duplicate attribute.");
     }
 
     zvalue keys = METH_CALL(attribMap, keyList);
     for (zint i = 0; i < attribSize; i++) {
         zvalue one = cm_nth(keys, i);
         if (!(cmpEq(one, SYM(access)) || cmpEq(one, SYM(new)))) {
-            die("Invalid attribute: %s", cm_debugString(one));
+            xdiex("Invalid attribute: %s", cm_debugString(one));
         }
     }
 
@@ -360,7 +360,7 @@ zvalue makeDynamicImport(zvalue node) {
             return cm_new_List(stat);
         }
         default: {
-            die("Bad node type for makeDynamicImport");
+            xdiex("Bad node type for makeDynamicImport");
         }
     }
 }
@@ -421,9 +421,9 @@ zvalue makeImport(zvalue baseData) {
         // It's a module binding selection.
 
         if (cm_get(data, SYM(name)) != NULL) {
-            die("Import selection name must be a prefix.");
+            xdiex("Import selection name must be a prefix.");
         } else if (cm_get(data, SYM(format)) != NULL) {
-            die("Cannot import selection of resource.");
+            xdiex("Cannot import selection of resource.");
         }
 
         if (cmpEq(select, SYM(CH_STAR))) {
@@ -446,7 +446,7 @@ zvalue makeImport(zvalue baseData) {
     if (cm_get(data, SYM(format)) != NULL) {
         // It's a resource.
         if (nodeRecTypeIs(cm_get(data, SYM(source)), NODE_external)) {
-            die("Cannot import external resource.");
+            xdiex("Cannot import external resource.");
         }
         return cm_new(Record, SYM(importResource), data);
     }
@@ -511,7 +511,7 @@ zvalue makeInfoTable(zvalue node) {
                 zvalue source = cm_get(s, SYM(source));
                 zvalue select = cm_get(s, SYM(select));
                 if (select == NULL) {
-                    die("Cannot call `makeInfoTable` on unresolved import.");
+                    xdiex("Cannot call `makeInfoTable` on unresolved import.");
                 }
                 zint sz = get_size(select);
                 for (zint j = 0; j < sz; j++) {
@@ -593,7 +593,7 @@ zvalue makeThunk(zvalue expression) {
 // Documented in spec.
 zvalue withModuleDefs(zvalue node) {
     if (!cmpEqNullOk(cm_get(node, SYM(yield)), TOK_void)) {
-        die("Invalid node for `withModuleDefs` (has non-void `yield`).");
+        xdiex("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 
     zvalue info = makeInfoTable(node);
@@ -678,7 +678,7 @@ zvalue withoutTops(zvalue node) {
                     break;
                 }
                 default: {
-                    die("Bad `box` for `top` variable.");
+                    xdiex("Bad `box` for `top` variable.");
                     break;
                 }
             }

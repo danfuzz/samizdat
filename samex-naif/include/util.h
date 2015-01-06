@@ -77,7 +77,7 @@ extern UtilStackGiblet *utilStackTop;
 /**
  * Emits a debugging message. Arguments are as with `printf()`.
  */
-void note(const char *format, ...)
+void xnotex(const char *format, ...)
     __attribute__((format (printf, 1, 2)));
 
 /**
@@ -86,7 +86,7 @@ void note(const char *format, ...)
  * `UTIL_TRACE_START()`s than `UTIL_TRACE_END()`s), then that context is
  * appended to the death report.
  */
-void die(const char *format, ...)
+void xdiex(const char *format, ...)
     __attribute__((noreturn))
     __attribute__((format (printf, 1, 2)));
 

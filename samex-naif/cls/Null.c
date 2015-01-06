@@ -20,7 +20,7 @@ METH_IMPL_1(Null, crossEq, other) {
     if (ths == other) {
         return ths;
     } else {
-        die("`crossEq` called with incompatible arguments.");
+        xdiex("`crossEq` called with incompatible arguments.");
     }
 }
 
@@ -30,7 +30,7 @@ METH_IMPL_1(Null, crossOrder, other) {
     if (ths == other) {
         return SYM(same);
     } else {
-        die("`crossOrder` called with incompatible arguments.");
+        xdiex("`crossOrder` called with incompatible arguments.");
     }
 }
 

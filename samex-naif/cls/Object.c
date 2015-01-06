@@ -78,7 +78,7 @@ METH_IMPL_0_opt(Object, access, key) {
 CMETH_IMPL_2_opt_opt(Object, subclass, name, config,
         classMethods, instanceMethods) {
     if (thsClass != CLS_Object) {
-        die("Invalid parent class: %s", cm_debugString(thsClass));
+        xdiex("Invalid parent class: %s", cm_debugString(thsClass));
     }
 
     if (classMethods == NULL) {
@@ -123,7 +123,7 @@ METH_IMPL_1(Object, crossEq, other) {
 
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        die("`crossEq` called with incompatible arguments.");
+        xdiex("`crossEq` called with incompatible arguments.");
     }
 
     return METH_CALL(getInfo(ths)->data, crossEq, getInfo(other)->data);
@@ -137,7 +137,7 @@ METH_IMPL_1(Object, crossOrder, other) {
 
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        die("`crossOrder` called with incompatible arguments.");
+        xdiex("`crossOrder` called with incompatible arguments.");
     }
 
     return METH_CALL(getInfo(ths)->data, crossOrder, getInfo(other)->data);

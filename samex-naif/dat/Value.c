@@ -22,7 +22,7 @@ extern zvalue datNonVoid(zvalue value);
 
 // Documented in header.
 void datNonVoidError(void) {
-    die("Attempt to use void in non-void context.");
+    xdiex("Attempt to use void in non-void context.");
 }
 
 // This provides the non-inline version of this function.
@@ -42,7 +42,7 @@ METH_IMPL_1(Value, castToward, cls) {
 METH_IMPL_1(Value, crossEq, other) {
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        die("`crossEq` called with incompatible arguments.");
+        xdiex("`crossEq` called with incompatible arguments.");
     }
 
     return (ths == other) ? ths : NULL;
@@ -52,7 +52,7 @@ METH_IMPL_1(Value, crossEq, other) {
 METH_IMPL_1(Value, crossOrder, other) {
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        die("`crossOrder` called with incompatible arguments.");
+        xdiex("`crossOrder` called with incompatible arguments.");
     }
 
     return cmpEq(ths, other) ? SYM(same) : NULL;

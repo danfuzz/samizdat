@@ -55,7 +55,7 @@ CMETH_IMPL_2_opt(If, cases, testFunction, valueFunctions, defaultFunction) {
     zvalue value = FUN_CALL(testFunction);
 
     if (value == NULL) {
-        die("Void result from `cases` call to `testFunction`.");
+        xdiex("Void result from `cases` call to `testFunction`.");
     }
 
     zvalue consequentFunction = cm_get(valueFunctions, value);

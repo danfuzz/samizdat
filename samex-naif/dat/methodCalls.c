@@ -36,9 +36,9 @@ char *cm_debugString(zvalue x) {
     }
 
     if (SYM(debugString) == NULL) {
-        die("Too early to call `debugString`.");
+        xdiex("Too early to call `debugString`.");
     } else if (inDebugString) {
-        die("`cm_debugString` called recursively");
+        xdiex("`cm_debugString` called recursively");
     }
 
     inDebugString = true;
@@ -68,7 +68,7 @@ zorder cm_order(zvalue x, zvalue other) {
     zvalue result = cmpOrder(x, other);
 
     if (result == NULL) {
-        die("Attempt to order unordered values.");
+        xdiex("Attempt to order unordered values.");
     }
 
     zorder order = zorderFromSymbol(result);

@@ -94,7 +94,7 @@ static void detectDuplicates(zint size, zvalue *arr, const char *kind) {
     for (zint i = 1; i < size; i++) {
         if (arr[i - 1] == arr[i]) {
             zvalue nameStr = cm_castFrom(CLS_String, arr[i]);
-            die("Duplicate %s name: %s", kind, cm_debugString(nameStr));
+            xdiex("Duplicate %s name: %s", kind, cm_debugString(nameStr));
         }
     }
 }
@@ -107,7 +107,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
     zarray statements = zarrayFromList(info->statements);
 
     if (formals.size > LANG_MAX_FORMALS) {
-        die("Too many formals: %lld", formals.size);
+        xdiex("Too many formals: %lld", formals.size);
     }
 
     // The `names` array is for detecting duplicates.
@@ -139,7 +139,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
                 case NODE_CH_PLUS:  { rep = REP_PLUS;  break; }
                 case NODE_CH_QMARK: { rep = REP_QMARK; break; }
                 default: {
-                    die("Invalid repeat modifier: %s", cm_debugString(repeat));
+                    xdiex("Invalid repeat modifier: %s", cm_debugString(repeat));
                 }
             }
         }
@@ -194,7 +194,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
                 }
                 case REP_PLUS: {
                     if (argAt >= args.size) {
-                        die("Function called with too few arguments "
+                        xdiex("Function called with too few arguments "
                             "(plus argument): %lld",
                             args.size);
                     }
@@ -206,7 +206,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
                     break;
                 }
                 default: {
-                    die("Invalid repeat enum (shouldn't happen).");
+                    xdiex("Invalid repeat enum (shouldn't happen).");
                 }
             }
 
@@ -215,7 +215,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
                 : listFromZarray((zarray) {count, &args.elems[argAt]});
             argAt += count;
         } else if (argAt >= args.size) {
-            die("Function called with too few arguments: %lld", args.size);
+            xdiex("Function called with too few arguments: %lld", args.size);
         } else {
             value = args.elems[argAt];
             argAt++;
@@ -229,7 +229,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
     }
 
     if (argAt != args.size) {
-        die("Function called with too many arguments: %lld > %lld",
+        xdiex("Function called with too many arguments: %lld > %lld",
             args.size, argAt);
     }
 
@@ -303,7 +303,7 @@ CMETH_IMPL_1(ClosureNode, new, orig) {
             SYM(formals),    &formals,
             SYM(statements), &info->statements,
             SYM(yield),      &info->yield)) {
-        die("Invalid `closure` node.");
+        xdiex("Invalid `closure` node.");
     }
 
     // These are both optional.
