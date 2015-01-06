@@ -68,17 +68,17 @@ static bool thoroughlyValidate(zvalue maybeValue, zmarkColor expectedColor) {
     }
 
     if (!isAligned(maybeValue)) {
-        xnotex("Invalid value (mis-aligned): %p", maybeValue);
+        note("Invalid value (mis-aligned): %p", maybeValue);
         return false;
     }
 
     if (!utilIsHeapAllocated(maybeValue)) {
-        xnotex("Invalid value (not in heap): %p", maybeValue);
+        note("Invalid value (not in heap): %p", maybeValue);
         return false;
     }
 
     if (maybeValue->mark != expectedColor) {
-        xnotex("Invalid value (wrong color): %p", maybeValue);
+        note("Invalid value (wrong color): %p", maybeValue);
         return false;
     }
 
@@ -86,7 +86,7 @@ static bool thoroughlyValidate(zvalue maybeValue, zmarkColor expectedColor) {
           isAligned(maybeValue->prev) &&
           (maybeValue == maybeValue->next->prev) &&
           (maybeValue == maybeValue->prev->next))) {
-        xnotex("Invalid value (invalid links): %p", maybeValue);
+        note("Invalid value (invalid links): %p", maybeValue);
         return false;
     }
 
@@ -116,7 +116,7 @@ static void sanityCheck(bool force) {
 
     for (zint i = 0; i < immortalsSize; i++) {
         if (!thoroughlyValidate(immortals[i], liveColor)) {
-            xdiex("...at immortal #%lld", i);
+            die("...at immortal #%d", i);
         }
     }
 
@@ -187,13 +187,13 @@ static void doGc(void) {
     }
 
     if (DAT_CHATTY_GC) {
-        xnotex("GC: Marked %lld immortals.", immortalsSize);
+        note("GC: Marked %d immortals.", immortalsSize);
     }
 
     counter = markFrameStack();
 
     if (DAT_CHATTY_GC) {
-        xnotex("GC: Marked %lld stack values.", counter);
+        note("GC: Marked %d stack values.", counter);
     }
 
     // Calls to `datMark()` just place items on the live list but do not call
@@ -239,8 +239,8 @@ static void doGc(void) {
     doomedHead.prev = &doomedHead;
 
     if (DAT_CHATTY_GC) {
-        xnotex("GC: Freed %lld dead values.", counter);
-        xnotex("GC: %lld live values remain.", liveCount);
+        note("GC: Freed %d dead values.", counter);
+        note("GC: %d live values remain.", liveCount);
     }
 
     // Occasional sanity check.
@@ -293,11 +293,11 @@ void assertValid(zvalue value) {
     }
 
     if (value->mark != liveColor) {
-        xdiex("Invalid value (wrong color): %p", value);
+        die("Invalid value (wrong color): %p", value);
     }
 
     if (value->cls == NULL) {
-        xdiex("Invalid value (null class): %p", value);
+        die("Invalid value (null class): %p", value);
     }
 }
 
@@ -316,7 +316,7 @@ void datGc(void) {
         static double totalSec = 0;
         clock_t startTime = clock();
 
-        xnotex("GC: Cycle #%lld.", gcCount);
+        note("GC: Cycle #%d.", gcCount);
         doGc();
 
         double elapsedSec = (double) (clock() - startTime) / CLOCKS_PER_SEC;

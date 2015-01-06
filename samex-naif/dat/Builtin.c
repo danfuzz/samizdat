@@ -58,10 +58,10 @@ zvalue builtinCall(zvalue builtin, zarray args) {
     BuiltinInfo *info = getInfo(builtin);
 
     if (args.size < info->minArgs) {
-        xdiex("Too few arguments for builtin call: %lld, min %lld",
+        die("Too few arguments for builtin call: %d, min %d",
             args.size, info->minArgs);
     } else if (args.size > info->maxArgs) {
-        xdiex("Too many arguments for builtin call: %lld, max %lld",
+        die("Too many arguments for builtin call: %d, max %d",
             args.size, info->maxArgs);
     }
 
@@ -78,11 +78,11 @@ zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
         zint stateSize, zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
-        xdiex("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
+        die("Invalid `minArgs` / `maxArgs`: %d, %d", minArgs, maxArgs);
     }
 
     if (stateSize < 0) {
-        xdiex("Invalid `stateSize`: %lld", stateSize);
+        die("Invalid `stateSize`: %d", stateSize);
     }
 
     if (name != NULL) {

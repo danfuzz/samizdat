@@ -2,8 +2,6 @@
 // Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 // Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#include <stdio.h>
-
 #include "type/Core.h"
 #include "type/Int.h"
 #include "type/String.h"
@@ -85,7 +83,7 @@ zint zintFromInt(zvalue intval) {
         if ((op)(&result, x)) { \
             return intFromZint(result); \
         } else { \
-            xdiex("Overflow / error on" #name "(%lld).", x); \
+            die("Overflow / error on" #name "(%d).", x); \
         } \
     } \
     extern int semicolonRequiredHere
@@ -103,7 +101,7 @@ zint zintFromInt(zvalue intval) {
         if ((op)(&result, x, y)) { \
             return intFromZint(result); \
         } else { \
-            xdiex("Overflow / error on" #name "(%lld, %lld).", x, y); \
+            die("Overflow / error on" #name "(%d, %d).", x, y); \
         } \
     } \
     extern int semicolonRequiredHere
@@ -154,8 +152,10 @@ METH_IMPL_1(Int, crossOrder, other) {
 METH_IMPL_0(Int, debugString) {
     char arr[22];  // Big enough for the longest possible result.
 
-    snprintf(arr, sizeof(arr), "%lld", zintValue(ths));
-    return stringFromUtf8(-1, arr);
+    char *str = utilFormat("%d", zintValue(ths));
+    zvalue result = stringFromUtf8(-1, str);
+    utilFree(str);
+    return result;
 }
 
 /** Initializes the module. */
