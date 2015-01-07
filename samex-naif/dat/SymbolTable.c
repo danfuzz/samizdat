@@ -323,7 +323,7 @@ METH_IMPL_rest(SymbolTable, cat, args) {
         zvalue one = typeCast(CLS_SymbolTable, args.elems[i]);
 
         if (one == NULL) {
-            xdiex("Invalid argument to `cat()`: %s", cm_debugString(one));
+            die("Invalid argument to `cat()`: %s", cm_debugString(one));
         }
 
         SymbolTableInfo *oneInfo = getInfo(one);

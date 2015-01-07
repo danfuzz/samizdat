@@ -37,7 +37,7 @@ static void *loadLibrary(const char *path) {
     void *libHandle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
 
     if (libHandle == NULL) {
-        xdiex("Trouble loading library %s: %s\n\n", path, dlerror());
+        die("Trouble loading library %s: %s", path, dlerror());
     }
 
     return libHandle;
@@ -58,7 +58,7 @@ static zvalue evalLibrary(void *libHandle, zvalue env) {
     *(void **)(&evalFn) = dlsym(libHandle, "eval");
 
     if (evalFn == NULL) {
-        xdiex("Trouble looking up `eval`: %s\n", dlerror());
+        die("Trouble looking up `eval`: %s", dlerror());
     }
 
     return evalFn(env);
@@ -76,7 +76,7 @@ zvalue datEvalBinary(zvalue env, zvalue path) {
     utf8FromString(size + 1, str, path);
 
     if ((size == 0) || (str[0] != '/')) {
-        xdiex("Invalid path: %s", str);
+        die("Invalid path: %s", str);
     }
 
     void *libHandle = loadLibrary(str);

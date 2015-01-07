@@ -78,7 +78,7 @@ METH_IMPL_0_opt(Object, access, key) {
 CMETH_IMPL_2_opt_opt(Object, subclass, name, config,
         classMethods, instanceMethods) {
     if (thsClass != CLS_Object) {
-        xdiex("Invalid parent class: %s", cm_debugString(thsClass));
+        die("Invalid parent class: %s", cm_debugString(thsClass));
     }
 
     if (classMethods == NULL) {

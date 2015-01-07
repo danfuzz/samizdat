@@ -326,7 +326,7 @@ METH_IMPL_rest(Map, cat, args) {
         zvalue one = typeCast(CLS_Map, args.elems[i]);
 
         if (one == NULL) {
-            xdiex("Invalid argument to `cat()`: %s", cm_debugString(one));
+            die("Invalid argument to `cat()`: %s", cm_debugString(one));
         }
 
         maps[i] = one;

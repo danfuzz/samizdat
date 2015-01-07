@@ -99,7 +99,7 @@ static zvalue methCall0(zvalue target, zint nameIndex, zarray args) {
 
     if (function == NULL) {
         zvalue nameStr = cm_castFrom(CLS_String, symbolFromIndex(nameIndex));
-        xdiex("Unbound method: %s.%s", cm_debugString(cls),
+        die("Unbound method: %s.%s", cm_debugString(cls),
             cm_debugString(nameStr));
     }
 

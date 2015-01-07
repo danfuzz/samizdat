@@ -74,9 +74,9 @@ static bool uncheckedEq(zvalue symbol1, zvalue symbol2) {
  */
 static zvalue makeSymbol0(zstring name, bool interned) {
     if (theNextIndex >= DAT_MAX_SYMBOLS) {
-        xdiex("Too many symbols!");
+        die("Too many symbols!");
     } else if (name.size > DAT_MAX_SYMBOL_SIZE) {
-        xdiex("Symbol name too long: \"%s\"", utf8DupFromZstring(name));
+        die("Symbol name too long: \"%s\"", utf8DupFromZstring(name));
     }
 
     zvalue result = datAllocValue(CLS_Symbol, sizeof(SymbolInfo));
@@ -266,7 +266,7 @@ zorder zorderFromSymbol(zvalue symbol) {
     else if (index == SYMIDX(more)) { return ZMORE; }
     else if (index == SYMIDX(same)) { return ZSAME; }
 
-    xdiex("Invalid order symbol: %s", cm_debugString(symbol));
+    die("Invalid order symbol: %s", cm_debugString(symbol));
 }
 
 // Documented in header.

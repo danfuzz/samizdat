@@ -45,7 +45,7 @@ static char *resolveLinks(const char *path) {
     char *result = realpath(path, resultBuf);
 
     if (result == NULL) {
-        xdiex("Trouble with `realpath`: %s", strerror(errno));
+        die("Trouble with `realpath`: %s", strerror(errno));
     }
 
     return utilStrdup(resultBuf);
@@ -110,7 +110,7 @@ static char *resolveArgv0(const char *argv0) {
         if (stat(oneFile, &statBuf) != 0) {
             // File not found or invalid component aren't actually fatal here.
             if ((errno != ENOENT) && (errno != ENOTDIR)) {
-                xdiex("Trouble with `stat`: %s", strerror(errno));
+                die("Trouble with `stat`: %s", strerror(errno));
             }
         } else {
             // Found it!

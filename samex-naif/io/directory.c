@@ -38,7 +38,7 @@ zvalue ioReadDirectory(zvalue path) {
 
     DIR *dir = opendir(str);
     if (dir == NULL) {
-        xdiex("Trouble opening directory \"%s\": %s", str, strerror(errno));
+        die("Trouble opening directory \"%s\": %s", str, strerror(errno));
     }
 
     zvalue pathPrefix = cm_cat(path, stringFromZchar('/'));
@@ -48,7 +48,7 @@ zvalue ioReadDirectory(zvalue path) {
 
     for (;;) {
         if (readdir_r(dir, &entry, &entryPtr) != 0) {
-            xdiex("Trouble reading directory \"%s\": %s", str, strerror(errno));
+            die("Trouble reading directory \"%s\": %s", str, strerror(errno));
         } else if (entryPtr == NULL) {
             // End-of-directory is indicated by setting `entryPtr` to `NULL`.
             break;
@@ -75,7 +75,7 @@ zvalue ioReadDirectory(zvalue path) {
     }
 
     if (closedir(dir) != 0) {
-        xdiex("Trouble closing directory \"%s\": %s", str, strerror(errno));
+        die("Trouble closing directory \"%s\": %s", str, strerror(errno));
     }
 
     return result;
