@@ -119,7 +119,7 @@ static void dumpState(ParseState *state) {
         }
 
         char *oneStr = cm_debugString(one);
-        xnotex("    %s", oneStr);
+        note("    %s", oneStr);
         utilFree(oneStr);
     }
 }

@@ -94,7 +94,7 @@ static void detectDuplicates(zint size, zvalue *arr, const char *kind) {
     for (zint i = 1; i < size; i++) {
         if (arr[i - 1] == arr[i]) {
             zvalue nameStr = cm_castFrom(CLS_String, arr[i]);
-            xdiex("Duplicate %s name: %s", kind, cm_debugString(nameStr));
+            die("Duplicate %s name: %s", kind, cm_debugString(nameStr));
         }
     }
 }
@@ -139,7 +139,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
                 case NODE_CH_PLUS:  { rep = REP_PLUS;  break; }
                 case NODE_CH_QMARK: { rep = REP_QMARK; break; }
                 default: {
-                    xdiex("Invalid repeat modifier: %s", cm_debugString(repeat));
+                    die("Invalid repeat modifier: %s", cm_debugString(repeat));
                 }
             }
         }

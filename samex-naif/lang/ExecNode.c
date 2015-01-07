@@ -367,7 +367,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                 case NODE_promise: { info->box = CLS_Promise; break; }
                 case NODE_result:  { info->box = CLS_Result;  break; }
                 default: {
-                    xdiex("Invalid `box` spec: %s", cm_debugString(info->box));
+                    die("Invalid `box` spec: %s", cm_debugString(info->box));
                 }
             }
 
@@ -388,7 +388,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         }
 
         default: {
-            xdiex("Invalid node: %s", cm_debugString(orig));
+            die("Invalid node: %s", cm_debugString(orig));
         }
     }
 

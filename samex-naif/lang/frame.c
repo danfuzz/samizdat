@@ -23,7 +23,7 @@
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
         zvalue vars) {
     if ((parentFrame != NULL) && !parentFrame->onHeap) {
-        xdiex("Stack-allocated `parentFrame`.");
+        die("Stack-allocated `parentFrame`.");
     }
 
     frame->parentFrame = parentFrame;
@@ -54,7 +54,7 @@ zvalue frameGet(Frame *frame, zvalue name) {
     }
 
     zvalue nameStr = cm_castFrom(CLS_String, name);
-    xdiex("Variable not defined: %s", cm_debugString(nameStr));
+    die("Variable not defined: %s", cm_debugString(nameStr));
 }
 
 // Documented in header.

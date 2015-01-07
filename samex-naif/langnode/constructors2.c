@@ -111,7 +111,7 @@ static zvalue extractMethods(zvalue allMethods, zvalue scope) {
         if (!cmpEq(scope, get_name(one))) {
             continue;
         } else if (cm_get(names, name)) {
-            xdiex("Duplicate method: %s", cm_debugString(name));
+            die("Duplicate method: %s", cm_debugString(name));
         }
 
         names = symtabCatMapping(names, (zmapping) {name, BOOL_TRUE});
@@ -285,7 +285,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     for (zint i = 0; i < attribSize; i++) {
         zvalue one = cm_nth(keys, i);
         if (!(cmpEq(one, SYM(access)) || cmpEq(one, SYM(new)))) {
-            xdiex("Invalid attribute: %s", cm_debugString(one));
+            die("Invalid attribute: %s", cm_debugString(one));
         }
     }
 

@@ -99,7 +99,7 @@ static zvalue loadFile(zvalue path) {
             zvalue tree = langSimplify0(langParseProgram0(text), NULL);
             func = langEval0(PRIMITIVE_ENVIRONMENT, tree);
         } else {
-            xdiex("Missing bootstrap library file: %s", cm_debugString(path));
+            die("Missing bootstrap library file: %s", cm_debugString(path));
         }
     }
 
@@ -122,7 +122,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 
     zvalue exports = cm_get(moduleSystem, SYM(exports));
     if (exports == NULL) {
-        xdiex("Missing bootstrap `exports` binding.");
+        die("Missing bootstrap `exports` binding.");
     }
 
     zvalue mainFn = cm_get(exports, SYM(main));

@@ -60,7 +60,7 @@ static void servicePendingInits(void) {
                 *(one->status) = MOD_INITIALIZING;
                 one->func();
                 if (*(one->status) != MOD_INITIALIZING) {
-                    xdiex("Unexpected change in status for module: %s",
+                    die("Unexpected change in status for module: %s",
                         one->name);
                 }
                 *(one->status) = MOD_INITIALIZED;
@@ -68,7 +68,7 @@ static void servicePendingInits(void) {
             }
 
             case MOD_INITIALIZING: {
-                xdiex("Circular dependency with module: %s", (one->name));
+                die("Circular dependency with module: %s", (one->name));
             }
 
             case MOD_INITIALIZED: {
