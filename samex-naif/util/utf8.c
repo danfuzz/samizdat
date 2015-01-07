@@ -33,7 +33,7 @@ static void assertValidCodePoint(zint value) {
 static const char *getUtfEnd(zint utfBytes, const char *utf) {
     if (utfBytes < 0) {
         if (utfBytes != -1) {
-            xdiex("Invalid UTF-8 size: %lld", utfBytes);
+            die("Invalid UTF-8 size: %d", utfBytes);
         }
 
         utfBytes = strlen(utf);
@@ -42,7 +42,7 @@ static const char *getUtfEnd(zint utfBytes, const char *utf) {
     const char *result = utf + utfBytes;
 
     if (result < utf) {
-        xdiex("Invalid UTF-8 size (pointer wraparound): %p + %lld",
+        die("Invalid UTF-8 size (pointer wraparound): %p + %d",
             utf, utfBytes);
     }
 
@@ -54,7 +54,7 @@ static const char *getUtfEnd(zint utfBytes, const char *utf) {
  */
 static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
     if (utfBytes <= 0) {
-        xdiex("Invalid UTF-8 size: %lld", utfBytes);
+        die("Invalid UTF-8 size: %d", utfBytes);
     }
 
     unsigned char ch = *utf;

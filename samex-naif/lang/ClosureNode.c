@@ -107,7 +107,7 @@ static void convertFormals(ClosureNodeInfo *info, zvalue formalsList) {
     zarray statements = zarrayFromList(info->statements);
 
     if (formals.size > LANG_MAX_FORMALS) {
-        xdiex("Too many formals: %lld", formals.size);
+        die("Too many formals: %d", formals.size);
     }
 
     // The `names` array is for detecting duplicates.
@@ -194,8 +194,8 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
                 }
                 case REP_PLUS: {
                     if (argAt >= args.size) {
-                        xdiex("Function called with too few arguments "
-                            "(plus argument): %lld",
+                        die("Function called with too few arguments "
+                            "(plus argument): %d",
                             args.size);
                     }
                     count = args.size - argAt;
@@ -215,7 +215,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
                 : listFromZarray((zarray) {count, &args.elems[argAt]});
             argAt += count;
         } else if (argAt >= args.size) {
-            xdiex("Function called with too few arguments: %lld", args.size);
+            die("Function called with too few arguments: %d", args.size);
         } else {
             value = args.elems[argAt];
             argAt++;
@@ -229,7 +229,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
     }
 
     if (argAt != args.size) {
-        xdiex("Function called with too many arguments: %lld > %lld",
+        die("Function called with too many arguments: %d > %d",
             args.size, argAt);
     }
 

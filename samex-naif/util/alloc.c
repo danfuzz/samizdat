@@ -131,7 +131,7 @@ static void addPages(void *start, void *end) {
 // Documented in header.
 void *utilAlloc(zint size) {
     if (size < 0) {
-        xdiex("Invalid allocation size: %lld", size);
+        die("Invalid allocation size: %d", size);
     }
 
     void *result = calloc(1, size);

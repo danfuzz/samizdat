@@ -62,7 +62,7 @@ static zint read(ParseState *state) {
  */
 static void reset(ParseState *state, zint mark) {
     if (mark > state->at) {
-        xdiex("Cannot reset forward: %lld > %lld", mark, state->at);
+        die("Cannot reset forward: %d > %d", mark, state->at);
     }
 
     state->at = mark;
