@@ -402,7 +402,7 @@ static zvalue tokenizeAnyToken(ParseState *state) {
     zvalue result = tokenizeIdentifier(state);
 
     if (result == NULL) {
-        xdiex("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
+        die("Invalid character in token stream: %c", (char) ch);
     }
 
     return result;
