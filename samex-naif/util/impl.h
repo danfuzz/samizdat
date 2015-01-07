@@ -9,7 +9,12 @@
 #ifndef _IMPL_H_
 #define _IMPL_H_
 
+#include "util.h"
+
 enum {
+    /** Initial buffer size for string formatting. */
+    UTIL_INITIAL_FORMAT_SIZE = 200,
+
     /** Maximum number of active stack frames. */
     UTIL_MAX_CALL_STACK_DEPTH = 4000,
 

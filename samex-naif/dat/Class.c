@@ -468,8 +468,8 @@ METH_IMPL_1(Class, perOrder, other) {
 MOD_INIT(objectModel) {
     // Make sure that the "exposed" header is sized the same as the real one.
     if (sizeof(DatHeaderExposed) != sizeof(DatHeader)) {
-        die("Mismatched exposed header size: should be %lu",
-            sizeof(DatHeader));
+        die("Mismatched exposed header size: should be %d",
+            (zint) sizeof(DatHeader));
     }
 
     // Set up the "knotted" classes. These are the ones that have circular

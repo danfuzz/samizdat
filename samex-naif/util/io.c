@@ -68,7 +68,7 @@ char *utilReadLink(const char *path) {
     if (resultSz < 0) {
         die("Trouble with `readlink`: %s", strerror(errno));
     } else if (assumeSize ? (resultSz > linkSz) : (resultSz != linkSz)) {
-        die("Strange `readlink` result: %ld", (long) resultSz);
+        die("Strange `readlink` result: %d", (zint) resultSz);
     }
 
     result[resultSz] = '\0';

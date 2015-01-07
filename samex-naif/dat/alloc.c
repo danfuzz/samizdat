@@ -116,7 +116,7 @@ static void sanityCheck(bool force) {
 
     for (zint i = 0; i < immortalsSize; i++) {
         if (!thoroughlyValidate(immortals[i], liveColor)) {
-            die("...at immortal #%lld", i);
+            die("...at immortal #%d", i);
         }
     }
 
@@ -187,13 +187,13 @@ static void doGc(void) {
     }
 
     if (DAT_CHATTY_GC) {
-        note("GC: Marked %lld immortals.", immortalsSize);
+        note("GC: Marked %d immortals.", immortalsSize);
     }
 
     counter = markFrameStack();
 
     if (DAT_CHATTY_GC) {
-        note("GC: Marked %lld stack values.", counter);
+        note("GC: Marked %d stack values.", counter);
     }
 
     // Calls to `datMark()` just place items on the live list but do not call
@@ -239,8 +239,8 @@ static void doGc(void) {
     doomedHead.prev = &doomedHead;
 
     if (DAT_CHATTY_GC) {
-        note("GC: Freed %lld dead values.", counter);
-        note("GC: %lld live values remain.", liveCount);
+        note("GC: Freed %d dead values.", counter);
+        note("GC: %d live values remain.", liveCount);
     }
 
     // Occasional sanity check.
@@ -316,7 +316,7 @@ void datGc(void) {
         static double totalSec = 0;
         clock_t startTime = clock();
 
-        note("GC: Cycle #%lld.", gcCount);
+        note("GC: Cycle #%d.", gcCount);
         doGc();
 
         double elapsedSec = (double) (clock() - startTime) / CLOCKS_PER_SEC;

@@ -85,7 +85,7 @@ static zint cursor(ParseState *state) {
  */
 static void reset(ParseState *state, zint mark) {
     if (mark > state->at) {
-        die("Cannot reset forward: %lld > %lld", mark, state->at);
+        die("Cannot reset forward: %d > %d", mark, state->at);
     }
 
     state->at = mark;

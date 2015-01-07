@@ -37,7 +37,7 @@ static void *loadLibrary(const char *path) {
     void *libHandle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
 
     if (libHandle == NULL) {
-        die("Trouble loading library %s: %s\n\n", path, dlerror());
+        die("Trouble loading library %s: %s", path, dlerror());
     }
 
     return libHandle;
@@ -58,7 +58,7 @@ static zvalue evalLibrary(void *libHandle, zvalue env) {
     *(void **)(&evalFn) = dlsym(libHandle, "eval");
 
     if (evalFn == NULL) {
-        die("Trouble looking up `eval`: %s\n", dlerror());
+        die("Trouble looking up `eval`: %s", dlerror());
     }
 
     return evalFn(env);

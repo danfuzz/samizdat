@@ -62,7 +62,7 @@ static zint read(ParseState *state) {
  */
 static void reset(ParseState *state, zint mark) {
     if (mark > state->at) {
-        die("Cannot reset forward: %lld > %lld", mark, state->at);
+        die("Cannot reset forward: %d > %d", mark, state->at);
     }
 
     state->at = mark;
@@ -244,7 +244,7 @@ static zvalue tokenizeString(ParseState *state) {
                     break;
                 }
                 default: {
-                    die("Invalid string escape character: %#llx", ch);
+                    die("Invalid string escape character: %x", ch);
                 }
             }
         }
@@ -402,7 +402,7 @@ static zvalue tokenizeAnyToken(ParseState *state) {
     zvalue result = tokenizeIdentifier(state);
 
     if (result == NULL) {
-        die("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
+        die("Invalid character in token stream: %c", (char) ch);
     }
 
     return result;

@@ -6,8 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "util.h"
-
 #include "impl.h"
 
 
@@ -133,13 +131,13 @@ static void addPages(void *start, void *end) {
 // Documented in header.
 void *utilAlloc(zint size) {
     if (size < 0) {
-        die("Invalid allocation size: %lld", size);
+        die("Invalid allocation size: %d", size);
     }
 
     void *result = calloc(1, size);
 
     if (result == NULL) {
-        die("Failed to allocate: size %#llx", size);
+        die("Failed to allocate: size %x", size);
     }
 
     if (MEMORY_PARANOIA) {

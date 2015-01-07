@@ -211,7 +211,7 @@ bool symbolEq(zvalue symbol1, zvalue symbol2) {
 // Documented in header.
 zvalue symbolFromIndex(zint index) {
     if ((index < 0) || (index >= theNextIndex)) {
-        die("Bad index for symbol: %lld", index);
+        die("Bad index for symbol: %d", index);
     }
 
     return theSymbols[index];

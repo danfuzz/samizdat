@@ -9,6 +9,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
+#include <stdarg.h>
 #include <string.h>
 
 #include "ztype.h"
@@ -75,20 +76,59 @@ extern UtilStackGiblet *utilStackTop;
     } while(0)
 
 /**
- * Emits a debugging message. Arguments are as with `printf()`.
- */
-void note(const char *format, ...)
-    __attribute__((format (printf, 1, 2)));
-
-/**
  * Dies (aborts the process) with the given message. Arguments are as
- * with `printf()`. If there is any active stack context (more
+ * with `utilFormat()`. If there is any active stack context (more
  * `UTIL_TRACE_START()`s than `UTIL_TRACE_END()`s), then that context is
  * appended to the death report.
  */
 void die(const char *format, ...)
-    __attribute__((noreturn))
-    __attribute__((format (printf, 1, 2)));
+    __attribute__((noreturn));
+
+/**
+ * Emits a debugging message. Arguments are as with `utilFormat()`.
+ */
+void note(const char *format, ...);
+
+
+//
+// String Formatting Declarations
+//
+
+/**
+ * Returns a freshly-allocated string constructed based on the given format
+ * string and additional arguments. This is similar to `asprintf()`, except
+ * that the return value is the allocated string (not a size-or-error) and
+ * directives are bespoke.
+ *
+ * Directives:
+ * * `%` -- Literal `%`.
+ * * `c` -- The given `char` argument as a single-quoted character. Emits
+ *   a hex escape if not in the printable ASCII range. This behavior is a bit
+ *   different than the usual `printf` meaning.
+ * * `d` -- The given `zint` argument as a decimal.
+ * * `g` -- The given `double` argument as a decimal.
+ * * `p` -- The given `void *` argument as a pointer address.
+ * * `s` -- The given string argument (type `const char *`).
+ * * `x` -- The given `zint` argument as an unsigned hexadecimal, prefixed
+ *   with `0x`. The `0x` isn't considered part of the field width. This
+ *   behavior is similar to `%#x` in `printf`.
+ *
+ * Modifier prefixes:
+ * * `0`..`9` -- Indicate field width. An initial `0` means that padding
+ *     should be with zeros instead of spaces.
+ *
+ * **Note:** The impetus for this function was that there is arguably no saner
+ * way to allow for formatting of `zint`s. `zint` is defined to be 64 bits,
+ * and there is no fixed directive string (per spec) which means "64-bit
+ * integer." That is, `PRId64` is *way too ugly* to use in regular code.
+ */
+char *utilFormat(const char *format, ...);
+
+/**
+ * Like `utilFormat`, but takes a `va_list` instead of separate args. Use
+ * similar to `vasprintf()`.
+ */
+char *utilVFormat(const char *format, va_list);
 
 
 //
@@ -99,12 +139,6 @@ void die(const char *format, ...)
  * Allocates zeroed-out memory of the indicated size (in bytes).
  */
 void *utilAlloc(zint size);
-
-/**
- * Exactly like `asprintf`, except that `utilFree` should be used to free
- * the result.
- */
-int utilAsprintf(char **ret, const char *format, ...);
 
 /**
  * Frees memory previously allocated by `utilAlloc`.

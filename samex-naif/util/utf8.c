@@ -15,13 +15,13 @@
  */
 static void assertValidCodePoint(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
-        die("Invalid occurrence of surrogate code point: %#04x", (int) value);
+        die("Invalid occurrence of surrogate code point: %x", value);
     } else if (value == 0xfffe) {
         die("Invalid occurrence of reversed-BOM.");
     } else if (value == 0xffff) {
         die("Invalid occurrence of not-a-character.");
     } else if (value >= 0x110000) {
-        die("Invalid occurrence of high code point: %#llx", value);
+        die("Invalid occurrence of high code point: %x", value);
     }
 }
 
@@ -33,7 +33,7 @@ static void assertValidCodePoint(zint value) {
 static const char *getUtfEnd(zint utfBytes, const char *utf) {
     if (utfBytes < 0) {
         if (utfBytes != -1) {
-            die("Invalid UTF-8 size: %lld", utfBytes);
+            die("Invalid UTF-8 size: %d", utfBytes);
         }
 
         utfBytes = strlen(utf);
@@ -42,7 +42,7 @@ static const char *getUtfEnd(zint utfBytes, const char *utf) {
     const char *result = utf + utfBytes;
 
     if (result < utf) {
-        die("Invalid UTF-8 size (pointer wraparound): %p + %lld",
+        die("Invalid UTF-8 size (pointer wraparound): %p + %d",
             utf, utfBytes);
     }
 
@@ -54,7 +54,7 @@ static const char *getUtfEnd(zint utfBytes, const char *utf) {
  */
 static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
     if (utfBytes <= 0) {
-        die("Invalid UTF-8 size: %lld", utfBytes);
+        die("Invalid UTF-8 size: %d", utfBytes);
     }
 
     unsigned char ch = *utf;
@@ -76,7 +76,7 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
         }
         case 0x8: case 0x9: case 0xa: case 0xb: {
             // 80..bf: Invalid start bytes.
-            die("Invalid UTF-8 start byte: %#02x", (int) ch);
+            die("Invalid UTF-8 start byte: %02x", (zint) ch);
             break;
         }
         case 0xc: case 0xd: {
@@ -132,7 +132,7 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
                 }
                 case 0xf: {
                     // fe..ff: Invalid start bytes.
-                    die("Invalid UTF-8 start byte: %#02x", (int) ch);
+                    die("Invalid UTF-8 start byte: %02x", (zint) ch);
                     break;
                 }
             }
@@ -149,18 +149,18 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
         extraBytes--;
 
         if ((ch & 0xc0) != 0x80) {
-            die("Invalid UTF-8 continuation byte: %#02x", (int) ch);
+            die("Invalid UTF-8 continuation byte: %02x", (zint) ch);
         }
 
         value = (value << 6) | (ch & 0x3f);
     }
 
     if (value < minValue) {
-        die("Overlong UTF-8 encoding of value: %#llx", value);
+        die("Overlong UTF-8 encoding of value: %x", value);
     }
 
     if (value >= 0x100000000) {
-        die("Out-of-range UTF-8 encoded value: %#llx", value);
+        die("Out-of-range UTF-8 encoded value: %x", value);
     }
 
     if (result != NULL) {
@@ -212,7 +212,7 @@ void utf8DecodeCharsFromString(zchar *result, zint utfBytes, const char *utf) {
 // Documented in header.
 char *utf8EncodeOne(char *result, zint ch) {
     if (ch < 0) {
-        die("Out of range for UTF-8: %#llx", ch);
+        die("Out of range for UTF-8: %x", ch);
     } else if (ch < 0x80) {
         if (result != NULL) {
             result[0] = (char) ch;
@@ -270,6 +270,6 @@ char *utf8EncodeOne(char *result, zint ch) {
         }
         return result + 7;
     } else {
-        die("Out of range for UTF-8: %#llx", ch);
+        die("Out of range for UTF-8: %x", ch);
     }
 }

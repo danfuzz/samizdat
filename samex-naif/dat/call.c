@@ -64,16 +64,15 @@ static char *callReporter(void *state) {
 
         if (targetName != NULL) {
             char *nameStr = ensureString(targetName);
-            utilAsprintf(&result, "%s (instance of %s)",
-                nameStr, classStr);
+            result = utilFormat("%s (instance of %s)", nameStr, classStr);
             utilFree(nameStr);
         } else {
-            utilAsprintf(&result, "anonymous instance of %s", classStr);
+            result = utilFormat("anonymous instance of %s", classStr);
         }
     } else {
         char *targetStr = cm_debugString(ste->target);
         char *nameStr = ensureString(ste->name);
-        utilAsprintf(&result, "%s.%s on %s", classStr, nameStr, targetStr);
+        result = utilFormat("%s.%s on %s", classStr, nameStr, targetStr);
         utilFree(targetStr);
         utilFree(nameStr);
     }
