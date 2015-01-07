@@ -136,6 +136,19 @@ char *utilVFormat(const char *format, va_list rest) {
                     fieldWidth = (fieldWidth * 10) + (ch - '0');
                     break;
                 }
+                case 'c': {
+                    zint cval = (zint) (unsigned char) va_arg(rest, int);
+                    int err = ((cval >= ' ') && (cval < 0x7f))
+                        ? asprintf(&freeMe, "'%c'", (char) cval)
+                        : asprintf(&freeMe, "'\\x%02x'", (int) cval);
+
+                    if (err < 0) {
+                        die("Failure in `asprintf`.");
+                    }
+
+                    intermed = freeMe;
+                    break;
+                }
                 case 's': {
                     intermed = va_arg(rest, const char *);
                     break;
@@ -162,7 +175,7 @@ char *utilVFormat(const char *format, va_list rest) {
                     break;
                 }
                 default: {
-                    die("Unknown directive.");
+                    die("Unknown directive character: %c", ch);
                 }
             }
         }
