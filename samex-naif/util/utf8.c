@@ -15,7 +15,7 @@
  */
 static void assertValidCodePoint(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
-        xdiex("Invalid occurrence of surrogate code point: %#04x", (int) value);
+        die("Invalid occurrence of surrogate code point: %x", value);
     } else if (value == 0xfffe) {
         die("Invalid occurrence of reversed-BOM.");
     } else if (value == 0xffff) {
@@ -76,7 +76,7 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
         }
         case 0x8: case 0x9: case 0xa: case 0xb: {
             // 80..bf: Invalid start bytes.
-            xdiex("Invalid UTF-8 start byte: %#02x", (int) ch);
+            die("Invalid UTF-8 start byte: %02x", (zint) ch);
             break;
         }
         case 0xc: case 0xd: {
@@ -132,7 +132,7 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
                 }
                 case 0xf: {
                     // fe..ff: Invalid start bytes.
-                    xdiex("Invalid UTF-8 start byte: %#02x", (int) ch);
+                    die("Invalid UTF-8 start byte: %02x", (zint) ch);
                     break;
                 }
             }
@@ -149,7 +149,7 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
         extraBytes--;
 
         if ((ch & 0xc0) != 0x80) {
-            xdiex("Invalid UTF-8 continuation byte: %#02x", (int) ch);
+            die("Invalid UTF-8 continuation byte: %02x", (zint) ch);
         }
 
         value = (value << 6) | (ch & 0x3f);
