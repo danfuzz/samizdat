@@ -121,11 +121,11 @@ static void sanityCheck(bool force) {
     }
 
     if (!sanityCheckList(&liveHead, liveColor)) {
-        xdiex("...on live list.");
+        die("...on live list.");
     }
 
     if (!sanityCheckList(&doomedHead, liveColor ^ 1)) {
-        xdiex("...on doomed list.");
+        die("...on doomed list.");
     }
 }
 
@@ -321,7 +321,7 @@ void datGc(void) {
 
         double elapsedSec = (double) (clock() - startTime) / CLOCKS_PER_SEC;
         totalSec += elapsedSec;
-        xnotex("GC: %g msec this cycle. %g sec overall.",
+        note("GC: %g msec this cycle. %g sec overall.",
             elapsedSec * 1000, totalSec);
     } else {
         doGc();
@@ -331,7 +331,7 @@ void datGc(void) {
 // Documented in header.
 zvalue datImmortalize(zvalue value) {
     if (immortalsSize == DAT_MAX_IMMORTALS) {
-        xdiex("Too many immortal values!");
+        die("Too many immortal values!");
     }
 
     assertValid(value);
