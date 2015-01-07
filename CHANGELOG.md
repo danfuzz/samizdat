@@ -262,3 +262,7 @@ Version History
 
     * Did major restructuring on the C code, to make it a bit cleaner and
       more maintainable going forward.
+
+* 0.11.1 &mdash; 7-jan-2015
+
+  * Fixed bugs that prevented successful building and running on Linux.
