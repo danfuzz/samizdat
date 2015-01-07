@@ -140,12 +140,12 @@ static zvalue tokenizeInt(ParseState *state) {
         value = (value * 10) + (ch - '0');
 
         if (value >= 0x80000000) {
-            xdiex("Overvalue int token.");
+            die("Overvalue int token.");
         }
     }
 
     if (!any) {
-        xdiex("Invalid int token (no digits).");
+        die("Invalid int token (no digits).");
     }
 
     zvalue intval = intFromZint(value);
@@ -222,14 +222,14 @@ static zvalue tokenizeString(ParseState *state) {
         zint ch = peek(state);
 
         if (ch == -1) {
-            xdiex("Unterminated string.");
+            die("Unterminated string.");
         } else if (ch == '\n') {
-            xdiex("Invalid character in string: `\n`");
+            die("Invalid character in string: `\n`");
         } else if (ch == '\"') {
             read(state);
             break;
         } else if (s.size == LANG_MAX_STRING_CHARS) {
-            xdiex("Overlong string token.");
+            die("Overlong string token.");
         } else if (ch == '\\') {
             read(state);
             ch = peek(state);
@@ -244,7 +244,7 @@ static zvalue tokenizeString(ParseState *state) {
                     break;
                 }
                 default: {
-                    xdiex("Invalid string escape character: %#llx", ch);
+                    die("Invalid string escape character: %x", ch);
                 }
             }
         }
@@ -266,7 +266,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     read(state);
 
     if (peek(state) != '\"') {
-        xdiex("Invalid quoted identifier.");
+        die("Invalid quoted identifier.");
     }
 
     zvalue result = tokenizeString(state);
@@ -337,7 +337,7 @@ static zvalue tokenizeDirective(ParseState *state) {
         if ((ch == -1) || (ch == '\n')) {
             break;
         } else if (s.size == LANG_MAX_STRING_CHARS) {
-            xdiex("Overlong directive token.");
+            die("Overlong directive token.");
         } else if ((s.size == 0) && (ch == ' ')) {
             // Skip initial spaces.
             continue;
@@ -441,7 +441,7 @@ zvalue langTokenize0(zvalue string) {
             break;
         } else if (!nodeRecTypeIs(one, NODE_directive)) {
             if (out >= LANG_MAX_TOKENS) {
-                xdiex("Too many tokens.");
+                die("Too many tokens.");
             }
 
             result[out] = one;

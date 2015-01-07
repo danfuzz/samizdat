@@ -137,7 +137,7 @@ void *utilAlloc(zint size) {
     void *result = calloc(1, size);
 
     if (result == NULL) {
-        xdiex("Failed to allocate: size %#llx", size);
+        die("Failed to allocate: size %x", size);
     }
 
     if (MEMORY_PARANOIA) {

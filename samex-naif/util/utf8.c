@@ -17,11 +17,11 @@ static void assertValidCodePoint(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
         xdiex("Invalid occurrence of surrogate code point: %#04x", (int) value);
     } else if (value == 0xfffe) {
-        xdiex("Invalid occurrence of reversed-BOM.");
+        die("Invalid occurrence of reversed-BOM.");
     } else if (value == 0xffff) {
-        xdiex("Invalid occurrence of not-a-character.");
+        die("Invalid occurrence of not-a-character.");
     } else if (value >= 0x110000) {
-        xdiex("Invalid occurrence of high code point: %#llx", value);
+        die("Invalid occurrence of high code point: %x", value);
     }
 }
 
@@ -156,11 +156,11 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
     }
 
     if (value < minValue) {
-        xdiex("Overlong UTF-8 encoding of value: %#llx", value);
+        die("Overlong UTF-8 encoding of value: %x", value);
     }
 
     if (value >= 0x100000000) {
-        xdiex("Out-of-range UTF-8 encoded value: %#llx", value);
+        die("Out-of-range UTF-8 encoded value: %x", value);
     }
 
     if (result != NULL) {
@@ -212,7 +212,7 @@ void utf8DecodeCharsFromString(zchar *result, zint utfBytes, const char *utf) {
 // Documented in header.
 char *utf8EncodeOne(char *result, zint ch) {
     if (ch < 0) {
-        xdiex("Out of range for UTF-8: %#llx", ch);
+        die("Out of range for UTF-8: %x", ch);
     } else if (ch < 0x80) {
         if (result != NULL) {
             result[0] = (char) ch;
@@ -270,6 +270,6 @@ char *utf8EncodeOne(char *result, zint ch) {
         }
         return result + 7;
     } else {
-        xdiex("Out of range for UTF-8: %#llx", ch);
+        die("Out of range for UTF-8: %x", ch);
     }
 }
