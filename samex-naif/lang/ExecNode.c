@@ -173,14 +173,14 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
 
         case NODE_void: {
             if (op != EX_maybe) {
-                xdiex("Invalid use of `void` node.");
+                die("Invalid use of `void` node.");
             }
 
             return NULL;
         }
 
         default: {
-            xdiex("Invalid type (shouldn't happen): %d", info->type);
+            die("Invalid type (shouldn't happen): %d", info->type);
         }
     }
 
@@ -191,7 +191,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
         case EX_voidOk:    { return result; }
         default: {
             if (result == NULL) {
-                xdiex("Invalid use of void expression result.");
+                die("Invalid use of void expression result.");
             }
             return result;
         }
@@ -331,7 +331,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
         case NODE_maybe:
         case NODE_noYield: {
             if (!recGet1(orig, SYM(value), &info->value)) {
-                xdiex("Invalid `literal`, `maybe`, or `noYield` node.");
+                die("Invalid `literal`, `maybe`, or `noYield` node.");
             }
 
             if (type != NODE_literal) {
@@ -345,7 +345,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
             if (!recGet2(orig,
                     SYM(target), &info->target,
                     SYM(value),  &info->value)) {
-                xdiex("Invalid `store` node.");
+                die("Invalid `store` node.");
             }
 
             exnoConvert(&info->target);
@@ -358,7 +358,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                     SYM(box),   &info->box,
                     SYM(name),  &info->name,
                     SYM(value), &info->value)) {
-                xdiex("Invalid `varDef` node.");
+                die("Invalid `varDef` node.");
             }
 
             switch (nodeSymbolType(info->box)) {
@@ -377,7 +377,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
 
         case NODE_varRef: {
             if (!recGet1(orig, SYM(name), &info->name)) {
-                xdiex("Invalid `varRef` node.");
+                die("Invalid `varRef` node.");
             }
             break;
         }
