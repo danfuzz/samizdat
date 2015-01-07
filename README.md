@@ -50,6 +50,10 @@ Find lots of documentation in [the doc/ directory](doc), including notably:
 TLDR Get Started
 ----------------
 
+As of this writing, Samizdat is believed to build and run successfully
+on OS X (compiled with Clang) and on normal-looking Linux distributions
+(compiled with either Gcc or Clang).
+
 ```shell
 ## Get all set up.
 $ git clone git@github.com:danfuzz/samizdat.git
