@@ -8,3 +8,4 @@ Contents:
 * [Language Guide](language-guide/README.md)
 * [Library Guide](library-guide/README.md)
 * [Miscellaneous Notes](notes/README.md)
+* [Old Changelog](old-changelog.md)
