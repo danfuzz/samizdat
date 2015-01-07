@@ -146,7 +146,7 @@ char *getProgramDirectory(const char *argv0, const char *suffix) {
     }
 
     if (execPath == NULL) {
-        xdiex("Unable to determine executable directory.");
+        die("Unable to determine executable directory.");
     }
 
     char *result = resolveLinks(execPath);

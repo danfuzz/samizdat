@@ -68,7 +68,7 @@ zint seqNthIndexStrict(zint size, zvalue n) {
         zint index = zintFromInt(n);
         return ((index >= 0) && (index < size)) ? index : -1;
     } else {
-        xdiex("Invalid class for `nth` (non-int).");
+        die("Invalid class for `nth` (non-int).");
     }
 }
 
@@ -120,7 +120,7 @@ METH_IMPL_2_opt(Sequence, sliceGeneral, style, start, end) {
     } else if (symbolEq(style, SYM(inclusive))) {
         methName = SYM(sliceInclusive);
     } else {
-        xdiex("Invalid `style` for `sliceGeneral`.");
+        die("Invalid `style` for `sliceGeneral`.");
     }
 
     zvalue startIndex;
@@ -130,7 +130,7 @@ METH_IMPL_2_opt(Sequence, sliceGeneral, style, start, end) {
         startIndex = cm_get(start, SYM(value));
         startIndex = intFromZint(limit - zintFromInt(startIndex));
     } else {
-        xdiex("Invalid `start` for `sliceGeneral`.");
+        die("Invalid `start` for `sliceGeneral`.");
     }
 
     if (end == NULL) {
@@ -144,7 +144,7 @@ METH_IMPL_2_opt(Sequence, sliceGeneral, style, start, end) {
         endIndex = cm_get(end, SYM(value));
         endIndex = intFromZint(limit - zintFromInt(endIndex));
     } else {
-        xdiex("Invalid `end` for `sliceGeneral`.");
+        die("Invalid `end` for `sliceGeneral`.");
     }
 
     return METH_CALL_SYM(ths, methName, startIndex, endIndex);

@@ -127,7 +127,7 @@ static zvalue getLibrary(zvalue libraryPath) {
 
     zvalue mainFn = cm_get(exports, SYM(main));
     if (mainFn == NULL) {
-        xdiex("Missing bootstrap `main` binding");
+        die("Missing bootstrap `main` binding");
     }
 
     return FUN_CALL(mainFn, libraryPath, PRIMITIVE_ENVIRONMENT);

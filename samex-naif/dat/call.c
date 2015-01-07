@@ -142,5 +142,5 @@ zvalue methCall(zvalue target, zvalue name, zarray args) {
 
 // Documented in header.
 zvalue mustNotYield(zvalue value) {
-    xdiex("Improper yield from `noYield` expression.");
+    die("Improper yield from `noYield` expression.");
 }

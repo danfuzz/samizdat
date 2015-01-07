@@ -206,7 +206,7 @@ static zvalue bindArguments(ClosureNodeInfo *info, zvalue exitFunction,
                     break;
                 }
                 default: {
-                    xdiex("Invalid repeat enum (shouldn't happen).");
+                    die("Invalid repeat enum (shouldn't happen).");
                 }
             }
 
@@ -303,7 +303,7 @@ CMETH_IMPL_1(ClosureNode, new, orig) {
             SYM(formals),    &formals,
             SYM(statements), &info->statements,
             SYM(yield),      &info->yield)) {
-        xdiex("Invalid `closure` node.");
+        die("Invalid `closure` node.");
     }
 
     // These are both optional.

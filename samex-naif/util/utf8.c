@@ -140,7 +140,7 @@ static const char *justDecode(zchar *result, zint utfBytes, const char *utf) {
     }
 
     if (extraBytes > utfBytes) {
-        xdiex("Incomplete UTF-8 sequence.");
+        die("Incomplete UTF-8 sequence.");
     }
 
     while (extraBytes > 0) {

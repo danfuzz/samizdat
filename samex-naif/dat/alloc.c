@@ -64,7 +64,7 @@ static bool isAligned(void *maybeValue) {
  */
 static bool thoroughlyValidate(zvalue maybeValue, zmarkColor expectedColor) {
     if (maybeValue == NULL) {
-        xdiex("Invalid value: NULL");
+        die("Invalid value: NULL");
     }
 
     if (!isAligned(maybeValue)) {
@@ -156,7 +156,7 @@ static void doGc(void) {
     zint counter;  // Used throughout.
 
     if (SYM(gcMark) == NULL) {
-        xdiex("`dat` module not yet initialized.");
+        die("`dat` module not yet initialized.");
     }
 
     sanityCheck(false);
@@ -216,7 +216,7 @@ static void doGc(void) {
 
     for (zvalue item = doomedHead.next; item != &doomedHead; /*next*/) {
         if (item->mark == liveColor) {
-            xdiex("Live item on doomed list!");
+            die("Live item on doomed list!");
         }
 
         // Need to grab `item->next` before freeing the item.
@@ -289,7 +289,7 @@ zvalue datAllocValue(zvalue cls, zint extraBytes) {
 // Documented in header.
 void assertValid(zvalue value) {
     if (value == NULL) {
-        xdiex("Null value.");
+        die("Null value.");
     }
 
     if (value->mark != liveColor) {

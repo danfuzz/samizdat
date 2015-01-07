@@ -234,7 +234,7 @@ zvalue symtabFromZarray(zarray arr) {
     if (arr.size == 0) {
         return EMPTY_SYMBOL_TABLE;
     } else if ((arr.size & 1) != 0) {
-        xdiex("Odd argument count for symbol table construction.");
+        die("Odd argument count for symbol table construction.");
     }
 
     zvalue result = allocInstance(arr.size >> 1);

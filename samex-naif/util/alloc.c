@@ -92,7 +92,7 @@ static void addPages(void *start, void *end) {
     // Need to add a new range or extend an existing one.
 
     if (rangesSize >= UTIL_MAX_PAGE_RANGES) {
-        xdiex("Too many heap page ranges!");
+        die("Too many heap page ranges!");
     }
 
     ranges[rangesSize] = range;

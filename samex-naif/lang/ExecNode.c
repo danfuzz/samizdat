@@ -118,7 +118,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
         case NODE_importModuleSelection:
         case NODE_importResource: {
             if (op != EX_statement) {
-                xdiex("Invalid use of `import*` node.");
+                die("Invalid use of `import*` node.");
             }
 
             exnoExecuteStatements(info->valuesArr, frame);
@@ -132,7 +132,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
 
         case NODE_maybe: {
             if (op != EX_maybe) {
-                xdiex("Invalid use of `maybe` node.");
+                die("Invalid use of `maybe` node.");
             }
 
             // Return directly, to avoid the non-void check.
@@ -154,7 +154,7 @@ static zvalue execute(zvalue node, Frame *frame, zexecOperation op) {
 
         case NODE_varDef: {
             if (op != EX_statement) {
-                xdiex("Invalid use of `varDef` node.");
+                die("Invalid use of `varDef` node.");
             }
 
             zvalue value = execute(info->value, frame, EX_maybe);
@@ -290,7 +290,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
                     SYM(target), &info->target,
                     SYM(name),   &info->name,
                     SYM(values), &info->values)) {
-                xdiex("Invalid `apply` or `call` node.");
+                die("Invalid `apply` or `call` node.");
             }
 
             exnoConvert(&info->target);
@@ -311,7 +311,7 @@ CMETH_IMPL_1(ExecNode, new, orig) {
 
         case NODE_fetch: {
             if (!recGet1(orig, SYM(target), &info->target)) {
-                xdiex("Invalid `fetch` node.");
+                die("Invalid `fetch` node.");
             }
 
             exnoConvert(&info->target);

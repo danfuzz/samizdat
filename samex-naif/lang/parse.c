@@ -110,7 +110,7 @@ static zvalue peekMatch(ParseState *state, zvalue name) {
  * Dumps (some of) the pending tokens, as part of an error report.
  */
 static void dumpState(ParseState *state) {
-    xnotex("Pending tokens:");
+    note("Pending tokens:");
 
     for (zint i = 0; i < 25; i++) {
         zvalue one = read(state);
@@ -543,7 +543,7 @@ DEF_PARSE(listItem) {
     zvalue expr = PARSE(expression);
 
     if (MATCH(CH_COLON)) {
-        xdiex("Mapping syntax not valid as a list item or call argument.");
+        die("Mapping syntax not valid as a list item or call argument.");
     }
 
     return expr;
@@ -611,7 +611,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue formals = cm_get(c, SYM(formals));
     if (!cmpEq(formals, EMPTY_LIST)) {
-        xdiex("Invalid formal argument in code block.");
+        die("Invalid formal argument in code block.");
     }
 
     return c;
@@ -625,7 +625,7 @@ DEF_PARSE(basicNullaryClosure) {
 
     zvalue formals = cm_get(c, SYM(formals));
     if (!cmpEq(formals, EMPTY_LIST)) {
-        xdiex("Invalid formal argument in code block.");
+        die("Invalid formal argument in code block.");
     }
 
     return c;
@@ -738,7 +738,7 @@ DEF_PARSE(unaryExpression) {
                 break;
             }
             default: {
-                xdiex("Unexpected postfix.");
+                die("Unexpected postfix.");
             }
         }
     }
@@ -1370,7 +1370,7 @@ zvalue langParseExpression0(zvalue expression) {
 
     if (!isEof(&state)) {
         dumpState(&state);
-        xdiex("Extra tokens at end of expression.");
+        die("Extra tokens at end of expression.");
     }
 
     return result;
@@ -1391,7 +1391,7 @@ zvalue langParseProgram0(zvalue program) {
 
     if (!isEof(&state)) {
         dumpState(&state);
-        xdiex("Extra tokens at end of program.");
+        die("Extra tokens at end of program.");
     }
 
     return result;

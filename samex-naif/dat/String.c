@@ -104,7 +104,7 @@ static void assertString(zvalue value) {
 static void assertStringSize1(zvalue value) {
     assertString(value);
     if (getInfo(value)->s.size != 1) {
-        xdiex("Not a size 1 string.");
+        die("Not a size 1 string.");
     }
 }
 
@@ -491,7 +491,7 @@ METH_IMPL_0(String, fetch) {
         case 0: { return NULL; }
         case 1: { return ths;  }
         default: {
-            xdiex("Invalid to call `fetch` on string with size > 1.");
+            die("Invalid to call `fetch` on string with size > 1.");
         }
     }
 }
@@ -574,7 +574,7 @@ METH_IMPL_1(String, repeat, count) {
     zint n = zintFromInt(count);
 
     if (n < 0) {
-        xdiex("Invalid negative count for `repeat`.");
+        die("Invalid negative count for `repeat`.");
     } else if (n == 0) {
         return EMPTY_STRING;
     }

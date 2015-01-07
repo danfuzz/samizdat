@@ -267,7 +267,7 @@ CMETH_IMPL_1(Map, castFrom, value) {
 // Documented in spec.
 CMETH_IMPL_rest(Map, new, args) {
     if ((args.size & 1) != 0) {
-        xdiex("Odd argument count for map construction.");
+        die("Odd argument count for map construction.");
     }
 
     zint size = args.size >> 1;
@@ -514,7 +514,7 @@ METH_IMPL_0(Map, fetch) {
             return ths;
         }
         default: {
-            xdiex("Invalid to call `fetch` on map with size > 1.");
+            die("Invalid to call `fetch` on map with size > 1.");
         }
     }
 }
@@ -566,7 +566,7 @@ METH_IMPL_0(Map, get_key) {
     MapInfo *info = getInfo(ths);
 
     if (info->size != 1) {
-        xdiex("Not a size 1 map.");
+        die("Not a size 1 map.");
     }
 
     return info->elems[0].key;
@@ -582,7 +582,7 @@ METH_IMPL_0(Map, get_value) {
     MapInfo *info = getInfo(ths);
 
     if (info->size != 1) {
-        xdiex("Not a size 1 map.");
+        die("Not a size 1 map.");
     }
 
     return info->elems[0].value;

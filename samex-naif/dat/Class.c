@@ -98,7 +98,7 @@ static void assertIsClass(zvalue value) {
 static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
     if (CLS_Symbol != NULL) {
         if (name == NULL) {
-            xdiex("Improper argument to `makeClassPair()`: null `name`");
+            die("Improper argument to `makeClassPair()`: null `name`");
         } else {
             assertHasClass(name, CLS_Symbol);
         }
@@ -106,7 +106,7 @@ static zvalue makeClassPair(zvalue name, zvalue parent, bool isCore) {
 
     if (CLS_Value != NULL) {
         if (parent == NULL) {
-            xdiex("Improper argument to `makeClassPair()`: null `parent`");
+            die("Improper argument to `makeClassPair()`: null `parent`");
         } else {
             assertIsClass(parent);
         }
@@ -362,7 +362,7 @@ METH_IMPL_1(Class, crossOrder, other) {
     }
 
     if (!haveSameClass(ths, other)) {
-        xdiex("Improper call to `crossOrder`: different concrete classes");
+        die("Improper call to `crossOrder`: different concrete classes");
     }
 
     // We should only be able to make it here if given two instances of
@@ -454,7 +454,7 @@ METH_IMPL_1(Class, perOrder, other) {
             // Names are the same. The order is not defined given two
             // different non-core classes.
             if (core1 || core2) {
-                xdiex("Shouldn't happen: Same-name-but-different core classes.");
+                die("Shouldn't happen: Same-name-but-different core classes.");
             }
             return NULL;
         }

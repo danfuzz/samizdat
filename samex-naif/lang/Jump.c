@@ -51,13 +51,13 @@ METH_IMPL_rest(Jump, call, args) {
     JumpInfo *info = getInfo(ths);
 
     if (!info->valid) {
-        xdiex("Out-of-scope nonlocal jump.");
+        die("Out-of-scope nonlocal jump.");
     }
 
     switch (args.size) {
         case 0:  { info->result = NULL;          break;              }
         case 1:  { info->result = args.elems[0]; break;              }
-        default: { xdiex("Invalid argument count for nonlocal jump."); }
+        default: { die("Invalid argument count for nonlocal jump."); }
     }
 
     info->valid = false;

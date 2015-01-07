@@ -298,7 +298,7 @@ METH_IMPL_rest(Symbol, cat, args) {
     }
 
     if (size > DAT_MAX_SYMBOL_SIZE) {
-        xdiex("Too many characters in arguments to `Symbol.cat()`.");
+        die("Too many characters in arguments to `Symbol.cat()`.");
     }
 
     zchar chars[size];

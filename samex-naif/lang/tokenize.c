@@ -169,7 +169,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
               ((ch >= '0') && (ch <= '9')))) {
             break;
         } else if (s.size == LANG_MAX_STRING_CHARS) {
-            xdiex("Overlong identifier token.");
+            die("Overlong identifier token.");
         }
 
         chars[s.size] = ch;
@@ -325,7 +325,7 @@ static zvalue tokenizeDirective(ParseState *state) {
     zvalue name = tokenizeIdentifier(state);
 
     if (name == NULL) {
-        xdiex("Invalid directive name.");
+        die("Invalid directive name.");
     }
 
     zchar chars[LANG_MAX_STRING_CHARS];

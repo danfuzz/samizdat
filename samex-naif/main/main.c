@@ -25,7 +25,7 @@
  */
 int main(int argc, char **argv) {
     if (argc < 1) {
-        xdiex("Too few arguments.");
+        die("Too few arguments.");
     }
 
     char *libraryDir = getProgramDirectory(argv[0], "corelib");
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 
     zvalue runFunc = cm_get(env, SYM(runCommandLine));
     if (runFunc == NULL) {
-        xdiex("Missing `runCommandLine`.");
+        die("Missing `runCommandLine`.");
     }
 
     zvalue result = METH_APPLY(runFunc, call, argsList);

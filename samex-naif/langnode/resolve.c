@@ -28,9 +28,9 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
         zvalue source = cm_get(node, SYM(source));
         resolved = FUN_CALL(resolveFn, source);
         if (resolved == NULL) {
-            xdiex("Could not resolve import.");
+            die("Could not resolve import.");
         } else if (!nodeRecTypeIs(resolved, NODE_module)) {
-            xdiex("Invalid resolution result (not a `@module`)");
+            die("Invalid resolution result (not a `@module`)");
         }
     }
 
@@ -58,7 +58,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
                 for (zint i = 0; i < size; i++) {
                     zvalue one = cm_nth(select, i);
                     if (cm_get(exports, one) == NULL) {
-                        xdiex("Could not resolve import selection.");
+                        die("Could not resolve import selection.");
                     }
                 }
                 return node;
@@ -69,7 +69,7 @@ zvalue resolveImport(zvalue node, zvalue resolveFn) {
             }
         }
         default: {
-            xdiex("Bad node type for `resolveImport`.");
+            die("Bad node type for `resolveImport`.");
         }
     }
 }

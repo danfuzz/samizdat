@@ -89,22 +89,6 @@ void die(const char *format, ...)
  */
 void note(const char *format, ...);
 
-/**
- * Emits a debugging message. Arguments are as with `printf()`.
- */
-void xnotex(const char *format, ...)
-    __attribute__((format (printf, 1, 2)));
-
-/**
- * Dies (aborts the process) with the given message. Arguments are as
- * with `printf()`. If there is any active stack context (more
- * `UTIL_TRACE_START()`s than `UTIL_TRACE_END()`s), then that context is
- * appended to the death report.
- */
-void xdiex(const char *format, ...)
-    __attribute__((noreturn))
-    __attribute__((format (printf, 1, 2)));
-
 
 //
 // String Formatting Declarations

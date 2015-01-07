@@ -123,7 +123,7 @@ METH_IMPL_1(Object, crossEq, other) {
 
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        xdiex("`crossEq` called with incompatible arguments.");
+        die("`crossEq` called with incompatible arguments.");
     }
 
     return METH_CALL(getInfo(ths)->data, crossEq, getInfo(other)->data);
@@ -137,7 +137,7 @@ METH_IMPL_1(Object, crossOrder, other) {
 
     // Note: `other` not guaranteed to have the same class as `ths`.
     if (!haveSameClass(ths, other)) {
-        xdiex("`crossOrder` called with incompatible arguments.");
+        die("`crossOrder` called with incompatible arguments.");
     }
 
     return METH_CALL(getInfo(ths)->data, crossOrder, getInfo(other)->data);

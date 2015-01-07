@@ -209,7 +209,7 @@ zvalue makeAssignmentIfPossible(zvalue target, zvalue value) {
         return cm_new_Record(SYM(store),
             SYM(target), innerTarget, SYM(value), value);
     } else {
-        xdiex("Improper `lvalue` binding.");
+        die("Improper `lvalue` binding.");
     }
 }
 
@@ -278,7 +278,7 @@ zvalue makeClassDef(zvalue name, zvalue attributes, zvalue methods) {
     zint attribSize = get_size(attribMap);
 
     if (get_size(attributes) != attribSize) {
-        xdiex("Duplicate attribute.");
+        die("Duplicate attribute.");
     }
 
     zvalue keys = METH_CALL(attribMap, keyList);
@@ -360,7 +360,7 @@ zvalue makeDynamicImport(zvalue node) {
             return cm_new_List(stat);
         }
         default: {
-            xdiex("Bad node type for makeDynamicImport");
+            die("Bad node type for makeDynamicImport");
         }
     }
 }
@@ -421,9 +421,9 @@ zvalue makeImport(zvalue baseData) {
         // It's a module binding selection.
 
         if (cm_get(data, SYM(name)) != NULL) {
-            xdiex("Import selection name must be a prefix.");
+            die("Import selection name must be a prefix.");
         } else if (cm_get(data, SYM(format)) != NULL) {
-            xdiex("Cannot import selection of resource.");
+            die("Cannot import selection of resource.");
         }
 
         if (cmpEq(select, SYM(CH_STAR))) {
@@ -446,7 +446,7 @@ zvalue makeImport(zvalue baseData) {
     if (cm_get(data, SYM(format)) != NULL) {
         // It's a resource.
         if (nodeRecTypeIs(cm_get(data, SYM(source)), NODE_external)) {
-            xdiex("Cannot import external resource.");
+            die("Cannot import external resource.");
         }
         return cm_new(Record, SYM(importResource), data);
     }
@@ -511,7 +511,7 @@ zvalue makeInfoTable(zvalue node) {
                 zvalue source = cm_get(s, SYM(source));
                 zvalue select = cm_get(s, SYM(select));
                 if (select == NULL) {
-                    xdiex("Cannot call `makeInfoTable` on unresolved import.");
+                    die("Cannot call `makeInfoTable` on unresolved import.");
                 }
                 zint sz = get_size(select);
                 for (zint j = 0; j < sz; j++) {
@@ -593,7 +593,7 @@ zvalue makeThunk(zvalue expression) {
 // Documented in spec.
 zvalue withModuleDefs(zvalue node) {
     if (!cmpEqNullOk(cm_get(node, SYM(yield)), TOK_void)) {
-        xdiex("Invalid node for `withModuleDefs` (has non-void `yield`).");
+        die("Invalid node for `withModuleDefs` (has non-void `yield`).");
     }
 
     zvalue info = makeInfoTable(node);
@@ -678,7 +678,7 @@ zvalue withoutTops(zvalue node) {
                     break;
                 }
                 default: {
-                    xdiex("Bad `box` for `top` variable.");
+                    die("Bad `box` for `top` variable.");
                     break;
                 }
             }
