@@ -122,6 +122,7 @@ void xdiex(const char *format, ...)
  *   a hex escape if not in the printable ASCII range. This behavior is a bit
  *   different than the usual `printf` meaning.
  * * `d` -- The given `zint` argument as a decimal.
+ * * `g` -- The given `double` argument as a decimal.
  * * `p` -- The given `void *` argument as a pointer address.
  * * `s` -- The given string argument (type `const char *`).
  *

@@ -166,6 +166,19 @@ char *utilVFormat(const char *format, va_list rest) {
                     intermed = freeMe;
                     break;
                 }
+                case 'g': {
+                    double d = va_arg(rest, double);
+                    int err = ((fieldWidth > 0) && (padChar == '0'))
+                        ? asprintf(&freeMe, "%0*g", (int) fieldWidth, d)
+                        : asprintf(&freeMe, "%g", d);
+
+                    if (err < 0) {
+                        die("Failure in `asprintf`.");
+                    }
+
+                    intermed = freeMe;
+                    break;
+                }
                 case 'p': {
                     void *ptr = va_arg(rest, void *);
                     if (asprintf(&freeMe, "%p", ptr) < 0) {
