@@ -142,9 +142,14 @@ char *utilVFormat(const char *format, va_list rest) {
                 }
                 case 'd': {
                     zint i = va_arg(rest, zint);
-                    if (asprintf(&freeMe, "%" PRId64, i) < 0) {
+                    int err = ((fieldWidth > 0) && (padChar == '0'))
+                        ? asprintf(&freeMe, "%0*" PRId64, (int) fieldWidth, i)
+                        : asprintf(&freeMe, "%" PRId64, i);
+
+                    if (err < 0) {
                         die("Failure in `asprintf`.");
                     }
+
                     intermed = freeMe;
                     break;
                 }
@@ -155,6 +160,9 @@ char *utilVFormat(const char *format, va_list rest) {
                     }
                     intermed = freeMe;
                     break;
+                }
+                default: {
+                    die("Unknown directive.");
                 }
             }
         }
