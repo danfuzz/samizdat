@@ -125,6 +125,9 @@ void xdiex(const char *format, ...)
  * * `g` -- The given `double` argument as a decimal.
  * * `p` -- The given `void *` argument as a pointer address.
  * * `s` -- The given string argument (type `const char *`).
+ * * `x` -- The given `zint` argument as an unsigned hexadecimal, prefixed
+ *   with `0x`. The `0x` isn't considered part of the field width. This
+ *   behavior is similar to `%#x` in `printf`.
  *
  * Modifier prefixes:
  * * `0`..`9` -- Indicate field width. An initial `0` means that padding

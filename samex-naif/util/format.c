@@ -153,10 +153,6 @@ char *utilVFormat(const char *format, va_list rest) {
                     intermed = freeMe;
                     break;
                 }
-                case 's': {
-                    intermed = va_arg(rest, const char *);
-                    break;
-                }
                 case 'd': {
                     zint i = va_arg(rest, zint);
                     int err = ((fieldWidth > 0) && (padChar == '0'))
@@ -188,6 +184,24 @@ char *utilVFormat(const char *format, va_list rest) {
                     if (asprintf(&freeMe, "%p", ptr) < 0) {
                         die("Failure in `asprintf`.");
                     }
+                    intermed = freeMe;
+                    break;
+                }
+                case 's': {
+                    intermed = va_arg(rest, const char *);
+                    break;
+                }
+                case 'x': {
+                    zint i = va_arg(rest, zint);
+                    fieldWidth += 2;  // For the `0x`.
+                    int err = ((fieldWidth > 0) && (padChar == '0'))
+                        ? asprintf(&freeMe, "%#0*" PRIx64, (int) fieldWidth, i)
+                        : asprintf(&freeMe, "%#" PRIx64, i);
+
+                    if (err < 0) {
+                        die("Failure in `asprintf`.");
+                    }
+
                     intermed = freeMe;
                     break;
                 }
