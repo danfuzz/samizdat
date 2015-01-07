@@ -136,6 +136,10 @@ char *utilVFormat(const char *format, va_list rest) {
                     fieldWidth = (fieldWidth * 10) + (ch - '0');
                     break;
                 }
+                case '%': {
+                    intermed = "%";
+                    break;
+                }
                 case 'c': {
                     zint cval = (zint) (unsigned char) va_arg(rest, int);
                     int err = ((cval >= ' ') && (cval < 0x7f))
