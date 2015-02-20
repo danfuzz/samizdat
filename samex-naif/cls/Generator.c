@@ -107,24 +107,26 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
 // Documented in spec.
 FUNC_IMPL_1_opt(Generator_stdForEach, generator, function) {
     // These are kept outside the stack frames used within the loop, so
-    // that they'll survive all iterations. Also, `result` is a box and not
-    // just a raw value, so that it can be used to "protect" the actual
-    // result value without having to do anything too crazy with frame
-    // management.
+    // that they'll survive all iterations. Also, the latter two are boxes,
+    // so that they can be used to "redirect" to newer values as the
+    // iterations progress, while allowing the stack frame to be wiped clean
+    // from any other intermediate detritus.
     zvalue box = cm_new(Cell);
     zvalue result = cm_new(Cell);
+    zvalue gen = cm_new(Cell, generator);
 
     for (;;) {
         zstackPointer save = datFrameStart();
-        generator = METH_CALL(generator, nextValue, box);
-        datFrameReturn(save, generator);
+        zvalue nextGen = METH_CALL(cm_fetch(gen), nextValue, box);
+        cm_store(gen, nextGen);
+        datFrameReturn(save, NULL);
 
-        if (generator == NULL) {
+        if (nextGen == NULL) {
             break;
         }
 
         if (function == NULL) {
-            result = cm_fetch(box);
+            cm_store(result, cm_fetch(box));
         } else {
             zvalue v = FUN_CALL(function, cm_fetch(box));
             if (v != NULL) {
