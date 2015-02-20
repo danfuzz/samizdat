@@ -26,10 +26,15 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
     zint maxSize = CLS_MAX_GENERATOR_ITEMS_SOFT;
     zint at = 0;
 
-    zstackPointer save = datFrameStart();
+    // This is intentionally *not* part of the frame used in the loop. It
+    // gets "managed" by the frame that called this method. The cell here is
+    // also the thing that keeps generated results from being considered
+    // garbage, while all the generator / next-generator frame wrangling is
+    // going on.
     zvalue box = cm_new(Cell);
 
     for (;;) {
+        zstackPointer save = datFrameStart();
         zvalue nextGen = METH_CALL(generator, nextValue, box);
 
         if (nextGen == NULL) {
@@ -58,12 +63,17 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
             }
         }
 
-        arr[at] = one;
+        datFrameReturn(save, nextGen);
+
+        // `one` is being kept alive (non-garbage) because it's in `box`,
+        // which wasn't killed by the `datFrameReturn()`; see comment above.
+        // However, we have to add it to the frame now, because on the next
+        // iteration `box` will end up dropping it.
+        arr[at] = datFrameAdd(one);
         at++;
     }
 
     zvalue result = listFromZarray((zarray) {at, arr});
-    datFrameReturn(save, result);
 
     if (arr != stackArr) {
         utilFree(arr);
