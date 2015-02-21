@@ -119,7 +119,6 @@ FUNC_IMPL_1_opt(Generator_stdForEach, generator, function) {
         zstackPointer save = datFrameStart();
         zvalue nextGen = METH_CALL(cm_fetch(gen), nextValue, box);
         cm_store(gen, nextGen);
-        datFrameReturn(save, NULL);
 
         if (nextGen == NULL) {
             break;
@@ -133,6 +132,8 @@ FUNC_IMPL_1_opt(Generator_stdForEach, generator, function) {
                 cm_store(result, v);
             }
         }
+
+        datFrameReturn(save, NULL);
     }
 
     return cm_fetch(result);
