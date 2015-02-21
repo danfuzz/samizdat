@@ -26,16 +26,18 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
     zint maxSize = CLS_MAX_GENERATOR_ITEMS_SOFT;
     zint at = 0;
 
-    // This is intentionally *not* part of the frame used in the loop. It
-    // gets "managed" by the frame that called this method. The cell here is
-    // also the thing that keeps generated results from being considered
-    // garbage, while all the generator / next-generator frame wrangling is
-    // going on.
+    // These are kept outside the stack frames used within the loop, so
+    // that they'll survive all iterations. Also, `gen` is a box, so that it
+    // can be used to "redirect" to newer values as the iterations progress,
+    // while allowing the stack frame to be wiped clean from any other
+    // intermediate detritus.
     zvalue box = cm_new(Cell);
+    zvalue gen = cm_new(Cell, generator);
 
     for (;;) {
         zstackPointer save = datFrameStart();
-        zvalue nextGen = METH_CALL(generator, nextValue, box);
+        zvalue nextGen = METH_CALL(cm_fetch(gen), nextValue, box);
+        cm_store(gen, nextGen);
 
         if (nextGen == NULL) {
             break;
@@ -63,7 +65,7 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
             }
         }
 
-        datFrameReturn(save, nextGen);
+        datFrameReturn(save, NULL);
 
         // `one` is being kept alive (non-garbage) because it's in `box`,
         // which wasn't killed by the `datFrameReturn()`; see comment above.
