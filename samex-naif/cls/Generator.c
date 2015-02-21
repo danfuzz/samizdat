@@ -26,11 +26,18 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
     zint maxSize = CLS_MAX_GENERATOR_ITEMS_SOFT;
     zint at = 0;
 
-    zstackPointer save = datFrameStart();
+    // These are kept outside the stack frames used within the loop, so
+    // that they'll survive all iterations. Also, `gen` is a box, so that it
+    // can be used to "redirect" to newer values as the iterations progress,
+    // while allowing the stack frame to be wiped clean from any other
+    // intermediate detritus.
     zvalue box = cm_new(Cell);
+    zvalue gen = cm_new(Cell, generator);
 
     for (;;) {
-        zvalue nextGen = METH_CALL(generator, nextValue, box);
+        zstackPointer save = datFrameStart();
+        zvalue nextGen = METH_CALL(cm_fetch(gen), nextValue, box);
+        cm_store(gen, nextGen);
 
         if (nextGen == NULL) {
             break;
@@ -58,12 +65,17 @@ FUNC_IMPL_1_opt(Generator_stdCollect, generator, function) {
             }
         }
 
-        arr[at] = one;
+        datFrameReturn(save, NULL);
+
+        // `one` is being kept alive (non-garbage) because it's in `box`,
+        // which wasn't killed by the `datFrameReturn()`; see comment above.
+        // However, we have to add it to the frame now, because on the next
+        // iteration `box` will end up dropping it.
+        arr[at] = datFrameAdd(one);
         at++;
     }
 
     zvalue result = listFromZarray((zarray) {at, arr});
-    datFrameReturn(save, result);
 
     if (arr != stackArr) {
         utilFree(arr);
@@ -96,27 +108,37 @@ FUNC_IMPL_1(Generator_stdFetch, generator) {
 
 // Documented in spec.
 FUNC_IMPL_1_opt(Generator_stdForEach, generator, function) {
+    // These are kept outside the stack frames used within the loop, so
+    // that they'll survive all iterations. Also, the latter two are boxes,
+    // so that they can be used to "redirect" to newer values as the
+    // iterations progress, while allowing the stack frame to be wiped clean
+    // from any other intermediate detritus.
     zvalue box = cm_new(Cell);
-    zvalue result = NULL;
+    zvalue result = cm_new(Cell);
+    zvalue gen = cm_new(Cell, generator);
 
     for (;;) {
-        generator = METH_CALL(generator, nextValue, box);
+        zstackPointer save = datFrameStart();
+        zvalue nextGen = METH_CALL(cm_fetch(gen), nextValue, box);
+        cm_store(gen, nextGen);
 
-        if (generator == NULL) {
+        if (nextGen == NULL) {
             break;
         }
 
         if (function == NULL) {
-            result = cm_fetch(box);
+            cm_store(result, cm_fetch(box));
         } else {
             zvalue v = FUN_CALL(function, cm_fetch(box));
             if (v != NULL) {
-                result = v;
+                cm_store(result, v);
             }
         }
+
+        datFrameReturn(save, NULL);
     }
 
-    return result;
+    return cm_fetch(result);
 }
 
 /** Initializes the module. */

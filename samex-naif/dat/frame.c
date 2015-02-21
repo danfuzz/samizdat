@@ -60,3 +60,6 @@ extern zvalue datFrameAdd(zvalue value);
 
 // Documented in header.
 extern void datFrameReturn(zstackPointer savedStack, zvalue returnValue);
+
+// Documented in header.
+extern void datFrameReturn2(zstackPointer savedStack, zvalue r1, zvalue r2);
